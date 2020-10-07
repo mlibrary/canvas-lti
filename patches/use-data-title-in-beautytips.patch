@@ -1,0 +1,13 @@
+diff --git a/modules/contrib/beautytips/js/jquery.bt.js b/modules/contrib/beautytips/js/jquery.bt.js
+index 9dd3fe8..7b86950 100644
+--- a/modules/contrib/beautytips/js/jquery.bt.js
++++ b/modules/contrib/beautytips/js/jquery.bt.js
+@@ -1366,7 +1366,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
+     activeClass: 'bt-active',           // class added to TARGET element when
+                                         // its BeautyTip is active
+ 
+-    contentSelector: "$(this).attr('title')", // if there is no content
++    contentSelector: "$(this).attr('data-title')", // if there is no content
+                                               // argument, use this selector to
+                                               // retrieve the title
+     // a function which returns the content may also be passed here

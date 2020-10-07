@@ -1,0 +1,5 @@
+custom_guides.admin:
+  route_name: custom_guides.admin
+  title: Guides Settings
+  description: 'Control the custom_guides module behavior'
+  parent: system.admin_config_system

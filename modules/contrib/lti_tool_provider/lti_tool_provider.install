@@ -1,0 +1,81 @@
+<?php
+
+/**
+ * @file
+ * Installation and schema related functions for the LTI Tool Provider module.
+ */
+
+/**
+ * Implements hook_requirements().
+ * @param $phase
+ * @return array
+ */
+function lti_tool_provider_requirements($phase)
+{
+    $requirements = [];
+    $oauth_available = class_exists('\\OauthProvider');
+
+    if ($oauth_available) {
+        $requirements['lti_tool_provider_oauth'] = [
+            'title' => t('LTI Tool Provider - OAuth'),
+            'value' => t('OAuth PECL library installed'),
+        ];
+    }
+    else {
+        $requirements['lti_tool_provider_oauth'] = [
+            'title' => t('LTI Tool Provider - OAuth'),
+            'severity' => REQUIREMENT_ERROR,
+            'description' => t(
+                'The LTI Tool Provider module requires the <a href="@href" target="_blank">PECL OAuth</a> library.',
+                [
+                    '@href' => 'https://www.php.net/manual/en/book.oauth.php',
+                ]
+            ),
+        ];
+        if ($phase == 'runtime') {
+            $requirements['lti_tool_provider_oauth'] += [
+                'value' => t('OAuth PECL library not installed'),
+            ];
+        }
+    }
+
+    return $requirements;
+}
+
+/**
+ * Add missing LTI roles to config.
+ */
+function lti_tool_provider_update_8101()
+{
+    $config_factory = \Drupal::configFactory();
+    $config = $config_factory->getEditable('lti_tool_provider.settings');
+    $lti_roles = $config->get('lti_roles');
+    $lti_roles = array_merge(
+        [
+            'urn:lti:sysrole:ims/lis/SysAdmin',
+            'urn:lti:sysrole:ims/lis/SysSupport',
+            'urn:lti:sysrole:ims/lis/Creator',
+            'urn:lti:sysrole:ims/lis/AccountAdmin',
+            'urn:lti:sysrole:ims/lis/User',
+            'urn:lti:sysrole:ims/lis/Administrator',
+            'urn:lti:sysrole:ims/lis/None',
+            'urn:lti:instrole:ims/lis/Student',
+            'urn:lti:instrole:ims/lis/Faculty',
+            'urn:lti:instrole:ims/lis/Member',
+            'urn:lti:instrole:ims/lis/Learner',
+            'urn:lti:instrole:ims/lis/Instructor',
+            'urn:lti:instrole:ims/lis/Mentor',
+            'urn:lti:instrole:ims/lis/Staff',
+            'urn:lti:instrole:ims/lis/Alumni',
+            'urn:lti:instrole:ims/lis/ProspectiveStudent',
+            'urn:lti:instrole:ims/lis/Guest',
+            'urn:lti:instrole:ims/lis/Other',
+            'urn:lti:instrole:ims/lis/Administrator',
+            'urn:lti:instrole:ims/lis/Observer',
+            'urn:lti:instrole:ims/lis/None',
+        ],
+        $lti_roles
+    );
+    $config->set('lti_roles', $lti_roles);
+    $config->save(true);
+}

@@ -1,0 +1,7 @@
+custom_guides.admin:
+  path: /admin/config/system/custom-guides
+  defaults:
+    _title: Guides Config
+    _form: \Drupal\custom_shortcodes\Form\CustomGuidesAdmin
+  requirements:
+    _permission: 'administer custom_guides'

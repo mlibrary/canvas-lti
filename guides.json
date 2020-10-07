@@ -1,0 +1,1417 @@
+{
+    "responseHeader": {
+        "status": 0,
+        "QTime": 1,
+        "params": {
+            "q": "source:libguides-guide",
+            "json.nl": "arrmap",
+            "fl": "url,title",
+            "rows": "1000",
+            "wt": "json"
+        }
+    },
+    "response": {
+        "numFound": 466,
+        "start": 0,
+        "docs": [{
+                "url": "https://guides.lib.umich.edu/hemonc",
+                "title": "Hematology and Oncology"
+            }, {
+                "url": "https://guides.lib.umich.edu/neurology",
+                "title": "Neurology"
+            }, {
+                "url": "https://guides.lib.umich.edu/oto",
+                "title": "Otolaryngology"
+            }, {
+                "url": "https://guides.lib.umich.edu/piano",
+                "title": "Piano Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/film",
+                "title": "Film, Television & Media / Screen Arts & Cultures"
+            }, {
+                "url": "https://guides.lib.umich.edu/gastroenterology",
+                "title": "Gastroenterology and Hepatology"
+            }, {
+                "url": "https://guides.lib.umich.edu/physics",
+                "title": "Physics"
+            }, {
+                "url": "https://guides.lib.umich.edu/kinesiology",
+                "title": "Kinesiology"
+            }, {
+                "url": "https://guides.lib.umich.edu/biology",
+                "title": "Biology"
+            }, {
+                "url": "https://guides.lib.umich.edu/ling",
+                "title": "Linguistics Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282870",
+                "title": "Statistics (Mathematical)"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282871",
+                "title": "Mathematics"
+            }, {
+                "url": "https://guides.lib.umich.edu/art_and_design",
+                "title": "Art & Design"
+            }, {
+                "url": "https://guides.lib.umich.edu/endnote",
+                "title": "EndNote Essentials"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282875",
+                "title": "Top Ten Databases to Start Your Undergraduate Research"
+            }, {
+                "url": "https://guides.lib.umich.edu/manufacturing",
+                "title": "Manufacturing Engineering"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282877",
+                "title": "Energy Engineering"
+            }, {
+                "url": "https://guides.lib.umich.edu/auto-engin",
+                "title": "Automotive Engineering"
+            }, {
+                "url": "https://guides.lib.umich.edu/comics",
+                "title": "Comic Books and Graphic Novels"
+            }, {
+                "url": "https://guides.lib.umich.edu/biomed",
+                "title": "Biomedical Engineering"
+            }, {
+                "url": "https://guides.lib.umich.edu/ChemE",
+                "title": "Chemical Engineering"
+            }, {
+                "url": "https://guides.lib.umich.edu/materials",
+                "title": "Materials Science and Engineering"
+            }, {
+                "url": "https://guides.lib.umich.edu/name",
+                "title": "Naval Architecture and Marine Engineering"
+            }, {
+                "url": "https://guides.lib.umich.edu/landscapearch",
+                "title": "Landscape Architecture"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282885",
+                "title": "Disability"
+            }, {
+                "url": "https://guides.lib.umich.edu/seas",
+                "title": "Environment & Sustainability"
+            }, {
+                "url": "https://guides.lib.umich.edu/urbanplanning",
+                "title": "Urban and Regional Planning"
+            }, {
+                "url": "https://guides.lib.umich.edu/images",
+                "title": "Images"
+            }, {
+                "url": "https://guides.lib.umich.edu/ioe",
+                "title": "Industrial and Operations Engineering (IOE)"
+            }, {
+                "url": "https://guides.lib.umich.edu/mecheng",
+                "title": "Mechanical Engineering"
+            }, {
+                "url": "https://guides.lib.umich.edu/haiti",
+                "title": "From Colonial Saint-Domingue to Independent Haiti"
+            }, {
+                "url": "https://guides.lib.umich.edu/videocopyright",
+                "title": "Copyright and Using Video"
+            }, {
+                "url": "https://guides.lib.umich.edu/AfricanArt",
+                "title": "African and Diaspora Art and Visual Culture"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=283197",
+                "title": "Library Digital Films Service - Streaming video resources provided by the library"
+            }, {
+                "url": "https://guides.lib.umich.edu/psychawa",
+                "title": "Psychology Subject Pool: Alternative Written Assignment"
+            }, {
+                "url": "https://guides.lib.umich.edu/n456",
+                "title": "Community Health"
+            }, {
+                "url": "https://guides.lib.umich.edu/photoshop",
+                "title": "Getting Started with Photoshop CS6"
+            }, {
+                "url": "https://guides.lib.umich.edu/srh",
+                "title": "Sexual and Reproductive Health"
+            }, {
+                "url": "https://guides.lib.umich.edu/orgstudies",
+                "title": "Organizational Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/islamicmsstudies",
+                "title": "Islamic Manuscript Studies "
+            }, {
+                "url": "https://guides.lib.umich.edu/Japan_Trip",
+                "title": "Prep Course for Japan Trip"
+            }, {
+                "url": "https://guides.lib.umich.edu/comm102",
+                "title": "COMM 102 Media Processes and Effects"
+            }, {
+                "url": "https://guides.lib.umich.edu/ebooks",
+                "title": "Finding and Using Electronic Books (e-Books)"
+            }, {
+                "url": "https://guides.lib.umich.edu/pasqual",
+                "title": "PASQUAL Scholars Portal"
+            }, {
+                "url": "https://guides.lib.umich.edu/comparativehistorical",
+                "title": "Comparative and Historical Sociology"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=283236",
+                "title": "Renaissance and Baroque Architecture"
+            }, {
+                "url": "https://guides.lib.umich.edu/translation-studies",
+                "title": "Translation Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/KoreanOnlineResources",
+                "title": "Korean Online Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/askwith_collection",
+                "title": "Askwith Collection"
+            }, {
+                "url": "https://guides.lib.umich.edu/percussionresources",
+                "title": "Percussion Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/instructorcollege",
+                "title": "Instructor College: Instruction Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/islamicmss",
+                "title": "Islamic Manuscripts Collection "
+            }, {
+                "url": "https://guides.lib.umich.edu/debate2020",
+                "title": "2020 Michigan Debate Institute"
+            }, {
+                "url": "https://guides.lib.umich.edu/ADABRD",
+                "title": "Stamps International Experience"
+            }, {
+                "url": "https://guides.lib.umich.edu/nonprofits",
+                "title": "Information for and About Nonprofit Organizations"
+            }, {
+                "url": "https://guides.lib.umich.edu/ORCID",
+                "title": "Open Researcher and Contributor ID (ORCID)"
+            }, {
+                "url": "https://guides.lib.umich.edu/popculture",
+                "title": "Popular Culture"
+            }, {
+                "url": "https://guides.lib.umich.edu/Caribbean_Art_and_Visual_Culture",
+                "title": "Caribbean Art and Visual Culture"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=283346",
+                "title": "Northern Renaissance Art"
+            }, {
+                "url": "https://guides.lib.umich.edu/brass",
+                "title": "Brass Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/stringresources",
+                "title": "String Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/woodwindresources",
+                "title": "Woodwind Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/careers",
+                "title": "Career Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/lusophone-africa",
+                "title": "Lusophone Africa"
+            }, {
+                "url": "https://guides.lib.umich.edu/studyabroad",
+                "title": "Study Abroad Top 10 Countries"
+            }, {
+                "url": "https://guides.lib.umich.edu/eli",
+                "title": "English Language Institute"
+            }, {
+                "url": "https://guides.lib.umich.edu/essentials",
+                "title": "Essentials of Library Research"
+            }, {
+                "url": "https://guides.lib.umich.edu/SWintegrity",
+                "title": "Academic Integrity in Social Work "
+            }, {
+                "url": "https://guides.lib.umich.edu/canadagovinfo",
+                "title": "Canadian Government Information"
+            }, {
+                "url": "https://guides.lib.umich.edu/communityprofile",
+                "title": "Gathering Information to Assess a Community"
+            }, {
+                "url": "https://guides.lib.umich.edu/newintstudents",
+                "title": "Library Guide for International Students"
+            }, {
+                "url": "https://guides.lib.umich.edu/mediterranean-studies",
+                "title": "Mediterranean Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/si501",
+                "title": "SI 501 Contextual Inquiry and Consulting Foundations"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=283404",
+                "title": "UMMA Docents Guide"
+            }, {
+                "url": "https://guides.lib.umich.edu/researchfunding",
+                "title": "Research Funding and Grants Guide"
+            }, {
+                "url": "https://guides.lib.umich.edu/policypath",
+                "title": "UMMS Health Policy and Health Economics Path of Excellence - An Information Resource Starter Kit"
+            }, {
+                "url": "https://guides.lib.umich.edu/cogsci",
+                "title": "Cognitive Science"
+            }, {
+                "url": "https://guides.lib.umich.edu/qualdata",
+                "title": "Qualitative Research"
+            }, {
+                "url": "https://guides.lib.umich.edu/dissertationcopyright",
+                "title": "Copyright for Dissertations"
+            }, {
+                "url": "https://guides.lib.umich.edu/musicaltheatre",
+                "title": "Musical Theatre Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/ChineseSTEM",
+                "title": "Chinese-language Resources in STEM Fields"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=283427",
+                "title": "Indigenous Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/cirht",
+                "title": "Center for International Reproductive Health Training (CIRHT)"
+            }, {
+                "url": "https://guides.lib.umich.edu/nutrition",
+                "title": "Nutritional Sciences"
+            }, {
+                "url": "https://guides.lib.umich.edu/globalstats",
+                "title": "International, Regional, and National Data Sets"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=319995",
+                "title": "Turkish Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/medicalhistory",
+                "title": "Biographical and Historical Resources for Health Sciences"
+            }, {
+                "url": "https://guides.lib.umich.edu/bandmusic",
+                "title": "Band Music Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/ee",
+                "title": "Electrical Engineering"
+            }, {
+                "url": "https://guides.lib.umich.edu/elections",
+                "title": "Elections"
+            }, {
+                "url": "https://guides.lib.umich.edu/vgl",
+                "title": "Earth & Environmental Sciences (Virtual Geosciences Library)"
+            }, {
+                "url": "https://guides.lib.umich.edu/cse",
+                "title": "Computer Science & Engineering"
+            }, {
+                "url": "https://guides.lib.umich.edu/civil",
+                "title": "Civil Engineering"
+            }, {
+                "url": "https://guides.lib.umich.edu/chemistry",
+                "title": "Chemistry"
+            }, {
+                "url": "https://guides.lib.umich.edu/scifinder",
+                "title": "SciFinder"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282902",
+                "title": "Australia, New Zealand & the Pacific Islands"
+            }, {
+                "url": "https://guides.lib.umich.edu/patents",
+                "title": "Patents and Trademarks"
+            }, {
+                "url": "https://guides.lib.umich.edu/engineering",
+                "title": "Engineering (General)"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282905",
+                "title": "Engineering Education"
+            }, {
+                "url": "https://guides.lib.umich.edu/interracial",
+                "title": "Interracial Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/standards",
+                "title": "Standards"
+            }, {
+                "url": "https://guides.lib.umich.edu/enve",
+                "title": "Environmental Engineering"
+            }, {
+                "url": "https://guides.lib.umich.edu/japanesestudies",
+                "title": "Japanese Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282910",
+                "title": "Cartography"
+            }, {
+                "url": "https://guides.lib.umich.edu/Judaica",
+                "title": "Judaic Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/archpaper",
+                "title": "Researching and Writing an Architecture Paper"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282915",
+                "title": "Central Asian and Caucasian Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/HSL_sciwriting",
+                "title": "Scientific Writing & Publishing for Health Sciences"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282921",
+                "title": "East European Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282922",
+                "title": "Southeast European Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/unitednations",
+                "title": "United Nations"
+            }, {
+                "url": "https://guides.lib.umich.edu/anthropology",
+                "title": "Anthropology"
+            }, {
+                "url": "https://guides.lib.umich.edu/archaeo",
+                "title": "Archaeology"
+            }, {
+                "url": "https://guides.lib.umich.edu/museumstudies",
+                "title": "Museum Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282829",
+                "title": "History of Science & Technology"
+            }, {
+                "url": "https://guides.lib.umich.edu/theatre",
+                "title": "Theatre and Drama"
+            }, {
+                "url": "https://guides.lib.umich.edu/econ",
+                "title": "Economics"
+            }, {
+                "url": "https://guides.lib.umich.edu/biochem",
+                "title": "Biological Chemistry"
+            }, {
+                "url": "https://guides.lib.umich.edu/AfricanStudies",
+                "title": "African Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/indesign",
+                "title": "Getting Started with InDesign CS6"
+            }, {
+                "url": "https://guides.lib.umich.edu/law",
+                "title": "Law"
+            }, {
+                "url": "https://guides.lib.umich.edu/molecular",
+                "title": "Molecular, Cellular, and Developmental Biology"
+            }, {
+                "url": "https://guides.lib.umich.edu/neurosurgery",
+                "title": "Neurosurgery"
+            }, {
+                "url": "https://guides.lib.umich.edu/emed",
+                "title": "Emergency Medicine"
+            }, {
+                "url": "https://guides.lib.umich.edu/microbiology_immunology",
+                "title": "Microbiology and Immunology"
+            }, {
+                "url": "https://guides.lib.umich.edu/publicpolicy",
+                "title": "Public Policy"
+            }, {
+                "url": "https://guides.lib.umich.edu/pharmacology",
+                "title": "Pharmacology"
+            }, {
+                "url": "https://guides.lib.umich.edu/geriatrics",
+                "title": "Geriatric Medicine"
+            }, {
+                "url": "https://guides.lib.umich.edu/pathology",
+                "title": "Pathology"
+            }, {
+                "url": "https://guides.lib.umich.edu/pediatrics",
+                "title": "Pediatrics"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282846",
+                "title": "Rheumatology"
+            }, {
+                "url": "https://guides.lib.umich.edu/pmr",
+                "title": "Physical Medicine & Rehabilitation"
+            }, {
+                "url": "https://guides.lib.umich.edu/obgyn",
+                "title": "Obstetrics & Gynecology"
+            }, {
+                "url": "https://guides.lib.umich.edu/bioinformatics",
+                "title": "Bioinformatics"
+            }, {
+                "url": "https://guides.lib.umich.edu/generalmedicine",
+                "title": "General Medicine"
+            }, {
+                "url": "https://guides.lib.umich.edu/orthosurg",
+                "title": "Orthopaedic Surgery"
+            }, {
+                "url": "https://guides.lib.umich.edu/28690",
+                "title": "Genetics"
+            }, {
+                "url": "https://guides.lib.umich.edu/easypiano",
+                "title": "Finding Elementary and Intermediate Piano Music"
+            }, {
+                "url": "https://guides.lib.umich.edu/physiol",
+                "title": "Molecular and Integrative Physiology"
+            }, {
+                "url": "https://guides.lib.umich.edu/neuroscience",
+                "title": "Neuroscience"
+            }, {
+                "url": "https://guides.lib.umich.edu/filmmusic",
+                "title": "Film Music Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/LGBTQ",
+                "title": "Lesbian, Gay, Bisexual, Transgender & Queer Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/creativecommons",
+                "title": "Creative Commons"
+            }, {
+                "url": "https://guides.lib.umich.edu/healthlitreviews",
+                "title": "Literature Reviews"
+            }, {
+                "url": "https://guides.lib.umich.edu/engin-dmp",
+                "title": "Data Management Plans (ENG)"
+            }, {
+                "url": "https://guides.lib.umich.edu/govinfo",
+                "title": "United States Government Information"
+            }, {
+                "url": "https://guides.lib.umich.edu/AsiaLibraryNewBooks",
+                "title": "New Books at Asia Library"
+            }, {
+                "url": "https://guides.lib.umich.edu/pubpolfaculty",
+                "title": "Library Tips for Public Policy Faculty"
+            }, {
+                "url": "https://guides.lib.umich.edu/Primary_Sources",
+                "title": "Primary Sources"
+            }, {
+                "url": "https://guides.lib.umich.edu/writecite",
+                "title": "Writing, Citing, & Research"
+            }, {
+                "url": "https://guides.lib.umich.edu/testssph",
+                "title": "Tests and Measurement Instruments for the Health Sciences"
+            }, {
+                "url": "https://guides.lib.umich.edu/meded",
+                "title": "Medical Education"
+            }, {
+                "url": "https://guides.lib.umich.edu/pubscience",
+                "title": "Publishing in the Sciences"
+            }, {
+                "url": "https://guides.lib.umich.edu/mobile-computing",
+                "title": "Mobile Computing"
+            }, {
+                "url": "https://guides.lib.umich.edu/pubpolresearch",
+                "title": "Research Methods in Public Policy"
+            }, {
+                "url": "https://guides.lib.umich.edu/soc100",
+                "title": "SOC 100: Introduction to Sociology"
+            }, {
+                "url": "https://guides.lib.umich.edu/progresslab",
+                "title": "ProgressLab Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/nihcdc",
+                "title": "NIH: Consensus Development Conference on Diagnosis and Management of Dental Caries Throughout Life: Background"
+            }, {
+                "url": "https://guides.lib.umich.edu/japandata",
+                "title": "GIS, Map and Statistics: Japan "
+            }, {
+                "url": "https://guides.lib.umich.edu/brazilian-studies",
+                "title": "Brazilian Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/bioethicsPoE",
+                "title": "Ethics Path of Excellence - An Information Resource Starter Kit"
+            }, {
+                "url": "https://guides.lib.umich.edu/libraryresearchprocess",
+                "title": "The Library Research Process, Step-by-Step"
+            }, {
+                "url": "https://guides.lib.umich.edu/endnotebasic",
+                "title": "EndNote Basic"
+            }, {
+                "url": "https://guides.lib.umich.edu/engineering260",
+                "title": "Engineering 260 — Engineering Across Cultures"
+            }, {
+                "url": "https://guides.lib.umich.edu/video",
+                "title": "Resources for Video Creation"
+            }, {
+                "url": "https://guides.lib.umich.edu/sysreviews",
+                "title": "Systematic Reviews"
+            }, {
+                "url": "https://guides.lib.umich.edu/ws240",
+                "title": "Women's Studies 240: Introduction to Women's and Gender Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/AcademicIntegritySPH",
+                "title": "Academic Integrity at SPH"
+            }, {
+                "url": "https://guides.lib.umich.edu/microbiome",
+                "title": "Microbiome and Microbiomics"
+            }, {
+                "url": "https://guides.lib.umich.edu/pharmacy",
+                "title": "Pharmacy and Pharmacology"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282761",
+                "title": "Nuclear Engineering and Radiological Sciences"
+            }, {
+                "url": "https://guides.lib.umich.edu/commstudies",
+                "title": "Communication and Media"
+            }, {
+                "url": "https://guides.lib.umich.edu/reaxys",
+                "title": "Reaxys: Beilstein/Gmelin/Patent Chemistry"
+            }, {
+                "url": "https://guides.lib.umich.edu/chembiooffice",
+                "title": "ChemBioOffice: Professional illustrations and beyond for chemists and biologists"
+            }, {
+                "url": "https://guides.lib.umich.edu/citationmanagement",
+                "title": "THL Citation Management"
+            }, {
+                "url": "https://guides.lib.umich.edu/dbsearching",
+                "title": "THL Database Searching"
+            }, {
+                "url": "https://guides.lib.umich.edu/libresources",
+                "title": "THL MGet It, Library Catalog Search, & Deep Blue"
+            }, {
+                "url": "https://guides.lib.umich.edu/EBP",
+                "title": "THL Evidence-Based Practice"
+            }, {
+                "url": "https://guides.lib.umich.edu/citeanalysis",
+                "title": "THL Citation Analysis & Impact Factors"
+            }, {
+                "url": "https://guides.lib.umich.edu/chem216",
+                "title": "Chem216 Synthesis and Characterization of Organic Compounds"
+            }, {
+                "url": "https://guides.lib.umich.edu/thlguides",
+                "title": "THL Guides and Tutorials"
+            }, {
+                "url": "https://guides.lib.umich.edu/EBP-Research",
+                "title": "Evidence-Based Practice for Social Work"
+            }, {
+                "url": "https://guides.lib.umich.edu/healthmobile",
+                "title": "Health Sciences Mobile Devices Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/census",
+                "title": "U.S. Census and Demographic Information"
+            }, {
+                "url": "https://guides.lib.umich.edu/social-work",
+                "title": "Social Work"
+            }, {
+                "url": "https://guides.lib.umich.edu/mendeley",
+                "title": "Mendeley Basics"
+            }, {
+                "url": "https://guides.lib.umich.edu/german_language",
+                "title": "German Language Learning Guide"
+            }, {
+                "url": "https://guides.lib.umich.edu/unitedkingdom",
+                "title": "United Kingdom Government Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/stayinformed",
+                "title": "Staying Informed for Social Work Practice"
+            }, {
+                "url": "https://guides.lib.umich.edu/botany",
+                "title": "Botany"
+            }, {
+                "url": "https://guides.lib.umich.edu/complit",
+                "title": "General and Comparative Literature"
+            }, {
+                "url": "https://guides.lib.umich.edu/ushistory",
+                "title": "United States History"
+            }, {
+                "url": "https://guides.lib.umich.edu/history",
+                "title": "History (General)"
+            }, {
+                "url": "https://guides.lib.umich.edu/english",
+                "title": "English Language & Literature"
+            }, {
+                "url": "https://guides.lib.umich.edu/Engineering100-500",
+                "title": "Engineering 100 Section 500"
+            }, {
+                "url": "https://guides.lib.umich.edu/geospatial_data",
+                "title": "Geospatial Data"
+            }, {
+                "url": "https://guides.lib.umich.edu/learngis",
+                "title": "Learning GIS"
+            }, {
+                "url": "https://guides.lib.umich.edu/heb",
+                "title": "Health, Engineering & Business"
+            }, {
+                "url": "https://guides.lib.umich.edu/technologytransfer",
+                "title": "Commercialization Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/reviews",
+                "title": "Reviews"
+            }, {
+                "url": "https://guides.lib.umich.edu/lgbtqhealth",
+                "title": "LGBTQ Health Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/swglobal",
+                "title": "Social Work: Global Practice"
+            }, {
+                "url": "https://guides.lib.umich.edu/anesthesiology",
+                "title": "Anesthesiology"
+            }, {
+                "url": "https://guides.lib.umich.edu/comm490music",
+                "title": "Comm 490: Music & Mediation"
+            }, {
+                "url": "https://guides.lib.umich.edu/ghd",
+                "title": "U-M Global Health & Disparities Path of Excellence | Information Resource Toolkit"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=283053",
+                "title": "Sanborn Fire Insurance Maps"
+            }, {
+                "url": "https://guides.lib.umich.edu/congress",
+                "title": "Congress"
+            }, {
+                "url": "https://guides.lib.umich.edu/familymed",
+                "title": "Family and Integrative Medicine"
+            }, {
+                "url": "https://guides.lib.umich.edu/nephrology",
+                "title": "Nephrology"
+            }, {
+                "url": "https://guides.lib.umich.edu/urology",
+                "title": "Urology"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282929",
+                "title": "Pulmonary and Critical Care Medicine"
+            }, {
+                "url": "https://guides.lib.umich.edu/species",
+                "title": "Finding Species Information"
+            }, {
+                "url": "https://guides.lib.umich.edu/spectra",
+                "title": "Finding Spectral Data"
+            }, {
+                "url": "https://guides.lib.umich.edu/space-sci",
+                "title": "Space Sciences & Engineering"
+            }, {
+                "url": "https://guides.lib.umich.edu/dermatology",
+                "title": "Dermatology"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282936",
+                "title": "Web of Science (WOS) Core Collection"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282937",
+                "title": "Library of Congress (LC) Call Numbers"
+            }, {
+                "url": "https://guides.lib.umich.edu/findingdata",
+                "title": "Finding Data"
+            }, {
+                "url": "https://guides.lib.umich.edu/musictexts",
+                "title": "Standard Texts in Music History"
+            }, {
+                "url": "https://guides.lib.umich.edu/allaboutimages",
+                "title": "All About Images"
+            }, {
+                "url": "https://guides.lib.umich.edu/mirlynclassic",
+                "title": "Mirlyn Classic"
+            }, {
+                "url": "https://guides.lib.umich.edu/europeanunion",
+                "title": "European Union"
+            }, {
+                "url": "https://guides.lib.umich.edu/pharmE",
+                "title": "Pharmaceutical Engineering"
+            }, {
+                "url": "https://guides.lib.umich.edu/aael-orientation",
+                "title": "Art, Architecture and Engineering Library Orientation"
+            }, {
+                "url": "https://guides.lib.umich.edu/knightwallace",
+                "title": "Knight Wallace Journalism Fellows"
+            }, {
+                "url": "https://guides.lib.umich.edu/Complementary",
+                "title": "Complementary and Alternative Medicine (CAM)"
+            }, {
+                "url": "https://guides.lib.umich.edu/dietetics",
+                "title": "Dietetics"
+            }, {
+                "url": "https://guides.lib.umich.edu/dance",
+                "title": "Dance"
+            }, {
+                "url": "https://guides.lib.umich.edu/music",
+                "title": "Music"
+            }, {
+                "url": "https://guides.lib.umich.edu/constitution",
+                "title": "Constitutions"
+            }, {
+                "url": "https://guides.lib.umich.edu/citationhelp",
+                "title": "Citation Help"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282965",
+                "title": "Central European Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/eastasianstudies",
+                "title": "East Asian Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/christmasmusic",
+                "title": "Finding Christmas Music in the Music Library"
+            }, {
+                "url": "https://guides.lib.umich.edu/global",
+                "title": "University Library: Global Information Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/localgovernment",
+                "title": "State and Local Government Information"
+            }, {
+                "url": "https://guides.lib.umich.edu/citation",
+                "title": "Research Impact Metrics: Citation Analysis"
+            }, {
+                "url": "https://guides.lib.umich.edu/francophonecanada",
+                "title": "Francophone Canada"
+            }, {
+                "url": "https://guides.lib.umich.edu/videogamestudies",
+                "title": "Video Game Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/videogamedev",
+                "title": "Video Game Development"
+            }, {
+                "url": "https://guides.lib.umich.edu/citationmanagementoptions",
+                "title": "Manage Citations with Zotero, Mendeley, and EndNote"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=283118",
+                "title": "Undergraduate Library Reference Collection Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/cbssm",
+                "title": "Center for Bioethics and Social Sciences in Medicine"
+            }, {
+                "url": "https://guides.lib.umich.edu/materials_collection",
+                "title": "Materials Collection"
+            }, {
+                "url": "https://guides.lib.umich.edu/patientsafety",
+                "title": "Patient Safety, Quality Improvement, & Complex Systems"
+            }, {
+                "url": "https://guides.lib.umich.edu/DHgrad",
+                "title": "Dental Hygiene - Graduate"
+            }, {
+                "url": "https://guides.lib.umich.edu/readreadread",
+                "title": "Read Read Read"
+            }, {
+                "url": "https://guides.lib.umich.edu/newgradstudents",
+                "title": "Guide to the U-M Library for New Graduate Students"
+            }, {
+                "url": "https://guides.lib.umich.edu/rcrs",
+                "title": "Responsible Conduct of Research and Scholarship (RCRS)"
+            }, {
+                "url": "https://guides.lib.umich.edu/dissertationlitreview",
+                "title": "The Literature Review: For Dissertations"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=283140",
+                "title": "Topographic Map and Bathymetric Chart Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/CER",
+                "title": "CERs and Systematic Reviews"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=283146",
+                "title": "Washtenaw County Map Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/child-family",
+                "title": "Vulnerable Children, Youth and Families in Society "
+            }, {
+                "url": "https://guides.lib.umich.edu/entrepreneurship",
+                "title": "Entrepreneurship"
+            }, {
+                "url": "https://guides.lib.umich.edu/powerpoint",
+                "title": "Microsoft PowerPoint"
+            }, {
+                "url": "https://guides.lib.umich.edu/keepingalert",
+                "title": "Keeping Alert - Tracking New Articles and Books in your field"
+            }, {
+                "url": "https://guides.lib.umich.edu/biostation",
+                "title": "Biological Station"
+            }, {
+                "url": "https://guides.lib.umich.edu/chinagisdata",
+                "title": "GIS, Map and Statistics: China"
+            }, {
+                "url": "https://guides.lib.umich.edu/mexicoandperu",
+                "title": "LACS 321 Inca, Aztec and the Spanish Conquest"
+            }, {
+                "url": "https://guides.lib.umich.edu/aerialphotos",
+                "title": "Aerial Photographs and Remote Sensing Imagery Research Guide"
+            }, {
+                "url": "https://guides.lib.umich.edu/Detroit_Connections",
+                "title": "Stamps School Detroit Connections Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/evaluation",
+                "title": "Program Evaluation"
+            }, {
+                "url": "https://guides.lib.umich.edu/excel",
+                "title": "Using Microsoft Excel"
+            }, {
+                "url": "https://guides.lib.umich.edu/csd",
+                "title": "Cambridge Structural Database"
+            }, {
+                "url": "https://guides.lib.umich.edu/ventureaccelerator",
+                "title": "Venture Accelerator"
+            }, {
+                "url": "https://guides.lib.umich.edu/sw530",
+                "title": "Social Policies/Programs"
+            }, {
+                "url": "https://guides.lib.umich.edu/ulam",
+                "title": "ULAM"
+            }, {
+                "url": "https://guides.lib.umich.edu/proposalprep",
+                "title": "Funding Proposal Tools"
+            }, {
+                "url": "https://guides.lib.umich.edu/sphfunding",
+                "title": "Funding Sources for School of Public Health Graduate Students"
+            }, {
+                "url": "https://guides.lib.umich.edu/wikipedia",
+                "title": "Resources for Using & Editing Wikipedia"
+            }, {
+                "url": "https://guides.lib.umich.edu/polsci401",
+                "title": "Political Science 401 Feminist Political Theory"
+            }, {
+                "url": "https://guides.lib.umich.edu/ClimateAction",
+                "title": "Climate Action Guide"
+            }, {
+                "url": "https://guides.lib.umich.edu/ioe424",
+                "title": "IOE 424"
+            }, {
+                "url": "https://guides.lib.umich.edu/research-impact-challenge",
+                "title": "Research Impact Challenge"
+            }, {
+                "url": "https://guides.lib.umich.edu/librarysearch",
+                "title": "Tips for Using Library Search"
+            }, {
+                "url": "https://guides.lib.umich.edu/comm322",
+                "title": "Comm 322: Flint Water Crisis research group"
+            }, {
+                "url": "https://guides.lib.umich.edu/moderngreek",
+                "title": "Modern Greek Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/refugee",
+                "title": "Refugees and Migrants: Information Resources for a Global Crisis"
+            }, {
+                "url": "https://guides.lib.umich.edu/criminaljustice",
+                "title": "Criminology and Criminal Justice"
+            }, {
+                "url": "https://guides.lib.umich.edu/soc325",
+                "title": "SOC 325: Project Community Advanced Practicum"
+            }, {
+                "url": "https://guides.lib.umich.edu/mads",
+                "title": "Master of Applied Data Science (MADS)"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=925359",
+                "title": "Midwifery"
+            }, {
+                "url": "https://guides.lib.umich.edu/global_srh",
+                "title": "Global Sexual and Reproductive Health"
+            }, {
+                "url": "https://guides.lib.umich.edu/canvas-best-practices",
+                "title": "Canvas Best Practices"
+            }, {
+                "url": "https://guides.lib.umich.edu/comm404peace",
+                "title": "Comm 404:  Global Perspectives on Peace and the Media"
+            }, {
+                "url": "https://guides.lib.umich.edu/el-performingarts",
+                "title": "Performing Arts Entrepreneurship & Leadership Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/research-impact-engineering",
+                "title": "Research Impact for Engineering"
+            }, {
+                "url": "https://guides.lib.umich.edu/BSIfinalprojects",
+                "title": "UMSI BSI Final Projects"
+            }, {
+                "url": "https://guides.lib.umich.edu/pclp",
+                "title": "Practical Community Learning Project (PCLP)"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=992751",
+                "title": "Digital Archiving"
+            }, {
+                "url": "https://guides.lib.umich.edu/soc304",
+                "title": "SOC 304: American Immigration: Sociological Perspectives"
+            }, {
+                "url": "https://guides.lib.umich.edu/romanfamily",
+                "title": "History 197: The Roman Family"
+            }, {
+                "url": "https://guides.lib.umich.edu/soc335",
+                "title": "SOC 335: Urban Inequality"
+            }, {
+                "url": "https://guides.lib.umich.edu/grant-help-engineering",
+                "title": "Grant Writing Help in Engineering"
+            }, {
+                "url": "https://guides.lib.umich.edu/fspp",
+                "title": "FSPP: Getting the Most Out of Your Library Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/comm290",
+                "title": "COMM/ALA 290 Public Speaking"
+            }, {
+                "url": "https://guides.lib.umich.edu/wanderlust",
+                "title": "History 195: Wanderlust: Travel, Movement, and Space in the Spanish World, 1400-1800"
+            }, {
+                "url": "https://guides.lib.umich.edu/hospitalmedicine",
+                "title": "Hospital Medicine"
+            }, {
+                "url": "https://guides.lib.umich.edu/onlinerecreading",
+                "title": "Online Recreational Reading"
+            }, {
+                "url": "https://guides.lib.umich.edu/skinofcolor",
+                "title": "Skin of Color "
+            }, {
+                "url": "https://guides.lib.umich.edu/covid19",
+                "title": "COVID-19 (Novel Coronavirus)"
+            }, {
+                "url": "https://guides.lib.umich.edu/academicintegrity",
+                "title": "Introduction to Academic Integrity"
+            }, {
+                "url": "https://guides.lib.umich.edu/global_nursing",
+                "title": "UMSN Global Nursing | Information Resource Toolkit"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=1050673",
+                "title": "Altmetric and Altmetric Explorer for Institutions"
+            }, {
+                "url": "https://guides.lib.umich.edu/canvas",
+                "title": "Integrating Library Services and Resources with Canvas"
+            }, {
+                "url": "https://guides.lib.umich.edu/medhumanities",
+                "title": "UMMS Medical Humanities Path of Excellence - An Information Resource Starter Kit"
+            }, {
+                "url": "https://guides.lib.umich.edu/concussionsummit",
+                "title": "Sport Concussion Summit"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=385240",
+                "title": "Mapping Tools"
+            }, {
+                "url": "https://guides.lib.umich.edu/graphicmedicine",
+                "title": "Graphic Medicine & Comics in Healthcare"
+            }, {
+                "url": "https://guides.lib.umich.edu/comm159",
+                "title": "Comm 159 Global Media Microclimates"
+            }, {
+                "url": "https://guides.lib.umich.edu/studentfunding",
+                "title": "Funding for Students"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=424993",
+                "title": "Philippine Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/howtocitedata",
+                "title": "How to Cite Data and Statistics"
+            }, {
+                "url": "https://guides.lib.umich.edu/DiscoveryPoE",
+                "title": "Scientific Discovery Path of Excellence - An Information Resource Starter Kit"
+            }, {
+                "url": "https://guides.lib.umich.edu/innovationPoE",
+                "title": "Innovation & Entrepreneurship - An Information Resource Starter Kit"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=468405",
+                "title": "College and University Rankings"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=471758",
+                "title": "Funding Support for Current Issues"
+            }, {
+                "url": "https://guides.lib.umich.edu/interprofessional",
+                "title": "Interprofessional Education and Practice"
+            }, {
+                "url": "https://guides.lib.umich.edu/socialsciences-dmp",
+                "title": "Data Management Plans for the Social Sciences"
+            }, {
+                "url": "https://guides.lib.umich.edu/data",
+                "title": "Research Data: Finding, Managing, Sharing"
+            }, {
+                "url": "https://guides.lib.umich.edu/culture",
+                "title": "Cultural Competence"
+            }, {
+                "url": "https://guides.lib.umich.edu/socialmedia",
+                "title": "Social Media Research Guide"
+            }, {
+                "url": "https://guides.lib.umich.edu/ED431",
+                "title": "ED 431:  Teaching of Social Studies in the Elementary School"
+            }, {
+                "url": "https://guides.lib.umich.edu/metadata",
+                "title": "Metadata and Data Documentation"
+            }, {
+                "url": "https://guides.lib.umich.edu/sdg",
+                "title": "United Nations Sustainable  Development Goals"
+            }, {
+                "url": "https://guides.lib.umich.edu/ghana-health",
+                "title": "Ghana-UM Collaboration: Information Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/ScholarshipTeachLearn",
+                "title": "Scholarship of Learning and Teaching Path of Excellence"
+            }, {
+                "url": "https://guides.lib.umich.edu/copyright-course-websites",
+                "title": "Copyright and Course Websites"
+            }, {
+                "url": "https://guides.lib.umich.edu/ChineseDance",
+                "title": "Chinese Dance"
+            }, {
+                "url": "https://guides.lib.umich.edu/biobanking",
+                "title": "Biobanking"
+            }, {
+                "url": "https://guides.lib.umich.edu/ontology",
+                "title": "Biomedical Ontologies and Controlled Vocabularies"
+            }, {
+                "url": "https://guides.lib.umich.edu/fakenews",
+                "title": "\"Fake News,\" Lies and Propaganda:  How to Sort Fact from Fiction"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=637893",
+                "title": "Sami Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/researchimpact",
+                "title": "Research Impact Assessment (Health Sciences)"
+            }, {
+                "url": "https://guides.lib.umich.edu/ppe",
+                "title": "Political Economy"
+            }, {
+                "url": "https://guides.lib.umich.edu/ern",
+                "title": "LabArchives: Best practices for research data management"
+            }, {
+                "url": "https://guides.lib.umich.edu/healthservicesresearch",
+                "title": "Health Services Research"
+            }, {
+                "url": "https://guides.lib.umich.edu/AAS19thCentury",
+                "title": "The African American Experience in the 19th Century"
+            }, {
+                "url": "https://guides.lib.umich.edu/Hist335Imm",
+                "title": "HISTORY 335: IMMIGRATION LAW"
+            }, {
+                "url": "https://guides.lib.umich.edu/french-pacific",
+                "title": "French Pacific Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/accessibility",
+                "title": "Digital Accessibility"
+            }, {
+                "url": "https://guides.lib.umich.edu/OScode",
+                "title": "Open-source code"
+            }, {
+                "url": "https://guides.lib.umich.edu/RaceNAmerica",
+                "title": "Race in America"
+            }, {
+                "url": "https://guides.lib.umich.edu/substantial-similarity",
+                "title": "Substantial Similarity"
+            }, {
+                "url": "https://guides.lib.umich.edu/telehealth",
+                "title": "Telehealth Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/precisionhealth",
+                "title": "Precision Health Toolkit"
+            }, {
+                "url": "https://guides.lib.umich.edu/exposome",
+                "title": "Exposome & Exposomics"
+            }, {
+                "url": "https://guides.lib.umich.edu/proteomics",
+                "title": "Proteome & Proteomics"
+            }, {
+                "url": "https://guides.lib.umich.edu/metabolomics",
+                "title": "Metabolome & Metabolomics"
+            }, {
+                "url": "https://guides.lib.umich.edu/genomics",
+                "title": "Genome, Genomics, and Personal Genomics"
+            }, {
+                "url": "https://guides.lib.umich.edu/scrc",
+                "title": "Special Collections Research Center (SCRC) : Using the collections"
+            }, {
+                "url": "https://guides.lib.umich.edu/intlperformingarts",
+                "title": "International Performing Arts Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/casc305",
+                "title": "Learning from History, CASC 305"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=838490",
+                "title": "Russian Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/cit-comm-science",
+                "title": "Citizen and Community Science"
+            }, {
+                "url": "https://guides.lib.umich.edu/podcasting",
+                "title": "Podcasting and Audio Storytelling"
+            }, {
+                "url": "https://guides.lib.umich.edu/scholarlypublishing",
+                "title": "Scholarly Publishing"
+            }, {
+                "url": "https://guides.lib.umich.edu/collegeaccess",
+                "title": "College Access Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/freedomofexpression",
+                "title": "Freedom of Expression"
+            }, {
+                "url": "https://guides.lib.umich.edu/history491detroitlab",
+                "title": "History 491: Detroit Policing and Social Justice Lab"
+            }, {
+                "url": "https://guides.lib.umich.edu/diversity",
+                "title": "Diversity, Equity, and Inclusion"
+            }, {
+                "url": "https://guides.lib.umich.edu/AmeriValues",
+                "title": "American Culture 201: American Values"
+            }, {
+                "url": "https://guides.lib.umich.edu/organresources",
+                "title": "Organ Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/dei",
+                "title": "Taubman Health Sciences Library: Diversity,Equity, Inclusion"
+            }, {
+                "url": "https://guides.lib.umich.edu/transferstudents",
+                "title": "Library Guide for Transfer Students"
+            }, {
+                "url": "https://guides.lib.umich.edu/datamanagement",
+                "title": "Research Data Management (Health Sciences)"
+            }, {
+                "url": "https://guides.lib.umich.edu/SB2019",
+                "title": "Summer Bridge Research Guide"
+            }, {
+                "url": "https://guides.lib.umich.edu/povertysolutions",
+                "title": "Poverty Solutions"
+            }, {
+                "url": "https://guides.lib.umich.edu/policy_research",
+                "title": "U.S. Domestic Policy"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=700712",
+                "title": "Environmental Humanities"
+            }, {
+                "url": "https://guides.lib.umich.edu/researchdoc",
+                "title": "Research Management Documentation for Team-Based Research"
+            }, {
+                "url": "https://guides.lib.umich.edu/undergradPH",
+                "title": "Public Health - Undergraduate Program"
+            }, {
+                "url": "https://guides.lib.umich.edu/mfpc",
+                "title": "Michigan Foreign Policy Council"
+            }, {
+                "url": "https://guides.lib.umich.edu/Anti-Racism",
+                "title": "Anti-Racism/Covid-19"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=1054667",
+                "title": "ClarkData Geospatial Data Server"
+            }, {
+                "url": "https://guides.lib.umich.edu/csp100",
+                "title": "CSP 100-223: CSP Reading Seminar"
+            }, {
+                "url": "https://guides.lib.umich.edu/astro",
+                "title": "Astronomy & Astrophysics"
+            }, {
+                "url": "https://guides.lib.umich.edu/philosophy",
+                "title": "Philosophy"
+            }, {
+                "url": "https://guides.lib.umich.edu/aerospace",
+                "title": "Aerospace Engineering"
+            }, {
+                "url": "https://guides.lib.umich.edu/refshelf",
+                "title": "Ready Reference Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/foodstudies",
+                "title": "Food Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/dentistry",
+                "title": "Dentistry"
+            }, {
+                "url": "https://guides.lib.umich.edu/polisci",
+                "title": "Political Science"
+            }, {
+                "url": "https://guides.lib.umich.edu/chinesestudies",
+                "title": "Chinese Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/architecture",
+                "title": "Architecture"
+            }, {
+                "url": "https://guides.lib.umich.edu/NE",
+                "title": "Middle Eastern and North African Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/psychology",
+                "title": "Psychology"
+            }, {
+                "url": "https://guides.lib.umich.edu/sociology",
+                "title": "Sociology"
+            }, {
+                "url": "https://guides.lib.umich.edu/globalhealth",
+                "title": "Global Health Information & Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/women",
+                "title": "Women's and Gender Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/allergy",
+                "title": "Allergy and Clinical Immunology"
+            }, {
+                "url": "https://guides.lib.umich.edu/radiology",
+                "title": "Radiology"
+            }, {
+                "url": "https://guides.lib.umich.edu/infectiousdiseases",
+                "title": "Infectious Diseases"
+            }, {
+                "url": "https://guides.lib.umich.edu/mend",
+                "title": "Metabolism, Endocrinology, and Diabetes"
+            }, {
+                "url": "https://guides.lib.umich.edu/gradref",
+                "title": "Graduate Library Reference Collection Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/genealogy",
+                "title": "Genealogy Research"
+            }, {
+                "url": "https://guides.lib.umich.edu/brit-history",
+                "title": "British and Irish History"
+            }, {
+                "url": "https://guides.lib.umich.edu/atmos-ocean-sci",
+                "title": "Climate Sciences"
+            }, {
+                "url": "https://guides.lib.umich.edu/latinamerica",
+                "title": "Latin American & Caribbean Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/onlinescores",
+                "title": "Online Music Scores"
+            }, {
+                "url": "https://guides.lib.umich.edu/education",
+                "title": "Education"
+            }, {
+                "url": "https://guides.lib.umich.edu/iberian-studies",
+                "title": "Iberian Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/koreanstudies",
+                "title": "Korean Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282794",
+                "title": "Scandinavian Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/frenchhistory",
+                "title": "French History"
+            }, {
+                "url": "https://guides.lib.umich.edu/french",
+                "title": "French Language and Literature"
+            }, {
+                "url": "https://guides.lib.umich.edu/spanish",
+                "title": "Spanish Language and Literature"
+            }, {
+                "url": "https://guides.lib.umich.edu/italian",
+                "title": "Italian Language, Literature and Culture"
+            }, {
+                "url": "https://guides.lib.umich.edu/dentalhygiene",
+                "title": "Dental Hygiene"
+            }, {
+                "url": "https://guides.lib.umich.edu/psychiatry",
+                "title": "Psychiatry"
+            }, {
+                "url": "https://guides.lib.umich.edu/cvc",
+                "title": "Cardiovascular Medicine"
+            }, {
+                "url": "https://guides.lib.umich.edu/nursing",
+                "title": "Nursing"
+            }, {
+                "url": "https://guides.lib.umich.edu/publichealth",
+                "title": "Public Health (General)"
+            }, {
+                "url": "https://guides.lib.umich.edu/classics",
+                "title": "Classical Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282805",
+                "title": "Southeast Asian  Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/southasia",
+                "title": "South Asia"
+            }, {
+                "url": "https://guides.lib.umich.edu/hbhe",
+                "title": "Health Behavior and Health Education"
+            }, {
+                "url": "https://guides.lib.umich.edu/epidemiology",
+                "title": "Epidemiology"
+            }, {
+                "url": "https://guides.lib.umich.edu/hmp",
+                "title": "Health Management and Policy"
+            }, {
+                "url": "https://guides.lib.umich.edu/biostatistics",
+                "title": "Biostatistics"
+            }, {
+                "url": "https://guides.lib.umich.edu/ehs",
+                "title": "Environmental Health Sciences"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282812",
+                "title": "Medieval and Early Modern Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/finearts",
+                "title": "History of Art"
+            }, {
+                "url": "https://guides.lib.umich.edu/surgery",
+                "title": "Surgery"
+            }, {
+                "url": "https://guides.lib.umich.edu/radiation_oncology",
+                "title": "Radiation Oncology"
+            }, {
+                "url": "https://guides.lib.umich.edu/ngo",
+                "title": "Non-Governmental Organizations"
+            }, {
+                "url": "https://guides.lib.umich.edu/musictranslations",
+                "title": "Finding English Translations of Vocal Music Texts"
+            }, {
+                "url": "https://guides.lib.umich.edu/religion",
+                "title": "Religious Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/german",
+                "title": "Germanic Languages & Literatures"
+            }, {
+                "url": "https://guides.lib.umich.edu/germany",
+                "title": "German Culture, History, Politics"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282823",
+                "title": "Slavic, East European, and Eurasian Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=282824",
+                "title": "Geography"
+            }, {
+                "url": "https://guides.lib.umich.edu/infoscience",
+                "title": "Information & Library Science"
+            }, {
+                "url": "https://guides.lib.umich.edu/realestate",
+                "title": "Real Estate Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/c.php?g=283055",
+                "title": "Finding Map Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/ncrc",
+                "title": "North Campus Research Complex"
+            }, {
+                "url": "https://guides.lib.umich.edu/applied-climate",
+                "title": "Applied Climate Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/childrensliterature",
+                "title": "Children's Literature"
+            }, {
+                "url": "https://guides.lib.umich.edu/arabamericanstudies",
+                "title": "Arab-American Studies"
+            }, {
+                "url": "https://guides.lib.umich.edu/news",
+                "title": "News Sources"
+            }, {
+                "url": "https://guides.lib.umich.edu/poster",
+                "title": "Designing Presentation & Research Posters with Illustrator"
+            }, {
+                "url": "https://guides.lib.umich.edu/nihpublicaccesspolicy",
+                "title": "National Institutes of Health Public Access Policy (NIHPAP)"
+            }, {
+                "url": "https://guides.lib.umich.edu/zotero",
+                "title": "Zotero"
+            }, {
+                "url": "https://guides.lib.umich.edu/govstatistics",
+                "title": "Finding Statistics and Data Sets"
+            }, {
+                "url": "https://guides.lib.umich.edu/detroit",
+                "title": "Detroit"
+            }, {
+                "url": "https://guides.lib.umich.edu/archivesandmanuscripts",
+                "title": "Finding Archives and Manuscripts"
+            }, {
+                "url": "https://guides.lib.umich.edu/word2010",
+                "title": "Microsoft Word for Dissertations"
+            }, {
+                "url": "https://guides.lib.umich.edu/healthstats",
+                "title": "Health Statistics"
+            }, {
+                "url": "https://guides.lib.umich.edu/greyliterature",
+                "title": "Grey Literature"
+            }, {
+                "url": "https://guides.lib.umich.edu/daas495",
+                "title": "Black Arts Movement"
+            }, {
+                "url": "https://guides.lib.umich.edu/guidetowriting",
+                "title": "Writing Manuals & Guides"
+            }, {
+                "url": "https://guides.lib.umich.edu/tests",
+                "title": "Finding Tests & Measurement Instruments"
+            }, {
+                "url": "https://guides.lib.umich.edu/topic",
+                "title": "Finding and Exploring Your Topic"
+            }, {
+                "url": "https://guides.lib.umich.edu/EIS",
+                "title": "Environmental Impact Statements"
+            }, {
+                "url": "https://guides.lib.umich.edu/K12",
+                "title": "For K-12 Educators"
+            }, {
+                "url": "https://guides.lib.umich.edu/detroitmaps",
+                "title": "Detroit Map Resources"
+            }, {
+                "url": "https://guides.lib.umich.edu/Environmental_Ed",
+                "title": "Environmental Education and Sustainability"
+            }, {
+                "url": "https://guides.lib.umich.edu/digitalscholarship",
+                "title": "Digital Scholarship"
+            }, {
+                "url": "https://guides.lib.umich.edu/copyrightbasics",
+                "title": "Copyright Basics"
+            }, {
+                "url": "https://guides.lib.umich.edu/healthdisparities",
+                "title": "Health Disparities in the U.S."
+            }, {
+                "url": "https://guides.lib.umich.edu/koreadata",
+                "title": "GIS, Map and Statistics: Korea"
+            }, {
+                "url": "https://guides.lib.umich.edu/umichinfo",
+                "title": "University of Michigan Information"
+            }, {
+                "url": "https://guides.lib.umich.edu/foreignrelations",
+                "title": "United States Foreign Relations"
+            }, {
+                "url": "https://guides.lib.umich.edu/WS220",
+                "title": "Women's Studies 220 / Nursing 220: Women's Health"
+            }, {
+                "url": "https://guides.lib.umich.edu/permissions",
+                "title": "Obtaining Copyright Permissions"
+            }
+        ]
+    }
+}

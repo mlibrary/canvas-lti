@@ -1,0 +1,39 @@
+lti_tool_provider_provision.settings:
+  type: config_object
+  label: LTI tool provider provision settings
+  mapping:
+    entity_type:
+      type: string
+      label: Provisioned entity type
+    entity_bundle:
+      type: string
+      label: Provisioned entity bundle
+    entity_redirect:
+      type: boolean
+      label: Redirect to entity on launch
+    entity_lookup:
+      type: boolean
+      label: Allow for an existing entity lookup
+    entity_sync:
+      type: boolean
+      label: Sync entity fields on launch
+    entity_defaults:
+      type: mapping
+      label: Provisioned entity field defaults
+      mapping:
+        name:
+          type: string
+          label: Field name
+        lti_attribute:
+          type: string
+          label: LTI Attribute
+    allowed_roles:
+      type: mapping
+      label: Allowed LTI roles to provision entities
+      mapping:
+        name:
+          type: string
+          label: LTI Role
+        lti_attribute:
+          type: boolean
+          label: Value (True or false).

@@ -1,0 +1,1 @@
+custom_guides_data: 'http://julep-1.umdl.umich.edu:8080/solr/www.lib/select?q=source:libguides-guide&fl=url,title&wt=json&json.nl=arrmap&rows=1000'

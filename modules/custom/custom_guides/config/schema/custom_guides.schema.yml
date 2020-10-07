@@ -1,0 +1,6 @@
+custom_guides.settings:
+  type: config_object
+  label: Settings
+  mapping:
+    custom_guides_data:
+      type: string

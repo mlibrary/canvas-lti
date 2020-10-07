@@ -1,0 +1,15 @@
+services:
+  lti_tool_provider_provision.provision:
+    class: Drupal\lti_tool_provider_provision\Services\ProvisionService
+    arguments:
+      - '@config.factory'
+      - '@entity_type.manager'
+      - '@event_dispatcher'
+  lti_tool_provider_provision.event_subscriber:
+    class: Drupal\lti_tool_provider_provision\EventSubscriber\LtiToolProviderProvisionEventSubscriber
+    tags:
+      - { name: 'event_subscriber' }
+    arguments:
+      - '@config.factory'
+      - '@lti_tool_provider_provision.provision'
+      - '@event_dispatcher'

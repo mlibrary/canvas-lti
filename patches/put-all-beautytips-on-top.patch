@@ -1,0 +1,14 @@
+diff --git a/modules/contrib/beautytips/beautytips.module b/modules/contrib/beautytips/beautytips.module
+index ef7da47..d8c01f0 100644
+--- a/modules/contrib/beautytips/beautytips.module
++++ b/modules/contrib/beautytips/beautytips.module
+@@ -229,6 +229,9 @@ function beautytips_define_beautytips_styles() {
+     'shadowOffsetX' => 4,
+     'shadowOffsetY' => 4,
+   ];
++  foreach ($styles as $style => $vals) {
++    $styles[$style]['positions'] = ['top'];
++  }
+   return $styles;
+ }
+ 

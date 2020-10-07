@@ -1,0 +1,44 @@
+<?php
+
+use Drupal\Core\Field\BaseFieldDefinition;
+
+/**
+ * Add label LTI context label fields to the provision entity.
+ */
+function lti_tool_provider_provision_update_8101()
+{
+    $definition_manager = Drupal::entityDefinitionUpdateManager();
+
+    $field = BaseFieldDefinition::create('string')
+        ->setLabel(t('Context Label'))
+        ->setSettings(
+            [
+                'max_length' => 512,
+                'text_processing' => 0,
+            ]
+        );
+
+    $definition_manager->installFieldStorageDefinition('context_label', 'lti_tool_provider_provision', 'lti_tool_provider_provision', $field);
+
+    $field = BaseFieldDefinition::create('string')
+        ->setLabel(t('Context Title'))
+        ->setSettings(
+            [
+                'max_length' => 512,
+                'text_processing' => 0,
+            ]
+        );
+
+    $definition_manager->installFieldStorageDefinition('context_title', 'lti_tool_provider_provision', 'lti_tool_provider_provision', $field);
+
+    $field = BaseFieldDefinition::create('string')
+        ->setLabel(t('Resource Link Title'))
+        ->setSettings(
+            [
+                'max_length' => 512,
+                'text_processing' => 0,
+            ]
+        );
+
+    $definition_manager->installFieldStorageDefinition('resource_link_title', 'lti_tool_provider_provision', 'lti_tool_provider_provision', $field);
+}

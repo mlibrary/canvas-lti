@@ -1,0 +1,4 @@
+administer custom_guides:
+  title: 'Administer Guides'
+  description: 'Allows a user to configure custom_guides settings.'
+  restrict access: TRUE

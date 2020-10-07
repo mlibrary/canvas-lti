@@ -1,0 +1,160 @@
+<?php
+use \Drupal\taxonomy\Entity\Term;
+
+/*
+This module imports guide data from solr search
+*/
+
+//a test guide for reference:
+/*
+$guide_data = json_decode('{
+                "url": "https://guides.lib.umich.edu/neurology",
+                "title": "Neurology"
+            },');
+*/
+
+//config vars we need
+function _custom_guides_get_vars() {
+  $custom_guides_config = \Drupal::config('custom_guides.settings');
+  $vars = array();
+  $vars['guide_data'] = $custom_guides_config->get('custom_guides_data');
+  //get db connection
+  $vars['db'] = \Drupal\Core\Database\Database::getConnection();
+  //default language
+  $vars['default_langcode'] = 'en';
+
+  return $vars;
+}
+
+function _custom_guides_get_data($file) {
+  $data = file_get_contents($file);
+  if (!$data) {
+    $message[] = \Drupal\Core\Render\Markup::create('<p>DATA IS EMPTY - '.$file.'</p>');
+    //custom_uml_mail_send_mail('eliotwsc@umich.edu', 'eliotwsc@umich.edu', 'WE DONT HAVE AN s3 FILE!', $message, 'custom_s3_error');
+    exit;
+  }
+
+  return $data;
+}
+
+//do guides
+function _custom_guides($args) {
+
+  //get module configs
+  extract(_custom_guides_get_vars());
+
+  //Get json data and decode properly
+  $guide_data = custom_guides_encoding(_custom_guides_get_data($guide_data));
+
+  //make sure we have some data
+  if (empty($guide_data)) {
+    drush_print('ERROR WE DONT HAVE A FILE!');
+    exit;
+  }
+
+  //remove guides
+  drush_print('Setting guides as inactive...');
+  $query = \Drupal::entityQuery('taxonomy_term')
+    ->condition('vid', 'research_guides');
+  $guide_terms = $query->execute();
+  $currently_active = [];
+  foreach ($guide_terms as $tid) {
+    $term = \Drupal\taxonomy\Entity\Term::load($tid);
+    if ($term->get('status')->value == 1) {
+      $currently_active[] = $tid;
+    }
+    $term->get('status')->setValue([['value' => 0]]);
+    $term->save();
+  }
+
+  //set guides
+  drush_print('Updating guides Taxonomy...');
+  $errors = array();
+  //keep track of guides to find duplicates
+  $the_guides = array();
+  //for every guide
+  foreach ($guide_data->response->docs as $guide) {
+    if (in_array($guide->url, $the_guides)) {
+      $errors[] = 'guide:'.$guide->url.' - has a duplicate';
+    }
+
+    //get the term based on guide
+    $query = \Drupal::entityQuery('taxonomy_term')
+      ->condition('vid', 'research_guides')
+      ->condition('field_url.uri', $guide->url);
+    $guide_term_uri = $query->execute();
+    $query = \Drupal::entityQuery('taxonomy_term')
+      ->condition('vid', 'research_guides')
+      ->condition('name', $guide->title);
+    $guide_term_name = $query->execute();
+    $query = \Drupal::entityQuery('taxonomy_term')
+      ->condition('vid', 'research_guides')
+      ->condition('field_url.uri', $guide->url)
+      ->condition('name', $guide->title);
+    $guide_term = $query->execute();
+    if ($guide_term_name !== $guide_term_uri || count($guide_term_uri) > 1 || count($guide_term_name) > 1 || count($guide_term) > 1) {
+      $errors[] = 'An error occurred.';
+      $errors[] = 'There are '.count($guide_term_uri).' terms with the url '.$guide->url;
+      $errors[] = 'There are '.count($guide_term_name).' terms with the name '.$guide->title;
+      foreach ($errors as $error) {
+        drush_print($error);
+      }
+      if (count($guide_term) !== 1) {
+        $errors[] = 'There are '.count($guide_term).' terms with the url '.$guide->url.' and the name '.$guide->title;
+        $errors[] = 'These terms will need to be fixed before they can be updated.';
+        foreach ($errors as $error) {
+          drush_print($error);
+        }
+        continue;
+      }
+    }
+
+    //create term if the term is empty and mark as new
+    $is_new = FALSE;
+    if (count($guide_term) == 0 || empty($guide_term)) {
+      $guide_term = \Drupal\taxonomy\Entity\Term::create([
+        'name' => $guide->title,
+        'description' => '',
+        'vid' => 'research_guides',
+      ]);
+      $is_new = TRUE;
+    }
+    //else load the term
+    else {
+      $guide_term = array_values($guide_term);
+      $guide_term = \Drupal\taxonomy\Entity\Term::load($guide_term[0]);
+    }
+    //if its still null, wtf
+    if ($guide_term == NULL) { 
+      $errors[] = 'id '.$guide->url.' is null, ie not loading';
+      continue;
+    }
+    //set the guide values
+    $guide_term->get('field_url')->setValue([['uri' => $guide->url]]);
+    $guide_term->setName($guide->title);
+    $guide_term->save();
+
+    $the_guides[] = $guide->url;
+  }
+  $message = array();
+  foreach ($errors as $error) {
+    drush_print($error);
+    $message[] = \Drupal\Core\Render\Markup::create('<p>'.$error.'</p>');
+  }
+  foreach ($the_guides as $the_guide) {
+    drush_print($the_guide);
+    $updated[] = \Drupal\Core\Render\Markup::create('<p>'.$the_guide.'</p>');
+  }
+  //custom_uml_mail_send_mail('eliotwsc@umich.edu', $reply_to, 'guide errors', $message, 'custom_guides_errors');
+  //custom_uml_mail_send_mail($recipient, $reply_to, 'guide updated', $updated, 'custom_guides_updated');
+}
+
+//verify data encoding and decode
+function custom_guides_encoding($data) {
+  $encoding = mb_detect_encoding($data, 'UTF-8', true);
+  if ($encoding) {
+    $user_data = mb_convert_encoding($data, 'UTF-8', $encoding);
+  }
+  return json_decode($data);
+}
+

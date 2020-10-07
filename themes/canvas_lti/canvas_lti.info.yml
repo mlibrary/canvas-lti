@@ -1,0 +1,7 @@
+name: canvas_lti
+type: theme
+base theme: bartik
+description: 'A flexible, recolorable theme with many regions and a responsive, mobile-first layout.'
+core: '8.x'
+project: 'drupal'
+datestamp: 1452121068

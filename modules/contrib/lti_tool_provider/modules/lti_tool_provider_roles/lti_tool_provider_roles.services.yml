@@ -1,0 +1,8 @@
+services:
+  lti_tool_provider_roles.event_subscriber:
+    class: Drupal\lti_tool_provider_roles\EventSubscriber\LtiToolProviderRolesEventSubscriber
+    tags:
+      - { name: 'event_subscriber' }
+    arguments:
+      - '@config.factory'
+      - '@event_dispatcher'

@@ -1,0 +1,206 @@
+<?php
+use Drupal\node\NodeInterface;
+use Drupal\user\Entity\User;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\node\Entity\Node;
+use Drupal\taxonomy\Entity\Term;
+use Drupal\paragraphs\Entity\Paragraph;
+
+/**
+ * Implements hook_node_presave().
+ */
+function custom_extras_node_presave(NodeInterface $node) {
+  if ($node->bundle() == 'class_page') {
+    dpm('grr');
+    dpm(\Drupal::request()->getSession()->get('lti_tool_provider_context'));
+    $has_blocks = $node->get('field_blocks')->getValue();
+    if (!empty($has_blocks)) {
+      foreach ($has_blocks as $key => $block) {
+        $paragraph = Paragraph::load($block['target_id']);
+        switch ($paragraph->bundle()) {
+          case 'course_reserves':
+            $reserves = _custom_extras_get_reserves($node->getTitle());
+            $paragraph->get('field_course_reserves')->setValue($reserves);
+            $paragraph->save();
+            break;
+          case 'library_hours':
+            $hours = $paragraph->get('field_library_hours')->getValue();
+            $buildings = $paragraph->get('field_building_hours_to_display')->getValue();
+            $h_url = '';
+            if (!empty($buildings)) {
+              $h_url = 'https://cms.lib.umich.edu/widgets/hours/';
+            }
+            foreach ($buildings as $building) {
+              $h_url = $h_url . $building['value'] . '+';
+            }
+            $h_url = trim($h_url,'+');
+            $hours[0]['url'] = $h_url;
+            // we need to be explicit on height. mod default is 701
+            $hours[0]['height'] = count($buildings) * 70;
+            $paragraph->get('field_library_hours')->setValue($hours);
+            $paragraph->save();
+            break;
+          case 'library_specialists':
+            $specialists = $paragraph->get('field_library_specialists')->getValue();
+            $spec_to_show = $paragraph->get('field_specialists_to_show')->getValue();
+            $s_url = '';
+            $s_url_count = '';
+            if (!empty($spec_to_show)) {
+              $s_url = 'https://cms.lib.umich.edu/widgets/specialists';
+              $s_url_count = $s_url . '/count';
+            }
+            $vocabs = [
+              'academic_discipline' => [],
+              'collecting_areas'    => [],
+              'health_sciences'     => [],
+              'library_expertise'   => [],
+            ];
+            foreach ($spec_to_show as $spec) {
+              $term = Term::load($spec['target_id']);
+              $bundle = $term->bundle();
+              $vocabs[$bundle][] = $spec['target_id'];
+            }
+            foreach ($vocabs as $vocab) {
+              $s_url = $s_url . '/';
+              $s_url_count = $s_url_count . '/';
+              if (!empty($vocab)) {
+                foreach ($vocab as $term) {
+                  $s_url = $s_url . $term . '+';
+                  $s_url_count = $s_url_count . $term . '+';
+                }
+                $s_url = trim($s_url,'+');
+                $s_url_count = trim($s_url_count,'+');
+              }
+              else {
+                $s_url = $s_url . '0';
+                $s_url_count = $s_url_count . '0';
+              }
+            }
+            $data = _custom_extras_encoding(file_get_contents($s_url_count));
+            $specialists[0]['url'] = $s_url;
+            // we need to be explicit on height. mod default is 701
+            $specialists[0]['height'] = count($data) * 115;
+            $paragraph->get('field_library_specialists')->setValue($specialists);
+            $paragraph->save();
+            break;
+        }
+        $node->get('field_blocks')->appendItem([$key => $paragraph]);
+      }
+    }
+  }
+  if ($node->bundle() == 'page') {
+    $type_of_page = $node->get('field_type_of_page')->value;
+    $show_reserves = $node->get('field_show_course_reserves')->value;
+    if ($type_of_page == 'multiple') {
+      $hours = $node->get('field_library_hours')->getValue();
+      $buildings = $node->get('field_building_hours_to_display')->getValue();
+      $h_url = '';
+      if (!empty($buildings)) {
+        $h_url = 'https://cms.lib.umich.edu/widgets/hours/';
+      }
+      foreach ($buildings as $building) {
+        $h_url = $h_url . $building['value'] . '+';
+      }
+      $h_url = trim($h_url,'+');
+      $hours[0]['url'] = $h_url;
+      // we need to be explicit on height. mod default is 701
+      $hours[0]['height'] = '350';
+      $node->get('field_library_hours')->setValue($hours);
+
+      $specialists = $node->get('field_library_specialists')->getValue();
+      $spec_to_show = $node->get('field_specialists_to_show')->getValue();
+      $s_url = '';
+      if (!empty($spec_to_show)) {
+        $s_url = 'https://cms.lib.umich.edu/widgets/specialists';
+      }
+      $vocabs = [
+        'academic_discipline' => [],
+        'collecting_areas'    => [],
+        'health_sciences'     => [],
+        'library_expertise'   => [],
+      ];
+      foreach ($spec_to_show as $spec) {
+        $term = Term::load($spec['target_id']);
+        $bundle = $term->bundle();
+        $vocabs[$bundle][] = $spec['target_id'];
+      }
+      foreach ($vocabs as $vocab) {
+        $s_url = $s_url . '/';
+        foreach ($vocab as $term) {
+          $s_url = $s_url . $term . '+';
+        }
+        $s_url = trim($s_url,'+');
+      }
+      $specialists[0]['url'] = $s_url;
+      // we need to be explicit on height. mod default is 701
+      $specialists[0]['height'] = count($spec_to_show) * 100;
+      $node->get('field_library_specialists')->setValue($specialists);
+
+      $node->get('field_embedded_research_guide')->setValue([]);
+      $node->get('field_research_guide')->setValue([]);
+      $node->get('field_course_reserves_full')->setValue([]);
+
+      if ($show_reserves) {
+        $reserves = _custom_extras_get_reserves($node->getTitle());
+        $node->get('field_course_reserves')->setValue($reserves);
+      }
+      else {
+        $node->get('field_course_reserves')->setValue([]);
+      }
+    }
+    elseif ($type_of_page == 'guide_only') {
+      $e_guide = $node->get('field_embedded_research_guide')->getValue();
+      $guide = $node->get('field_research_guide')->getValue();
+      $url = $guide[0]['uri'];
+      $e_guide[0]['url'] = $url;
+      $e_guide[0]['height'] = '750';
+      $node->get('field_embedded_research_guide')->setValue($e_guide);
+      $node->get('field_library_specialists')->setValue([]);
+      $node->get('field_library_hours')->setValue([]);
+      $node->get('field_specialists_to_show')->setValue([]);
+      $node->get('field_building_hours_to_display')->setValue([]);
+      $node->get('field_research_guides')->setValue([]);
+      $node->get('field_instructional_video')->setValue([]);
+      $node->get('field_recommended_resources')->setValue([]);
+      $node->get('field_course_reserves')->setValue([]);
+
+      if ($show_reserves) {
+        $reserves = _custom_extras_get_reserves($node->getTitle());
+        $node->get('field_course_reserves_full')->setValue($reserves);
+      }
+      else {
+        $node->get('field_course_reserves_full')->setValue([]);
+      }
+    }
+    elseif ($type_of_page == 'reserves_only') {
+      $reserves = _custom_extras_get_reserves($node->getTitle());
+      $node->get('field_course_reserves_full')->setValue($reserves);
+      $node->get('field_show_course_reserves')->setValue(['value' => TRUE]);
+    }
+  }
+}
+
+function _custom_extras_get_reserves($title) {
+  $cr_url = 'https://bertrama-drupal8.www.lib.umich.edu/canvas/library-materials/';
+  $data = ['context_label' => $title, 'context_title' => $title];
+  $ch = curl_init( $cr_url );
+  curl_setopt( $ch, CURLOPT_POST, 1);
+  curl_setopt( $ch, CURLOPT_POSTFIELDS, $data);
+  curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1);
+  curl_setopt( $ch, CURLOPT_HEADER, 0);
+  curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
+  $response = curl_exec( $ch );
+  $reserves[0]['value'] = $response;
+  $reserves[0]['format'] = 'full_html';
+  
+  return $reserves;
+}
+
+//verify data encoding and decode
+function _custom_extras_encoding($data) {
+  $encoding = mb_detect_encoding($data, 'UTF-8', true);
+  if ($encoding) {
+    $user_data = mb_convert_encoding($data, 'UTF-8', $encoding);
+  }
+  return json_decode($data);
+}

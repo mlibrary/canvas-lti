@@ -1,0 +1,13 @@
+diff --git a/core/assets/scaffold/files/htaccess b/core/assets/scaffold/files/htaccess
+index 6f9123d..677c557 100644
+--- a/core/assets/scaffold/files/htaccess
++++ b/core/assets/scaffold/files/htaccess
+@@ -16,7 +16,7 @@
+ Options -Indexes
+ 
+ # Set the default handler.
+-DirectoryIndex index.php index.html index.htm
++#DirectoryIndex index.php index.html index.htm
+ 
+ # Add correct encoding for SVGZ.
+ AddType image/svg+xml svg svgz

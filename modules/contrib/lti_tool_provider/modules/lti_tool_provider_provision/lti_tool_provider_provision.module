@@ -1,0 +1,29 @@
+<?php
+
+/**
+ * @file
+ * LTI Tool Provider Provision hook implementations and support functions.
+ */
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\lti_tool_provider_provision\Entity\LtiToolProviderProvision;
+use Drupal\lti_tool_provider_provision\Services\ProvisionService;
+
+/**
+ * Implements hook_entity_predelete().
+ * @param EntityInterface $entity
+ */
+function lti_tool_provider_provision_entity_predelete(EntityInterface $entity)
+{
+    try {
+        /* @var $provisionService ProvisionService */
+        $provisionService = Drupal::service('lti_tool_provider_provision.provision');
+        $provision = $provisionService->getProvisionFromEntity($entity);
+        if ($provision && $provision instanceof LtiToolProviderProvision) {
+            $provision->delete();
+        }
+    }
+    catch (Exception $e) {
+        Drupal::logger('lti_tool_provider_provision')->error($e->getMessage());
+    }
+}
