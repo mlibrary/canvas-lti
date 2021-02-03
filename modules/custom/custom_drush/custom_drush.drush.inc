@@ -194,6 +194,15 @@ function custom_drush_drush_command() {
     'aliases' => ['update-guides']
   ];
 
+  //database update
+  $items['custom_drush-update_databases'] = [
+    'description' => 'Run UM Database Update',
+    'options' => [
+    ],
+    'drupal dependencies' => [],
+    'aliases' => ['update-databases']
+  ];
+
   //run location updates
   $items['custom_drush-update_locations'] = [
     'description' => 'Run UM Staff Location Update.',
@@ -263,6 +272,10 @@ function drush_custom_drush_update_shortcodes() {
 function drush_custom_drush_update_guides() {
   $args['clear_terms'] = drush_get_option('clear_terms', FALSE);
   _custom_guides($args);
+}
+function drush_custom_drush_update_databases() {
+  $args['clear_terms'] = drush_get_option('clear_terms', FALSE);
+  _custom_databases($args);
 }
 function drush_custom_drush_remove_shortcodes() {
   $args = array();

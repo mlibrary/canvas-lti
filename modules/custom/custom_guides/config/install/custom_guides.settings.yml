@@ -1,1 +1,2 @@
 custom_guides_data: 'http://julep-1.umdl.umich.edu:8080/solr/www.lib/select?q=source:libguides-guide&fl=url,title&wt=json&json.nl=arrmap&rows=1000'
+custom_guides_data1: 'http://julep-1.umdl.umich.edu:8080/solr/www.lib/select?q=source:searchtools-drupal&&fq=bsfield-highly-recommended:t&fl=ssfield_permalink,title&wt=json&json.nl=arrmap&rows=1000'

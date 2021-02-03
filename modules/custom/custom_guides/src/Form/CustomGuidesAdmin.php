@@ -86,6 +86,14 @@ class CustomGuidesAdmin extends ConfigFormBase {
       '#maxlength' => 200,
       '#description' => t("The address of the data for guides."),
     ];
+    $form['custom_guides_data1'] = [
+      '#type' => 'textfield',
+      '#title' => t('Searchtools Data?'),
+      '#default_value' => $config->get('custom_guides_data1'),
+      '#size' => 80,
+      '#maxlength' => 200,
+      '#description' => t("The address of the data for searchtools?"),
+    ];
     /*
     $form['custom_guides_mail_recipient'] = [
       '#type' => 'email',

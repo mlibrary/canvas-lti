@@ -2,7 +2,7 @@
 use \Drupal\taxonomy\Entity\Term;
 
 /*
-This module imports guide data from solr search
+This module imports guide and database data from solr search
 */
 
 //a test guide for reference:
@@ -13,11 +13,21 @@ $guide_data = json_decode('{
             },');
 */
 
+//a test database for reference:
+/*
+$database_data = json_decode('{
+                "ssfield_permalink": "https://guides.lib.umich.edu/neurology",
+                "title": "Neurology"
+            },');
+*/
+
 //config vars we need
 function _custom_guides_get_vars() {
   $custom_guides_config = \Drupal::config('custom_guides.settings');
   $vars = array();
   $vars['guide_data'] = $custom_guides_config->get('custom_guides_data');
+  //for highly recommended databases
+  $vars['database_data'] = $custom_guides_config->get('custom_guides_data1');
   //get db connection
   $vars['db'] = \Drupal\Core\Database\Database::getConnection();
   //default language
@@ -74,33 +84,38 @@ function _custom_guides($args) {
   $the_guides = array();
   //for every guide
   foreach ($guide_data->response->docs as $guide) {
-    if (in_array($guide->url, $the_guides)) {
-      $errors[] = 'guide:'.$guide->url.' - has a duplicate';
+    //strip any whitespace
+    $title = trim($guide->title);
+    $url = trim($guide->url);
+
+    //check for duplicates
+    if (in_array($url, $the_guides)) {
+      $errors[] = 'guide:'.$url.' - has a duplicate';
     }
 
     //get the term based on guide
     $query = \Drupal::entityQuery('taxonomy_term')
       ->condition('vid', 'research_guides')
-      ->condition('field_url.uri', $guide->url);
+      ->condition('field_url.uri', $url);
     $guide_term_uri = $query->execute();
     $query = \Drupal::entityQuery('taxonomy_term')
       ->condition('vid', 'research_guides')
-      ->condition('name', $guide->title);
+      ->condition('name', $title);
     $guide_term_name = $query->execute();
     $query = \Drupal::entityQuery('taxonomy_term')
       ->condition('vid', 'research_guides')
-      ->condition('field_url.uri', $guide->url)
-      ->condition('name', $guide->title);
+      ->condition('field_url.uri', $url)
+      ->condition('name', $title);
     $guide_term = $query->execute();
     if ($guide_term_name !== $guide_term_uri || count($guide_term_uri) > 1 || count($guide_term_name) > 1 || count($guide_term) > 1) {
       $errors[] = 'An error occurred.';
-      $errors[] = 'There are '.count($guide_term_uri).' terms with the url '.$guide->url;
-      $errors[] = 'There are '.count($guide_term_name).' terms with the name '.$guide->title;
+      $errors[] = 'There are '.count($guide_term_uri).' terms with the url '.$url;
+      $errors[] = 'There are '.count($guide_term_name).' terms with the name '.$title;
       foreach ($errors as $error) {
         drush_print($error);
       }
       if (count($guide_term) !== 1) {
-        $errors[] = 'There are '.count($guide_term).' terms with the url '.$guide->url.' and the name '.$guide->title;
+        $errors[] = 'There are '.count($guide_term).' terms with the url '.$url.' and the name '.$title;
         $errors[] = 'These terms will need to be fixed before they can be updated.';
         foreach ($errors as $error) {
           drush_print($error);
@@ -113,7 +128,7 @@ function _custom_guides($args) {
     $is_new = FALSE;
     if (count($guide_term) == 0 || empty($guide_term)) {
       $guide_term = \Drupal\taxonomy\Entity\Term::create([
-        'name' => $guide->title,
+        'name' => $title,
         'description' => '',
         'vid' => 'research_guides',
       ]);
@@ -126,15 +141,16 @@ function _custom_guides($args) {
     }
     //if its still null, wtf
     if ($guide_term == NULL) { 
-      $errors[] = 'id '.$guide->url.' is null, ie not loading';
+      $errors[] = 'id '.$url.' is null, ie not loading';
       continue;
     }
     //set the guide values
-    $guide_term->get('field_url')->setValue([['uri' => $guide->url]]);
-    $guide_term->setName($guide->title);
+    $guide_term->get('field_url')->setValue([['uri' => $url]]);
+    $guide_term->setName($title);
+    $guide_term->get('status')->setValue([['value' => 1]]);
     $guide_term->save();
 
-    $the_guides[] = $guide->url;
+    $the_guides[] = $url;
   }
   $message = array();
   foreach ($errors as $error) {
@@ -147,6 +163,124 @@ function _custom_guides($args) {
   }
   //custom_uml_mail_send_mail('eliotwsc@umich.edu', $reply_to, 'guide errors', $message, 'custom_guides_errors');
   //custom_uml_mail_send_mail($recipient, $reply_to, 'guide updated', $updated, 'custom_guides_updated');
+}
+
+//do recommended databases
+function _custom_databases($args) {
+
+  //get module configs
+  extract(_custom_guides_get_vars());
+
+  //Get json data and decode properly
+  $database_data = custom_guides_encoding(_custom_guides_get_data($database_data));
+
+  //make sure we have some data
+  if (empty($database_data)) {
+    drush_print('ERROR WE DONT HAVE A FILE!');
+    exit;
+  }
+
+  //remove databases
+  drush_print('Setting databases as inactive...');
+  $query = \Drupal::entityQuery('taxonomy_term')
+    ->condition('vid', 'recommended_databases');
+  $database_terms = $query->execute();
+  $currently_active = [];
+  foreach ($database_terms as $tid) {
+    $term = \Drupal\taxonomy\Entity\Term::load($tid);
+    if ($term->get('status')->value == 1) {
+      $currently_active[] = $tid;
+    }
+    $term->get('status')->setValue([['value' => 0]]);
+    $term->save();
+  }
+
+  //set databases
+  drush_print('Updating databases Taxonomy...');
+  $errors = array();
+  //keep track of databases to find duplicates
+  $the_databases = array();
+  //for every database
+  foreach ($database_data->response->docs as $database) {
+    //strip any whitespace
+    $title = trim($database->title);
+    $url = trim($database->ssfield_permalink);
+
+    //check for duplicates
+    if (in_array($url, $the_databases)) {
+      $errors[] = 'database:'.$url.' - has a duplicate';
+    }
+
+    //get the term based on database
+    $query = \Drupal::entityQuery('taxonomy_term')
+      ->condition('vid', 'recommended_databases')
+      ->condition('field_url.uri', $url);
+    $database_term_uri = $query->execute();
+    $query = \Drupal::entityQuery('taxonomy_term')
+      ->condition('vid', 'recommended_databases')
+      ->condition('name', $title);
+    $database_term_name = $query->execute();
+    $query = \Drupal::entityQuery('taxonomy_term')
+      ->condition('vid', 'recommended_databases')
+      ->condition('field_url.uri', $url)
+      ->condition('name', $title);
+    $database_term = $query->execute();
+    if ($database_term_name !== $database_term_uri || count($database_term_uri) > 1 || count($database_term_name) > 1 || count($database_term) > 1) {
+      $errors[] = 'An error occurred.';
+      $errors[] = 'There are '.count($database_term_uri).' terms with the url '.$url;
+      $errors[] = 'There are '.count($database_term_name).' terms with the name '.$title;
+      foreach ($errors as $error) {
+        drush_print($error);
+      }
+      if (count($database_term) !== 1) {
+        $errors[] = 'There are '.count($database_term).' terms with the url '.$url.' and the name '.$title;
+        $errors[] = 'These terms will need to be fixed before they can be updated.';
+        foreach ($errors as $error) {
+          drush_print($error);
+        }
+        continue;
+      }
+    }
+
+    //create term if the term is empty and mark as new
+    $is_new = FALSE;
+    if (count($database_term) == 0 || empty($database_term)) {
+      $database_term = \Drupal\taxonomy\Entity\Term::create([
+        'name' => $title,
+        'description' => '',
+        'vid' => 'recommended_databases',
+      ]);
+      $is_new = TRUE;
+    }
+    //else load the term
+    else {
+      $database_term = array_values($database_term);
+      $database_term = \Drupal\taxonomy\Entity\Term::load($database_term[0]);
+    }
+    //if its still null, wtf
+    if ($database_term == NULL) { 
+      $errors[] = 'id '.$url.' is null, ie not loading';
+      continue;
+    }
+    //set the database values
+    $database_term->get('field_url')->setValue([['uri' => $url]]);
+    $database_term->setName($title);
+    $database_term->get('status')->setValue([['value' => 1]]);
+    $database_term->save();
+
+    $the_databases[] = $url;
+  }
+  $message = array();
+  foreach ($errors as $error) {
+    drush_print($error);
+    $message[] = \Drupal\Core\Render\Markup::create('<p>'.$error.'</p>');
+  }
+  foreach ($the_databases as $the_database) {
+    drush_print($the_database);
+    $updated[] = \Drupal\Core\Render\Markup::create('<p>'.$the_database.'</p>');
+  }
+  //custom_uml_mail_send_mail('eliotwsc@umich.edu', $reply_to, 'database errors', $message, 'custom_databases_errors');
+  //custom_uml_mail_send_mail($recipient, $reply_to, 'database updated', $updated, 'custom_databases_updated');
 }
 
 //verify data encoding and decode

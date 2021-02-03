@@ -5,14 +5,41 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\Entity\Node;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\CloseModalDialogCommand;
+use Drupal\Core\Ajax\RedirectCommand;
+use Drupal\Core\Ajax\InvokeCommand;
+
+function custom_extras_preprocess_node__class_page(array &$variables) : void {
+  //Module name: 'mymodule', library name: 'mymodule'.
+  $variables['#attached']['library'][] = 'custom_extras/custom_extras';
+}
+
+function custom_extras_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+$test = $form_state->getTriggeringElement();
+//drupal_set_message($test);
+  if ($form_id == 'taxonomy_term_resources_form') {
+    $form['actions']['submit']['#submit'][] = '_modal_form_ajax_submit';
+    $form['actions']['submit']['#attributes']['class'][] = 'use-ajax-submit';
+  }
+}
+
+function _modal_form_ajax_submit(array $form, FormStateInterface &$form_state) {
+  $tid = $form_state->getValue('tid');
+  $term = Term::load($tid);
+  $value = $term->getName() . ' (' . $tid . ')';
+  $response = new AjaxResponse();
+  $response->addCommand(new CloseModalDialogCommand());
+  #$response->addCommand(new InvokeCommand('#edit-field-blocks-0-subform-field-recommended-resources-0-target-id', 'val', [$value]));
+  $response->addCommand(new InvokeCommand('#field-recommended-resources-values input:last', 'val', [$value]));
+  $form_state->setResponse($response);
+}
 
 /**
  * Implements hook_node_presave().
  */
 function custom_extras_node_presave(NodeInterface $node) {
   if ($node->bundle() == 'class_page') {
-    dpm('grr');
-    dpm(\Drupal::request()->getSession()->get('lti_tool_provider_context'));
     $has_blocks = $node->get('field_blocks')->getValue();
     if (!empty($has_blocks)) {
       foreach ($has_blocks as $key => $block) {

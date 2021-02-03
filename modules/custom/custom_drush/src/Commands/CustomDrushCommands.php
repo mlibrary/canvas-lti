@@ -173,6 +173,21 @@ class CustomDrushCommands extends DrushCommands {
   }
 
   /**
+   * Run UM Database Update.
+   *
+    * @param array $options An associative array of options whose values come from cli, aliases, config, etc.
+   * @option clear_terms
+   *   Set to 1 to clear out terms
+   * @validate-module-enabled custom_guides
+   *
+   * @command custom_drush:update_databases
+   * @aliases update-databases,custom_drush-update_databases
+   */
+  public function updateDatabases(array $options = ['clear_terms' => FALSE]) {
+    _custom_databases($options);
+  }
+
+  /**
    * Run Convert Field Collections to Paragraphs.
    *
    * @validate-module-enabled custom_shortcodes,custom_uml_mail
