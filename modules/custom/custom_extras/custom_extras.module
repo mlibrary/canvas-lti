@@ -67,6 +67,18 @@ function custom_extras_node_presave(NodeInterface $node) {
             $paragraph->get('field_library_hours')->setValue($hours);
             $paragraph->save();
             break;
+          case 'course_specialist':
+            $specialist_id = $paragraph->get('field_course_specialist')->value;
+            $s_url = '';
+            if (!empty($specialist_id)) {
+              $s_url = 'https://cms.lib.umich.edu/widgets/specialist/'.$specialist_id;
+            }
+            $specialist[0]['url'] = $s_url;
+            $specialists = explode('+', $specialist_id);
+            $specialist[0]['height'] = count($specialists) * 115;
+            $paragraph->get('field_course_specialist_display')->setValue($specialist);
+            $paragraph->save();
+            break;
           case 'library_specialists':
             $specialists = $paragraph->get('field_library_specialists')->getValue();
             $spec_to_show = $paragraph->get('field_specialists_to_show')->getValue();
