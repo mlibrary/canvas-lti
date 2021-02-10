@@ -37,6 +37,7 @@ class LtiToolProviderProvisionSettingsForm extends ConfigFormBase
         $entityBundle = $form_state->getValue('entity_bundle') ? $form_state->getValue('entity_bundle') : $settings->get('entity_bundle');
         $entityRedirect = $form_state->getValue('entity_redirect') ? $form_state->getValue('entity_redirect') : $settings->get('entity_redirect');
         $entityLookup = $form_state->getValue('entity_lookup') ? $form_state->getValue('entity_lookup') : $settings->get('entity_lookup');
+        $entityLookupDefault = $form_state->getValue('entity_lookup_default') ? $form_state->getValue('entity_lookup_default') : $settings->get('entity_lookup_default');
         $entityDefaults = $form_state->getValue('entity_defaults') ? $form_state->getValue('entity_defaults') : $settings->get('entity_defaults');
         $entitySync = $form_state->getValue('entity_sync') ? $form_state->getValue('entity_sync') : $settings->get('entity_sync');
         $allowedRolesEnabled = $form_state->getValue('allowed_roles_enabled') ? $form_state->getValue('allowed_roles_enabled') : $settings->get('allowed_roles_enabled');
@@ -47,7 +48,6 @@ class LtiToolProviderProvisionSettingsForm extends ConfigFormBase
         $options = [];
         $definitions = Drupal::entityTypeManager()->getDefinitions();
 
-        /* @var $definition Drupal\Core\Entity\EntityTypeInterface */
         foreach ($definitions as $definition) {
             if ($definition instanceof ContentEntityType) {
                 $options[$definition->id()] = $definition->getLabel();
@@ -105,12 +105,6 @@ class LtiToolProviderProvisionSettingsForm extends ConfigFormBase
             '#default_value' => $entityRedirect,
         ];
 
-        $form['entity_lookup'] = [
-            '#type' => 'checkbox',
-            '#title' => $this->t('Allow for an existing entity lookup based on a single entity default.'),
-            '#default_value' => $entityLookup,
-        ];
-
         if ($entityBundle) {
             $lti_launch = $this->config('lti_tool_provider.settings')->get('lti_launch');
 
@@ -150,6 +144,45 @@ class LtiToolProviderProvisionSettingsForm extends ConfigFormBase
             ];
         }
 
+        if ($entityBundle && $entitySync) {
+          $form['entity_lookup'] = [
+              '#type' => 'checkbox',
+              '#title' => $this->t('Allow for an existing entity lookup based on a single entity default.'),
+              '#default_value' => $entityLookup,
+              '#states' => [
+                'visible' => [
+                  ':input[name="entity_sync"]' => [
+                    'checked' => TRUE,
+                  ],
+                ],
+              ],
+          ];
+        }
+
+        if ($entityBundle && $entityLookup && $entitySync) {
+            $lti_launch = $this->config('lti_tool_provider.settings')->get('lti_launch');
+            $form['entity_lookup_default'] = [
+              '#type' => 'select',
+              '#title' => $this->t('Choose entity lookup entity. This must be chosen as an entity default above.'),
+              '#required' => false,
+              '#empty_option' => t('None'),
+              '#empty_value' => true,
+              '#default_value' => $entityLookupDefault,
+              '#states' => [
+                'visible' => [
+                  ':input[name="entity_lookup"]' => [
+                    'checked' => TRUE,
+                  ],
+                ],
+              ],
+            ];
+            foreach ($entityDefaults as $key => $value) {
+              if (in_array($value, $lti_launch, 1)) {
+                $form['entity_lookup_default']['#options'][$key.':'.$value] = $value.' ('.$key.')';
+              }
+            }
+        }
+
         $form['allowed_roles_enabled'] = [
             '#type' => 'checkbox',
             '#title' => $this->t('Restrict entity provision to specific LTI roles.'),
@@ -187,13 +220,15 @@ class LtiToolProviderProvisionSettingsForm extends ConfigFormBase
         $entityBundle = $form_state->getValue('entity_bundle');
         $entityRedirect = $form_state->getValue('entity_redirect');
         $entityLookup = $form_state->getValue('entity_lookup');
+        $entityLookupDefault = $form_state->getValue('entity_lookup_default');
         $entitySync = $form_state->getValue('entity_sync');
-        $allowedRolesEnabled = $form_state->getValue('entity_sync');
+        $allowedRolesEnabled = $form_state->getValue('allowed_roles_enabled');
 
         $settings->set('entity_type', $entityType)->save();
         $settings->set('entity_bundle', $entityBundle)->save();
         $settings->set('entity_redirect', $entityRedirect)->save();
         $settings->set('entity_lookup', $entityLookup)->save();
+        $settings->set('entity_lookup_default', $entityLookupDefault)->save();
         $settings->set('entity_sync', $entitySync)->save();
         $settings->set('allowed_roles_enabled', $allowedRolesEnabled)->save();
 
@@ -214,7 +249,7 @@ class LtiToolProviderProvisionSettingsForm extends ConfigFormBase
         parent::submitForm($form, $form_state);
     }
 
-    public function getEntityBundles(array &$form)
+    public function getEntityBundles(array $form)
     {
         return $form;
     }

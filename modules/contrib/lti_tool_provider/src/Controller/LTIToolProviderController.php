@@ -108,7 +108,7 @@ class LTIToolProviderController extends ControllerBase
         Request $request,
         SessionInterface $session,
         $context,
-        $destination
+        string $destination
     ) {
         $this->configFactory = $configFactory;
         $this->loggerFactory = $loggerFactory->get('lti_tool_provider');

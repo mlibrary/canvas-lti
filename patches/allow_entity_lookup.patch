@@ -43,7 +43,7 @@ index 9d9e09f..312fb42 100644
          $entityRedirect = $form_state->getValue('entity_redirect');
 +        $entityLookup = $form_state->getValue('entity_lookup');
          $entitySync = $form_state->getValue('entity_sync');
-         $allowedRolesEnabled = $form_state->getValue('entity_sync');
+         $allowedRolesEnabled = $form_state->getValue('allowed_roles_enabled');
  
          $settings->set('entity_type', $entityType)->save();
          $settings->set('entity_bundle', $entityBundle)->save();

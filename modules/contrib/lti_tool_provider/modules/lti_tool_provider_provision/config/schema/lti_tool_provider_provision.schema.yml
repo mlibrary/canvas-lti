@@ -14,6 +14,9 @@ lti_tool_provider_provision.settings:
     entity_lookup:
       type: boolean
       label: Allow for an existing entity lookup
+    entity_lookup_default:
+      type: select
+      label: Allow for an existing entity lookup
     entity_sync:
       type: boolean
       label: Sync entity fields on launch

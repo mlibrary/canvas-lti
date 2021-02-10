@@ -2,6 +2,7 @@
 
 namespace Drupal\lti_tool_provider\Form;
 
+use Drupal\Core\Entity\EntityStorageException;
 use Drupal;
 use Drupal\Core\Entity\ContentEntityConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -56,7 +57,7 @@ class LtiToolProviderConsumerDeleteForm extends ContentEntityConfirmFormBase
                 ]
             );
         }
-        catch (Drupal\Core\Entity\EntityStorageException $e) {
+        catch (EntityStorageException $e) {
             Drupal::logger('lti_tool_provider')->error(
                 '@type: error deleting %title.',
                 [

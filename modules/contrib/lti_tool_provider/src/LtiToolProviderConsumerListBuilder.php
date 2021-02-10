@@ -2,6 +2,7 @@
 
 namespace Drupal\lti_tool_provider;
 
+use Drupal\Core\Link;
 use Drupal;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
@@ -61,7 +62,7 @@ class LtiToolProviderConsumerListBuilder extends EntityListBuilder
         if ($entity instanceof LtiToolProviderConsumer) {
             $row = [
                 'id' => $entity->id(),
-                'consumer' => $link = Drupal\Core\Link::fromTextAndUrl(
+                'consumer' => $link = Link::fromTextAndUrl(
                     $entity->label(),
                     Url::fromRoute(
                         'entity.lti_tool_provider_consumer.canonical',

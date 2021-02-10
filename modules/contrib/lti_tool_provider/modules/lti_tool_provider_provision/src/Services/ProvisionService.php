@@ -126,16 +126,16 @@ class ProvisionService
 
         $bundleType = $this->entityTypeManager->getDefinition($entityType)->getKey('bundle');
         $entityLookup = $this->config->get('entity_lookup');
+        $entityLookupDefault = $this->config->get('entity_lookup_default');
         $entityDefaults = $this->config->get('entity_defaults');
         $entity = NULL;
-        if ($entityLookup && count($entityDefaults) == 1) {
+        if ($entityLookup && $entityLookupDefault && $entityLookupDefault != 1) {
           $existing_ids = [];
-          foreach ($entityDefaults as $name => $entityDefault) {
-            $existing_ids[] = \Drupal::entityQuery($entityType)
-              ->condition($bundleType, $entityBundle)
-              ->condition($name, $context[$entityDefault])
-              ->execute();
-          }
+          $entityLookupDefaults = explode(':', $entityLookupDefault);
+          $existing_ids[] = \Drupal::entityQuery($entityType)
+            ->condition($bundleType, $entityBundle)
+            ->condition($entityLookupDefaults[0], $context[$entityLookupDefaults[1]])
+            ->execute();
           if (count($existing_ids) == 1 && count($existing_ids[0]) == 1) {
             $existing_ids = array_values($existing_ids[0]);
             $entity = $this->entityTypeManager->getStorage($entityType)->load($existing_ids[0]);

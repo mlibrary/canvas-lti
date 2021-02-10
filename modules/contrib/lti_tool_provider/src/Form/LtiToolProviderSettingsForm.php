@@ -34,11 +34,7 @@ class LtiToolProviderSettingsForm extends ConfigFormBase
             '#type' => 'checkbox',
             '#title' => $this->t('Allow iframe embeds'),
             '#default_value' => $settings->get('iframe'),
-            '#description' => $this->t(
-                'Allow LTI content to be displayed in an iframe. This will disable Drupal\'s built in x-frame-options header. See <a href="@href">this change record</a> for more details.',[
-                    '@href' => 'https://www.drupal.org/node/2514152'
-                ]
-            ),
+            '#description' => $this->t('Allow LTI content to be displayed in an iframe. This will disable Drupal\'s built in x-frame-options header. See <a href="https://www.drupal.org/node/2514152">this change record</a> for more details.'),
         ];
 
         $form['destination'] = [

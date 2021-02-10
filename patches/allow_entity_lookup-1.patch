@@ -1,0 +1,124 @@
+diff --git a/modules/lti_tool_provider_provision/config/schema/lti_tool_provider_provision.schema.yml b/modules/lti_tool_provider_provision/config/schema/lti_tool_provider_provision.schema.yml
+index 29ddec66..a94d00e1 100644
+--- a/modules/lti_tool_provider_provision/config/schema/lti_tool_provider_provision.schema.yml
++++ b/modules/lti_tool_provider_provision/config/schema/lti_tool_provider_provision.schema.yml
+@@ -11,6 +11,12 @@ lti_tool_provider_provision.settings:
+     entity_redirect:
+       type: boolean
+       label: Redirect to entity on launch
++    entity_lookup:
++      type: boolean
++      label: Allow for an existing entity lookup
++    entity_lookup_default:
++      type: select
++      label: Allow for an existing entity lookup
+     entity_sync:
+       type: boolean
+       label: Sync entity fields on launch
+diff --git a/modules/lti_tool_provider_provision/src/Form/LtiToolProviderProvisionSettingsForm.php b/modules/lti_tool_provider_provision/src/Form/LtiToolProviderProvisionSettingsForm.php
+index 9ecfc5a4..921e378c 100644
+--- a/modules/lti_tool_provider_provision/src/Form/LtiToolProviderProvisionSettingsForm.php
++++ b/modules/lti_tool_provider_provision/src/Form/LtiToolProviderProvisionSettingsForm.php
+@@ -36,6 +36,8 @@ public function buildForm(array $form, FormStateInterface $form_state, $filter =
+         $entityType = $form_state->getValue('entity_type') ? $form_state->getValue('entity_type') : $settings->get('entity_type');
+         $entityBundle = $form_state->getValue('entity_bundle') ? $form_state->getValue('entity_bundle') : $settings->get('entity_bundle');
+         $entityRedirect = $form_state->getValue('entity_redirect') ? $form_state->getValue('entity_redirect') : $settings->get('entity_redirect');
++        $entityLookup = $form_state->getValue('entity_lookup') ? $form_state->getValue('entity_lookup') : $settings->get('entity_lookup');
++        $entityLookupDefault = $form_state->getValue('entity_lookup_default') ? $form_state->getValue('entity_lookup_default') : $settings->get('entity_lookup_default');
+         $entityDefaults = $form_state->getValue('entity_defaults') ? $form_state->getValue('entity_defaults') : $settings->get('entity_defaults');
+         $entitySync = $form_state->getValue('entity_sync') ? $form_state->getValue('entity_sync') : $settings->get('entity_sync');
+         $allowedRolesEnabled = $form_state->getValue('allowed_roles_enabled') ? $form_state->getValue('allowed_roles_enabled') : $settings->get('allowed_roles_enabled');
+@@ -142,6 +144,45 @@ public function buildForm(array $form, FormStateInterface $form_state, $filter =
+             ];
+         }
+ 
++        if ($entityBundle && $entitySync) {
++          $form['entity_lookup'] = [
++              '#type' => 'checkbox',
++              '#title' => $this->t('Allow for an existing entity lookup based on a single entity default.'),
++              '#default_value' => $entityLookup,
++              '#states' => [
++                'visible' => [
++                  ':input[name="entity_sync"]' => [
++                    'checked' => TRUE,
++                  ],
++                ],
++              ],
++          ];
++        }
++
++        if ($entityBundle && $entityLookup && $entitySync) {
++            $lti_launch = $this->config('lti_tool_provider.settings')->get('lti_launch');
++            $form['entity_lookup_default'] = [
++              '#type' => 'select',
++              '#title' => $this->t('Choose entity lookup entity. This must be chosen as an entity default above.'),
++              '#required' => false,
++              '#empty_option' => t('None'),
++              '#empty_value' => true,
++              '#default_value' => $entityLookupDefault,
++              '#states' => [
++                'visible' => [
++                  ':input[name="entity_lookup"]' => [
++                    'checked' => TRUE,
++                  ],
++                ],
++              ],
++            ];
++            foreach ($entityDefaults as $key => $value) {
++              if (in_array($value, $lti_launch, 1)) {
++                $form['entity_lookup_default']['#options'][$key.':'.$value] = $value.' ('.$key.')';
++              }
++            }
++        }
++
+         $form['allowed_roles_enabled'] = [
+             '#type' => 'checkbox',
+             '#title' => $this->t('Restrict entity provision to specific LTI roles.'),
+@@ -178,12 +219,16 @@ public function submitForm(array &$form, FormStateInterface $form_state)
+         $entityType = $form_state->getValue('entity_type');
+         $entityBundle = $form_state->getValue('entity_bundle');
+         $entityRedirect = $form_state->getValue('entity_redirect');
++        $entityLookup = $form_state->getValue('entity_lookup');
++        $entityLookupDefault = $form_state->getValue('entity_lookup_default');
+         $entitySync = $form_state->getValue('entity_sync');
+         $allowedRolesEnabled = $form_state->getValue('allowed_roles_enabled');
+ 
+         $settings->set('entity_type', $entityType)->save();
+         $settings->set('entity_bundle', $entityBundle)->save();
+         $settings->set('entity_redirect', $entityRedirect)->save();
++        $settings->set('entity_lookup', $entityLookup)->save();
++        $settings->set('entity_lookup_default', $entityLookupDefault)->save();
+         $settings->set('entity_sync', $entitySync)->save();
+         $settings->set('allowed_roles_enabled', $allowedRolesEnabled)->save();
+ 
+diff --git a/modules/lti_tool_provider_provision/src/Services/ProvisionService.php b/modules/lti_tool_provider_provision/src/Services/ProvisionService.php
+index 9fc6220e..bd84ce3a 100644
+--- a/modules/lti_tool_provider_provision/src/Services/ProvisionService.php
++++ b/modules/lti_tool_provider_provision/src/Services/ProvisionService.php
+@@ -125,7 +125,25 @@ public function createProvisionedEntity(array $context, EntityInterface $provisi
+         $entityBundle = $provision->get('provision_bundle')->value;
+ 
+         $bundleType = $this->entityTypeManager->getDefinition($entityType)->getKey('bundle');
+-        $entity = $this->entityTypeManager->getStorage($entityType)->create([$bundleType => $entityBundle]);
++        $entityLookup = $this->config->get('entity_lookup');
++        $entityLookupDefault = $this->config->get('entity_lookup_default');
++        $entityDefaults = $this->config->get('entity_defaults');
++        $entity = NULL;
++        if ($entityLookup && $entityLookupDefault && $entityLookupDefault != 1) {
++          $existing_ids = [];
++          $entityLookupDefaults = explode(':', $entityLookupDefault);
++          $existing_ids[] = \Drupal::entityQuery($entityType)
++            ->condition($bundleType, $entityBundle)
++            ->condition($entityLookupDefaults[0], $context[$entityLookupDefaults[1]])
++            ->execute();
++          if (count($existing_ids) == 1 && count($existing_ids[0]) == 1) {
++            $existing_ids = array_values($existing_ids[0]);
++            $entity = $this->entityTypeManager->getStorage($entityType)->load($existing_ids[0]);
++          }
++        }
++        if (!$entity) {
++          $entity = $this->entityTypeManager->getStorage($entityType)->create([$bundleType => $entityBundle]);
++        }
+ 
+         $event = new LtiToolProviderProvisionCreateProvisionedEntityEvent($context, $entity);
+         LtiToolProviderEvent::dispatchEvent($this->eventDispatcher, $event);

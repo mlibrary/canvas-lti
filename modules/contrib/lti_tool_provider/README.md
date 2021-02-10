@@ -101,5 +101,5 @@ class MyModuleLtiToolProviderEventSubscriber implements EventSubscriberInterface
 Also the LTI context variables are available per user in the session variable. For example:
 
 ```php
-$context = \Drupal::request()->getSession()->get('lti_tool_provider_context');
+$context = Drupal::request()->getSession()->get('lti_tool_provider_context');
 ```

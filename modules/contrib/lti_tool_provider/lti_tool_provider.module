@@ -24,11 +24,9 @@ function lti_tool_provider_help($route_name)
 {
     switch ($route_name) {
         case 'help.page.lti_tool_provider':
-            $output = '<p>' . t(
+            return '<p>' . t(
                     'The LTI tool provider module provides an oauth based authentication provider for Drupal, as well as configuration options for consumers and user provisioning.'
                 ) . '</p>';
-
-            return $output;
     }
     return null;
 }

@@ -1,0 +1,25 @@
+{
+  "name": "drupal/extra_field_description",
+  "description": "This module give us opportunity to append extra description to the field.",
+  "type": "drupal-module",
+  "homepage": "https://www.drupal.org/project/extra_field_description",
+  "authors": [
+    {
+      "name": "Samvel Akopyan (Samvel)",
+      "homepage": "https://www.drupal.org/u/samvel",
+      "role": "Maintainer"
+    },
+    {
+      "name": "Yogesh Pawar (yogeshmpawar)",
+      "homepage": "https://www.drupal.org/u/yogeshmpawar",
+      "role": "Maintainer"
+    }
+  ],
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/extra_field_description"
+  },
+  "license": "GPL-2.0+",
+  "require": {
+    "drupal/core": "^8.0 || ^9.0"
+  }
+}

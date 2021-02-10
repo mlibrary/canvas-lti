@@ -9,6 +9,32 @@ use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\CloseModalDialogCommand;
 use Drupal\Core\Ajax\RedirectCommand;
 use Drupal\Core\Ajax\InvokeCommand;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+
+/**
+ * Implements hook_node_view().
+ */
+function custom_extras_node_view(array &$build, NodeInterface $node, EntityViewDisplayInterface $display, $view_mode) {
+  $bundle = $node->bundle();
+  if ($bundle == 'class_page') {
+    $empty = TRUE;
+    foreach ($node->getFields() as $key => $field) {
+      if (substr($field->getName(), 0, 6) === "field_" && !empty($field->getValue())) {
+        $empty = FALSE;
+      }
+    }
+    if ($empty) {
+      $user = \Drupal::currentUser();
+      $build['#cache']['max-age'] = 0;
+      if ($user->hasPermission('edit any '.$bundle.' content')) {
+        \Drupal::messenger()->addError(t('Select the Edit tab to customize this page. You can add course-specific library information (library specialists, guides, resource links, course reserves, videos), a library search box, and a text introduction, as desired.'), TRUE);
+      }
+      else if ($user->hasPermission('view any '.$bundle.' content')) {
+        \Drupal::messenger()->addError(t('Your instructor hasn’t added any course-specific library information yet. You can use Ask a Librarian to contact a library specialist.'), TRUE);
+      }
+    }
+  }
+}
 
 function custom_extras_preprocess_node__class_page(array &$variables) : void {
   //Module name: 'mymodule', library name: 'mymodule'.
@@ -16,8 +42,10 @@ function custom_extras_preprocess_node__class_page(array &$variables) : void {
 }
 
 function custom_extras_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-$test = $form_state->getTriggeringElement();
-//drupal_set_message($test);
+  if ($form_id == 'media_library_add_form_oembed') {
+    unset($form['actions']['save_select']);
+    $form['actions']['save_insert']['#button_type'] = 'primary';
+  }
   if ($form_id == 'taxonomy_term_resources_form') {
     $form['actions']['submit']['#submit'][] = '_modal_form_ajax_submit';
     $form['actions']['submit']['#attributes']['class'][] = 'use-ajax-submit';
@@ -45,6 +73,17 @@ function custom_extras_node_presave(NodeInterface $node) {
       foreach ($has_blocks as $key => $block) {
         $paragraph = Paragraph::load($block['target_id']);
         switch ($paragraph->bundle()) {
+          case 'embedded_research_guide':
+            $guide_id = $paragraph->get('field_research_guide')->target_id;
+            $term = Term::load($guide_id);
+            $guide = $term->get('field_url')->getValue();
+            $url = $guide[0]['uri'];
+            $e_guide[0]['url'] = $url;
+            // might need the title - $e_guide[0]['title'] = $term->getName();
+            $e_guide[0]['height'] = '750';
+            $paragraph->get('field_embedded_research_guide')->setValue($e_guide);
+            $paragraph->save();
+            break;
           case 'course_reserves':
             $reserves = _custom_extras_get_reserves($node->getTitle());
             $paragraph->get('field_course_reserves')->setValue($reserves);
@@ -75,7 +114,7 @@ function custom_extras_node_presave(NodeInterface $node) {
             }
             $specialist[0]['url'] = $s_url;
             $specialists = explode('+', $specialist_id);
-            $specialist[0]['height'] = count($specialists) * 115;
+            $specialist[0]['height'] = count($specialists) * 100;
             $paragraph->get('field_course_specialist_display')->setValue($specialist);
             $paragraph->save();
             break;
@@ -118,7 +157,7 @@ function custom_extras_node_presave(NodeInterface $node) {
             $data = _custom_extras_encoding(file_get_contents($s_url_count));
             $specialists[0]['url'] = $s_url;
             // we need to be explicit on height. mod default is 701
-            $specialists[0]['height'] = count($data) * 115;
+            $specialists[0]['height'] = count($data) * 100;
             $paragraph->get('field_library_specialists')->setValue($specialists);
             $paragraph->save();
             break;

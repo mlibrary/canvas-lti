@@ -2,6 +2,7 @@
 
 namespace Drupal\lti_tool_provider_provision\Entity;
 
+use Drupal\Core\Entity\Annotation\ContentEntityType;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\ContentEntityInterface;

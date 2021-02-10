@@ -356,7 +356,7 @@ class LTIToolProvider implements AuthenticationProviderInterface
      * @param string $message
      *   The error message to send.
      */
-    protected function sendLtiError($message)
+    protected function sendLtiError(string $message)
     {
         if (isset($this->context['launch_presentation_return_url']) && !empty($this->context['launch_presentation_return_url'])) {
             $url = Url::fromUri($this->context['launch_presentation_return_url'])

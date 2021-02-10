@@ -25,12 +25,7 @@ function lti_tool_provider_requirements($phase)
         $requirements['lti_tool_provider_oauth'] = [
             'title' => t('LTI Tool Provider - OAuth'),
             'severity' => REQUIREMENT_ERROR,
-            'description' => t(
-                'The LTI Tool Provider module requires the <a href="@href" target="_blank">PECL OAuth</a> library.',
-                [
-                    '@href' => 'https://www.php.net/manual/en/book.oauth.php',
-                ]
-            ),
+            'description' => t('The LTI Tool Provider module requires the <a href="https://www.php.net/manual/en/book.oauth.php" target="_blank">PECL OAuth</a> library.'),
         ];
         if ($phase == 'runtime') {
             $requirements['lti_tool_provider_oauth'] += [
@@ -47,7 +42,7 @@ function lti_tool_provider_requirements($phase)
  */
 function lti_tool_provider_update_8101()
 {
-    $config_factory = \Drupal::configFactory();
+    $config_factory = Drupal::configFactory();
     $config = $config_factory->getEditable('lti_tool_provider.settings');
     $lti_roles = $config->get('lti_roles');
     $lti_roles = array_merge(
