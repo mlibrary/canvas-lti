@@ -118,7 +118,7 @@ function custom_extras_node_presave(NodeInterface $node) {
             }
             $specialist[0]['url'] = $s_url;
             $specialists = explode('+', $specialist_id);
-            $specialist[0]['height'] = count($specialists) * 100;
+            $specialist[0]['height'] = count($specialists) * 105 + 10;
             $paragraph->get('field_course_specialist_display')->setValue($specialist);
             $paragraph->save();
             break;
@@ -161,7 +161,7 @@ function custom_extras_node_presave(NodeInterface $node) {
             $data = _custom_extras_encoding(file_get_contents($s_url_count));
             $specialists[0]['url'] = $s_url;
             // we need to be explicit on height. mod default is 701
-            $specialists[0]['height'] = count($data) * 100;
+            $specialists[0]['height'] = count($data) * 105 + 10;
             $paragraph->get('field_library_specialists')->setValue($specialists);
             $paragraph->save();
             break;
