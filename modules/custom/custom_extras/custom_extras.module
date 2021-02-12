@@ -18,8 +18,12 @@ function custom_extras_node_view(array &$build, NodeInterface $node, EntityViewD
   $bundle = $node->bundle();
   if ($bundle == 'class_page') {
     $empty = TRUE;
+    $visible_fields = array_keys($display->getComponents());
+    // field_announcements is hidden in entity view. Rendered as block.
+    $visible_fields[] = 'field_announcements';
     foreach ($node->getFields() as $key => $field) {
-      if (substr($field->getName(), 0, 6) === "field_" && !empty($field->getValue())) {
+      $name = $field->getName();
+      if (substr($name, 0, 6) === "field_" && !empty($field->getValue()) && in_array($name, $visible_fields)) {
         $empty = FALSE;
       }
     }
