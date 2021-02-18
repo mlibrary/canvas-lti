@@ -29,7 +29,15 @@ class IframeWidgetBase extends WidgetBase {
    */
   public static function defaultSettings() {
     return [
-      // Here if *own* default value not the one from edit-type-field.
+        'width' => '',
+        'height' => '',
+        'class' => '',
+        'expose_class' => 0,
+        'frameborder' => '0',
+        'scrolling' => 'auto',
+        'transparency' => '0',
+        'tokensupport' => '0',
+        'allowfullscreen' => '0',
     ] + parent::defaultSettings();
   }
 
@@ -216,11 +224,6 @@ class IframeWidgetBase extends WidgetBase {
     ];
     if (!$on_admin_page) {
       $element['#title'] = $field_definition->getLabel();
-      $element['description'] = [
-        '#type' => 'item',
-        '#description' => $field_definition->getDescription(),
-        '#weight' => 0,
-      ];
     }
 
     $element['title'] = [
@@ -343,9 +346,13 @@ class IframeWidgetBase extends WidgetBase {
      */
     $node = $form_state->getUserInput();
     $me = $node[$itemfield][$iteminst];
+    $testabsolute = true;
     // \iframe_debug(0, 'validateUrl', $me);
     if (!empty($me['url'])) {
-      if (!UrlHelper::isValid($me['url'])) {
+      if (preg_match('#^/($|[^/])#', $me['url'])) {
+        $testabsolute = false;
+      }
+      if (!UrlHelper::isValid($me['url'], $testabsolute)) {
         $form_state->setError($form, t('Invalid syntax for "Iframe URL".'));
       }
       elseif (strpos($me['url'], '//') === 0) {
@@ -390,7 +397,7 @@ class IframeWidgetBase extends WidgetBase {
           $newvalue[$key] = $val;
         }
       }
-      if (!empty($settings['class']) && !strstr($newvalue['class'])) {
+      if (!empty($settings['class']) && !strstr($newvalue['class'], $settings['class'])) {
         $newvalue['class'] = trim(implode(" ", [$settings['class'], $newvalue['class']]));
       }
       $new_values[$delta] = $newvalue;

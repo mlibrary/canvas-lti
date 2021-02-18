@@ -209,6 +209,13 @@ class AutoEntityLabelManager implements AutoEntityLabelManagerInterface {
   /**
    * {@inheritdoc}
    */
+  public function isTitlePreserved() {
+    return $this->getConfig('preserve_titles');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getStatus() {
     return $this->getConfig('status');
   }

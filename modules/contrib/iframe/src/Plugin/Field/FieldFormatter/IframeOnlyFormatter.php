@@ -29,10 +29,11 @@ class IframeOnlyFormatter extends IframeDefaultFormatter {
       if (!isset($item->title)) {
         $item->title = '';
       }
-      $elements[$delta] = [
-        '#markup' => Markup::create(IframeDefaultFormatter::iframeIframe('', $item->url, $item)),
-        '#allowed_tags' => ['iframe', 'a', 'h3', 'style'],
-      ];
+      $elements[$delta] = self::iframeIframe('', $item->url, $item);
+      // Tokens can be dynamic, so its not cacheable.
+      if (isset($settings['tokensupport']) && $settings['tokensupport']) {
+        $elements[$delta]['cache'] = ['max-age' => 0];
+      }
     }
     return $elements;
   }

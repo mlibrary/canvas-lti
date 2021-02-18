@@ -12,7 +12,6 @@ use Drupal\layout_builder\Plugin\SectionStorage\OverridesSectionStorage;
  * Implements hook_uninstall().
  */
 function layout_builder_component_attributes_uninstall() {
-/*
   // Get all entity view displays.
   $view_displays = \Drupal::entityTypeManager()
     ->getStorage('entity_view_display')
@@ -62,25 +61,22 @@ function layout_builder_component_attributes_uninstall() {
       // Loop over revisions, sections, and components.
       foreach ($vids as $vid) {
         $revision = $entity_type_storage->loadRevision($vid);
-        if ($revision->hasField('layout_builder__layout')) {
-          $sections = $revision->get('layout_builder__layout');
-          if (!empty($sections)) {
-            $sections = $revision->get('layout_builder__layout')->getSections();
-            foreach ($sections as $section) {
-              $components = $section->getComponents();
-              foreach ($components as $component) {
-                // Remove 'component_attributes' from 'additional'.
-                $additional = $component->get('additional');
-                unset($additional['component_attributes']);
-                $component->set('additional', $additional);
-              }
+        $sections = $revision->get('layout_builder__layout');
+        if (!empty($sections)) {
+          $sections = $revision->get('layout_builder__layout')->getSections();
+          foreach ($sections as $section) {
+            $components = $section->getComponents();
+            foreach ($components as $component) {
+              // Remove 'component_attributes' from 'additional'.
+              $additional = $component->get('additional');
+              unset($additional['component_attributes']);
+              $component->set('additional', $additional);
             }
-            $revision->set('layout_builder__layout', $sections);
-            $revision->save();
           }
+          $revision->set('layout_builder__layout', $sections);
+          $revision->save();
         }
       }
     }
   }
-*/
 }

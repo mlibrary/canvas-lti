@@ -31,7 +31,7 @@ class ComponentAttributeTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'block',
     'layout_builder',
     'layout_builder_component_attributes',
@@ -94,6 +94,7 @@ class ComponentAttributeTest extends WebDriverTestBase {
     $this->drupalGet(static::FIELD_UI_PREFIX . '/display/default/layout');
     $this->resetLayoutBuilderLayout();
 
+    $this->assertNotEmpty($page->findAll('xpath', '//*[contains(@class, "layout-builder-block")]//ul[contains(@class, "contextual-links")]', 'Contextual links are rendered.'));
     $this->assertEmpty($page->findAll('xpath', '//*[contains(@class, "layout-builder-block")]//ul[contains(@class, "contextual-links")]//a[contains(text(), "Manage attributes")]', 'Manage attributes link is not rendered.'));
 
     $this->drupalLogin($this->admin_user);

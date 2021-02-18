@@ -32,8 +32,6 @@ function auto_entitylabel_help($route_name, RouteMatchInterface $route_match) {
  * Implements hook_entity_type_alter().
  *
  * Adds the Auto Label tab to the entity configuration page.
- *
- * @param \Drupal\Core\Entity\EntityTypeInterface[] $entity_types
  */
 function auto_entitylabel_entity_type_alter(array &$entity_types) {
   /** @var \Drupal\Core\Entity\EntityTypeInterface $entity_type */
@@ -102,7 +100,7 @@ function auto_entitylabel_inline_entity_label_callback($entity, $variables) {
  * @param \Drupal\Core\Entity\ContentEntityInterface $entity
  *   The entity which title will be replaced.
  */
-function auto_entitylabel_prepare_entityform(&$form, ContentEntityInterface $entity) {
+function auto_entitylabel_prepare_entityform(array &$form, ContentEntityInterface $entity) {
   if (empty($form['#auto_entitylabel_processed'])) {
     $decorator = \Drupal::service('auto_entitylabel.entity_decorator');
     /** @var \Drupal\auto_entitylabel\AutoEntityLabelManager $entity */
@@ -143,7 +141,7 @@ function auto_entitylabel_prepare_entityform(&$form, ContentEntityInterface $ent
  */
 function auto_entitylabel_entity_prepare_view($entity_type_id, array $entities, array $displays, $view_mode) {
   foreach ($entities as $entity) {
-    if ($entity->in_preview === TRUE && $entity instanceof ContentEntityInterface) {
+    if (isset($entity->in_preview) && $entity->in_preview === TRUE && $entity instanceof ContentEntityInterface) {
       $decorator = \Drupal::service('auto_entitylabel.entity_decorator');
       /** @var \Drupal\auto_entitylabel\AutoEntityLabelManager $decorated_entity */
       $decorated_entity = $decorator->decorate($entity);
@@ -163,7 +161,8 @@ function auto_entitylabel_entity_presave(EntityInterface $entity) {
     $decorator = \Drupal::service('auto_entitylabel.entity_decorator');
     /** @var \Drupal\auto_entitylabel\AutoEntityLabelManager $decorated_entity */
     $decorated_entity = $decorator->decorate($entity);
-    if ($decorated_entity->hasLabel() && $decorated_entity->autoLabelNeeded()) {
+    if ($decorated_entity->hasLabel() && $decorated_entity->autoLabelNeeded()
+      && !$decorated_entity->isTitlePreserved()) {
       $decorated_entity->setLabel();
     }
   }
@@ -183,17 +182,10 @@ function auto_entitylabel_entity_insert(EntityInterface $entity) {
         || empty($entity->label()) && $decorated_entity->hasOptionalAutoLabel()
       )
     ) {
-      // Store the old label.
-      $old_label = $entity->label();
-      // Update the entity label.
-      $decorated_entity->setLabel();
-      // Save it only if the title has changed.
-      if ($entity->label() != $old_label) {
-        if ($entity->getEntityType()->isRevisionable()) {
-          $entity->setNewRevision(FALSE);
-        }
-        $entity->save();
+      if ($entity->getEntityType()->isRevisionable()) {
+        $entity->setNewRevision(FALSE);
       }
+      $entity->save();
     }
   }
 }

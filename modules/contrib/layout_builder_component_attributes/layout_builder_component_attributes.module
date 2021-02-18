@@ -83,7 +83,7 @@ function layout_builder_component_attributes_preprocess_block(&$variables) {
  * Implements hook_contextual_links_alter().
  */
 function layout_builder_component_attributes_contextual_links_alter(array &$links, $group, array $route_parameters) {
-  if ($group == 'layout_builder_block') {
+  if ($group == 'layout_builder_block' && isset($links['layout_builder_block_attributes'])) {
     // Link weights are not respected, so a glorified array splice is used
     // instead. The 'Manage attributes' link should be inserted immediately
     // after the 'Configure' link.

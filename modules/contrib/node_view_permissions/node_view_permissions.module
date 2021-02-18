@@ -20,7 +20,7 @@ function node_view_permissions_node_access_records(NodeInterface $node) {
   // We don't want to override view published permissions.
   $languages = $node->getTranslationLanguages();
   foreach ($languages as $langcode => $language) {
-    if ($langcode === Language::LANGCODE_NOT_APPLICABLE) {
+    if ($langcode === Language::LANGCODE_NOT_APPLICABLE || $langcode === Language::LANGCODE_NOT_SPECIFIED) {
       // If node is not translatable, check the publish status of it.
       if ($node->isPublished()) {
         $grants[] = [

@@ -18,9 +18,13 @@ if (!defined('IFRAME_DEBUG_LEVEL')) {
  * Function "dpr" is from devel-module, we will use it if exists.
  */
 function iframe_debug($level, $func = 'iframe', $debugvar = NULL) {
-  if ($level <= IFRAME_DEBUG_LEVEL) {
-    $develdumper = \Drupal::service('devel.dumper');
-    if (isset($develdumper)) {
+    if ($level <= IFRAME_DEBUG_LEVEL) {
+    try {
+        $develdumper = \Drupal::service('devel.dumper', false);
+    } catch (Exception $exception) {
+        $develdumper = '';
+    }
+    if (isset($develdumper) && is_object($develdumper)) {
       $develdumper->dumpOrExport($debugvar, $func, NULL, 'drupal_variable');
     }
     else {

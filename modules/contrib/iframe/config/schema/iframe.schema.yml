@@ -1,0 +1,92 @@
+field.widget.settings.iframe_urlwidthheight:
+  type: mapping
+  mapping:
+    width:
+      label: 'Iframe Width'
+      type: string
+    height:
+      label: 'Iframe Height'
+      type: string
+    class:
+      label: 'Additional CSS Class'
+      type: string
+    expose_class:
+      label: 'Expose Additional CSS Class'
+      type: integer
+    frameborder:
+      label: 'Frameborder'
+      type: string
+    scrolling:
+      label: 'Scrolling'
+      type: string
+    transparency:
+      label: 'Transparency'
+      type: string
+    tokensupport:
+      label: 'Token Support'
+      type: string
+    allowfullscreen:
+      label: 'Allow fullscreen'
+      type: string
+
+field.widget.settings.iframe_url:
+  type: mapping
+  mapping:
+    width:
+      label: 'Iframe Width'
+      type: string
+    height:
+      label: 'Iframe Height'
+      type: string
+    class:
+      label: 'Additional CSS Class'
+      type: string
+    expose_class:
+      label: 'Expose Additional CSS Class'
+      type: integer
+    frameborder:
+      label: 'Frameborder'
+      type: string
+    scrolling:
+      label: 'Scrolling'
+      type: string
+    transparency:
+      label: 'Transparency'
+      type: string
+    tokensupport:
+      label: 'Token Support'
+      type: string
+    allowfullscreen:
+      label: 'Allow fullscreen'
+      type: string
+
+field.widget.settings.iframe_urlheight:
+  type: mapping
+  mapping:
+    width:
+      label: 'Iframe Width'
+      type: string
+    height:
+      label: 'Iframe Height'
+      type: string
+    class:
+      label: 'Additional CSS Class'
+      type: string
+    expose_class:
+      label: 'Expose Additional CSS Class'
+      type: integer
+    frameborder:
+      label: 'Frameborder'
+      type: string
+    scrolling:
+      label: 'Scrolling'
+      type: string
+    transparency:
+      label: 'Transparency'
+      type: string
+    tokensupport:
+      label: 'Token Support'
+      type: string
+    allowfullscreen:
+      label: 'Allow fullscreen'
+      type: string

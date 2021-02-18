@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit3fce8f4a181cebd8755fd48a5a1fe4ff
+class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -589,7 +589,6 @@ class ComposerStaticInit3fce8f4a181cebd8755fd48a5a1fe4ff
         'Drupal\\Core\\Site\\Settings' => __DIR__ . '/../..' . '/core/lib/Drupal/Core/Site/Settings.php',
         'Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
         'PEAR_Exception' => __DIR__ . '/..' . '/pear/pear_exception/PEAR/Exception.php',
-        'Spoons\\ScriptHandler' => __DIR__ . '/../..' . '/modules/contrib/devel/.spoons/ScriptHandler.php',
         'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
         'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
@@ -598,11 +597,11 @@ class ComposerStaticInit3fce8f4a181cebd8755fd48a5a1fe4ff
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit3fce8f4a181cebd8755fd48a5a1fe4ff::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit3fce8f4a181cebd8755fd48a5a1fe4ff::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit3fce8f4a181cebd8755fd48a5a1fe4ff::$prefixesPsr0;
-            $loader->fallbackDirsPsr0 = ComposerStaticInit3fce8f4a181cebd8755fd48a5a1fe4ff::$fallbackDirsPsr0;
-            $loader->classMap = ComposerStaticInit3fce8f4a181cebd8755fd48a5a1fe4ff::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit243c0f8eb445e797e727f14305cf6395::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit243c0f8eb445e797e727f14305cf6395::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit243c0f8eb445e797e727f14305cf6395::$prefixesPsr0;
+            $loader->fallbackDirsPsr0 = ComposerStaticInit243c0f8eb445e797e727f14305cf6395::$fallbackDirsPsr0;
+            $loader->classMap = ComposerStaticInit243c0f8eb445e797e727f14305cf6395::$classMap;
 
         }, null, ClassLoader::class);
     }
