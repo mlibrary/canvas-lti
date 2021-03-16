@@ -72,6 +72,24 @@ function _modal_form_ajax_submit(array $form, FormStateInterface &$form_state) {
  */
 function custom_extras_node_presave(NodeInterface $node) {
   if ($node->bundle() == 'class_page') {
+    $context_label = $node->get('field_context_label')->value;;
+    $context_title = $node->getTitle();;
+    $context_labels_titles = $node->get('field_context_labels_titles')->getValue();
+    $context_label_title_history = [];
+    foreach ($context_labels_titles as $context_label_title) {
+      $context_label_title_history[] = $context_label_title['value'];
+    }
+    if (empty($context_label_title_history)) {
+      $node->get('field_context_labels_titles')->setValue([$context_label, $context_title]);
+    }
+    else {
+      if (!in_array($context_label, $context_label_title_history)) {
+        $node->get('field_context_labels_titles')->appendItem($context_label);
+      }
+      if (!in_array($context_title, $context_label_title_history) && $context_title != $context_label) {
+        $node->get('field_context_labels_titles')->appendItem($context_title);
+      }
+    }
     $has_blocks = $node->get('field_blocks')->getValue();
     if (!empty($has_blocks)) {
       foreach ($has_blocks as $key => $block) {
