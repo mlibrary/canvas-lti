@@ -80,7 +80,8 @@ function custom_extras_node_presave(NodeInterface $node) {
       $context_label_title_history[] = $context_label_title['value'];
     }
     if (empty($context_label_title_history)) {
-      $node->get('field_context_labels_titles')->setValue([$context_label, $context_title]);
+      $value = array_unique([$context_label, $context_title]);
+      $node->get('field_context_labels_titles')->setValue($value);
     }
     else {
       if (!in_array($context_label, $context_label_title_history)) {
