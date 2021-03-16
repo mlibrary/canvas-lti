@@ -3,6 +3,10 @@
  * Visual styles for Bartik's forms.
  */
 
+.form-type-vertical-tabs {
+  display:none;
+}
+
 /* Password field. */
 .password-field {
   margin: 0;
