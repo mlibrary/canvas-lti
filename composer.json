@@ -26,6 +26,7 @@
         "drupal/core": "^8.7.0",
         "drupal/devel": "^4.0",
         "drupal/extra_field_description": "^1.6",
+        "drupal/field_group": "^3.1",
         "drupal/field_permissions": "^1.0",
         "drupal/field_show_all": "1.0.x-dev",
         "drupal/fieldblock": "^2.0@alpha",

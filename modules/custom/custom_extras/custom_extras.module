@@ -54,6 +54,17 @@ function custom_extras_form_alter(&$form, FormStateInterface $form_state, $form_
     $form['actions']['submit']['#submit'][] = '_modal_form_ajax_submit';
     $form['actions']['submit']['#attributes']['class'][] = 'use-ajax-submit';
   }
+  if (in_array($form_id, ['node_class_page_edit_form','node_class_page_form'])) {
+    $can_edit = _custom_extras_is_admin();
+    if (empty($can_edit)) {
+      $form['field_consumer_id']['#access'] = FALSE;
+      $form['field_context_id']['#access'] = FALSE;
+      $form['field_context_title']['#access'] = FALSE;
+      $form['field_context_label']['#access'] = FALSE;
+      $form['field_context_labels_titles']['#access'] = FALSE;
+      $form['field_resource_link_id']['#access'] = FALSE;
+    }
+  }
 }
 
 function _modal_form_ajax_submit(array $form, FormStateInterface &$form_state) {
@@ -72,23 +83,28 @@ function _modal_form_ajax_submit(array $form, FormStateInterface &$form_state) {
  */
 function custom_extras_node_presave(NodeInterface $node) {
   if ($node->bundle() == 'class_page') {
-    $context_label = $node->get('field_context_label')->value;;
-    $context_title = $node->getTitle();;
+    $context_label = $node->get('field_context_label')->value;
+    $context_title = $node->get('field_context_title')->value;
+    if (empty($node->getTitle())) {
+      $node->setTitle($context_title);
+    }
     $context_labels_titles = $node->get('field_context_labels_titles')->getValue();
     $context_label_title_history = [];
     foreach ($context_labels_titles as $context_label_title) {
       $context_label_title_history[] = $context_label_title['value'];
     }
     if (empty($context_label_title_history)) {
-      $value = array_unique([$context_label, $context_title]);
-      $node->get('field_context_labels_titles')->setValue($value);
+      $context_label_title_history = array_unique([$context_label, $context_title]);
+      $node->get('field_context_labels_titles')->setValue($context_label_title_history);
     }
     else {
       if (!in_array($context_label, $context_label_title_history)) {
         $node->get('field_context_labels_titles')->appendItem($context_label);
+        $context_label_title_history[] = $context_label;
       }
       if (!in_array($context_title, $context_label_title_history) && $context_title != $context_label) {
         $node->get('field_context_labels_titles')->appendItem($context_title);
+        $context_label_title_history[] = $context_title;
       }
     }
     $has_blocks = $node->get('field_blocks')->getValue();
@@ -108,7 +124,7 @@ function custom_extras_node_presave(NodeInterface $node) {
             $paragraph->save();
             break;
           case 'course_reserves':
-            $reserves = _custom_extras_get_reserves($node->getTitle());
+            $reserves = _custom_extras_get_reserves($context_label_title_history);
             $paragraph->get('field_course_reserves')->setValue($reserves);
             $paragraph->save();
             break;
@@ -242,7 +258,7 @@ function custom_extras_node_presave(NodeInterface $node) {
       $node->get('field_course_reserves_full')->setValue([]);
 
       if ($show_reserves) {
-        $reserves = _custom_extras_get_reserves($node->getTitle());
+        $reserves = _custom_extras_get_reserves($node->get('field_context_label')->value);
         $node->get('field_course_reserves')->setValue($reserves);
       }
       else {
@@ -266,7 +282,7 @@ function custom_extras_node_presave(NodeInterface $node) {
       $node->get('field_course_reserves')->setValue([]);
 
       if ($show_reserves) {
-        $reserves = _custom_extras_get_reserves($node->getTitle());
+        $reserves = _custom_extras_get_reserves($node->get('field_context_label')->value);
         $node->get('field_course_reserves_full')->setValue($reserves);
       }
       else {
@@ -274,14 +290,21 @@ function custom_extras_node_presave(NodeInterface $node) {
       }
     }
     elseif ($type_of_page == 'reserves_only') {
-      $reserves = _custom_extras_get_reserves($node->getTitle());
+      $reserves = _custom_extras_get_reserves($node->get('field_context_label')->value);
       $node->get('field_course_reserves_full')->setValue($reserves);
       $node->get('field_show_course_reserves')->setValue(['value' => TRUE]);
     }
   }
 }
 
-function _custom_extras_get_reserves($title) {
+function _custom_extras_is_admin() {
+  $can_edit_roles = array('administrator', 'administrator1', 'admin_light');
+  $can_edit = array_intersect(\Drupal::currentUser()->getRoles(), $can_edit_roles);
+  return $can_edit;
+}
+
+function _custom_extras_get_reserves($context_label_title_history) {
+//exit(print_r($context_label_title_history));
   $cr_url = 'https://bertrama-drupal8.www.lib.umich.edu/canvas/library-materials/';
   $data = ['context_label' => $title, 'context_title' => $title];
   $ch = curl_init( $cr_url );
