@@ -20,3 +20,7 @@ function canvas_lti_preprocess_field(&$variables) {
       }
   }
 }
+
+function canvas_lti_preprocess_menu_local_task(&$variables) {
+  $variables['link']['#url']->setOption('attributes', ['target' => '_self']);
+}
