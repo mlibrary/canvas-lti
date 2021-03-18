@@ -39,20 +39,23 @@ class LtiToolProviderRolesEventSubscriber implements EventSubscriberInterface
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             LtiToolProviderAuthenticatedEvent::EVENT_NAME => 'onAuthenticated',
         ];
     }
 
+    /**
+     * @param LtiToolProviderAuthenticatedEvent $event
+     */
     public function onAuthenticated(LtiToolProviderAuthenticatedEvent $event)
     {
         $mapped_roles = Drupal::config('lti_tool_provider_roles.settings')->get('mapped_roles');
         $context = $event->getContext();
         $user = $event->getUser();
 
-        $user_roles = user_roles(true, null);
+        $user_roles = user_roles(true);
         $lti_roles = parse_roles($context['roles']);
 
         if ($user->getDisplayName() === 'ltiuser') {

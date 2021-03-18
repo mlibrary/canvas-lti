@@ -12,7 +12,7 @@ class LtiToolProviderProvisionSettingsForm extends ConfigFormBase
     /**
      * {@inheritdoc}
      */
-    public function getFormId()
+    public function getFormId(): string
     {
         return 'lti_tool_provider_provision_settings';
     }
@@ -20,7 +20,7 @@ class LtiToolProviderProvisionSettingsForm extends ConfigFormBase
     /**
      * {@inheritdoc}
      */
-    protected function getEditableConfigNames()
+    protected function getEditableConfigNames(): array
     {
         return ['lti_tool_provider_provision.settings'];
     }
@@ -28,7 +28,7 @@ class LtiToolProviderProvisionSettingsForm extends ConfigFormBase
     /**
      * {@inheritdoc}
      */
-    public function buildForm(array $form, FormStateInterface $form_state, $filter = '')
+    public function buildForm(array $form, FormStateInterface $form_state, $filter = ''): array
     {
         $settings = $this->config('lti_tool_provider_provision.settings');
         $lti_roles = $this->config('lti_tool_provider.settings')->get('lti_roles');
@@ -249,7 +249,11 @@ class LtiToolProviderProvisionSettingsForm extends ConfigFormBase
         parent::submitForm($form, $form_state);
     }
 
-    public function getEntityBundles(array $form)
+    /**
+     * @param array $form
+     * @return array
+     */
+    public function getEntityBundles(array $form): array
     {
         return $form;
     }

@@ -49,7 +49,7 @@ class LtiToolProviderProvisionEventSubscriber implements EventSubscriberInterfac
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             LtiToolProviderLaunchRedirectEvent::EVENT_NAME => 'onLaunch',
@@ -57,6 +57,9 @@ class LtiToolProviderProvisionEventSubscriber implements EventSubscriberInterfac
         ];
     }
 
+    /**
+     * @param LtiToolProviderLaunchRedirectEvent $event
+     */
     public function onLaunch(LtiToolProviderLaunchRedirectEvent $event)
     {
         $context = $event->getContext();
@@ -86,6 +89,9 @@ class LtiToolProviderProvisionEventSubscriber implements EventSubscriberInterfac
         }
     }
 
+    /**
+     * @param LtiToolProviderProvisionCreateProvisionEvent $event
+     */
     public function onCreateProvision(LtiToolProviderProvisionCreateProvisionEvent $event)
     {
         $context = $event->getContext();

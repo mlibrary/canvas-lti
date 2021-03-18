@@ -135,7 +135,7 @@ class IframeDefaultFormatter extends FormatterBase {
     $allow[] = 'geolocation';
     $allow[] = 'encrypted-media';
     $allow[] = 'gyroscope';
-    $options['allow'] = implode(',', $allow);
+    $options['allow'] = implode(';', $allow);
 
     if (\Drupal::moduleHandler()->moduleExists('token')) {
       // Token Support for field "url" and "title".

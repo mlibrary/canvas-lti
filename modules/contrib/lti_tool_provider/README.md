@@ -67,6 +67,7 @@ my_module.lti_tool_provider.event_subscriber:
     - { name: 'event_subscriber' }
 ```
 my_module/src/EventSubscriber\MyModuleLtiToolProviderEventSubscriber.php
+
 ```php
 namespace Drupal\my_module\EventSubscriber;
 
@@ -88,7 +89,7 @@ class MyModuleLtiToolProviderEventSubscriber implements EventSubscriberInterface
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             LtiToolProviderLaunchRedirectEvent::EVENT_NAME => 'onLaunchRedirect',

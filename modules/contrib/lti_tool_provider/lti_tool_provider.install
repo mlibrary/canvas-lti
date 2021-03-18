@@ -10,7 +10,7 @@
  * @param $phase
  * @return array
  */
-function lti_tool_provider_requirements($phase)
+function lti_tool_provider_requirements($phase): array
 {
     $requirements = [];
     $oauth_available = class_exists('\\OauthProvider');

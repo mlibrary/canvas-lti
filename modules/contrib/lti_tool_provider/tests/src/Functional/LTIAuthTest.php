@@ -23,8 +23,13 @@ use Psr\Http\Message\ResponseInterface;
  *
  * @group basic_auth
  */
-class LTIAuth extends BrowserTestBase
+class LTIAuthTest extends BrowserTestBase
 {
+    /**
+     * @var string
+     */
+    protected $defaultTheme = 'stark';
+
     /**
      * @var array
      */
@@ -53,7 +58,7 @@ class LTIAuth extends BrowserTestBase
     /**
      * @throws EntityStorageException
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -81,7 +86,7 @@ class LTIAuth extends BrowserTestBase
     /**
      * Test authentication with a missing signature.
      * @throws OAuthException
-     * @throws GuzzleException
+     * @throws Exception
      */
     public function testMissingOauthSignature()
     {
@@ -117,13 +122,13 @@ class LTIAuth extends BrowserTestBase
             ->execute();
 
         $this->assertEquals(403, $response->getStatusCode());
-        $this->assertEquals(0, count($ids));
+        $this->assertCount(0, $ids);
     }
 
     /**
      * Test authentication with outdated timestamp.
      * @throws OAuthException
-     * @throws GuzzleException
+     * @throws Exception
      */
     public function testOutdatedTimestamp()
     {
@@ -162,14 +167,14 @@ class LTIAuth extends BrowserTestBase
             ->execute();
 
         $this->assertEquals(403, $response->getStatusCode());
-        $this->assertEquals(0, count($ids));
+        $this->assertCount(0, $ids);
     }
 
     /**
      * Test authentication with duplicate nonce.
      * @throws OAuthException
      * @throws EntityStorageException
-     * @throws GuzzleException
+     * @throws Exception
      */
     public function testDuplicateNonce()
     {
@@ -216,13 +221,13 @@ class LTIAuth extends BrowserTestBase
             ->execute();
 
         $this->assertEquals(403, $response->getStatusCode());
-        $this->assertEquals(0, count($ids));
+        $this->assertCount(0, $ids);
     }
 
     /**
      * Test successful authentication with ltiuser (no email).
      * @throws OAuthException
-     * @throws GuzzleException
+     * @throws Exception
      */
     public function testSuccessfulAuthenticationLtiUser()
     {
@@ -261,13 +266,13 @@ class LTIAuth extends BrowserTestBase
             ->execute();
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(1, count($ids));
+        $this->assertCount(1, $ids);
     }
 
     /**
      * Test successful authentication and account creation with new user.
      * @throws OAuthException
-     * @throws GuzzleException
+     * @throws Exception
      */
     public function testSuccessfulAuthenticationNewUser()
     {
@@ -306,14 +311,14 @@ class LTIAuth extends BrowserTestBase
             ->execute();
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(1, count($ids));
+        $this->assertCount(1, $ids);
     }
 
     /**
      * Test successful authentication with existing user.
      * @throws OAuthException
      * @throws EntityStorageException
-     * @throws GuzzleException
+     * @throws Exception
      */
     public function testSuccessfulAuthenticationExistingUser()
     {
@@ -331,11 +336,15 @@ class LTIAuth extends BrowserTestBase
         $mail = 'user@lms.edu';
 
         $user = User::create();
-        $user->setUsername($mail);
-        $user->setEmail($mail);
-        $user->setPassword(user_password());
-        $user->enforceIsNew();
-        $user->activate();
+
+        if ($user instanceof User) {
+            $user->setUsername($mail);
+            $user->setEmail($mail);
+            $user->setPassword(user_password());
+            $user->enforceIsNew();
+            $user->activate();
+        }
+
         $user->save();
 
         $url = Url::fromRoute('lti_tool_provider.lti');
@@ -361,7 +370,7 @@ class LTIAuth extends BrowserTestBase
             ->execute();
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(1, count($ids));
+        $this->assertCount(1, $ids);
     }
 
     /**
@@ -388,7 +397,7 @@ class LTIAuth extends BrowserTestBase
      * @throws Exception
      * @see \GuzzleHttp\ClientInterface::request()
      */
-    protected function request($method, Url $url, array $request_options)
+    protected function request(string $method, Url $url, array $request_options): ResponseInterface
     {
         $request_options[RequestOptions::HTTP_ERRORS] = false;
         // $request_options[RequestOptions::ALLOW_REDIRECTS] = FALSE;.
@@ -411,7 +420,7 @@ class LTIAuth extends BrowserTestBase
      * @return array
      *   Request options updated with the Xdebug cookie if present.
      */
-    protected function decorateWithXdebugCookie(array $request_options)
+    protected function decorateWithXdebugCookie(array $request_options): array
     {
         $session = $this->getSession();
         $driver = $session->getDriver();

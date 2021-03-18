@@ -10,7 +10,7 @@ class LtiToolProviderSettingsForm extends ConfigFormBase
     /**
      * {@inheritdoc}
      */
-    public function getFormId()
+    public function getFormId(): string
     {
         return 'lti_tool_provider_settings';
     }
@@ -18,7 +18,7 @@ class LtiToolProviderSettingsForm extends ConfigFormBase
     /**
      * {@inheritdoc}
      */
-    protected function getEditableConfigNames()
+    protected function getEditableConfigNames(): array
     {
         return ['lti_tool_provider.settings'];
     }
@@ -26,7 +26,7 @@ class LtiToolProviderSettingsForm extends ConfigFormBase
     /**
      * {@inheritdoc}
      */
-    public function buildForm(array $form, FormStateInterface $form_state)
+    public function buildForm(array $form, FormStateInterface $form_state): array
     {
         $settings = $this->config('lti_tool_provider.settings');
 

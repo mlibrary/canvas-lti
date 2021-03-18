@@ -6,6 +6,7 @@ use Drupal\Core\Entity\EntityStorageException;
 use Drupal;
 use Drupal\Core\Entity\ContentEntityConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 
 /**
@@ -18,7 +19,7 @@ class LtiToolProviderConsumerDeleteForm extends ContentEntityConfirmFormBase
     /**
      * {@inheritdoc}
      */
-    public function getQuestion()
+    public function getQuestion(): TranslatableMarkup
     {
         return $this->t('Are you sure you want to delete entity %name?', ['%name' => $this->entity->label()]);
     }
@@ -26,7 +27,7 @@ class LtiToolProviderConsumerDeleteForm extends ContentEntityConfirmFormBase
     /**
      * {@inheritdoc}
      */
-    public function getCancelUrl()
+    public function getCancelUrl(): Url
     {
         return new Url('entity.lti_tool_provider_consumer.collection');
     }
@@ -34,7 +35,7 @@ class LtiToolProviderConsumerDeleteForm extends ContentEntityConfirmFormBase
     /**
      * {@inheritdoc}
      */
-    public function getConfirmText()
+    public function getConfirmText(): TranslatableMarkup
     {
         return $this->t('Delete');
     }

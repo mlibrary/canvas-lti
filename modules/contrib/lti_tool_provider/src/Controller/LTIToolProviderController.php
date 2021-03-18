@@ -7,6 +7,7 @@ use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\Core\PageCache\ResponsePolicy\KillSwitch;
 use Drupal\Core\PageCache\ResponsePolicyInterface;
 use Drupal\Core\Routing\TrustedRedirectResponse;
 use Drupal\lti_tool_provider\Event\LtiToolProviderLaunchRedirectEvent;
@@ -48,7 +49,7 @@ class LTIToolProviderController extends ControllerBase
     /**
      * The page cache kill switch.
      *
-     * @var ResponsePolicyInterface
+     * @var ResponsePolicyInterface|KillSwitch
      */
     protected $killSwitch;
 
@@ -97,7 +98,7 @@ class LTIToolProviderController extends ControllerBase
      *   The request session.
      * @param mixed $context
      *   The LTI context.
-     * @param string $destination
+     * @param string | null $destination
      *   Optional destination.
      */
     public function __construct(
@@ -108,7 +109,7 @@ class LTIToolProviderController extends ControllerBase
         Request $request,
         SessionInterface $session,
         $context,
-        string $destination
+        ?string $destination
     ) {
         $this->configFactory = $configFactory;
         $this->loggerFactory = $loggerFactory->get('lti_tool_provider');
@@ -123,7 +124,7 @@ class LTIToolProviderController extends ControllerBase
     /**
      * {@inheritdoc}
      */
-    public static function create(ContainerInterface $container)
+    public static function create(ContainerInterface $container): LTIToolProviderController
     {
         /* @var $configFactory ConfigFactoryInterface */
         $configFactory = $container->get('config.factory');
@@ -163,7 +164,7 @@ class LTIToolProviderController extends ControllerBase
      *   This controller requires that the authentication.lti_tool_provider
      *   service is attached to this route in lti_tool_provider.routing.yml.
      */
-    public function ltiLaunch()
+    public function ltiLaunch(): RedirectResponse
     {
         try {
             $destination = '/';
@@ -252,7 +253,7 @@ class LTIToolProviderController extends ControllerBase
      * @return AccessResult
      *   The access result.
      */
-    public function access()
+    public function access(): AccessResult
     {
         return AccessResult::allowedIf(!empty($this->context));
     }

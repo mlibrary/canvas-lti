@@ -11,7 +11,7 @@ class LtiToolProviderAttributesSettingsForm extends ConfigFormBase
     /**
      * {@inheritdoc}
      */
-    public function getFormId()
+    public function getFormId(): string
     {
         return 'lti_tool_provider_attributes_form';
     }
@@ -19,7 +19,7 @@ class LtiToolProviderAttributesSettingsForm extends ConfigFormBase
     /**
      * {@inheritdoc}
      */
-    protected function getEditableConfigNames()
+    protected function getEditableConfigNames(): array
     {
         return ['lti_tool_provider_attributes.settings'];
     }
@@ -27,7 +27,7 @@ class LtiToolProviderAttributesSettingsForm extends ConfigFormBase
     /**
      * {@inheritdoc}
      */
-    public function buildForm(array $form, FormStateInterface $form_state, $filter = '')
+    public function buildForm(array $form, FormStateInterface $form_state, $filter = ''): array
     {
         $settings = $this->config('lti_tool_provider_attributes.settings');
         $mapped_attributes = $settings->get('mapped_attributes');

@@ -14,7 +14,7 @@ class LtiToolProviderConsumerListBuilder extends EntityListBuilder
     /**
      * {@inheritdoc}
      */
-    public function buildHeader()
+    public function buildHeader(): array
     {
         $header = [
             'id' => [
@@ -55,7 +55,7 @@ class LtiToolProviderConsumerListBuilder extends EntityListBuilder
     /**
      * {@inheritdoc}
      */
-    public function buildRow(EntityInterface $entity)
+    public function buildRow(EntityInterface $entity): array
     {
         $row = [];
 
@@ -81,7 +81,7 @@ class LtiToolProviderConsumerListBuilder extends EntityListBuilder
     /**
      * {@inheritdoc}
      */
-    public function render()
+    public function render(): array
     {
         $build = parent::render();
 

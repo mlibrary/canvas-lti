@@ -106,7 +106,7 @@ class LTIToolProvider implements AuthenticationProviderInterface
      *
      * @see https://www.imsglobal.org/wiki/step-1-lti-launch-request
      */
-    public function applies(Request $request)
+    public function applies(Request $request): bool
     {
         $lti_message_type = $request->request->get('lti_message_type');
         $lti_version = $request->request->get('lti_version');
@@ -205,7 +205,7 @@ class LTIToolProvider implements AuthenticationProviderInterface
      *   - OAUTH_OK if validated.
      *   - OAUTH_CONSUMER_KEY_UNKNOWN if not.
      */
-    public function consumerHandler($provider)
+    public function consumerHandler($provider): int
     {
         try {
             $ids = $this->entityTypeManager->getStorage('lti_tool_provider_consumer')
@@ -220,10 +220,7 @@ class LTIToolProvider implements AuthenticationProviderInterface
             $this->consumerEntity = $this->entityTypeManager->getStorage('lti_tool_provider_consumer')->load(key($ids));
             $provider->consumer_secret = $this->consumerEntity->get('consumer_secret')->getValue()[0]['value'];
         }
-        catch (InvalidPluginDefinitionException $e) {
-            return OAUTH_CONSUMER_KEY_UNKNOWN;
-        }
-        catch (PluginNotFoundException $e) {
+        catch (InvalidPluginDefinitionException | PluginNotFoundException $e) {
             return OAUTH_CONSUMER_KEY_UNKNOWN;
         }
 
@@ -239,7 +236,7 @@ class LTIToolProvider implements AuthenticationProviderInterface
      *   - OAUTH_BAD_TIMESTAMP if timestamp too old.
      *   - OAUTH_BAD_NONCE if nonce has been used.
      */
-    public function timestampNonceHandler($provider)
+    public function timestampNonceHandler($provider): int
     {
         // Verify timestamp has been set.
         if (!isset($provider->timestamp)) {

@@ -10,7 +10,7 @@ class LtiToolProviderRolesSettingsForm extends ConfigFormBase
     /**
      * {@inheritdoc}
      */
-    public function getFormId()
+    public function getFormId(): string
     {
         return 'lti_tool_provider_roles_settings';
     }
@@ -18,7 +18,7 @@ class LtiToolProviderRolesSettingsForm extends ConfigFormBase
     /**
      * {@inheritdoc}
      */
-    protected function getEditableConfigNames()
+    protected function getEditableConfigNames(): array
     {
         return ['lti_tool_provider_roles.settings'];
     }
@@ -26,7 +26,7 @@ class LtiToolProviderRolesSettingsForm extends ConfigFormBase
     /**
      * {@inheritdoc}
      */
-    public function buildForm(array $form, FormStateInterface $form_state, $filter = '')
+    public function buildForm(array $form, FormStateInterface $form_state, $filter = ''): array
     {
         $settings = $this->config('lti_tool_provider_roles.settings');
         $mapped_roles = $settings->get('mapped_roles');
@@ -36,7 +36,9 @@ class LtiToolProviderRolesSettingsForm extends ConfigFormBase
         $form['mapped_roles'] = [
             '#type' => 'table',
             '#tree' => true,
-            '#caption' => t('This page allows you to map LTI roles to Drupal user roles. This is applied every time a user logs in via LTI. Please note that if roles are mapped and they are not present on the LMS, they will be removed from the Drupal user. Please be careful when setting this for the authenticated user role.'),
+            '#caption' => t(
+                'This page allows you to map LTI roles to Drupal user roles. This is applied every time a user logs in via LTI. Please note that if roles are mapped and they are not present on the LMS, they will be removed from the Drupal user. Please be careful when setting this for the authenticated user role.'
+            ),
             '#header' => [t('User Role'), t('LTI Role')],
         ];
 

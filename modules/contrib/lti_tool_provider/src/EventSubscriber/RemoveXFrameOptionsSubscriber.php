@@ -4,15 +4,17 @@ namespace Drupal\lti_tool_provider\EventSubscriber;
 
 use Drupal;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class RemoveXFrameOptionsSubscriber implements EventSubscriberInterface
 {
     /**
-     * @param FilterResponseEvent $event
+     * @param ResponseEvent $event
+     *
+     * @todo Only add ResponseEvent typing to $event once D8 is no longer supported.
      */
-    public function RemoveXFrameOptions(FilterResponseEvent $event)
+    public function RemoveXFrameOptions($event)
     {
         if (Drupal::config('lti_tool_provider.settings')->get('iframe')) {
             $session = $event->getRequest()->getSession();
@@ -28,9 +30,9 @@ class RemoveXFrameOptionsSubscriber implements EventSubscriberInterface
     /**
      * @return array|mixed
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
-        $events[KernelEvents::RESPONSE][] = array('RemoveXFrameOptions', -10);
+        $events[KernelEvents::RESPONSE][] = ['RemoveXFrameOptions', -10];
 
         return $events;
     }

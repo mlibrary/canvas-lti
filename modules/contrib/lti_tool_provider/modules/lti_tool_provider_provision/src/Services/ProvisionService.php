@@ -71,14 +71,17 @@ class ProvisionService
 
             if (!$provision) {
                 $provision = LtiToolProviderProvision::create();
-                $provision->set('consumer_id', $context['consumer_id']);
-                $provision->set('context_id', $context['context_id']);
-                $provision->set('context_label', $context['context_label']);
-                $provision->set('context_title', $context['context_title']);
-                $provision->set('resource_link_id', $context['resource_link_id']);
-                $provision->set('resource_link_title', $context['resource_link_title']);
-                $provision->set('provision_type', $entityType);
-                $provision->set('provision_bundle', $entityBundle);
+
+                if ($provision instanceof LtiToolProviderProvision) {
+                    $provision->set('consumer_id', $context['consumer_id']);
+                    $provision->set('context_id', $context['context_id']);
+                    $provision->set('context_label', $context['context_label']);
+                    $provision->set('context_title', $context['context_title']);
+                    $provision->set('resource_link_id', $context['resource_link_id']);
+                    $provision->set('resource_link_title', $context['resource_link_title']);
+                    $provision->set('provision_type', $entityType);
+                    $provision->set('provision_bundle', $entityBundle);
+                }
 
                 $event = new LtiToolProviderProvisionCreateProvisionEvent($context, $provision);
                 LtiToolProviderEvent::dispatchEvent($this->eventDispatcher, $event);
@@ -113,7 +116,7 @@ class ProvisionService
 
     /**
      * @param array $context
-     * @param EntityInterface $provision
+     * @param EntityInterface|LtiToolProviderProvision $provision
      * @return EntityInterface
      * @throws InvalidPluginDefinitionException
      * @throws PluginNotFoundException

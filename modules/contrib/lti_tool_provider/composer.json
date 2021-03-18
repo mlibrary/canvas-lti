@@ -1,0 +1,15 @@
+{
+  "name": "drupal/lti_tool_provider",
+  "description": "The LTI tool provider module provides an LTI authentication provider for Drupal.",
+  "type": "drupal-module",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://drupal.org/project/lti_tool_provider",
+  "support": {
+    "issues": "https://drupal.org/project/issues/lti_tool_provider",
+    "source": "https://git.drupalcode.org/project/lti_tool_provider"
+  },
+  "require": {
+    "php": "^7.3",
+    "ext-oauth": "*"
+  }
+}

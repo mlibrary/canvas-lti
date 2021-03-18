@@ -39,13 +39,16 @@ class LtiToolProviderAttributesEventSubscriber implements EventSubscriberInterfa
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             LtiToolProviderAuthenticatedEvent::EVENT_NAME => 'onAuthenticated',
         ];
     }
 
+    /**
+     * @param LtiToolProviderAuthenticatedEvent $event
+     */
     public function onAuthenticated(LtiToolProviderAuthenticatedEvent $event)
     {
         $mapped_attributes = $this->configFactory->get('lti_tool_provider_attributes.settings')->get('mapped_attributes');

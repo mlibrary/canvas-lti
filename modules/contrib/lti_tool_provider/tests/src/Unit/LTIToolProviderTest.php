@@ -7,7 +7,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Tests\UnitTestCase;
 use OauthProvider;
-use PHPUnit_Framework_MockObject_MockObject;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Drupal\lti_tool_provider\Authentication\Provider\LTIToolProvider;
@@ -36,28 +36,28 @@ class LTIToolProviderTest extends UnitTestCase
     /**
      * The mocked configuration factory.
      *
-     * @var ConfigFactoryInterface|PHPUnit_Framework_MockObject_MockObject
+     * @var ConfigFactoryInterface|MockObject
      */
     protected $configFactory;
 
     /**
      * The mocked Entity Manager.
      *
-     * @var EntityTypeManagerInterface|PHPUnit_Framework_MockObject_MockObject
+     * @var EntityTypeManagerInterface|MockObject
      */
     protected $entityTypeManager;
 
     /**
      * A mocked logger instance.
      *
-     * @var LoggerChannelFactoryInterface|PHPUnit_Framework_MockObject_MockObject
+     * @var LoggerChannelFactoryInterface|MockObject
      */
     protected $loggerFactory;
 
     /**
      * The mocked module handler.
      *
-     * @var EventDispatcherInterface|PHPUnit_Framework_MockObject_MockObject
+     * @var EventDispatcherInterface|MockObject
      */
     protected $eventDispatcher;
 
@@ -71,7 +71,7 @@ class LTIToolProviderTest extends UnitTestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -79,17 +79,17 @@ class LTIToolProviderTest extends UnitTestCase
         $this->entityTypeManager = $this->createMock('\Drupal\Core\Entity\EntityTypeManagerInterface');
 
         $this->eventDispatcher = $this->getMockBuilder('\Symfony\Component\EventDispatcher\EventDispatcher')
-            ->setMethods(['__construct'])
+            ->onlyMethods(['__construct'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->loggerFactory = $this->getMockBuilder('\Drupal\Core\Logger\LoggerChannelFactory')
-            ->setMethods(['__construct'])
+            ->addMethods(['__construct'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->provider = $this->getMockBuilder('\OAuthProvider')
-            ->setMethods(['__construct', 'checkOAuthRequest'])
+            ->onlyMethods(['__construct', 'checkOAuthRequest'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -123,7 +123,7 @@ class LTIToolProviderTest extends UnitTestCase
     /**
      * Request Provider.
      */
-    public function appliesProvider()
+    public function appliesProvider(): array
     {
         return [
             'empty request' => [false, Request::create('/lti', 'POST', [])],
@@ -368,7 +368,7 @@ class LTIToolProviderTest extends UnitTestCase
     /**
      * Generate a entity type manager for testing timestampNonceHandler.
      */
-    public function getNonceSpecificLtiToolProvider()
+    public function getNonceSpecificLtiToolProvider(): LTIToolProvider
     {
         $entityTypeManager = $this->entityTypeManager;
 
