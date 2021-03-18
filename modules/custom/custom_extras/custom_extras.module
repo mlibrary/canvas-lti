@@ -64,9 +64,9 @@ function custom_extras_form_alter(&$form, FormStateInterface $form_state, $form_
       $form['field_context_labels_titles']['#access'] = FALSE;
       $form['field_resource_link_id']['#access'] = FALSE;
     }
-    $form['#attributes']['target'] = '_self';
-    $form['actions']['preview']['#access'] = FALSE;
   }
+  $form['#attributes']['target'] = '_self';
+  $form['actions']['preview']['#access'] = FALSE;
 }
 
 function _modal_form_ajax_submit(array $form, FormStateInterface &$form_state) {
