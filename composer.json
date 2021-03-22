@@ -17,6 +17,7 @@
     "require": {
         "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.6.5",
+        "drupal/allow_iframed_site": "^3.0",
         "drupal/auto_entitylabel": "^3.0@beta",
         "drupal/autocomplete_field_match": "1.x-dev",
         "drupal/beautytips": "1.x-dev",

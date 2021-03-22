@@ -2,7 +2,7 @@
 
 body {
   color: #3b3b3b;
-  background: #292929;
+  background: #00274C;
 }
 #page,
 #main-wrapper,
@@ -41,7 +41,7 @@ a:active,
   background-color: #f6f6f2;
 }
 .site-footer {
-  background: #292929;
+  background: #00274C;
 }
 .region-header,
 .region-header a,
