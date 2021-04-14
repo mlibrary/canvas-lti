@@ -88,11 +88,11 @@ class CustomGuidesAdmin extends ConfigFormBase {
     ];
     $form['custom_guides_data1'] = [
       '#type' => 'textfield',
-      '#title' => t('Searchtools Data?'),
+      '#title' => t('Recommended Databases'),
       '#default_value' => $config->get('custom_guides_data1'),
       '#size' => 80,
       '#maxlength' => 200,
-      '#description' => t("The address of the data for searchtools?"),
+      '#description' => t("The address of the data for Recommended Databases"),
     ];
     /*
     $form['custom_guides_mail_recipient'] = [
