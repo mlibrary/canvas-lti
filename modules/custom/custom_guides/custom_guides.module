@@ -161,8 +161,8 @@ function _custom_guides($args) {
     drush_print($the_guide);
     $updated[] = \Drupal\Core\Render\Markup::create('<p>'.$the_guide.'</p>');
   }
-  //custom_uml_mail_send_mail('eliotwsc@umich.edu', $reply_to, 'guide errors', $message, 'custom_guides_errors');
-  //custom_uml_mail_send_mail($recipient, $reply_to, 'guide updated', $updated, 'custom_guides_updated');
+  custom_uml_mail_send_mail('eliotwsc@umich.edu', $reply_to, 'guide errors', $message, 'custom_guides_errors');
+  custom_uml_mail_send_mail('eliotwsc@umich.edu', $reply_to, 'guide updated', $updated, 'custom_guides_updated');
 }
 
 //do recommended databases
