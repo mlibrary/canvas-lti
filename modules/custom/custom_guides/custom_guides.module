@@ -87,6 +87,7 @@ function _custom_guides($args) {
     //strip any whitespace
     $title = trim($guide->title);
     $url = trim($guide->url);
+    $guide_id = trim($guide->entity_id);
 
     //check for duplicates
     if (in_array($url, $the_guides)) {
@@ -146,6 +147,7 @@ function _custom_guides($args) {
     }
     //set the guide values
     $guide_term->get('field_url')->setValue([['uri' => $url]]);
+    $guide_term->get('field_entity_id')->setValue([['value' => $guide_id]]);
     $guide_term->setName($title);
     $guide_term->get('status')->setValue([['value' => 1]]);
     $guide_term->save();
