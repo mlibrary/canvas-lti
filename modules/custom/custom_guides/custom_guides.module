@@ -105,14 +105,26 @@ function _custom_guides($args) {
     $guide_term_name = $query->execute();
     $query = \Drupal::entityQuery('taxonomy_term')
       ->condition('vid', 'research_guides')
+      ->condition('field_entity_id.value', $guide_id);
+    $guide_term_guide_id = $query->execute();
+    $query = \Drupal::entityQuery('taxonomy_term')
+      ->condition('vid', 'research_guides')
       ->condition('field_url.uri', $url)
+      ->condition('field_entity_id.value', $guide_id)
       ->condition('name', $title);
     $guide_term = $query->execute();
-    if ($guide_term_name !== $guide_term_uri || count($guide_term_uri) > 1 || count($guide_term_name) > 1 || count($guide_term) > 1) {
+    if ($guide_term_name !== $guide_term_uri || $guide_term_name !== $guide_term_guide_id || $guide_term_guide_id !== $guide_term_uri || count($guide_term_uri) > 1 || count($guide_term_name) > 1 || count($guide_term) > 1) {
       $errors[] = 'An error occurred.';
       $errors[] = 'There are '.count($guide_term_uri).' terms with the url '.$url;
       $errors[] = 'There are '.count($guide_term_name).' terms with the name '.$title;
+      $errors[] = 'There are '.count($guide_term_guide_id).' terms with the name '.$guide_id;
       foreach ($errors as $error) {
+        drush_print($error);
+      }
+      if (count($guide_term_guide_id) == 1) {
+        $guide_term = $guide_term_guide_id;
+        $error = 'The term with guide entity id '.$guide_id.' was updated with the url '.$url.' and the name '.$title;
+        $errors[] = $error;
         drush_print($error);
       }
       if (count($guide_term) !== 1) {
