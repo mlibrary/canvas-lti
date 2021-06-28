@@ -1,0 +1,38 @@
+#reserves li:nth-child(n+11) {
+  display:none;
+}
+#reserves li {
+  border-bottom: 1px solid #aaa;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+}
+#reserves {
+  /*remove later. for testing.*/
+   /*list-style: decimal;*/
+}
+.reserves-author, .reserves-location {
+  margin-left:20px;
+  margin-top:10px;
+}
+#reserves-more, #reserves-less {
+  cursor: pointer;
+  float: right;
+  text-decoration: underline;
+}
+#reserves-less {
+  display:none;
+}
+.available, .unavailable {
+  text-transform: capitalize;
+  margin-right:5px;
+}
+.available:after, .unavailable:after {
+  content: " · ";
+  color:black;
+}
+.available {
+  color:green;
+}
+.unavailable {
+  color:red;
+}

@@ -1,0 +1,7 @@
+custom_extras.admin:
+  path: /admin/config/system/custom-extras
+  defaults:
+    _title: Reserves Config
+    _form: \Drupal\custom_extras\Form\CustomReservesAdmin
+  requirements:
+    _permission: 'administer custom_extras'

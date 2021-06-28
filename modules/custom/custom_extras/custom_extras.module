@@ -10,6 +10,7 @@ use Drupal\Core\Ajax\CloseModalDialogCommand;
 use Drupal\Core\Ajax\RedirectCommand;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityInterface;
 
 /**
  * Implements hook_node_view().
@@ -127,9 +128,12 @@ function custom_extras_node_presave(NodeInterface $node) {
             $paragraph->save();
             break;
           case 'course_reserves':
-            $reserves = _custom_extras_get_reserves($context_label_title_history);
-            $paragraph->get('field_course_reserves')->setValue($reserves);
-            $paragraph->save();
+            $has_value = $paragraph->get('field_course_reserves')->value;
+            $reserves = _custom_extras_get_reserves($context_label_title_history, $has_value, $node->id());
+            if ($reserves != 'error') {
+              $paragraph->get('field_course_reserves')->setValue($reserves);
+              $paragraph->save();
+            }
             break;
           case 'library_hours':
             $hours = $paragraph->get('field_library_hours')->getValue();
@@ -208,6 +212,7 @@ function custom_extras_node_presave(NodeInterface $node) {
       }
     }
   }
+  /* we arent using this atm
   if ($node->bundle() == 'page') {
     $type_of_page = $node->get('field_type_of_page')->value;
     $show_reserves = $node->get('field_show_course_reserves')->value;
@@ -297,7 +302,7 @@ function custom_extras_node_presave(NodeInterface $node) {
       $node->get('field_course_reserves_full')->setValue($reserves);
       $node->get('field_show_course_reserves')->setValue(['value' => TRUE]);
     }
-  }
+  }*/
 }
 
 function _custom_extras_is_admin() {
@@ -306,20 +311,88 @@ function _custom_extras_is_admin() {
   return $can_edit;
 }
 
-function _custom_extras_get_reserves($context_label_title_history) {
-//exit(print_r($context_label_title_history));
-  $cr_url = 'https://bertrama-drupal8.www.lib.umich.edu/canvas/library-materials/';
-  $data = ['context_label' => $title, 'context_title' => $title];
-  $ch = curl_init( $cr_url );
-  curl_setopt( $ch, CURLOPT_POST, 1);
-  curl_setopt( $ch, CURLOPT_POSTFIELDS, $data);
-  curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1);
-  curl_setopt( $ch, CURLOPT_HEADER, 0);
-  curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
-  $response = curl_exec( $ch );
-  $reserves[0]['value'] = $response;
+function _custom_extras_get_reserves($context_label_title_history, $has_value = NULL, $nid = NULL) {
+  $api_key = \Drupal::config('custom_extras.settings')->get('custom_reserves_key');
+  $context_label_title_history =array_filter($context_label_title_history);
+  $q = implode(',OR;', array_map(function($str) {
+    return "course_code,contains," . rawurlencode($str);
+  }, $context_label_title_history));
+  $search_url = "https://api-na.hosted.exlibrisgroup.com/primo/v1/search?vid=01UMICH_INST:UMICH&tab=CourseReserves&scope=CourseReserves&limit=250&apikey={$api_key}&q={$q}";
+  $response = json_decode(file_get_contents($search_url));
+  if ($response->info->total == 0 && $has_value) {
+    if (!is_numeric($has_value)) {
+      $has_value = 0;
+    }
+    $has_value++;
+    if ($has_value < 4) {
+      _custom_extras_get_reserves($context_label_title_history, $has_value, $nid);
+    }
+    else {
+      custom_uml_mail_send_mail('eliotwsc@umich.edu', 'eliotwsc@umich.edu', 'No response from primo on node id '.$nid.' after 4 tries', $context_label_title_history, 'primo error');
+    }
+
+    return 'error';
+  }
+  $markup = '';
+  if ($response->info->total > 0) {
+    $markup .= '<ul id="reserves">';
+    foreach ($response->docs as $key => $doc) {
+      $item_number = $key + 1;
+      $title = $doc->pnx->display->title[0];
+      $mmsid = $doc->pnx->display->mms[0];
+      $markup .= "<li><strong>".$title."</strong>";
+      $author = '';
+      if (!empty($doc->pnx->display->creator) && count($doc->pnx->display->creator) > 0) {
+        $author = '<div class="reserves-author"><strong>Author</strong><br/>';
+        foreach ($doc->pnx->display->creator as $creator) {
+          $author .= explode('$$', $creator)[0].'<br/>';
+        }
+      }
+      if (!empty($doc->pnx->display->contributor) && count($doc->pnx->display->contributor) > 0) {
+        if (empty($author)) {
+          $author = '<div class="reserves-author"><strong>Author</strong><br/>';
+        }
+        foreach ($doc->pnx->display->contributor as $contributor) {
+          $author .= explode('$$', $contributor)[0].'<br/>';
+        }
+      }
+      if (!empty($author)) {
+        $markup .= $author.'</div>';
+      }
+      if ((!empty($doc->delivery->holding) && count($doc->delivery->holding) > 0) || (!empty($doc->delivery->link) && count($doc->delivery->link) > 0)) {
+        $markup .= '<div class="reserves-location"><strong>Location</strong><br/>';
+        $location = '';
+        if (!empty($doc->delivery->holding)) {
+          foreach ($doc->delivery->holding as $holding) {
+            $status = $holding->availabilityStatus;
+            if ($holding->availabilityStatus == 'available') {
+              $status = "<span class='available'>".$holding->availabilityStatus."</span>";
+            }
+            if ($holding->availabilityStatus == 'unavailable') {
+              $status = "<span class='unavailable'>".$holding->availabilityStatus."</span>";
+            }
+            $location .= $status." ".$holding->mainLocation.": ".$holding->callNumber."<br/>";
+          }
+        }
+        if (in_array('Alma-E', $doc->delivery->deliveryCategory)) {
+          $location .= "<a href='https://testing.mgetit.kubernetes.lib.umich.edu/resolve?u.ignore_date_coverage=true&rft.mms_id={$mmsid}' target='_blank'>MGetIt</a><br/>";
+        }
+        $markup .= $location.'</div>';
+      }
+      $markup .= "</li>";
+    }
+    $markup .= "</ul>";
+    if (count($response->docs) > 10) {
+      $markup .= "<span id='reserves-more'>show all ".count($response->docs)." reserves</span>";
+      $markup .= "<span id='reserves-less'>show fewer reserves</span>";
+    }
+  }
+  else {
+    $markup = '<p>No course reserves found.</p>';
+  }
+  $reserves[0]['value'] = $markup;
   $reserves[0]['format'] = 'full_html';
-  
+  $reserves[0]['_attributes'] = [];
   return $reserves;
 }
 
@@ -330,4 +403,39 @@ function _custom_extras_encoding($data) {
     $user_data = mb_convert_encoding($data, 'UTF-8', $encoding);
   }
   return json_decode($data);
+}
+
+//update reserves
+function _custom_reserves() {
+  drush_print('Updating reserves...');
+  $query = \Drupal::entityQuery('paragraph')
+    ->condition('type', 'course_reserves');
+  $reserves = $query->execute();
+  $updated = [];
+  foreach ($reserves as $reserve) {
+    $paragraph = Paragraph::load($reserve);
+    $node = $paragraph->getParentEntity();
+    if (!in_array($node->id(), $updated)) {
+      drush_print('Saving node id '.$node->id().' with reserve id '.$paragraph->id());
+      $node->save();
+      $updated[] = $node->id();
+    }
+    else {
+      drush_print('Skipping reserve id '.$paragraph->id().' because its parent node id '.$node->id().' was saved already.');
+    }
+  }
+  drupal_flush_all_caches();
+/*
+  $message = array();
+  foreach ($errors as $error) {
+    drush_print($error);
+    $message[] = \Drupal\Core\Render\Markup::create('<p>'.$error.'</p>');
+  }
+  foreach ($the_databases as $the_database) {
+    drush_print($the_database);
+    $updated[] = \Drupal\Core\Render\Markup::create('<p>'.$the_database.'</p>');
+  }
+  custom_uml_mail_send_mail('eliotwsc@umich.edu', $reply_to, 'database errors', $message, 'custom_databases_errors');
+  custom_uml_mail_send_mail('eliotwsc@umich.edu', $reply_to, 'database updated', $updated, 'custom_databases_updated');
+*/
 }

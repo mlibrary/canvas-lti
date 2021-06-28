@@ -1,0 +1,4 @@
+administer custom_extras:
+  title: 'Administer Reserves'
+  description: 'Allows a user to configure custom_extras settings.'
+  restrict access: TRUE

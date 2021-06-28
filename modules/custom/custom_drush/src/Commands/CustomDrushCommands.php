@@ -188,6 +188,18 @@ class CustomDrushCommands extends DrushCommands {
   }
 
   /**
+   * Run UM Reserves Update.
+   *
+   * @validate-module-enabled custom_extras
+   *
+   * @command custom_drush:update_reserves
+   * @aliases update-reserves,custom_drush-update_reserves
+   */
+  public function updateReserves() {
+    _custom_reserves();
+  }
+
+  /**
    * Run Convert Field Collections to Paragraphs.
    *
    * @validate-module-enabled custom_shortcodes,custom_uml_mail

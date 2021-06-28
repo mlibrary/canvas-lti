@@ -1,0 +1,5 @@
+custom_extras.admin:
+  route_name: custom_extras.admin
+  title: Reserves Settings
+  description: 'Control the custom_extras module behavior'
+  parent: system.admin_config_system
