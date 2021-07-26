@@ -375,7 +375,7 @@ function _custom_extras_get_reserves($context_label_title_history, $has_value = 
           }
         }
         if (in_array('Alma-E', $doc->delivery->deliveryCategory)) {
-          $location .= "<a href='https://testing.mgetit.kubernetes.lib.umich.edu/resolve?u.ignore_date_coverage=true&rft.mms_id={$mmsid}' target='_blank'>MGetIt</a><br/>";
+          $location .= "<a href='https://mgetit.lib.umich.edu/resolve?u.ignore_date_coverage=true&rft.mms_id={$mmsid}' target='_blank'>MGetIt</a><br/>";
         }
         $markup .= $location.'</div>';
       }
