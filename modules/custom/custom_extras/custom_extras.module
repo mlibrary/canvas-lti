@@ -328,14 +328,14 @@ function _custom_extras_get_reserves($context_label_title_history, $has_value = 
       _custom_extras_get_reserves($context_label_title_history, $has_value, $nid);
     }
     else {
-      custom_uml_mail_send_mail('eliotwsc@umich.edu', 'eliotwsc@umich.edu', 'No response from primo on node id '.$nid.' after 4 tries', $context_label_title_history, 'primo error');
+      custom_uml_mail_send_mail('eliotwsc@umich.edu', 'eliotwsc@umich.edu', 'No response from primo on node id '.$nid.' after 4 tries to '.$search_url, $context_label_title_history, 'primo error');
     }
 
     return 'error';
   }
   $markup = '';
   if ($response->info->total > 0) {
-    $markup .= '<ul id="reserves">';
+    $markup .= '<p>If an item is listed as “unavailable” it may be checked out. Find it in <a href="https://search.lib.umich.edu/catalog">Library Catalog Search</a> for more information or contact Ask a Librarian for help.</p><ul id="reserves">';
     foreach ($response->docs as $key => $doc) {
       $item_number = $key + 1;
       $title = $doc->pnx->display->title[0];
@@ -388,7 +388,7 @@ function _custom_extras_get_reserves($context_label_title_history, $has_value = 
     }
   }
   else {
-    $markup = '<p>No course reserves found.</p>';
+    $markup = '<p>Instructors can place materials on course reserves, but nothing was found for this course.</p>';
   }
   $reserves[0]['value'] = $markup;
   $reserves[0]['format'] = 'full_html';
