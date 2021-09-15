@@ -371,7 +371,7 @@ function _custom_extras_get_reserves($context_label_title_history, $has_value = 
             if ($holding->availabilityStatus == 'unavailable') {
               $status = "<span class='unavailable'>".$holding->availabilityStatus."</span>";
             }
-            $location .= $status." ".$holding->mainLocation.": ".$holding->callNumber."<br/>";
+            $location .= $status." ".$holding->mainLocation." ".$holding->subLocation.": ".$holding->callNumber."<br/>";
           }
         }
         if (in_array('Alma-E', $doc->delivery->deliveryCategory)) {
