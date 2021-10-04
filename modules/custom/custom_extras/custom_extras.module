@@ -56,7 +56,7 @@ function custom_extras_form_alter(&$form, FormStateInterface $form_state, $form_
     $form['actions']['submit']['#attributes']['class'][] = 'use-ajax-submit';
   }
   if (in_array($form_id, ['node_class_page_edit_form','node_class_page_form'])) {
-    $form['title']['widget'][0]['value']['#field_prefix'] = '<span class="field-prefix"><div class="extra-description">The title field is automatically populated with the course name. If desired, you can change it to whatever makes sense for the context the tool is being used in.</div></span>';
+    $form['title']['widget'][0]['value']['#field_prefix'] = '<span class="field-prefix"><div class="extra-description">The title field is automatically populated with the course name. You can change it to represent the purpose of the tool for this course.</div></span>';
     $can_edit = _custom_extras_is_admin();
     if (empty($can_edit)) {
       $form['field_consumer_id']['#access'] = FALSE;
