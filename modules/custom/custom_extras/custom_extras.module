@@ -32,7 +32,7 @@ function custom_extras_node_view(array &$build, NodeInterface $node, EntityViewD
       $user = \Drupal::currentUser();
       $build['#cache']['max-age'] = 0;
       if ($user->hasPermission('edit any '.$bundle.' content')) {
-        \Drupal::messenger()->addError(t('Select the Edit tab to customize this page. You can add course-specific library information (library specialists, guides, resource links, course reserves, videos), a library search box, and a text introduction, as desired.'), TRUE);
+        \Drupal::messenger()->addStatus(t('Welcome! Select the Edit tab to add appropriate library tools in order to share course-specific information (specialists, guides, resource links, course reserves, videos) with your students.'), TRUE);
       }
       else if ($user->hasPermission('view any '.$bundle.' content')) {
         \Drupal::messenger()->addError(t('Your instructor hasn’t added any course-specific library information yet. You can use Ask a Librarian to contact a library specialist.'), TRUE);

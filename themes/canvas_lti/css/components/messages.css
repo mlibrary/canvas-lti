@@ -16,3 +16,10 @@
 .messages:last-child {
   margin-bottom: 13px;
 }
+.messages--status {
+  color: #115F27;
+  border-color: #20A848 #20A848 #20A848 transparent;  /* LTR */
+  background-color: #EAF8EE;
+  background-image: none;
+  box-shadow: -8px 0 0 #77b259; /* LTR */
+}

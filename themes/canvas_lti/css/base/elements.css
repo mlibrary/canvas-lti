@@ -150,3 +150,7 @@ ul ul {
 [dir="rtl"] ul ul {
   padding: 0 1em 0.25em 0;
 }
+
+.node-form .form-wrapper {
+  margin-bottom:0 !important;
+}
