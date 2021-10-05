@@ -9,6 +9,10 @@ https://www.drupal.org/node/2916876
 Source: https://www.drupal.org/files/issues/2020-06-23/2916876-92.patch
 
 
+https://www.drupal.org/node/3080666
+Source: https://www.drupal.org/files/issues/2020-10-13/3080666-22.patch
+
+
 https://www.drupal.org/node/3048327
 Source: https://www.drupal.org/files/issues/2019-07-18/0001-quickedit-inline-entity-form-complex-fix-and-tests_0.patch
 

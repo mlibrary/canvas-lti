@@ -3125,6 +3125,7 @@
                 "patches_applied": {
                     "add primary to primary patch": "patches/primary_primary.patch",
                     "https://www.drupal.org/node/2916876": "https://www.drupal.org/files/issues/2020-06-23/2916876-92.patch",
+                    "https://www.drupal.org/node/3080666": "https://www.drupal.org/files/issues/2020-10-13/3080666-22.patch",
                     "https://www.drupal.org/node/3048327": "https://www.drupal.org/files/issues/2019-07-18/0001-quickedit-inline-entity-form-complex-fix-and-tests_0.patch"
                 }
             },
@@ -3961,6 +3962,64 @@
                 "source": "https://git.drupalcode.org/project/node_view_permissions"
             },
             "install-path": "../../modules/contrib/node_view_permissions"
+        },
+        {
+            "name": "drupal/oembed_providers",
+            "version": "2.0.0-rc2",
+            "version_normalized": "2.0.0.0-RC2",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/oembed_providers.git",
+                "reference": "2.0.0-rc2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/oembed_providers-2.0.0-rc2.zip",
+                "reference": "2.0.0-rc2",
+                "shasum": "9b7f2cd7f06a065a43546d4c69e0ce1f71e9fec8"
+            },
+            "require": {
+                "drupal/core": "^8.8.0 || ^9.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "2.0.0-rc2",
+                    "datestamp": "1628194329",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "RC releases are not covered by Drupal security advisories."
+                    }
+                },
+                "patches_applied": {
+                    "https://www.drupal.org/node/3228512": "https://www.drupal.org/files/issues/2021-08-17/oembed_providers-missing_definition_attributes-3228512-2.patch",
+                    "add new video form to media library": "patches/add-new-video-to-media-library.patch"
+                }
+            },
+            "installation-source": "dist",
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Burge",
+                    "homepage": "https://www.drupal.org/u/chris-burge",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "Allows site builders and developers to manage oEmbed providers.",
+            "homepage": "https://drupal.org/project/oembed_providers",
+            "keywords": [
+                "Drupal",
+                "Media",
+                "oEmbed"
+            ],
+            "support": {
+                "source": "https://git.drupalcode.org/project/oembed_providers",
+                "issues": "https://www.drupal.org/project/issues/oembed_providers"
+            },
+            "install-path": "../../modules/contrib/oembed_providers"
         },
         {
             "name": "drupal/paragraphs",

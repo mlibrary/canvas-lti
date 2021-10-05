@@ -32,7 +32,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'ca5d3c7eeecb98d66227eb4b4f4153d9d9bc2d04',
+    'reference' => 'c584fb1f314402796796afc27b088727663565a4',
     'name' => 'drupal/recommended-project',
   ),
   'versions' => 
@@ -1107,6 +1107,15 @@ private static $installed = array (
       ),
       'reference' => '8.x-1.4',
     ),
+    'drupal/oembed_providers' => 
+    array (
+      'pretty_version' => '2.0.0-rc2',
+      'version' => '2.0.0.0-RC2',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '2.0.0-rc2',
+    ),
     'drupal/options' => 
     array (
       'replaced' => 
@@ -1183,7 +1192,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'ca5d3c7eeecb98d66227eb4b4f4153d9d9bc2d04',
+      'reference' => 'c584fb1f314402796796afc27b088727663565a4',
     ),
     'drupal/responsive_image' => 
     array (

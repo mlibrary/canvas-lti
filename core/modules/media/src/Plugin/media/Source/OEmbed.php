@@ -26,6 +26,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
 
 /**
  * Provides a media source plugin for oEmbed resources.
@@ -396,12 +397,16 @@ class OEmbed extends MediaSourceBase implements OEmbedInterface {
 
     // Remove the query string, since we do not want to include it in the local
     // thumbnail URI.
-    $local_thumbnail_url = parse_url($remote_thumbnail_url, PHP_URL_PATH);
+    $local_thumbnail_url = strtok($remote_thumbnail_url, '?');
 
     // Compute the local thumbnail URI, regardless of whether or not it exists.
     $configuration = $this->getConfiguration();
     $directory = $configuration['thumbnails_directory'];
-    $local_thumbnail_uri = "$directory/" . Crypt::hashBase64($local_thumbnail_url) . '.' . pathinfo($local_thumbnail_url, PATHINFO_EXTENSION);
+    $local_thumbnail_uri = "$directory/" . Crypt::hashBase64($local_thumbnail_url);
+    $path_extension = $this->getThumbnailFileExtensionFromUrl($local_thumbnail_url);
+    if ($path_extension) {
+      $local_thumbnail_uri .= '.' . $path_extension;
+    }
 
     // If the local thumbnail already exists, return its URI.
     if (file_exists($local_thumbnail_uri)) {
@@ -419,7 +424,7 @@ class OEmbed extends MediaSourceBase implements OEmbedInterface {
     }
 
     try {
-      $response = $this->httpClient->get($remote_thumbnail_url);
+      $response = $this->httpClient->request('GET', $remote_thumbnail_url);
       if ($response->getStatusCode() === 200) {
         $this->fileSystem->saveData((string) $response->getBody(), $local_thumbnail_uri, FileSystemInterface::EXISTS_REPLACE);
         return $local_thumbnail_uri;
@@ -434,6 +439,33 @@ class OEmbed extends MediaSourceBase implements OEmbedInterface {
       ]);
     }
     return NULL;
+  }
+
+  /**
+   * Tries to determine the file extension of the thumbnail based on its URL.
+   *
+   * @param string $thumbnail_url
+   *   The URL of the remote thumbnail.
+   *
+   * @return string|null
+   *   The file extension, or NULL if it could not be determined.
+   */
+  protected function getThumbnailFileExtensionFromUrl($thumbnail_url) {
+    $path_extension = pathinfo($thumbnail_url, PATHINFO_EXTENSION);
+    if ($path_extension) {
+      return $path_extension;
+    }
+
+    // If we cannot deduce the path extension of the remote URL by way of file
+    // name, we make a HEAD request to the resource and inspect the headers
+    // for information.
+    $response = $this->httpClient->request('HEAD', $thumbnail_url);
+    if (!$response->hasHeader('Content-Type')) {
+      return NULL;
+    }
+
+    $guesser = ExtensionGuesser::getInstance();
+    return $guesser->guess($response->getHeader('Content-Type')[0]);
   }
 
   /**
