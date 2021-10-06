@@ -339,6 +339,10 @@ function _custom_extras_get_reserves($context_label_title_history, $has_value = 
     foreach ($response->docs as $key => $doc) {
       $item_number = $key + 1;
       $title = $doc->pnx->display->title[0];
+      if (isset($doc->pnx->display->edition[0]) && !empty($doc->pnx->display->edition[0])) {
+        $edition = trim($doc->pnx->display->edition[0], '.');
+        $title .= ' ('.$edition.')';
+      }
       $mmsid = $doc->pnx->display->mms[0];
       $markup .= "<li><strong>".$title."</strong>";
       $author = '';
@@ -375,7 +379,7 @@ function _custom_extras_get_reserves($context_label_title_history, $has_value = 
           }
         }
         if (in_array('Alma-E', $doc->delivery->deliveryCategory)) {
-          $location .= "<a href='https://mgetit.lib.umich.edu/resolve?u.ignore_date_coverage=true&rft.mms_id={$mmsid}' target='_blank'>MGetIt</a><br/>";
+          $location .= "Available Online: <a href='https://mgetit.lib.umich.edu/resolve?u.ignore_date_coverage=true&rft.mms_id={$mmsid}' target='_blank'>MGetIt</a><br/>";
         }
         $markup .= $location.'</div>';
       }
