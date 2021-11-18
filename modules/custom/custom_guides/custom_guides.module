@@ -1,5 +1,6 @@
 <?php
 use \Drupal\taxonomy\Entity\Term;
+use \Drush\Drush;
 
 /*
 This module imports guide and database data from solr search
@@ -58,12 +59,12 @@ function _custom_guides($args) {
 
   //make sure we have some data
   if (empty($guide_data)) {
-    drush_print('ERROR WE DONT HAVE A FILE!');
+    Drush::output()->writeln('ERROR WE DONT HAVE A FILE!');
     exit;
   }
 
   //remove guides
-  drush_print('Setting guides as inactive...');
+  Drush::output()->writeln('Setting guides as inactive...');
   $query = \Drupal::entityQuery('taxonomy_term')
     ->condition('vid', 'research_guides');
   $guide_terms = $query->execute();
@@ -78,7 +79,7 @@ function _custom_guides($args) {
   }
 
   //set guides
-  drush_print('Updating guides Taxonomy...');
+  Drush::output()->writeln('Updating guides Taxonomy...');
   $errors = array();
   //keep track of guides to find duplicates
   $the_guides = array();
@@ -119,19 +120,19 @@ function _custom_guides($args) {
       $errors[] = 'There are '.count($guide_term_name).' terms with the name '.$title;
       $errors[] = 'There are '.count($guide_term_guide_id).' terms with the name '.$guide_id;
       foreach ($errors as $error) {
-        drush_print($error);
+        Drush::output()->writeln($error);
       }
       if (count($guide_term_guide_id) == 1) {
         $guide_term = $guide_term_guide_id;
         $error = 'The term with guide entity id '.$guide_id.' was updated with the url '.$url.' and the name '.$title;
         $errors[] = $error;
-        drush_print($error);
+        Drush::output()->writeln($error);
       }
       if (count($guide_term) !== 1) {
         $errors[] = 'There are '.count($guide_term).' terms with the url '.$url.' and the name '.$title;
         $errors[] = 'These terms will need to be fixed before they can be updated.';
         foreach ($errors as $error) {
-          drush_print($error);
+          Drush::output()->writeln($error);
         }
         continue;
       }
@@ -168,11 +169,11 @@ function _custom_guides($args) {
   }
   $message = array();
   foreach ($errors as $error) {
-    drush_print($error);
+    Drush::output()->writeln($error);
     $message[] = \Drupal\Core\Render\Markup::create('<p>'.$error.'</p>');
   }
   foreach ($the_guides as $the_guide) {
-    drush_print($the_guide);
+    Drush::output()->writeln($the_guide);
     $updated[] = \Drupal\Core\Render\Markup::create('<p>'.$the_guide.'</p>');
   }
   custom_uml_mail_send_mail('eliotwsc@umich.edu', $reply_to, 'guide errors', $message, 'custom_guides_errors');
@@ -190,12 +191,12 @@ function _custom_databases($args) {
 
   //make sure we have some data
   if (empty($database_data)) {
-    drush_print('ERROR WE DONT HAVE A FILE!');
+    Drush::output()->writeln('ERROR WE DONT HAVE A FILE!');
     exit;
   }
 
   //remove databases
-  drush_print('Setting databases as inactive...');
+  Drush::output()->writeln('Setting databases as inactive...');
   $query = \Drupal::entityQuery('taxonomy_term')
     ->condition('vid', 'recommended_databases');
   $database_terms = $query->execute();
@@ -210,7 +211,7 @@ function _custom_databases($args) {
   }
 
   //set databases
-  drush_print('Updating databases Taxonomy...');
+  Drush::output()->writeln('Updating databases Taxonomy...');
   $errors = array();
   //keep track of databases to find duplicates
   $the_databases = array();
@@ -244,19 +245,19 @@ function _custom_databases($args) {
       $errors[] = 'There are '.count($database_term_uri).' terms with the url '.$url;
       $errors[] = 'There are '.count($database_term_name).' terms with the name '.$title;
       foreach ($errors as $error) {
-        drush_print($error);
+        Drush::output()->writeln($error);
       }
       if (count($database_term_uri) == 1) {
         $database_term = $database_term_uri;
         $error = 'The term with the url '.$url.' was updated with the name '.$title;
         $errors[] = $error;
-        drush_print($error);
+        Drush::output()->writeln($error);
       }
       if (count($database_term) !== 1) {
         $errors[] = 'There are '.count($database_term).' terms with the url '.$url.' and the name '.$title;
         $errors[] = 'These terms will need to be fixed before they can be updated.';
         foreach ($errors as $error) {
-          drush_print($error);
+          Drush::output()->writeln($error);
         }
         continue;
       }
@@ -292,11 +293,11 @@ function _custom_databases($args) {
   }
   $message = array();
   foreach ($errors as $error) {
-    drush_print($error);
+    Drush::output()->writeln($error);
     $message[] = \Drupal\Core\Render\Markup::create('<p>'.$error.'</p>');
   }
   foreach ($the_databases as $the_database) {
-    drush_print($the_database);
+    Drush::output()->writeln($the_database);
     $updated[] = \Drupal\Core\Render\Markup::create('<p>'.$the_database.'</p>');
   }
   custom_uml_mail_send_mail('eliotwsc@umich.edu', $reply_to, 'database errors', $message, 'custom_databases_errors');

@@ -1,5 +1,5 @@
 name: Custom Drush
 type: module
 description: UM custom drush commands.
-core: 8.x
+core_version_requirement: ^8 || ^9
 package: UM Custom
