@@ -25,3 +25,10 @@ function oembed_providers_post_update_add_local_tasks() {
 function oembed_providers_post_update_decorator_constructor_change() {
   // Empty post-update function.
 }
+
+/**
+ * Clear caches due to updated ProviderRepositoryDecorator constructor.
+ */
+function oembed_providers_post_update_decorator_constructor_change2() {
+  // Empty post-update function.
+}

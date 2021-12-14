@@ -33,7 +33,7 @@ class RendererRecursionTest extends RendererTestBase {
    * @covers ::doRender
    */
   public function testRenderRecursionWithNestedRenderRoot() {
-    list($complex_child_markup, $parent_markup, $complex_child_template) = $this->setUpRenderRecursionComplexElements();
+    [$complex_child_markup, $parent_markup, $complex_child_template] = $this->setUpRenderRecursionComplexElements();
     $renderer = $this->renderer;
     $this->setUpRequest();
 
@@ -65,12 +65,12 @@ class RendererRecursionTest extends RendererTestBase {
    * @covers ::doRender
    */
   public function testRenderRecursionWithNestedRender() {
-    list($complex_child_markup, $parent_markup, $complex_child_template) = $this->setUpRenderRecursionComplexElements();
+    [$complex_child_markup, $parent_markup, $complex_child_template] = $this->setUpRenderRecursionComplexElements();
     $renderer = $this->renderer;
     $this->setUpRequest();
 
     $callable = function ($markup) use ($renderer, $complex_child_template) {
-      $this->assertStringStartsWith('<drupal-render-placeholder', (string) $markup, 'Rendered complex child output as expected, without the placeholder replaced, i.e. with just the placeholder.');
+      $this->assertStringStartsWith('<drupal-render-placeholder', $markup, 'Rendered complex child output as expected, without the placeholder replaced, i.e. with just the placeholder.');
       return $markup;
     };
 
@@ -99,7 +99,7 @@ class RendererRecursionTest extends RendererTestBase {
    * @covers ::renderPlain
    */
   public function testRenderRecursionWithNestedRenderPlain() {
-    list($complex_child_markup, $parent_markup, $complex_child_template) = $this->setUpRenderRecursionComplexElements();
+    [$complex_child_markup, $parent_markup, $complex_child_template] = $this->setUpRenderRecursionComplexElements();
     $renderer = $this->renderer;
     $this->setUpRequest();
 

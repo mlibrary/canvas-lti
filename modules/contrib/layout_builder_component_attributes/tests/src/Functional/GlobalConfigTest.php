@@ -97,9 +97,15 @@ class GlobalConfigTest extends BrowserTestBase {
     $assert_session->checkboxNotChecked('allowed_block_content_attributes[style]');
     $assert_session->checkboxNotChecked('allowed_block_content_attributes[data]');
 
-    // Verify storage in config.
+    // Load config.
     $config = \Drupal::service('config.factory')->getEditable('layout_builder_component_attributes.settings');
 
+    // Insert 'langcode' value into config and verify GlobalSettingsForm can
+    // handle keys it doesn't define in schema.
+    $config->set('langcode', 'en');
+    $config->save();
+
+    // Verify storage in config.
     $allowed_block_attributes = $config->get('allowed_block_attributes');
     $expected_value = [
       'class' => TRUE,
@@ -126,6 +132,10 @@ class GlobalConfigTest extends BrowserTestBase {
       'data' => FALSE,
     ];
     $this->assertIdentical($allowed_block_content_attributes, $expected_value);
+
+    // Reload settings page to verify no warnings, etc. are thrown.
+    $this->drupalGet('/admin/config/content/layout-builder-component-attributes');
+    $page->pressButton('Save configuration');
   }
 
 }

@@ -1,0 +1,7 @@
+services:
+  lti_tool_provider_content.event_subscriber:
+    class: Drupal\lti_tool_provider_content\EventSubscriber\LtiToolProviderContentEventSubscriber
+    tags:
+      - { name: 'event_subscriber' }
+    arguments:
+      - '@config.factory'

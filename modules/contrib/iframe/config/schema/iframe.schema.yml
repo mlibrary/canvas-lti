@@ -1,7 +1,10 @@
-field.field_settings.iframe:
+iframe.field.schema:
   type: mapping
-  label: 'Field settings'
+  label: Iframe default settings
   mapping:
+    url:
+      type: string
+      label: URL
     title:
       type: label
       label: Title
@@ -39,145 +42,46 @@ field.field_settings.iframe:
       label: Height
       nullable: true
 
+
+field.value.iframe:
+  type: iframe.field.schema
+  label: 'Default value'
+
+field.field_settings.iframe:
+  type: iframe.field.schema
+  label: 'Field settings'
+
 field.widget.settings.iframe_urlwidthheight:
-  type: mapping
+  type: iframe.field.schema
+  label: 'Iframe URL with width and height widget'
   mapping:
-    width:
-      label: 'Iframe Width'
-      type: string
-    height:
-      label: 'Iframe Height'
-      type: string
-    class:
-      label: 'Additional CSS Class'
-      type: string
     expose_class:
       label: 'Expose Additional CSS Class'
-      type: integer
-    frameborder:
-      label: 'Frameborder'
-      type: string
-    scrolling:
-      label: 'Scrolling'
-      type: string
-    transparency:
-      label: 'Transparency'
-      type: string
+      type: boolean
     tokensupport:
       label: 'Token Support'
-      type: string
-    allowfullscreen:
-      label: 'Allow fullscreen'
       type: string
 
 field.widget.settings.iframe_url:
-  type: mapping
-  mapping:
-    width:
-      label: 'Iframe Width'
-      type: string
-    height:
-      label: 'Iframe Height'
-      type: string
-    class:
-      label: 'Additional CSS Class'
-      type: string
-    expose_class:
-      label: 'Expose Additional CSS Class'
-      type: integer
-    frameborder:
-      label: 'Frameborder'
-      type: string
-    scrolling:
-      label: 'Scrolling'
-      type: string
-    transparency:
-      label: 'Transparency'
-      type: string
-    tokensupport:
-      label: 'Token Support'
-      type: string
-    allowfullscreen:
-      label: 'Allow fullscreen'
-      type: string
+  type: field.widget.settings.iframe_urlwidthheight
+  label: 'Iframe URL only widget'
 
 field.widget.settings.iframe_urlheight:
-  type: mapping
-  mapping:
-    width:
-      label: 'Iframe Width'
-      type: string
-    height:
-      label: 'Iframe Height'
-      type: string
-    class:
-      label: 'Additional CSS Class'
-      type: string
-    expose_class:
-      label: 'Expose Additional CSS Class'
-      type: integer
-    frameborder:
-      label: 'Frameborder'
-      type: string
-    scrolling:
-      label: 'Scrolling'
-      type: string
-    transparency:
-      label: 'Transparency'
-      type: string
-    tokensupport:
-      label: 'Token Support'
-      type: string
-    allowfullscreen:
-      label: 'Allow fullscreen'
-      type: string
+  type: field.widget.settings.iframe_urlwidthheight
+  label: 'Iframe URL with height widget'
 
-field.formatter.settings.iframe_formatter.default:
-  type: mapping
+field.formatter.settings.iframe_default:
+  type: iframe.field.schema
   label: 'Formatter "iframe_asurl" settings'
-  mapping:
-    url:
-      type: uri
-      label: URL
-    title:
-      type: label
-      label: 'IFrame caption'
-    width:
-      type: string
-      label: Width
-    height:
-      type: string
-      label: Height
-    class:
-      type: string
-      label: Class
-    expose_class:
-      type: string
-      label: 'Expose class'
-    frameborder:
-      type: string
-      label: 'Has frame border'
-    scrolling:
-      type: string
-      label: Scrolling
-    transparency:
-      type: string
-      label: Transparency
-    tokensupport:
-      type: string
-      label: 'Token support'
-    allowfullscreen:
-      type: string
-      label: 'Allow full screen'
 
 field.formatter.settings.iframe_asurl:
-  type: field.formatter.settings.iframe_formatter.default
-  label: Formatter 'iframe_asurl'
+  type: field.formatter.settings.iframe_default
+  label: 'Formatter "iframe_asurl"'
 
 field.formatter.settings.iframe_asurlwithuri:
-  type: field.formatter.settings.iframe_formatter.default
-  label: Formatter 'iframe_asurlwithuri'
+  type: field.formatter.settings.iframe_default
+  label: 'Formatter "iframe_asurlwithuri"'
 
 field.formatter.settings.iframe_only:
-  type: field.formatter.settings.iframe_formatter.default
-  label: Formatter 'iframe_only'
+  type: field.formatter.settings.iframe_default
+  label: 'Formatter "iframe_only"'

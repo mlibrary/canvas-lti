@@ -3,7 +3,7 @@
 </p>
 
 [![Continuous integration](https://github.com/neilime/php-css-lint/workflows/Continuous%20integration/badge.svg)](https://github.com/neilime/php-css-lint/actions?query=workflow%3A%22Continuous+integration%22)
-[![Coverage Status](https://coveralls.io/repos/github/neilime/php-css-lint/badge.svg)](https://coveralls.io/github/neilime/php-css-lint)
+[![Coverage Status](https://codecov.io/gh/neilime/php-css-lint/branch/master/graph/badge.svg)](https://codecov.io/gh/neilime/php-css-lint)
 [![Latest Stable Version](https://poser.pugx.org/neilime/php-css-lint/v/stable)](https://packagist.org/packages/neilime/php-css-lint)
 [![Total Downloads](https://poser.pugx.org/neilime/php-css-lint/downloads)](https://packagist.org/packages/neilime/php-css-lint)
 [![License](https://poser.pugx.org/neilime/php-css-lint/license)](https://packagist.org/packages/neilime/php-css-lint)
@@ -42,5 +42,32 @@
 
 1. [Installation](https://github.com/neilime/php-css-lint/wiki/Installation)
 2. [Usage](https://github.com/neilime/php-css-lint/wiki/Usage)
-3. [Code Coverage](https://coveralls.io/github/neilime/php-css-lint)
+3. [Code Coverage](https://codecov.io/gh/neilime/php-css-lint)
 4. [PHP Doc](https://neilime.github.io/php-css-lint/phpdoc)
+
+# Development
+
+## Setup
+
+```sh
+docker build -t php-css-lint .
+docker run --rm -it -v $(pwd):/app php-css-lint composer install
+```
+
+## Running tests
+
+```sh
+docker run --rm -it -v $(pwd):/app php-css-lint composer test
+```
+
+## Fix code linting
+
+```sh
+docker run --rm -it -v $(pwd):/app php-css-lint composer cbf
+```
+
+## Running CI scripts
+
+```sh
+docker run --rm -it -v $(pwd):/app php-css-lint composer ci
+```

@@ -1,0 +1,9 @@
+lti_tool_provider.admin.attributes.lti_v1.0_settings_form:
+  title: 'LTI 1.0/1.1'
+  route_name: lti_tool_provider.admin.attributes.lti_v1.0
+  base_route: lti_tool_provider.admin.attributes.lti_v1.0
+
+lti_tool_provider.admin.attributes.lti_v1.3_settings_form:
+  title: 'LTI 1.3'
+  route_name: lti_tool_provider.admin.attributes.lti_v1.3
+  base_route: lti_tool_provider.admin.attributes.lti_v1.0

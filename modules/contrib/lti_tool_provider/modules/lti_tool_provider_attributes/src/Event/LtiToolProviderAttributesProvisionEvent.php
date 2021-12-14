@@ -1,0 +1,63 @@
+<?php
+
+namespace Drupal\lti_tool_provider_attributes\Event;
+
+use Symfony\Component\EventDispatcher\Event;
+use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
+use Drupal\user\UserInterface;
+
+/**
+ * Implementation LtiToolProviderAttributesProvisionEvent class.
+ */
+class LtiToolProviderAttributesProvisionEvent extends Event {
+
+  /**
+   * @var \Drupal\lti_tool_provider\LTIToolProviderContextInterface
+   */
+  private $context;
+
+  /**
+   * @var \Drupal\user\UserInterface
+   */
+  private $user;
+
+  /**
+   * LtiToolProviderAttributesProvisionEvent constructor.
+   *
+   * @param \Drupal\lti_tool_provider\LTIToolProviderContextInterface $context
+   * @param \Drupal\user\UserInterface $user
+   */
+  public function __construct(LTIToolProviderContextInterface $context, UserInterface $user) {
+    $this->setContext($context);
+    $this->setUser($user);
+  }
+
+  /**
+   * @return \Drupal\lti_tool_provider\LTIToolProviderContextInterface
+   */
+  public function getContext(): LTIToolProviderContextInterface {
+    return $this->context;
+  }
+
+  /**
+   * @param \Drupal\lti_tool_provider\LTIToolProviderContextInterface $context
+   */
+  public function setContext(LTIToolProviderContextInterface $context) {
+    $this->context = $context;
+  }
+
+  /**
+   * @return \Drupal\user\UserInterface
+   */
+  public function getUser(): UserInterface {
+    return $this->user;
+  }
+
+  /**
+   * @param \Drupal\user\UserInterface $user
+   */
+  public function setUser(UserInterface $user): void {
+    $this->user = $user;
+  }
+
+}

@@ -7,23 +7,35 @@
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\lti_tool_provider_provision\Entity\LtiToolProviderProvision;
-use Drupal\lti_tool_provider_provision\Services\ProvisionService;
 
 /**
  * Implements hook_entity_predelete().
- * @param EntityInterface $entity
+ *
+ * @param \Drupal\Core\Entity\EntityInterface $entity
  */
-function lti_tool_provider_provision_entity_predelete(EntityInterface $entity)
-{
-    try {
-        /* @var $provisionService ProvisionService */
-        $provisionService = Drupal::service('lti_tool_provider_provision.provision');
-        $provision = $provisionService->getProvisionFromEntity($entity);
-        if ($provision && $provision instanceof LtiToolProviderProvision) {
-            $provision->delete();
-        }
+function lti_tool_provider_provision_entity_predelete(EntityInterface $entity) {
+  try {
+    /** @var \Drupal\lti_tool_provider_provision\Services\ProvisionService $provisionService */
+    $provisionService = Drupal::service('lti_tool_provider_provision.provision');
+    $provision = $provisionService->getProvisionFromEntity($entity);
+    if ($provision && $provision instanceof LtiToolProviderProvision) {
+      $provision->delete();
     }
-    catch (Exception $e) {
-        Drupal::logger('lti_tool_provider_provision')->error($e->getMessage());
-    }
+  }
+  catch (Exception $e) {
+    Drupal::logger('lti_tool_provider_provision')->error($e->getMessage());
+  }
+}
+
+/**
+ * To avoid key contains a dot/colon which in array which is not supported.
+ *
+ * Replace all '.' with '__' and all ':' with '___'.
+ *
+ * @param $key
+ *
+ * @return string|string[]|null
+ */
+function encode_key($key) {
+  return preg_replace('/\./', '__', preg_replace('/:/', '___', $key));
 }

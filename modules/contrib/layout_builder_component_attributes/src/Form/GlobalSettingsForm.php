@@ -18,6 +18,17 @@ class GlobalSettingsForm extends ConfigFormBase {
   const SETTINGS = 'layout_builder_component_attributes.settings';
 
   /**
+   * Configuration categories.
+   *
+   * @var array
+   */
+  protected $categories = [
+    'allowed_block_attributes',
+    'allowed_block_title_attributes',
+    'allowed_block_content_attributes',
+  ];
+
+  /**
    * {@inheritdoc}
    */
   public function getFormId() {
@@ -43,8 +54,10 @@ class GlobalSettingsForm extends ConfigFormBase {
     // attribute => attribute (for true).
     // attribute => 0 (for false).
     foreach ($config as $category => $cat_config) {
-      foreach ($cat_config as $attribute => $value) {
-        $config[$category][$attribute] = ($value) ? $attribute : 0;
+      if (in_array($category, $this->categories)) {
+        foreach ($cat_config as $attribute => $value) {
+          $config[$category][$attribute] = ($value) ? $attribute : 0;
+        }
       }
     }
 
@@ -90,22 +103,16 @@ class GlobalSettingsForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $config = $this->configFactory->getEditable(static::SETTINGS);
 
-    $form_values = [
-      'allowed_block_attributes' => $form_state->getValue('allowed_block_attributes'),
-      'allowed_block_title_attributes' => $form_state->getValue('allowed_block_title_attributes'),
-      'allowed_block_content_attributes' => $form_state->getValue('allowed_block_content_attributes'),
-    ];
+    // Loop through configuration categories.
+    foreach ($this->categories as $category) {
+      $cat_config = $form_state->getValue($category);
 
-    // Convert the FAPI values into booleans for config storage.
-    foreach ($form_values as $category => $cat_config) {
+      // Convert the FAPI values into booleans for config storage.
       foreach ($cat_config as $attribute => $value) {
-        $form_values[$category][$attribute] = ($value) ? TRUE : FALSE;
+        $cat_config[$attribute] = ($value) ? TRUE : FALSE;
       }
+      $config->set($category, $cat_config);
     }
-
-    $config->set('allowed_block_attributes', $form_values['allowed_block_attributes']);
-    $config->set('allowed_block_title_attributes', $form_values['allowed_block_title_attributes']);
-    $config->set('allowed_block_content_attributes', $form_values['allowed_block_content_attributes']);
 
     $config->save();
     parent::submitForm($form, $form_state);

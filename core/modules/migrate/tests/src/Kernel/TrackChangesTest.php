@@ -12,7 +12,7 @@ class TrackChangesTest extends MigrateTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'system',
     'user',
     'taxonomy',
@@ -24,7 +24,7 @@ class TrackChangesTest extends MigrateTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     // Create source test table.
     $this->sourceDatabase->schema()->createTable('track_changes_term', [
@@ -153,8 +153,10 @@ class TrackChangesTest extends MigrateTestBase {
    *   Property to evaluate.
    * @param string $value
    *   Value to evaluate.
+   *
+   * @internal
    */
-  protected function assertTermExists($property, $value) {
+  protected function assertTermExists(string $property, string $value): void {
     self::assertTrue($this->termExists($property, $value));
   }
 
@@ -165,8 +167,10 @@ class TrackChangesTest extends MigrateTestBase {
    *   Property to evaluate.
    * @param string $value
    *   Value to evaluate.
+   *
+   * @internal
    */
-  protected function assertTermDoesNotExist($property, $value) {
+  protected function assertTermDoesNotExist(string $property, string $value): void {
     self::assertFalse($this->termExists($property, $value));
   }
 
@@ -182,7 +186,7 @@ class TrackChangesTest extends MigrateTestBase {
    */
   protected function termExists($property, $value) {
     $property = $property === 'description' ? 'description__value' : $property;
-    $query = \Drupal::entityQuery('taxonomy_term');
+    $query = \Drupal::entityQuery('taxonomy_term')->accessCheck(FALSE);
     $result = $query
       ->condition($property, $value)
       ->range(0, 1)

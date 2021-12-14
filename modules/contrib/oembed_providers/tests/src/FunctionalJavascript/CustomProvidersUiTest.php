@@ -57,6 +57,10 @@ class CustomProvidersUiTest extends WebDriverTestBase {
     $assert_session = $this->assertSession();
     $page = $this->getSession()->getPage();
 
+    // Verify 'Test Provider' doesn't exist in the provider repository.
+    $keyed_providers = \Drupal::service('media.oembed.provider_repository')->getAll();
+    $this->assertArrayNotHasKey('Test Provider', $keyed_providers);
+
     $this->drupalGet('/admin/config/media/oembed-providers/custom-providers/add');
 
     $assert_session->pageTextContains('Endpoint #1');
@@ -131,6 +135,13 @@ class CustomProvidersUiTest extends WebDriverTestBase {
 
     $assert_session->pageTextContains("The Test Provider oEmbed provider was created.");
 
+    // Verify cached providers are cleared.
+    $this->AssertNull(\Drupal::service('keyvalue')->get('media')->get('oembed_providers'));
+
+    // Verify 'Test Provider' exists in the provider repository.
+    $keyed_providers = \Drupal::service('media.oembed.provider_repository')->getAll();
+    $this->assertArrayHasKey('Test Provider', $keyed_providers);
+
     $this->assertInstanceOf(OembedProvider::class, OembedProvider::load('test_provider'));
 
     // Load resulting config entity and compare to expected values.
@@ -170,9 +181,6 @@ class CustomProvidersUiTest extends WebDriverTestBase {
     ];
     $this->AssertSame($entity->get('endpoints'), $endpoints);
 
-    // Verify cached providers are cleared.
-    $this->AssertFalse(\Drupal::cache()->get('oembed_providers:oembed_providers'));
-
     // Load edit page.
     $this->drupalGet('/admin/config/media/oembed-providers/custom-providers/test_provider/edit');
     // Verify re-indexing of endpoints.
@@ -186,6 +194,17 @@ class CustomProvidersUiTest extends WebDriverTestBase {
       ->findField('endpoints[endpoint-2][url]')
       ->getValue();
     $this->AssertSame($value, 'https://test-provider.com/oembed/v1/{format}');
+
+    // Load delete page.
+    $this->drupalGet('/admin/config/media/oembed-providers/custom-providers/test_provider/delete');
+
+    // Verify deletion process.
+    $page->pressButton('Delete');
+    $assert_session->pageTextContains('The oembed provider Test Provider has been deleted.');
+
+    // Verify 'Test Provider' doesn't exist in the provider repository.
+    $keyed_providers = \Drupal::service('media.oembed.provider_repository')->getAll();
+    $this->assertArrayNotHasKey('Test Provider', $keyed_providers);
   }
 
 }

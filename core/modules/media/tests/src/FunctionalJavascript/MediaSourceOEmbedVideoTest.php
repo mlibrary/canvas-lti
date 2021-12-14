@@ -20,7 +20,7 @@ class MediaSourceOEmbedVideoTest extends MediaSourceTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['media_test_oembed'];
+  protected static $modules = ['media_test_oembed'];
 
   /**
    * {@inheritdoc}
@@ -32,7 +32,7 @@ class MediaSourceOEmbedVideoTest extends MediaSourceTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $this->lockHttpClientToFixtures();
   }
@@ -194,35 +194,35 @@ class MediaSourceOEmbedVideoTest extends MediaSourceTestBase {
     // Without a hash should be denied.
     $no_hash_query = array_diff_key($query, ['hash' => '']);
     $this->drupalGet('media/oembed', ['query' => $no_hash_query]);
-    $assert_session->pageTextNotContains('By the power of Greyskull, Vimeo works!');
+    $assert_session->pageTextNotContains('By the power of Grayskull, Vimeo works!');
     $assert_session->pageTextContains('Access denied');
 
     // A correct query should be allowed because the anonymous role has the
     // 'view media' permission.
     $this->drupalGet('media/oembed', ['query' => $query]);
-    $assert_session->pageTextContains('By the power of Greyskull, Vimeo works!');
-    $this->assertRaw('core/themes/stable/templates/content/media-oembed-iframe.html.twig');
-    $this->assertNoRaw('core/modules/media/templates/media-oembed-iframe.html.twig');
+    $assert_session->pageTextContains('By the power of Grayskull, Vimeo works!');
+    $this->assertSession()->responseContains('core/themes/stable/templates/content/media-oembed-iframe.html.twig');
+    $this->assertSession()->responseNotContains('core/modules/media/templates/media-oembed-iframe.html.twig');
 
     // Test themes not inheriting from stable.
     \Drupal::service('theme_installer')->install(['stark']);
     $this->config('system.theme')->set('default', 'stark')->save();
     $this->drupalGet('media/oembed', ['query' => $query]);
-    $assert_session->pageTextContains('By the power of Greyskull, Vimeo works!');
-    $this->assertNoRaw('core/themes/stable/templates/content/media-oembed-iframe.html.twig');
-    $this->assertRaw('core/modules/media/templates/media-oembed-iframe.html.twig');
+    $assert_session->pageTextContains('By the power of Grayskull, Vimeo works!');
+    $this->assertSession()->responseNotContains('core/themes/stable/templates/content/media-oembed-iframe.html.twig');
+    $this->assertSession()->responseContains('core/modules/media/templates/media-oembed-iframe.html.twig');
 
     // Remove the 'view media' permission to test that this restricts access.
     $role = Role::load(AccountInterface::ANONYMOUS_ROLE);
     $role->revokePermission('view media');
     $role->save();
     $this->drupalGet('media/oembed', ['query' => $query]);
-    $assert_session->pageTextNotContains('By the power of Greyskull, Vimeo works!');
+    $assert_session->pageTextNotContains('By the power of Grayskull, Vimeo works!');
     $assert_session->pageTextContains('Access denied');
   }
 
   /**
-   * Test that a security warning appears if iFrame domain is not set.
+   * Tests that a security warning appears if iFrame domain is not set.
    */
   public function testOEmbedSecurityWarning() {
     $media_type_id = 'test_media_oembed_type';

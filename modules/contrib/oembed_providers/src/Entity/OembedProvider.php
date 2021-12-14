@@ -83,7 +83,18 @@ class OembedProvider extends ConfigEntityBase {
 
     // Dependency injection is impossible because
     // \Drupal\Core\Entity\EntityBase defines an incompatible create() method.
-    \Drupal::cache()->delete('oembed_providers:oembed_providers');
+    \Drupal::service('keyvalue')->get('media')->delete('oembed_providers');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function postDelete(EntityStorageInterface $storage, $update = TRUE) {
+    parent::postDelete($storage, $update);
+
+    // Dependency injection is impossible because
+    // \Drupal\Core\Entity\EntityBase defines an incompatible create() method.
+    \Drupal::service('keyvalue')->get('media')->delete('oembed_providers');
   }
 
 }

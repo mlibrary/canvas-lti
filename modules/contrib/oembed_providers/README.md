@@ -31,7 +31,7 @@ To submit bug reports and feature suggestions, or track changes:
 
 This module has the following requirements:
 
-- Drupal 8.8.4+ or Drupal 9.0.0+
+- Drupal Drupal 9.0.0+
 - Media (included in core)
 
 # INSTALLATION

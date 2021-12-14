@@ -9,7 +9,10 @@
     "source": "https://git.drupalcode.org/project/lti_tool_provider"
   },
   "require": {
-    "php": "^7.3",
-    "ext-oauth": "*"
+    "php": "^7.3 || ^8.0",
+    "ext-oauth": "*",
+    "drupal/key": "^1.0.0",
+    "oat-sa/lib-lti1p3-core": "^6.0.0",
+    "oat-sa/lib-lti1p3-deep-linking": "^4.0.0"
   }
 }

@@ -24,7 +24,7 @@ class FieldTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'node',
     'ckeditor',
     'contextual',
@@ -39,7 +39,7 @@ class FieldTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create a text format and associate CKEditor.
@@ -104,7 +104,6 @@ class FieldTest extends WebDriverTestBase {
     // Ensure that the changes take effect.
     $assert->responseMatches("|<blockquote>\s*$body_value\s*</blockquote>|");
   }
-
   /**
    * Tests quickeditor with Drag and Drop on multi-valued fields.
    */
@@ -164,5 +163,4 @@ class FieldTest extends WebDriverTestBase {
 
     $assert->waitForElementVisible('css', '.quickedit-toolgroup.ops [type="submit"][aria-hidden="false"]')->click();
   }
-
 }

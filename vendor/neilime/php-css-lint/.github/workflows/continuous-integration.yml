@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
-        php-versions: ["7.3", "7.4"]
+        php-versions: ["7.4", "8.0"]
     runs-on: ${{ matrix.operating-system }}
     steps:
       - name: Checkout
@@ -33,11 +33,18 @@ jobs:
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
       - name: Cache composer dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
           restore-keys: ${{ runner.os }}-composer-
+
+      - name: Cache PHPUnit cache
+        uses: actions/cache@v2.1.4
+        with:
+          path: tests/.phpunit.result.cache
+          key: ${{ runner.os }}-phpunit-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-phpunit-
 
       - name: Install dependencies
         run: |
@@ -48,7 +55,7 @@ jobs:
           composer test:ci
 
       - name: Upload coverage results to Coveralls
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'  && matrix.php-versions == '7.4'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && matrix.php-versions == '8.0'
         uses: codecov/codecov-action@master
         with:
           file: ./build/logs/clover.xml

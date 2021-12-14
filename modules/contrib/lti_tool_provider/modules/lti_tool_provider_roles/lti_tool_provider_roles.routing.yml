@@ -1,7 +1,15 @@
-lti_tool_provider.admin.roles:
-  path: /admin/config/lti-tool-provider/roles
+lti_tool_provider.admin.roles.lti_v1.0:
+  path: /admin/config/lti-tool-provider/roles/v1p0
   defaults:
-    _form: \Drupal\lti_tool_provider_roles\Form\LtiToolProviderRolesSettingsForm
-    _title: Mapped Roles
+    _form: \Drupal\lti_tool_provider_roles\Form\V1p0LtiToolProviderRolesSettingsForm
+    _title: Mapped Roles for LTI 1.0/1.1
+  requirements:
+    _permission: administer lti_tool_provider module
+
+lti_tool_provider.admin.roles.lti_v1.3:
+  path: /admin/config/lti-tool-provider/roles/v1p3
+  defaults:
+    _form: \Drupal\lti_tool_provider_roles\Form\V1p3LtiToolProviderRolesSettingsForm
+    _title: Mapped Roles for LTI 1.3
   requirements:
     _permission: administer lti_tool_provider module

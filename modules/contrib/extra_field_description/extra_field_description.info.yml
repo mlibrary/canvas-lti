@@ -5,7 +5,7 @@ package: Fields
 core: 8.x
 core_version_requirement: ^8 || ^9
 
-# Information added by Drupal.org packaging script on 2020-04-30
-version: '8.x-1.6'
+# Information added by Drupal.org packaging script on 2021-09-21
+version: '8.x-1.7'
 project: 'extra_field_description'
-datestamp: 1588255748
+datestamp: 1632209730

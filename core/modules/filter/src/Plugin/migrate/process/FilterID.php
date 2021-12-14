@@ -13,6 +13,13 @@ use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Row;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+// cspell:ignore abbrfilter adsense autofloat biblio cincopa codefilter
+// cspell:ignore commonmark deepzoom emogrifier emptyparagraphkiller forena
+// cspell:ignore gotwo htmlpurifier htmltidy intlinks intlinks lazyloader
+// cspell:ignore linktitle multicolumn multilink mytube openlayers opengraph
+// cspell:ignore sanitizable shortcode shortcode spamspan typogrify wordfilter
+// cspell:ignore xbbcode
+
 /**
  * @MigrateProcessPlugin(
  *   id = "filter_id"

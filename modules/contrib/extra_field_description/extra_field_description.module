@@ -26,21 +26,14 @@ function extra_field_description_field_widget_third_party_settings_form(WidgetIn
         '#open' => TRUE,
       ];
 
-      $form['extra_description']['multiple'] = [
-        '#type' => 'checkbox',
-        '#title' => t('For each line'),
-        '#description' => t("If field is multiple and specified checkbox selected - extra description will be written above each field."),
-        '#default_value' => isset($plugin_third_party_settings['extra_description']['multiple']) ? $plugin_third_party_settings['extra_description']['multiple'] : FALSE,
-      ];
       $form['extra_description']['over_description'] = [
         '#type' => 'textarea',
         '#title' => t('Extra description'),
         '#description' => t("Extra description over the field.<br />Allowed HTML tags: @tags", ['@tags' => FieldFilteredMarkup::displayAllowedTags()]),
-        '#default_value' => isset($plugin_third_party_settings['extra_description']['over_description']) ? $plugin_third_party_settings['extra_description']['over_description'] : '',
+        '#default_value' => isset($plugin_third_party_settings['extra_description']['over_description']) ? t($plugin_third_party_settings['extra_description']['over_description']) : '',
       ];
 
       $plugin->setThirdPartySetting('extra_field_description', 'extra_description', $form['extra_description']);
-
       return $form;
     }
   }
