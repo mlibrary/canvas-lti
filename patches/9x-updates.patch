@@ -1,0 +1,258 @@
+commit 6fb8fce60dc5cf8bcf5032941363b0e693821f20
+Author: el1_1el <eliotwsc@umich.edu>
+Date:   Mon Oct 4 09:39:31 2021 -0400
+
+    changes for 9x
+
+diff --git a/modules/custom/custom_drush/custom_drush.info.yml b/modules/custom/custom_drush/custom_drush.info.yml
+index 0ddc11f4..d03c8123 100644
+--- a/modules/custom/custom_drush/custom_drush.info.yml
++++ b/modules/custom/custom_drush/custom_drush.info.yml
+@@ -1,5 +1,5 @@
+ name: Custom Drush
+ type: module
+ description: UM custom drush commands.
+-core: 8.x
++core_version_requirement: ^8 || ^9
+ package: UM Custom
+diff --git a/modules/custom/custom_extras/custom_extras.module b/modules/custom/custom_extras/custom_extras.module
+index 1d22fafa..9e8c52e0 100644
+--- a/modules/custom/custom_extras/custom_extras.module
++++ b/modules/custom/custom_extras/custom_extras.module
+@@ -11,6 +11,7 @@
+ use Drupal\Core\Ajax\InvokeCommand;
+ use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+ use Drupal\Core\Entity\EntityInterface;
++use Drush\Drush;
+ 
+ /**
+  * Implements hook_node_view().
+@@ -407,7 +408,7 @@ function _custom_extras_encoding($data) {
+ 
+ //update reserves
+ function _custom_reserves() {
+-  drush_print('Updating reserves...');
++  Drush::output()->writeln('Updating reserves...');
+   $query = \Drupal::entityQuery('paragraph')
+     ->condition('type', 'course_reserves');
+   $reserves = $query->execute();
+@@ -416,23 +417,23 @@ function _custom_reserves() {
+     $paragraph = Paragraph::load($reserve);
+     $node = $paragraph->getParentEntity();
+     if (!in_array($node->id(), $updated)) {
+-      drush_print('Saving node id '.$node->id().' with reserve id '.$paragraph->id());
++      Drush::output()->writeln('Saving node id '.$node->id().' with reserve id '.$paragraph->id());
+       $node->save();
+       $updated[] = $node->id();
+     }
+     else {
+-      drush_print('Skipping reserve id '.$paragraph->id().' because its parent node id '.$node->id().' was saved already.');
++      Drush::output()->writeln('Skipping reserve id '.$paragraph->id().' because its parent node id '.$node->id().' was saved already.');
+     }
+   }
+   drupal_flush_all_caches();
+ /*
+   $message = array();
+   foreach ($errors as $error) {
+-    drush_print($error);
++    Drush::output()->writeln($error);
+     $message[] = \Drupal\Core\Render\Markup::create('<p>'.$error.'</p>');
+   }
+   foreach ($the_databases as $the_database) {
+-    drush_print($the_database);
++    Drush::output()->writeln($the_database);
+     $updated[] = \Drupal\Core\Render\Markup::create('<p>'.$the_database.'</p>');
+   }
+   custom_uml_mail_send_mail('eliotwsc@umich.edu', $reply_to, 'database errors', $message, 'custom_databases_errors');
+diff --git a/modules/custom/custom_guides/custom_guides.info.yml b/modules/custom/custom_guides/custom_guides.info.yml
+index 65f9a9e8..7b7f474b 100644
+--- a/modules/custom/custom_guides/custom_guides.info.yml
++++ b/modules/custom/custom_guides/custom_guides.info.yml
+@@ -4,5 +4,5 @@ description: get guides from solr json
+ package: UM Canvas Custom
+ 
+ version: '8.x-1.x-dev'
+-core: '8.x'
++core_version_requirement: ^8 || ^9
+ 
+diff --git a/modules/custom/custom_guides/custom_guides.module b/modules/custom/custom_guides/custom_guides.module
+index 274edb4a..08b56396 100644
+--- a/modules/custom/custom_guides/custom_guides.module
++++ b/modules/custom/custom_guides/custom_guides.module
+@@ -1,5 +1,6 @@
+ <?php
+ use \Drupal\taxonomy\Entity\Term;
++use \Drush\Drush;
+ 
+ /*
+ This module imports guide and database data from solr search
+@@ -58,12 +59,12 @@ function _custom_guides($args) {
+ 
+   //make sure we have some data
+   if (empty($guide_data)) {
+-    drush_print('ERROR WE DONT HAVE A FILE!');
++    Drush::output()->writeln('ERROR WE DONT HAVE A FILE!');
+     exit;
+   }
+ 
+   //remove guides
+-  drush_print('Setting guides as inactive...');
++  Drush::output()->writeln('Setting guides as inactive...');
+   $query = \Drupal::entityQuery('taxonomy_term')
+     ->condition('vid', 'research_guides');
+   $guide_terms = $query->execute();
+@@ -78,7 +79,7 @@ function _custom_guides($args) {
+   }
+ 
+   //set guides
+-  drush_print('Updating guides Taxonomy...');
++  Drush::output()->writeln('Updating guides Taxonomy...');
+   $errors = array();
+   //keep track of guides to find duplicates
+   $the_guides = array();
+@@ -119,19 +120,19 @@ function _custom_guides($args) {
+       $errors[] = 'There are '.count($guide_term_name).' terms with the name '.$title;
+       $errors[] = 'There are '.count($guide_term_guide_id).' terms with the name '.$guide_id;
+       foreach ($errors as $error) {
+-        drush_print($error);
++        Drush::output()->writeln($error);
+       }
+       if (count($guide_term_guide_id) == 1) {
+         $guide_term = $guide_term_guide_id;
+         $error = 'The term with guide entity id '.$guide_id.' was updated with the url '.$url.' and the name '.$title;
+         $errors[] = $error;
+-        drush_print($error);
++        Drush::output()->writeln($error);
+       }
+       if (count($guide_term) !== 1) {
+         $errors[] = 'There are '.count($guide_term).' terms with the url '.$url.' and the name '.$title;
+         $errors[] = 'These terms will need to be fixed before they can be updated.';
+         foreach ($errors as $error) {
+-          drush_print($error);
++          Drush::output()->writeln($error);
+         }
+         continue;
+       }
+@@ -168,11 +169,11 @@ function _custom_guides($args) {
+   }
+   $message = array();
+   foreach ($errors as $error) {
+-    drush_print($error);
++    Drush::output()->writeln($error);
+     $message[] = \Drupal\Core\Render\Markup::create('<p>'.$error.'</p>');
+   }
+   foreach ($the_guides as $the_guide) {
+-    drush_print($the_guide);
++    Drush::output()->writeln($the_guide);
+     $updated[] = \Drupal\Core\Render\Markup::create('<p>'.$the_guide.'</p>');
+   }
+   custom_uml_mail_send_mail('eliotwsc@umich.edu', $reply_to, 'guide errors', $message, 'custom_guides_errors');
+@@ -190,12 +191,12 @@ function _custom_databases($args) {
+ 
+   //make sure we have some data
+   if (empty($database_data)) {
+-    drush_print('ERROR WE DONT HAVE A FILE!');
++    Drush::output()->writeln('ERROR WE DONT HAVE A FILE!');
+     exit;
+   }
+ 
+   //remove databases
+-  drush_print('Setting databases as inactive...');
++  Drush::output()->writeln('Setting databases as inactive...');
+   $query = \Drupal::entityQuery('taxonomy_term')
+     ->condition('vid', 'recommended_databases');
+   $database_terms = $query->execute();
+@@ -210,7 +211,7 @@ function _custom_databases($args) {
+   }
+ 
+   //set databases
+-  drush_print('Updating databases Taxonomy...');
++  Drush::output()->writeln('Updating databases Taxonomy...');
+   $errors = array();
+   //keep track of databases to find duplicates
+   $the_databases = array();
+@@ -244,19 +245,19 @@ function _custom_databases($args) {
+       $errors[] = 'There are '.count($database_term_uri).' terms with the url '.$url;
+       $errors[] = 'There are '.count($database_term_name).' terms with the name '.$title;
+       foreach ($errors as $error) {
+-        drush_print($error);
++        Drush::output()->writeln($error);
+       }
+       if (count($database_term_uri) == 1) {
+         $database_term = $database_term_uri;
+         $error = 'The term with the url '.$url.' was updated with the name '.$title;
+         $errors[] = $error;
+-        drush_print($error);
++        Drush::output()->writeln($error);
+       }
+       if (count($database_term) !== 1) {
+         $errors[] = 'There are '.count($database_term).' terms with the url '.$url.' and the name '.$title;
+         $errors[] = 'These terms will need to be fixed before they can be updated.';
+         foreach ($errors as $error) {
+-          drush_print($error);
++          Drush::output()->writeln($error);
+         }
+         continue;
+       }
+@@ -292,11 +293,11 @@ function _custom_databases($args) {
+   }
+   $message = array();
+   foreach ($errors as $error) {
+-    drush_print($error);
++    Drush::output()->writeln($error);
+     $message[] = \Drupal\Core\Render\Markup::create('<p>'.$error.'</p>');
+   }
+   foreach ($the_databases as $the_database) {
+-    drush_print($the_database);
++    Drush::output()->writeln($the_database);
+     $updated[] = \Drupal\Core\Render\Markup::create('<p>'.$the_database.'</p>');
+   }
+   custom_uml_mail_send_mail('eliotwsc@umich.edu', $reply_to, 'database errors', $message, 'custom_databases_errors');
+diff --git a/modules/custom/custom_uml_mail/custom_uml_mail.info.yml b/modules/custom/custom_uml_mail/custom_uml_mail.info.yml
+index afa3bacc..23fe5f1c 100644
+--- a/modules/custom/custom_uml_mail/custom_uml_mail.info.yml
++++ b/modules/custom/custom_uml_mail/custom_uml_mail.info.yml
+@@ -5,7 +5,7 @@ package: UM Staff Custom
+ # core: 8.x
+ 
+ version: '8.x-1.x-dev'
+-core: '8.x'
++core_version_requirement: ^8 || ^9
+ 
+ dependencies:
+   - drupal:swiftmailer
+diff --git a/modules/custom/custom_uml_mail/custom_uml_mail.module b/modules/custom/custom_uml_mail/custom_uml_mail.module
+index d0c92d58..2633741e 100644
+--- a/modules/custom/custom_uml_mail/custom_uml_mail.module
++++ b/modules/custom/custom_uml_mail/custom_uml_mail.module
+@@ -39,7 +39,7 @@ function custom_uml_mail_send_mail($recipient, $reply_to, $subject, $message, $k
+   if ($cc) {
+     $recipients = $recipient.','.$cc;
+   }
+-  drupal_set_message('Email sent to '.$recipients);
++  \Drupal::messenger()->addStatus(t('Email sent to '.$recipients));
+ }
+ 
+ function custom_uml_mail_mail($key, &$message, $params){
+@@ -56,4 +56,7 @@ function custom_uml_mail_mail($key, &$message, $params){
+   }
+   $message['headers']['Cc'] = $params['cc'];
+   $message['headers']['Bcc'] = $params['bcc'];
++  $message['headers']['From'] = $params['from'];
++  //$message['headers']['Sender'] = $params['from'];
++  //$message['headers']['Reply-to'] = $params['from'];
+ }
+\ No newline at end of file
+diff --git a/themes/canvas_lti/canvas_lti.info.yml b/themes/canvas_lti/canvas_lti.info.yml
+index 1fe32165..8b8c4345 100644
+--- a/themes/canvas_lti/canvas_lti.info.yml
++++ b/themes/canvas_lti/canvas_lti.info.yml
+@@ -2,7 +2,7 @@ name: canvas_lti
+ type: theme
+ base theme: bartik
+ description: 'A flexible, recolorable theme with many regions and a responsive, mobile-first layout.'
+-core: '8.x'
++core_version_requirement: ^8 || ^9
+ project: 'drupal'
+ datestamp: 1452121068
+ libraries:
