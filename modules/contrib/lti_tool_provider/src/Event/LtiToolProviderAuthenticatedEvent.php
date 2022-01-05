@@ -2,63 +2,59 @@
 
 namespace Drupal\lti_tool_provider\Event;
 
-use Drupal\lti_tool_provider\LtiToolProviderEvent;
+use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
 use Drupal\user\UserInterface;
+use Symfony\Component\EventDispatcher\Event;
 
-class LtiToolProviderAuthenticatedEvent extends LtiToolProviderEvent
-{
-    const EVENT_NAME = 'LTI_TOOL_PROVIDER_AUTHENTICATED_EVENT';
+class LtiToolProviderAuthenticatedEvent extends Event {
 
-    /**
-     * @var array
-     */
-    private $context;
+  /**
+   * @var \Drupal\lti_tool_provider\LTIToolProviderContextInterface
+   */
+  private $context;
 
-    /**
-     * @var UserInterface
-     */
-    private $user;
+  /**
+   * @var UserInterface
+   */
+  private $user;
 
-    /**
-     * LtiToolProviderAuthenticatedEvent constructor.
-     * @param array $context
-     * @param UserInterface $user
-     */
-    public function __construct(array $context, UserInterface $user)
-    {
-        $this->setContext($context);
-        $this->setUser($user);
-    }
+  /**
+   * LtiToolProviderAuthenticatedEvent constructor.
+   *
+   * @param \Drupal\lti_tool_provider\LTIToolProviderContextInterface $context
+   * @param UserInterface $user
+   */
+  public function __construct(LTIToolProviderContextInterface $context, UserInterface $user) {
+    $this->setContext($context);
+    $this->setUser($user);
+  }
 
-    /**
-     * @return array
-     */
-    public function getContext(): array
-    {
-        return $this->context;
-    }
+  /**
+   * @return \Drupal\lti_tool_provider\LTIToolProviderContextInterface
+   */
+  public function getContext(): LTIToolProviderContextInterface {
+    return $this->context;
+  }
 
-    /**
-     * @param array $context
-     */
-    public function setContext(array $context)
-    {
-        $this->context = $context;
-    }
+  /**
+   * @param \Drupal\lti_tool_provider\LTIToolProviderContextInterface $context
+   */
+  public function setContext(LTIToolProviderContextInterface $context) {
+    $this->context = $context;
+  }
 
-    /**
-     * @return UserInterface
-     */
-    public function getUser(): UserInterface
-    {
-        return $this->user;
-    }
+  /**
+   * @return UserInterface
+   */
+  public function getUser(): UserInterface {
+    return $this->user;
+  }
 
-    /**
-     * @param UserInterface $user
-     */
-    public function setUser(UserInterface $user): void
-    {
-        $this->user = $user;
-    }
+  /**
+   * @param UserInterface $user
+   */
+  public function setUser(UserInterface $user): void {
+    $this->user = $user;
+  }
+
 }

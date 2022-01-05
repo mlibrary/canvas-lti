@@ -3,62 +3,61 @@
 namespace Drupal\lti_tool_provider_provision\Event;
 
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\lti_tool_provider\LtiToolProviderEvent;
+use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
+use Symfony\Component\EventDispatcher\Event;
 
-class LtiToolProviderProvisionCreateProvisionedEntityEvent extends LtiToolProviderEvent
-{
-    const EVENT_NAME = 'LTI_TOOL_PROVIDER_PROVISION_CREATE_PROVISIONED_ENTITY_EVENT';
+/**
+ * Implementation LtiToolProviderProvisionCreateProvisionedEntityEvent class.
+ */
+class LtiToolProviderProvisionCreateProvisionedEntityEvent extends Event {
 
-    /**
-     * @var array
-     */
-    private $context;
+  /**
+   * @var \Drupal\lti_tool_provider\LTIToolProviderContextInterface
+   */
+  private $context;
 
-    /**
-     * @var EntityInterface
-     */
-    private $entity;
+  /**
+   * @var \Drupal\Core\Entity\EntityInterface
+   */
+  private $entity;
 
-    /**
-     * LtiToolProviderProvisionCreateProvisionedEntityEvent constructor.
-     * @param array $context
-     * @param EntityInterface $entity
-     */
-    public function __construct(array $context, EntityInterface $entity)
-    {
-        $this->setContext($context);
-        $this->setEntity($entity);
-    }
+  /**
+   * LtiToolProviderProvisionCreateProvisionedEntityEvent constructor.
+   *
+   * @param \Drupal\lti_tool_provider\LTIToolProviderContextInterface $context
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   */
+  public function __construct(LTIToolProviderContextInterface $context, EntityInterface $entity) {
+    $this->setContext($context);
+    $this->setEntity($entity);
+  }
 
-    /**
-     * @return array
-     */
-    public function getContext(): array
-    {
-        return $this->context;
-    }
+  /**
+   * @return \Drupal\lti_tool_provider\LTIToolProviderContextInterface
+   */
+  public function getContext(): LTIToolProviderContextInterface {
+    return $this->context;
+  }
 
-    /**
-     * @param array $context
-     */
-    public function setContext(array $context)
-    {
-        $this->context = $context;
-    }
+  /**
+   * @param \Drupal\lti_tool_provider\LTIToolProviderContextInterface $context
+   */
+  public function setContext(LTIToolProviderContextInterface $context) {
+    $this->context = $context;
+  }
 
-    /**
-     * @return EntityInterface
-     */
-    public function getEntity(): EntityInterface
-    {
-        return $this->entity;
-    }
+  /**
+   * @return \Drupal\Core\Entity\EntityInterface
+   */
+  public function getEntity(): EntityInterface {
+    return $this->entity;
+  }
 
-    /**
-     * @param EntityInterface $entity
-     */
-    public function setEntity(EntityInterface $entity): void
-    {
-        $this->entity = $entity;
-    }
+  /**
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   */
+  public function setEntity(EntityInterface $entity): void {
+    $this->entity = $entity;
+  }
+
 }

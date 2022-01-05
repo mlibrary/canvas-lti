@@ -1,0 +1,40 @@
+lti_tool_provider.admin.content:
+  path: /admin/config/lti-tool-provider/content
+  defaults:
+    _form: \Drupal\lti_tool_provider_content\Form\LtiToolProviderContentSettingsForm
+    _title: Settings for Content Selection
+  requirements:
+    _permission: administer lti_tool_provider module
+lti_tool_provider.content.list:
+  path: /lti/v1p3/content/list
+  defaults:
+    _form: \Drupal\lti_tool_provider_content\Form\LtiToolProviderContentListForm
+    _title: Select Content
+  requirements:
+    _custom_access: '\Drupal\lti_tool_provider_content\Form\LtiToolProviderContentListForm::access'
+lti_tool_provider.content.select:
+  path: /lti/v1p3/content/select
+  defaults:
+    _controller: '\Drupal\lti_tool_provider_content\Controller\LTIToolProviderContentSelect::route'
+  options:
+    _auth:
+      - lti_auth_v1p3
+    no-cache: 'TRUE'
+  requirements:
+    _custom_access: '\Drupal\lti_tool_provider_content\Controller\LTIToolProviderContentSelect::access'
+lti_tool_provider.content.return:
+  path: /lti/v1p3/content/return
+  defaults:
+    _controller: '\Drupal\lti_tool_provider_content\Controller\LTIToolProviderContentReturn::route'
+  requirements:
+    _custom_access: '\Drupal\lti_tool_provider_content\Controller\LTIToolProviderContentReturn::access'
+lti_tool_provider.content.launch:
+  path: /lti/v1p3/content/launch
+  defaults:
+    _controller: '\Drupal\lti_tool_provider_content\Controller\LTIToolProviderContentLaunch::route'
+  options:
+    _auth:
+      - lti_auth_v1p3
+    no-cache: 'TRUE'
+  requirements:
+    _custom_access: '\Drupal\lti_tool_provider_content\Controller\LTIToolProviderContentLaunch::access'

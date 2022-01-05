@@ -1,18 +1,47 @@
-lti_tool_provider.lti:
+lti_tool_provider.v1p0.launch:
   path: /lti
   defaults:
-    _controller: '\Drupal\lti_tool_provider\Controller\LTIToolProviderController::ltiLaunch'
+    _controller: '\Drupal\lti_tool_provider\Controller\LTIToolProviderV1P0Launch::route'
   options:
     _auth:
-      - lti_auth
+      - lti_auth_v1p0
+    no-cache: 'TRUE'
   requirements:
-    _custom_access: '\Drupal\lti_tool_provider\Controller\LTIToolProviderController::access'
-lti_tool_provider.lti.return:
+    _custom_access: '\Drupal\lti_tool_provider\Controller\LTIToolProviderV1P0Launch::access'
+lti_tool_provider.v1p0.return:
   path: /lti/return
   defaults:
-    _controller: '\Drupal\lti_tool_provider\Controller\LTIToolProviderController::ltiReturn'
+    _controller: '\Drupal\lti_tool_provider\Controller\LTIToolProviderV1P0Return::route'
   requirements:
-    _custom_access: '\Drupal\lti_tool_provider\Controller\LTIToolProviderController::access'
+    _access: 'TRUE'
+lti_tool_provider.v1p3.login:
+  path: /lti/v1p3/login
+  defaults:
+    _controller: '\Drupal\lti_tool_provider\Controller\LTIToolProviderV1P3Login::route'
+  requirements:
+    _custom_access: '\Drupal\lti_tool_provider\Controller\LTIToolProviderV1P3Login::access'
+lti_tool_provider.v1p3.launch:
+  path: /lti/v1p3/launch
+  defaults:
+    _controller: '\Drupal\lti_tool_provider\Controller\LTIToolProviderV1P3Launch::route'
+  options:
+    _auth:
+      - lti_auth_v1p3
+    no-cache: 'TRUE'
+  requirements:
+    _access: 'TRUE'
+lti_tool_provider.v1p3.return:
+  path: /lti/v1p3/return
+  defaults:
+    _controller: '\Drupal\lti_tool_provider\Controller\LTIToolProviderV1P3Return::route'
+  requirements:
+    _access: 'TRUE'
+lti_tool_provider.v1p3.jwks:
+  path: /lti/v1p3/jwks
+  defaults:
+    _controller: '\Drupal\lti_tool_provider\Controller\LTIToolProviderV1P3Jwks::route'
+  requirements:
+    _custom_access: '\Drupal\lti_tool_provider\Controller\LTIToolProviderV1P3Jwks::access'
 lti_tool_provider.admin:
   path: admin/config/lti-tool-provider
   defaults:

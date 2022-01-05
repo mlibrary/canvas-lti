@@ -26,245 +26,253 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  *
  * @coversDefaultClass \Drupal\lti_tool_provider\Controller\LTIToolProviderController
  */
-class LTIToolProviderControllerTest extends UnitTestCase
-{
-    /**
-     * @var ConfigFactoryInterface|MockObject
-     */
-    protected $configFactory;
+class LTIToolProviderControllerTest extends UnitTestCase {
 
-    /**
-     * @var LoggerChannelFactoryInterface|MockObject
-     */
-    protected $loggerFactory;
+  /**
+   * @var ConfigFactoryInterface|MockObject
+   */
+  protected $configFactory;
 
-    /**
-     * @var EventDispatcherInterface|MockObject
-     */
-    protected $eventDispatcher;
+  /**
+   * @var LoggerChannelFactoryInterface|MockObject
+   */
+  protected $loggerFactory;
 
-    /**
-     * @var ResponsePolicyInterface|MockObject
-     */
-    protected $killSwitch;
+  /**
+   * @var EventDispatcherInterface|MockObject
+   */
+  protected $eventDispatcher;
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
+  /**
+   * @var ResponsePolicyInterface|MockObject
+   */
+  protected $killSwitch;
 
-        $this->configFactory = $this->createMock('\Drupal\Core\Config\ConfigFactoryInterface');
+  /**
+   * @dataProvider accessDataProvider
+   * @covers ::access
+   * @covers ::__construct
+   *
+   * @param $expected
+   * @param Request $request
+   * @param SessionInterface $session
+   * @param mixed $context
+   * @param string | null $destination
+   */
+  public function testAccess($expected, Request $request, SessionInterface $session, $context, ?string $destination) {
+    $controller = new LTIToolProviderController(
+      $this->configFactory,
+      $this->loggerFactory,
+      $this->eventDispatcher,
+      $this->killSwitch,
+      $request,
+      $session,
+      $context,
+      $destination
+    );
 
-        $this->eventDispatcher = $this->getMockBuilder('\Symfony\Component\EventDispatcher\EventDispatcher')
-            ->onlyMethods(['__construct'])
-            ->disableOriginalConstructor()
-            ->getMock();
+    $actual = $controller->access();
+    $this->assertInstanceOf(AccessResult::class, $actual);
+    $this->assertEquals($expected, $actual);
+  }
 
-        $this->killSwitch = $this->getMockBuilder('\Drupal\Core\PageCache\ResponsePolicy\KillSwitch')
-            ->addMethods(['__construct'])
-            ->disableOriginalConstructor()
-            ->getMock();
+  /**
+   * @return array
+   */
+  public function accessDataProvider(): array {
+    return [
+      'no context' => [
+        AccessResult::neutral(),
+        Request::create('/lti'),
+        new Session(),
+        NULL,
+        NULL,
+      ],
+      'with context' => [
+        AccessResult::allowed(),
+        Request::create('/lti'),
+        new Session(),
+        [1],
+        NULL,
+      ],
+    ];
+  }
 
-        $this->loggerFactory = $this->getMockBuilder('\Drupal\Core\Logger\LoggerChannelFactory')
-            ->addMethods(['__construct'])
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
+  /**
+   * @covers ::ltiLaunch
+   * @covers ::__construct
+   */
+  public function testLtiLaunchNoContext() {
+    $controller = new LTIToolProviderController(
+      $this->configFactory,
+      $this->loggerFactory,
+      $this->eventDispatcher,
+      $this->killSwitch,
+      new Request(),
+      new Session(),
+      NULL,
+      '/'
+    );
 
-    /**
-     * @dataProvider accessDataProvider
-     * @covers ::access
-     * @covers ::__construct
-     * @param $expected
-     * @param Request $request
-     * @param SessionInterface $session
-     * @param mixed $context
-     * @param string | null $destination
-     */
-    public function testAccess($expected, Request $request, SessionInterface $session, $context, ?string $destination)
-    {
-        $controller = new LTIToolProviderController(
-            $this->configFactory,
-            $this->loggerFactory,
-            $this->eventDispatcher,
-            $this->killSwitch,
-            $request,
-            $session,
-            $context,
-            $destination
-        );
+    $this->expectException(InvalidArgumentException::class);
+    $controller->ltiLaunch();
+  }
 
-        $actual = $controller->access();
-        $this->assertInstanceOf(AccessResult::class, $actual);
-        $this->assertEquals($expected, $actual);
-    }
+  /**
+   * @dataProvider ltiLaunchWithContextDataProvider
+   * @covers ::ltiLaunch
+   * @covers ::__construct
+   *
+   * @param RedirectResponse $expected
+   * @param Request $request
+   * @param SessionInterface $session
+   * @param mixed $context
+   * @param string | null $destination
+   */
+  public function testLtiLaunchWithContext(RedirectResponse $expected, Request $request, SessionInterface $session, $context, ?string $destination) {
+    $controller = new LTIToolProviderController(
+      $this->configFactory,
+      $this->loggerFactory,
+      $this->eventDispatcher,
+      $this->killSwitch,
+      $request,
+      $session,
+      $context,
+      $destination
+    );
 
-    /**
-     * @return array
-     */
-    public function accessDataProvider(): array
-    {
-        return [
-            'no context' => [AccessResult::neutral(), Request::create('/lti'), new Session(), null, null],
-            'with context' => [AccessResult::allowed(), Request::create('/lti'), new Session(), [1], null],
-        ];
-    }
+    $actual = $controller->ltiLaunch();
+    $this->assertInstanceOf(RedirectResponse::class, $actual);
+    $this->assertEquals($expected->getTargetUrl(), $actual->getTargetUrl());
+  }
 
-    /**
-     * @covers ::ltiLaunch
-     * @covers ::__construct
-     */
-    public function testLtiLaunchNoContext()
-    {
-        $controller = new LTIToolProviderController(
-            $this->configFactory,
-            $this->loggerFactory,
-            $this->eventDispatcher,
-            $this->killSwitch,
-            new Request(),
-            new Session(),
-            null,
-            '/'
-        );
+  /**
+   * @return array
+   */
+  public function ltiLaunchWithContextDataProvider(): array {
+    return [
+      'destination from settings' => [
+        new RedirectResponse('/'),
+        Request::create('/lti'),
+        new Session(),
+        ['no destination url'],
+        '/',
+      ],
+      'destination from context' => [
+        new RedirectResponse('/'),
+        Request::create('/lti'),
+        new Session(),
+        ['custom_destination' => '/'],
+        NULL,
+      ],
+    ];
+  }
 
-        $this->expectException(InvalidArgumentException::class);
-        $controller->ltiLaunch();
-    }
+  /**
+   * @covers ::ltiReturn
+   * @covers ::__construct
+   */
+  public function testLtiReturnNoContext() {
+    $controller = new LTIToolProviderController(
+      $this->configFactory,
+      $this->loggerFactory,
+      $this->eventDispatcher,
+      $this->killSwitch,
+      new Request(),
+      new Session(),
+      NULL,
+      '/'
+    );
 
-    /**
-     * @dataProvider ltiLaunchWithContextDataProvider
-     * @covers ::ltiLaunch
-     * @covers ::__construct
-     * @param RedirectResponse $expected
-     * @param Request $request
-     * @param SessionInterface $session
-     * @param mixed $context
-     * @param string | null $destination
-     */
-    public function testLtiLaunchWithContext(RedirectResponse $expected, Request $request, SessionInterface $session, $context, ?string $destination)
-    {
-        $controller = new LTIToolProviderController(
-            $this->configFactory,
-            $this->loggerFactory,
-            $this->eventDispatcher,
-            $this->killSwitch,
-            $request,
-            $session,
-            $context,
-            $destination
-        );
+    $this->expectException(InvalidArgumentException::class);
+    $controller->ltiReturn();
+  }
 
-        $actual = $controller->ltiLaunch();
-        $this->assertInstanceOf(RedirectResponse::class, $actual);
-        $this->assertEquals($expected->getTargetUrl(), $actual->getTargetUrl());
-    }
-
-    /**
-     * @return array
-     */
-    public function ltiLaunchWithContextDataProvider(): array
-    {
-        return [
-            'destination from settings' => [
-                new RedirectResponse('/'),
-                Request::create('/lti'),
-                new Session(),
-                ['no destination url'],
-                '/',
-            ],
-            'destination from context' => [
-                new RedirectResponse('/'),
-                Request::create('/lti'),
-                new Session(),
-                ['custom_destination' => '/'],
-                null,
-            ],
-        ];
-    }
-
-    /**
-     * @covers ::ltiReturn
-     * @covers ::__construct
-     */
-    public function testLtiReturnNoContext()
-    {
-        $controller = new LTIToolProviderController(
-            $this->configFactory,
-            $this->loggerFactory,
-            $this->eventDispatcher,
-            $this->killSwitch,
-            new Request(),
-            new Session(),
-            null,
-            '/'
-        );
-
-        $this->expectException(InvalidArgumentException::class);
-        $controller->ltiReturn();
-    }
-
-    /**
-     * @dataProvider ltiReturnWithContextDataProvider
-     * @covers ::ltiReturn
-     * @covers ::__construct
-     * @param TrustedRedirectResponse $expected
-     * @param Request $request
-     * @param SessionInterface $session
-     * @param mixed $context
-     * @param string | null $destination
-     */
-    public function testLtiReturnWithContext(
-        TrustedRedirectResponse $expected,
-        Request $request,
-        SessionInterface $session,
-        $context,
-        ?string $destination
-    ) {
-        /* @var $controller LTIToolProviderController */
-        $controller = $this->getMockBuilder('Drupal\lti_tool_provider\Controller\LTIToolProviderController')
-            ->setConstructorArgs(
-                [
-                    $this->configFactory,
-                    $this->loggerFactory,
-                    $this->eventDispatcher,
-                    $this->killSwitch,
-                    $request,
-                    $session,
-                    $context,
-                    $destination,
-                ]
-            )
-            ->onlyMethods(['userLogout'])
-            ->getMock();
+  /**
+   * @dataProvider ltiReturnWithContextDataProvider
+   * @covers ::ltiReturn
+   * @covers ::__construct
+   *
+   * @param TrustedRedirectResponse $expected
+   * @param Request $request
+   * @param SessionInterface $session
+   * @param mixed $context
+   * @param string | null $destination
+   */
+  public function testLtiReturnWithContext(
+    TrustedRedirectResponse $expected,
+    Request $request,
+    SessionInterface $session,
+    $context,
+    ?string $destination
+  ) {
+    /* @var $controller LTIToolProviderController */
+    $controller = $this->getMockBuilder('Drupal\lti_tool_provider\Controller\LTIToolProviderController')
+      ->setConstructorArgs(
+        [
+          $this->configFactory,
+          $this->loggerFactory,
+          $this->eventDispatcher,
+          $this->killSwitch,
+          $request,
+          $session,
+          $context,
+          $destination,
+        ]
+      )
+      ->onlyMethods(['userLogout'])
+      ->getMock();
 
 
-        $actual = $controller->ltiReturn();
-        $this->assertInstanceOf(TrustedRedirectResponse::class, $actual);
-        $this->assertEquals($expected->getTargetUrl(), $actual->getTargetUrl());
-    }
+    $actual = $controller->ltiReturn();
+    $this->assertInstanceOf(TrustedRedirectResponse::class, $actual);
+    $this->assertEquals($expected->getTargetUrl(), $actual->getTargetUrl());
+  }
 
-    /**
-     * @return array
-     */
-    public function ltiReturnWithContextDataProvider(): array
-    {
-        return [
-            'destination from settings' => [
-                new TrustedRedirectResponse('/home'),
-                Request::create('/lti'),
-                new Session(),
-                ['no destination url'],
-                '/home',
-            ],
-            'destination from context' => [
-                new TrustedRedirectResponse('/home'),
-                Request::create('/lti'),
-                new Session(),
-                ['launch_presentation_return_url' => '/home'],
-                null,
-            ],
-        ];
-    }
+  /**
+   * @return array
+   */
+  public function ltiReturnWithContextDataProvider(): array {
+    return [
+      'destination from settings' => [
+        new TrustedRedirectResponse('/home'),
+        Request::create('/lti'),
+        new Session(),
+        ['no destination url'],
+        '/home',
+      ],
+      'destination from context' => [
+        new TrustedRedirectResponse('/home'),
+        Request::create('/lti'),
+        new Session(),
+        ['launch_presentation_return_url' => '/home'],
+        NULL,
+      ],
+    ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp(): void {
+    parent::setUp();
+
+    $this->configFactory = $this->createMock('\Drupal\Core\Config\ConfigFactoryInterface');
+
+    $this->eventDispatcher = $this->getMockBuilder('\Symfony\Component\EventDispatcher\EventDispatcher')
+      ->onlyMethods(['__construct'])
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $this->killSwitch = $this->getMockBuilder('\Drupal\Core\PageCache\ResponsePolicy\KillSwitch')
+      ->addMethods(['__construct'])
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $this->loggerFactory = $this->getMockBuilder('\Drupal\Core\Logger\LoggerChannelFactory')
+      ->addMethods(['__construct'])
+      ->disableOriginalConstructor()
+      ->getMock();
+  }
+
 }
