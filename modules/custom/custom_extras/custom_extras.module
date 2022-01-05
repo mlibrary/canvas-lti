@@ -321,15 +321,36 @@ function _custom_extras_get_reserves($context_label_title_history, $has_value = 
   $search_url = "https://api-na.hosted.exlibrisgroup.com/primo/v1/search?vid=01UMICH_INST:UMICH&tab=CourseReserves&scope=CourseReserves&limit=250&sort=title&apikey={$api_key}&q={$q}";
   $response = json_decode(file_get_contents($search_url));
   if ($response->info->total == 0 && $has_value) {
-    if (!is_numeric($has_value)) {
-      $has_value = 0;
+    $year = date('Y');
+    $is_current_semester = FALSE;
+    foreach ($context_label_title_history as $label_title) {
+      if (strpos($label_title, $year) !== false) {
+        $month = idate('m');
+        $semesters = [
+          'FA' => [8,9,10,11,12],
+          'WN' => [1,2,3,4,5],
+          'SS' => [5,6,7,8],
+          'SP' => [5,6],
+          'SU' => [6,7,8],
+        ];
+        foreach ($semesters as $semester => $months) {
+          if (strpos($label_title, $semester) !== false  && in_array($month, $semesters[$semester])) {
+            $is_current_semester = TRUE;
+          }
+        }
+      }
     }
-    $has_value++;
-    if ($has_value < 4) {
-      _custom_extras_get_reserves($context_label_title_history, $has_value, $nid);
-    }
-    else {
-      custom_uml_mail_send_mail('eliotwsc@umich.edu', 'eliotwsc@umich.edu', 'No response from primo on node id '.$nid.' after 4 tries to query '.$q, $context_label_title_history, 'primo error');
+    if ($is_current_semester) {
+      if (!is_numeric($has_value)) {
+        $has_value = 0;
+      }
+      $has_value++;
+      if ($has_value < 4) {
+        _custom_extras_get_reserves($context_label_title_history, $has_value, $nid);
+      }
+      else {
+        custom_uml_mail_send_mail('eliotwsc@umich.edu', 'eliotwsc@umich.edu', 'No response from primo on node id '.$nid.' after 4 tries to query '.$q, $context_label_title_history, 'primo error');
+      }
     }
 
     return 'error';
