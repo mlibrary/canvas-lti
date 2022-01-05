@@ -318,7 +318,7 @@ function _custom_extras_get_reserves($context_label_title_history, $has_value = 
   $q = implode(',OR;', array_map(function($str) {
     return "course_code,contains," . rawurlencode($str);
   }, $context_label_title_history));
-  $search_url = "https://api-na.hosted.exlibrisgroup.com/primo/v1/search?vid=01UMICH_INST:UMICH&tab=CourseReserves&scope=CourseReserves&limit=250&apikey={$api_key}&q={$q}";
+  $search_url = "https://api-na.hosted.exlibrisgroup.com/primo/v1/search?vid=01UMICH_INST:UMICH&tab=CourseReserves&scope=CourseReserves&limit=250&sort=title&apikey={$api_key}&q={$q}";
   $response = json_decode(file_get_contents($search_url));
   if ($response->info->total == 0 && $has_value) {
     if (!is_numeric($has_value)) {
