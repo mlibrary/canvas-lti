@@ -2,10 +2,11 @@
 
 namespace Drupal\lti_tool_provider\Entity;
 
+use Drupal\Core\Entity\Annotation\ContentEntityType;
+use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Field\BaseFieldDefinition;
 
 /**
  * Defines the LTIToolProviderNonce entity.
@@ -24,27 +25,36 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *   },
  * )
  */
-class Nonce extends ContentEntityBase implements ContentEntityInterface {
+class Nonce extends ContentEntityBase implements ContentEntityInterface
+{
+    /**
+     * {@inheritdoc}
+     */
+    public static function baseFieldDefinitions(EntityTypeInterface $entity_type): array
+    {
+        $fields = parent::baseFieldDefinitions($entity_type);
 
-  /**
-   * {@inheritdoc}
-   */
-  public static function baseFieldDefinitions(EntityTypeInterface $entity_type): array {
-    $fields = parent::baseFieldDefinitions($entity_type);
+        $fields['nonce'] = BaseFieldDefinition::create('string')
+            ->setLabel(t('Nonce'))
+            ->setSettings(
+                [
+                    'max_length' => 512,
+                    'text_processing' => 0,
+                ]
+            );
 
-    $fields['nonce'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('Nonce'))
-      ->setSettings(
-        [
-          'max_length' => 512,
-          'text_processing' => 0,
-        ]
-      );
+        $fields['consumer_key'] = BaseFieldDefinition::create('string')
+            ->setLabel(t('Consumer Key'))
+            ->setSettings(
+                [
+                    'max_length' => 512,
+                    'text_processing' => 0,
+                ]
+            );
 
-    $fields['timestamp'] = BaseFieldDefinition::create('created')
-      ->setLabel(t('Timestamp'));
+        $fields['timestamp'] = BaseFieldDefinition::create('created')
+            ->setLabel(t('Timestamp'));
 
-    return $fields;
-  }
-
+        return $fields;
+    }
 }

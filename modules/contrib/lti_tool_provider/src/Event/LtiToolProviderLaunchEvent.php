@@ -2,59 +2,39 @@
 
 namespace Drupal\lti_tool_provider\Event;
 
-use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Drupal\lti_tool_provider\LtiToolProviderEvent;
 
-class LtiToolProviderLaunchEvent extends Event {
+class LtiToolProviderLaunchEvent extends LtiToolProviderEvent
+{
+    const EVENT_NAME = 'LTI_TOOL_PROVIDER_LAUNCH_EVENT';
 
-  /**
-   * @var \Drupal\lti_tool_provider\LTIToolProviderContextInterface
-   */
-  private $context;
+    /**
+     * @var array
+     */
+    private $context;
 
-  /**
-   * @var string
-   */
-  private $destination;
+    /**
+     * LtiToolProviderLaunchEvent constructor.
+     * @param array $context
+     */
+    public function __construct(array $context)
+    {
+        $this->setContext($context);
+    }
 
-  /**
-   * LtiToolProviderLaunchEvent constructor.
-   *
-   * @param \Drupal\lti_tool_provider\LTIToolProviderContextInterface $context
-   *
-   * @param string $destination
-   */
-  public function __construct(LTIToolProviderContextInterface $context, string $destination) {
-    $this->setContext($context);
-    $this->setDestination($destination);
-  }
+    /**
+     * @return array
+     */
+    public function getContext(): array
+    {
+        return $this->context;
+    }
 
-  /**
-   * @return \Drupal\lti_tool_provider\LTIToolProviderContextInterface
-   */
-  public function getContext(): LTIToolProviderContextInterface {
-    return $this->context;
-  }
-
-  /**
-   * @param \Drupal\lti_tool_provider\LTIToolProviderContextInterface $context
-   */
-  public function setContext(LTIToolProviderContextInterface $context) {
-    $this->context = $context;
-  }
-
-  /**
-   * @return string
-   */
-  public function getDestination(): string {
-    return $this->destination;
-  }
-
-  /**
-   * @param string $destination
-   */
-  public function setDestination(string $destination): void {
-    $this->destination = $destination;
-  }
-
+    /**
+     * @param array $context
+     */
+    public function setContext(array $context)
+    {
+        $this->context = $context;
+    }
 }

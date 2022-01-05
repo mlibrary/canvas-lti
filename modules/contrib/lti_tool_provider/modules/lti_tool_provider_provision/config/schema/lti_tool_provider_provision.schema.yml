@@ -2,19 +2,19 @@ lti_tool_provider_provision.settings:
   type: config_object
   label: LTI tool provider provision settings
   mapping:
-    v1p0_entity_type:
+    entity_type:
       type: string
       label: Provisioned entity type
-    v1p0_entity_bundle:
+    entity_bundle:
       type: string
       label: Provisioned entity bundle
-    v1p0_entity_redirect:
+    entity_redirect:
       type: boolean
       label: Redirect to entity on launch
-    v1p0_entity_sync:
+    entity_sync:
       type: boolean
       label: Sync entity fields on launch
-    v1p0_entity_defaults:
+    entity_defaults:
       type: mapping
       label: Provisioned entity field defaults
       mapping:
@@ -24,45 +24,7 @@ lti_tool_provider_provision.settings:
         lti_attribute:
           type: string
           label: LTI Attribute
-    v1p0_allowed_roles_enabled:
-      type: boolean
-      label: Enable restricting entity provisioning to allowed roles
-    v1p0_allowed_roles:
-      type: mapping
-      label: Allowed LTI roles to provision entities
-      mapping:
-        name:
-          type: string
-          label: LTI Role
-        lti_attribute:
-          type: boolean
-          label: Value (True or false).
-    v1p3_entity_type:
-      type: string
-      label: Provisioned entity type
-    v1p3_entity_bundle:
-      type: string
-      label: Provisioned entity bundle
-    v1p3_entity_redirect:
-      type: boolean
-      label: Redirect to entity on launch
-    v1p3_entity_sync:
-      type: boolean
-      label: Sync entity fields on launch
-    v1p3_entity_defaults:
-      type: mapping
-      label: Provisioned entity field defaults
-      mapping:
-        name:
-          type: string
-          label: Field name
-        lti_attribute:
-          type: string
-          label: LTI Attribute
-    v1p3_allowed_roles_enabled:
-      type: boolean
-      label: Enable restricting entity provisioning to allowed roles
-    v1p3_allowed_roles:
+    allowed_roles:
       type: mapping
       label: Allowed LTI roles to provision entities
       mapping:

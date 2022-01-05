@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\lti_tool_provider\Event;
+namespace Drupal\lti_tool_provider_roles\Event;
 
 use Drupal\lti_tool_provider\LtiToolProviderEvent;
 use Drupal\user\UserInterface;
 
-class LtiToolProviderProvisionUserEvent extends LtiToolProviderEvent
+class LtiToolProviderRolesEvent extends LtiToolProviderEvent
 {
-    const EVENT_NAME = 'LTI_TOOL_PROVIDER_PROVISION_USER_EVENT';
+    const EVENT_NAME = 'LTI_TOOL_PROVIDER_ROLES_EVENT';
 
     /**
      * @var array
@@ -20,7 +20,7 @@ class LtiToolProviderProvisionUserEvent extends LtiToolProviderEvent
     private $user;
 
     /**
-     * LtiToolProviderProvisionUserEvent constructor.
+     * LtiToolProviderRolesEvent constructor.
      * @param array $context
      * @param UserInterface $user
      */

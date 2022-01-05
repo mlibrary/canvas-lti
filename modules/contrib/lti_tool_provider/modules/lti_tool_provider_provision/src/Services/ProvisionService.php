@@ -2,303 +2,221 @@
 
 namespace Drupal\lti_tool_provider_provision\Services;
 
+use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
+use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
+use Drupal\lti_tool_provider\LtiToolProviderEvent;
 use Drupal\lti_tool_provider_provision\Entity\LtiToolProviderProvision;
-use Drupal\lti_tool_provider_provision\Event\LtiToolProviderProvisionCreateProvisionedEntityEvent;
 use Drupal\lti_tool_provider_provision\Event\LtiToolProviderProvisionCreateProvisionEvent;
-use Drupal\lti_tool_provider_provision\Event\LtiToolProviderProvisionEvents;
+use Drupal\lti_tool_provider_provision\Event\LtiToolProviderProvisionCreateProvisionedEntityEvent;
+use Drupal\lti_tool_provider_provision\Event\LtiToolProviderProvisionSyncProvisionedEntityEvent;
 use Exception;
-use OAT\Library\Lti1p3Core\Message\Payload\Claim\ContextClaim;
-use OAT\Library\Lti1p3Core\Message\Payload\Claim\ResourceLinkClaim;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-/**
- * Implementation ProvisionService class.
- *
- * @package Drupal\lti_tool_provider_provision\Services
- */
-class ProvisionService {
+class ProvisionService
+{
+    /**
+     * @var ConfigFactoryInterface
+     */
+    protected $configFactory;
 
-  /**
-   * @var \Drupal\Core\Config\ConfigFactoryInterface
-   */
-  protected $configFactory;
+    /**
+     * @var EntityTypeManagerInterface
+     */
+    protected $entityTypeManager;
 
-  /**
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
-   */
-  protected $entityTypeManager;
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
 
-  /**
-   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
-   */
-  protected $eventDispatcher;
+    /**
+     * @var ImmutableConfig
+     */
+    private $config;
 
-  /**
-   * @var \Drupal\Core\Config\ImmutableConfig
-   */
-  private $config;
-
-  /**
-   * ProvisionService constructor.
-   *
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
-   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
-   */
-  public function __construct(
-    ConfigFactoryInterface $configFactory,
-    EntityTypeManagerInterface $entityTypeManager,
-    EventDispatcherInterface $eventDispatcher
-  ) {
-    $this->configFactory = $configFactory;
-    $this->entityTypeManager = $entityTypeManager;
-    $this->eventDispatcher = $eventDispatcher;
-    $this->config = $configFactory->get('lti_tool_provider_provision.settings');
-  }
-
-  /**
-   * @param \Drupal\lti_tool_provider\LTIToolProviderContextInterface $context
-   *
-   * @return \Drupal\Core\Entity\EntityInterface
-   *
-   * @throws \Exception
-   */
-  public function provision(LTIToolProviderContextInterface $context): ?EntityInterface {
-    if ($context->getVersion() === LTIToolProviderContextInterface::V1P0) {
-      $context_data = $context->getContext();
-      $consumer_id = $context_data['consumer_id'];
-      $context_id = $context_data['context_id'];
-      $context_label = $context_data['context_label'];
-      $context_title = $context_data['context_title'];
-      $resource_link_id = $context_data['resource_link_id'];
-      $resource_link_title = $context_data['resource_link_title'];
-      $entityType = $this->config->get('v1p0_entity_type');
-      $entityBundle = $this->config->get('v1p0_entity_bundle');
-    }
-    else {
-      $audience = $context->getPayload()->getClaim('aud');
-      $consumer_id = $audience[0];
-      $context_id = $context->getPayload()->getContext()->getIdentifier();
-      $context_label = $context->getPayload()->getContext()->getLabel();
-      $context_title = $context->getPayload()->getContext()->getTitle();
-      $resource_link_id = $context->getPayload()
-        ->getResourceLink()
-        ->getIdentifier();
-      $resource_link_title = $context->getPayload()
-        ->getResourceLink()
-        ->getTitle();
-      $entityType = $this->config->get('v1p3_entity_type');
-      $entityBundle = $this->config->get('v1p3_entity_bundle');
+    /**
+     * ProvisionService constructor.
+     * @param ConfigFactoryInterface $configFactory
+     * @param EntityTypeManagerInterface $entityTypeManager
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(
+        ConfigFactoryInterface $configFactory,
+        EntityTypeManagerInterface $entityTypeManager,
+        EventDispatcherInterface $eventDispatcher
+    ) {
+        $this->configFactory = $configFactory;
+        $this->entityTypeManager = $entityTypeManager;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->config = $configFactory->get('lti_tool_provider_provision.settings');
     }
 
-    if ($entityType && $entityBundle && isset($consumer_id) && !empty($consumer_id) && isset($context_id) && !empty($context_id) && isset($resource_link_id) && !empty($resource_link_id)) {
-      $provision = $this->getProvisionFromContext($context);
+    /**
+     * @param array $context
+     * @return EntityInterface
+     * @throws Exception
+     */
+    public function provision(array $context): EntityInterface
+    {
+        $entityType = $this->config->get('entity_type');
+        $entityBundle = $this->config->get('entity_bundle');
 
-      if (!$provision) {
-        $provision = LtiToolProviderProvision::create();
+        if ($entityType && $entityBundle && isset($context['consumer_id']) && !empty($context['consumer_id']) && isset($context['context_id']) && !empty($context['context_id']) && isset($context['resource_link_id']) && !empty($context['resource_link_id'])) {
+            $provision = $this->getProvisionFromContext($context);
 
-        if ($provision instanceof LtiToolProviderProvision) {
-          $provision->set('consumer_id', $consumer_id);
-          $provision->set('context_id', $context_id);
-          $provision->set('context_label', $context_label);
-          $provision->set('context_title', $context_title);
-          $provision->set('resource_link_id', $resource_link_id);
-          $provision->set('resource_link_title', $resource_link_title);
-          $provision->set('provision_type', $entityType);
-          $provision->set('provision_bundle', $entityBundle);
+            if (!$provision) {
+                $provision = LtiToolProviderProvision::create();
+
+                if ($provision instanceof LtiToolProviderProvision) {
+                    $provision->set('consumer_id', $context['consumer_id']);
+                    $provision->set('context_id', $context['context_id']);
+                    $provision->set('context_label', $context['context_label']);
+                    $provision->set('context_title', $context['context_title']);
+                    $provision->set('resource_link_id', $context['resource_link_id']);
+                    $provision->set('resource_link_title', $context['resource_link_title']);
+                    $provision->set('provision_type', $entityType);
+                    $provision->set('provision_bundle', $entityBundle);
+                }
+
+                $event = new LtiToolProviderProvisionCreateProvisionEvent($context, $provision);
+                LtiToolProviderEvent::dispatchEvent($this->eventDispatcher, $event);
+
+                if ($event->isCancelled()) {
+                    throw new Exception($event->getMessage());
+                }
+
+                $provision = $event->getEntity();
+                $provision->save();
+            }
+
+            if ($provision instanceof LtiToolProviderProvision) {
+                $entity = $provision->get('provision_id')->value ? $this->entityTypeManager->getStorage($provision->get('provision_type')->value)->load($provision->get('provision_id')->value) : null;
+
+                if (!$entity) {
+                    $entity = $this->createProvisionedEntity($context, $provision);
+                }
+
+                $entity = $this->syncProvisionedEntity($context, $entity);
+
+                $entity->save();
+                $provision->set('provision_id', $entity->id());
+                $provision->save();
+
+                return $entity;
+            }
         }
 
-        $createProvisionEvent = new LtiToolProviderProvisionCreateProvisionEvent($context, $provision);
-        $this->eventDispatcher->dispatch(LtiToolProviderProvisionEvents::CREATE_PROVISION, $createProvisionEvent);
+        throw new Exception('Unable to provision entity.');
+    }
 
-        $provision = $createProvisionEvent->getEntity();
-        $provision->save();
-      }
+    /**
+     * @param array $context
+     * @param EntityInterface|LtiToolProviderProvision $provision
+     * @return EntityInterface
+     * @throws InvalidPluginDefinitionException
+     * @throws PluginNotFoundException
+     * @throws Exception
+     */
+    public function createProvisionedEntity(array $context, EntityInterface $provision): EntityInterface
+    {
+        $entityType = $provision->get('provision_type')->value;
+        $entityBundle = $provision->get('provision_bundle')->value;
 
-      if ($provision instanceof LtiToolProviderProvision) {
-        $entity = $provision->get('provision_id')->value ? $this->entityTypeManager
-          ->getStorage($provision->get('provision_type')->value)
-          ->load($provision->get('provision_id')->value) : NULL;
+        $bundleType = $this->entityTypeManager->getDefinition($entityType)->getKey('bundle');
+        $entity = $this->entityTypeManager->getStorage($entityType)->create([$bundleType => $entityBundle]);
 
-        if (!$entity) {
-          $entity = $this->createProvisionedEntity($context, $provision);
+        $event = new LtiToolProviderProvisionCreateProvisionedEntityEvent($context, $entity);
+        LtiToolProviderEvent::dispatchEvent($this->eventDispatcher, $event);
+
+        if ($event->isCancelled()) {
+            throw new Exception($event->getMessage());
         }
 
-        $entity = $this->setEntityDefaults($context, $entity);
-
-        $entity->save();
-        $provision->set('provision_id', $entity->id());
-        $provision->save();
+        $entity = $event->getEntity();
 
         return $entity;
-      }
     }
 
-    return NULL;
-  }
+    /**
+     * @param array $context
+     * @param EntityInterface $entity
+     * @return EntityInterface
+     * @throws Exception
+     */
+    public function syncProvisionedEntity(array $context, EntityInterface $entity): EntityInterface
+    {
+        $entityDefaults = $this->config->get('entity_defaults');
 
-  /**
-   * @param \Drupal\lti_tool_provider\LTIToolProviderContextInterface $context
-   *
-   * @return \Drupal\Core\Entity\EntityInterface|null
-   */
-  public function getProvisionFromContext(LTIToolProviderContextInterface $context): ?EntityInterface {
-    try {
-      $lti_version = $context->getVersion();
-
-      $consumer_id = '';
-      $context_id = '';
-      $resource_link_id = '';
-
-      if (($lti_version === LTIToolProviderContextInterface::V1P0)) {
-        $context_data = $context->getContext();
-        $consumer_id = $context_data['consumer_id'];
-        $context_id = $context_data['context_id'];
-        $resource_link_id = $context_data['resource_link_id'];
-      }
-
-      if (($lti_version === LTIToolProviderContextInterface::V1P3)) {
-        $audience = $context->getPayload()->getClaim('aud');
-        $contextClaim = $context->getPayload()->getContext();
-        $resourceLinkClaim = $context->getPayload()->getResourceLink();
-
-        if (!is_array($audience) || !($contextClaim instanceof ContextClaim) || !($resourceLinkClaim instanceof ResourceLinkClaim)) {
-          throw new Exception('Missing LTI claims.');
-        }
-
-        $consumer_id = $audience[0];
-        $context_id = $contextClaim->getIdentifier();
-        $resource_link_id = $resourceLinkClaim->getIdentifier();
-      }
-
-      if (!is_string($consumer_id) || !is_string($consumer_id) || !is_string($resource_link_id)) {
-        throw new Exception('Missing LTI identifiers.');
-      }
-
-      $provision = $this->entityTypeManager->getStorage('lti_tool_provider_provision')
-        ->loadByProperties(
-          [
-            'consumer_id' => $consumer_id,
-            'context_id' => $context_id,
-            'resource_link_id' => $resource_link_id,
-          ]
-        );
-
-      if (!count($provision)) {
-        throw new Exception('No provision found.');
-      }
-
-      return reset($provision);
-    }
-    catch (Exception $e) {
-      return NULL;
-    }
-  }
-
-  /**
-   * @param \Drupal\lti_tool_provider\LTIToolProviderContextInterface $context
-   * @param \Drupal\Core\Entity\EntityInterface|LtiToolProviderProvision $provision
-   *
-   * @return \Drupal\Core\Entity\EntityInterface
-   *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Exception
-   */
-  public function createProvisionedEntity(LTIToolProviderContextInterface $context, EntityInterface $provision): EntityInterface {
-    $entityType = $provision->get('provision_type')->value;
-    $entityBundle = $provision->get('provision_bundle')->value;
-
-    $bundleType = $this->entityTypeManager->getDefinition($entityType)
-      ->getKey('bundle');
-    $entity = $this->entityTypeManager->getStorage($entityType)
-      ->create([$bundleType => $entityBundle]);
-
-    $event = new LtiToolProviderProvisionCreateProvisionedEntityEvent($context, $entity);
-    $this->eventDispatcher->dispatch(LtiToolProviderProvisionEvents::CREATE_ENTITY, $event);
-
-    return $event->getEntity();
-  }
-
-  /**
-   * @param \Drupal\lti_tool_provider\LTIToolProviderContextInterface $context
-   * @param \Drupal\Core\Entity\EntityInterface $entity
-   *
-   * @return \Drupal\Core\Entity\EntityInterface
-   *
-   * @throws \Exception
-   */
-  public function setEntityDefaults(LTIToolProviderContextInterface $context, EntityInterface $entity): EntityInterface {
-    $entityDefaults = [];
-    $lti_version = $context->getVersion();
-
-    if (($lti_version === LTIToolProviderContextInterface::V1P0)) {
-      $entityDefaults = $this->config->get('v1p0_entity_defaults');
-    }
-
-    if (($lti_version === LTIToolProviderContextInterface::V1P3)) {
-      $entityDefaults = $this->config->get('v1p3_entity_defaults');
-    }
-
-    if ($entityDefaults && $entity instanceof ContentEntityBase) {
-      foreach ($entityDefaults as $name => $entityDefault) {
-        if (($lti_version === LTIToolProviderContextInterface::V1P0)) {
-          $context_data = $context->getContext();
-          if (isset($context_data[$entityDefault]) && !empty($context_data[$entityDefault])) {
-            $entity->set($name, $context_data[$entityDefault]);
-          }
-        }
-        if ($lti_version === LTIToolProviderContextInterface::V1P3) {
-          $keys = array_map('trim', explode('-', $entityDefault));
-          if (count($keys) === 1) {
-            $claims_data = $context->getPayload()->getClaim($keys[0]);
-          }
-          else {
-            $claims_data = $context->getPayload()->getToken()->getClaims()->all();
-            foreach ($keys as $key) {
-              if (isset($claims_data[$key])) {
-                $claims_data = $claims_data[$key];
-              }
+        if ($entityDefaults) {
+            foreach ($entityDefaults as $name => $entityDefault) {
+                if ($entity instanceof ContentEntityBase && isset($context[$entityDefault]) && !empty($context[$entityDefault])) {
+                    $entity->set($name, $context[$entityDefault]);
+                }
             }
-          }
-          if (isset($claims_data) && !empty($claims_data)) {
-            $entity->set($name, $claims_data);
-          }
         }
-      }
+
+        $event = new LtiToolProviderProvisionSyncProvisionedEntityEvent($context, $entity);
+        LtiToolProviderEvent::dispatchEvent($this->eventDispatcher, $event);
+
+        if ($event->isCancelled()) {
+            throw new Exception($event->getMessage());
+        }
+
+        $entity = $event->getEntity();
+
+        return $entity;
     }
 
-    return $entity;
-  }
+    /**
+     * @param $context
+     * @return EntityInterface|null
+     * @throws InvalidPluginDefinitionException
+     * @throws PluginNotFoundException
+     */
+    public function getProvisionFromContext($context): ?EntityInterface
+    {
+        $provision = $this->entityTypeManager->getStorage('lti_tool_provider_provision')
+            ->loadByProperties(
+                [
+                    'consumer_id' => $context['consumer_id'],
+                    'context_id' => $context['context_id'],
+                    'resource_link_id' => $context['resource_link_id'],
+                ]
+            );
 
-  /**
-   * @param \Drupal\Core\Entity\EntityInterface $entity
-   *
-   * @return \Drupal\Core\Entity\EntityInterface|null
-   *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   */
-  public function getProvisionFromEntity(EntityInterface $entity): ?EntityInterface {
-    $provision = $this->entityTypeManager->getStorage('lti_tool_provider_provision')
-      ->loadByProperties(
-        [
-          'provision_type' => $entity->getEntityTypeId(),
-          'provision_bundle' => $entity->bundle(),
-          'provision_id' => $entity->id(),
-        ]
-      );
+        if (count($provision)) {
+            return reset($provision);
+        }
 
-    if (count($provision)) {
-      return reset($provision);
+        return null;
     }
 
-    return NULL;
-  }
+    /**
+     * @param EntityInterface $entity
+     * @return EntityInterface|null
+     * @throws InvalidPluginDefinitionException
+     * @throws PluginNotFoundException
+     */
+    public function getProvisionFromEntity(EntityInterface $entity): ?EntityInterface
+    {
+        $provision = $this->entityTypeManager->getStorage('lti_tool_provider_provision')
+            ->loadByProperties(
+                [
+                    'provision_type' => $entity->getEntityTypeId(),
+                    'provision_bundle' => $entity->bundle(),
+                    'provision_id' => $entity->id(),
+                ]
+            );
 
+        if (count($provision)) {
+            return reset($provision);
+        }
+
+        return null;
+    }
 }

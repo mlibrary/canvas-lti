@@ -2,17 +2,7 @@ lti_tool_provider_roles.settings:
   type: config_object
   label: LTI tool provider roles settings
   mapping:
-    v1p0_mapped_roles:
-      type: mapping
-      label: Configure mapped roles
-      mapping:
-        user_role:
-          type: string
-          label: User Role
-        lti_role:
-          type: string
-          label: LTI Role
-    v1p3_mapped_roles:
+    mapped_roles:
       type: mapping
       label: Configure mapped roles
       mapping:

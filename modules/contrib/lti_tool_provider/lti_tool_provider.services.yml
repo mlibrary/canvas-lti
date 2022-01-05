@@ -1,24 +1,15 @@
 services:
-  authentication.lti_tool_provider.v1p0:
-    class: Drupal\lti_tool_provider\Authentication\Provider\LTIToolProviderV1P0
-    arguments: [ '@config.factory', '@entity_type.manager', '@logger.factory', '@event_dispatcher' ]
+  authentication.lti_tool_provider:
+    class: Drupal\lti_tool_provider\Authentication\Provider\LTIToolProvider
+    arguments:
+      - '@config.factory'
+      - '@entity_type.manager'
+      - '@logger.factory'
+      - '@event_dispatcher'
     tags:
       - name: authentication_provider
-        provider_id: lti_auth_v1p0
+        provider_id: lti_auth
         priority: 100
-  authentication.lti_tool_provider.v1p3:
-    class: Drupal\lti_tool_provider\Authentication\Provider\LTIToolProviderV1P3
-    arguments: [ '@config.factory', '@entity_type.manager', '@logger.factory', '@event_dispatcher', '@lti_tool_provider.nonce.repository', '@lti_tool_provider.registration.repository' ]
-    tags:
-      - name: authentication_provider
-        provider_id: lti_auth_v1p3
-        priority: 100
-  lti_tool_provider.nonce.repository:
-    class: Drupal\lti_tool_provider\Services\LTIToolProviderNonceRepository
-    arguments: [ '@entity_type.manager' ]
-  lti_tool_provider.registration.repository:
-    class: Drupal\lti_tool_provider\Services\LTIToolProviderRegistrationRepository
-    arguments: [ '@config.factory', '@entity_type.manager' ]
   lti_tool_provider.xframe.event_subscriber:
     class: Drupal\lti_tool_provider\EventSubscriber\RemoveXFrameOptionsSubscriber
     tags:

@@ -2,17 +2,7 @@ lti_tool_provider_attributes.settings:
   type: config_object
   label: LTI tool provider attributes settings
   mapping:
-    v1p0_mapped_attributes:
-      type: mapping
-      label: Configure mapped attributes
-      mapping:
-        user_attribute:
-          type: string
-          label: User Attribute
-        lti_attribute:
-          type: string
-          label: LTI Attribute
-    v1p3_mapped_attributes:
+    mapped_attributes:
       type: mapping
       label: Configure mapped attributes
       mapping:

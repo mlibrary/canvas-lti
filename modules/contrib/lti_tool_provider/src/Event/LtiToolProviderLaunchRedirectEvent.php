@@ -4,9 +4,9 @@ namespace Drupal\lti_tool_provider\Event;
 
 use Drupal\lti_tool_provider\LtiToolProviderEvent;
 
-class LtiToolProviderReturnEvent extends LtiToolProviderEvent
+class LtiToolProviderLaunchRedirectEvent extends LtiToolProviderEvent
 {
-    const EVENT_NAME = 'LTI_TOOL_PROVIDER_RETURN_EVENT';
+    const EVENT_NAME = 'LTI_TOOL_PROVIDER_LAUNCH_REDIRECT_EVENT';
 
     /**
      * @var array
@@ -19,7 +19,7 @@ class LtiToolProviderReturnEvent extends LtiToolProviderEvent
     private $destination;
 
     /**
-     * LtiToolProviderReturnEvent constructor.
+     * LtiToolProviderLaunchRedirectEvent constructor.
      * @param array $context
      * @param string $destination
      */

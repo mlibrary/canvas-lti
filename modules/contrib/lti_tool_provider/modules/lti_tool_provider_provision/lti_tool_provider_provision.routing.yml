@@ -1,15 +1,7 @@
-lti_tool_provider.admin.provision.lti_v1.0:
-  path: /admin/config/lti-tool-provider/provision/v1p0
+lti_tool_provider.admin.provision:
+  path: /admin/config/lti-tool-provider/provision
   defaults:
-    _form: \Drupal\lti_tool_provider_provision\Form\V1p0LtiToolProviderProvisionSettingsForm
-    _title: LTI Provisionable Entities for LTI 1.0/1.1
-  requirements:
-    _permission: administer lti_tool_provider module
-
-lti_tool_provider.admin.provision.lti_v1.3:
-  path: /admin/config/lti-tool-provider/provision/v1p3
-  defaults:
-    _form: \Drupal\lti_tool_provider_provision\Form\V1p3LtiToolProviderProvisionSettingsForm
-    _title: LTI Provisionable Entities for LTI 1.3
+    _form: \Drupal\lti_tool_provider_provision\Form\LtiToolProviderProvisionSettingsForm
+    _title: LTI Provisionable Entities
   requirements:
     _permission: administer lti_tool_provider module

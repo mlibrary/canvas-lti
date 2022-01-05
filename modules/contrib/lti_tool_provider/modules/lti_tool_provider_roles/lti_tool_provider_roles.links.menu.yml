@@ -2,5 +2,5 @@ lti_tool_provider.admin.roles:
   title: LTI role mapping
   parent: lti_tool_provider.admin
   description: Administer LTI role mapping.
-  route_name: lti_tool_provider.admin.roles.lti_v1.0
+  route_name: lti_tool_provider.admin.roles
   weight: 2

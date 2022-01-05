@@ -2,86 +2,91 @@
 
 namespace Drupal\lti_tool_provider;
 
+use Drupal\Core\Link;
 use Drupal;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
-use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\lti_tool_provider\Entity\LtiToolProviderConsumer;
 
-/**
- * Implementation LtiToolProviderConsumerListBuilder class.
- */
-class LtiToolProviderConsumerListBuilder extends EntityListBuilder {
+class LtiToolProviderConsumerListBuilder extends EntityListBuilder
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function buildHeader(): array
+    {
+        $header = [
+            'id' => [
+                'data' => $this->t('ID'),
+                'field' => 'id',
+                'specifier' => 'id',
+            ],
+            'consumer' => [
+                'data' => $this->t('Label'),
+                'field' => 'consumer',
+                'specifier' => 'consumer',
+                'class' => [RESPONSIVE_PRIORITY_LOW],
+            ],
+            'consumer_key' => [
+                'data' => $this->t('Consumer Key'),
+                'field' => 'consumer_key',
+                'specifier' => 'consumer_key',
+                'class' => [RESPONSIVE_PRIORITY_LOW],
+            ],
+            'consumer_secret' => [
+                'data' => $this->t('Consumer Secret'),
+                'field' => 'consumer_secret',
+                'specifier' => 'consumer_secret',
+                'class' => [RESPONSIVE_PRIORITY_LOW],
+            ],
+            'created' => [
+                'data' => $this->t('Created'),
+                'field' => 'created',
+                'specifier' => 'created',
+                'sort' => 'desc',
+                'class' => [RESPONSIVE_PRIORITY_LOW],
+            ],
+        ];
 
-  /**
-   * {@inheritdoc}
-   */
-  public function buildHeader(): array {
-    $header = [
-      'id' => [
-        'data' => $this->t('ID'),
-        'field' => 'id',
-        'specifier' => 'id',
-      ],
-      'consumer' => [
-        'data' => $this->t('Label'),
-        'field' => 'consumer',
-        'specifier' => 'consumer',
-        'class' => [RESPONSIVE_PRIORITY_LOW],
-      ],
-      'lti_version' => [
-        'data' => $this->t('LTI version'),
-        'field' => 'lti_version',
-        'specifier' => 'lti_version',
-        'class' => [RESPONSIVE_PRIORITY_LOW],
-      ],
-      'created' => [
-        'data' => $this->t('Created'),
-        'field' => 'created',
-        'specifier' => 'created',
-        'sort' => 'desc',
-        'class' => [RESPONSIVE_PRIORITY_LOW],
-      ],
-    ];
-
-    return $header + parent::buildHeader();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function buildRow(EntityInterface $entity): array {
-    $row = [];
-
-    if ($entity instanceof LtiToolProviderConsumer) {
-      $row = [
-        'id' => $entity->id(),
-        'consumer' => $link = Link::fromTextAndUrl(
-          $entity->label(),
-          Url::fromRoute(
-            'entity.lti_tool_provider_consumer.canonical',
-            ['lti_tool_provider_consumer' => $entity->id()]
-          )
-        ),
-        'lti_version' => $entity->get('lti_version')->value,
-        'created' => Drupal::service('date.formatter')
-          ->format($entity->get('created')->value, 'short'),
-      ];
+        return $header + parent::buildHeader();
     }
 
-    return $row + parent::buildRow($entity);
-  }
+    /**
+     * {@inheritdoc}
+     */
+    public function buildRow(EntityInterface $entity): array
+    {
+        $row = [];
 
-  /**
-   * {@inheritdoc}
-   */
-  public function render(): array {
-    $build = parent::render();
+        if ($entity instanceof LtiToolProviderConsumer) {
+            $row = [
+                'id' => $entity->id(),
+                'consumer' => $link = Link::fromTextAndUrl(
+                    $entity->label(),
+                    Url::fromRoute(
+                        'entity.lti_tool_provider_consumer.canonical',
+                        ['lti_tool_provider_consumer' => $entity->id()]
+                    )
+                ),
+                'consumer_key' => $entity->get('consumer_key')->value,
+                'consumer_secret' => $entity->get('consumer_secret')->value,
+                'created' => Drupal::service('date.formatter')->format($entity->get('created')->value, 'short'),
+            ];
+        }
 
-    $build['table']['#empty'] = $this->t('No consumers found.');
+        return $row + parent::buildRow($entity);
+    }
 
-    return $build;
-  }
+    /**
+     * {@inheritdoc}
+     */
+    public function render(): array
+    {
+        $build = parent::render();
 
+        $build['table']['#empty'] = $this->t('No consumers found.');
+
+        return $build;
+    }
 }

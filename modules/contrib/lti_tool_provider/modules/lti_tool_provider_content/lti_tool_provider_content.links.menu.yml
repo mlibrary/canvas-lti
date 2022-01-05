@@ -1,6 +1,0 @@
-lti_tool_provider.admin.content:
-  title: LTI content selection
-  parent: lti_tool_provider.admin
-  description: Administer LTI content selection.
-  route_name: lti_tool_provider.admin.content
-  weight: 4

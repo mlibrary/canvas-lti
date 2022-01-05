@@ -8,27 +8,15 @@ lti_tool_provider.settings:
     destination:
       type: string
       label: 'Destination to redirect to after launch and successful authentication.'
-    v1p0_lti_launch:
+    lti_launch:
       type: sequence
-      label: List of LTI launch data for v1p0
+      label: List of LTI launch data
       sequence:
         type: string
         label: Name
-    v1p0_lti_roles:
+    lti_roles:
       type: sequence
-      label: List of LTI roles for v1p0
-      sequence:
-        type: string
-        label: Name
-    v1p3_lti_launch:
-      type: sequence
-      label: List of LTI launch data for v1p3
-      sequence:
-        type: string
-        label: Name
-    v1p3_lti_roles:
-      type: sequence
-      label: List of LTI roles for v1p3
+      label: List of LTI roles
       sequence:
         type: string
         label: Name
