@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '819787a2883665feaf16b69a25748000baf364a4',
+    'reference' => '7ab716487bf6c8250d90ca778fce07d0a1fe7fe8',
     'name' => 'drupal/recommended-project',
   ),
   'versions' => 
@@ -1229,7 +1229,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '819787a2883665feaf16b69a25748000baf364a4',
+      'reference' => '7ab716487bf6c8250d90ca778fce07d0a1fe7fe8',
     ),
     'drupal/responsive_image' => 
     array (
@@ -1279,6 +1279,15 @@
       array (
         0 => '9.3.0',
       ),
+    ),
+    'drupal/smtp' => 
+    array (
+      'pretty_version' => '1.0.0',
+      'version' => '1.0.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '8.x-1.0',
     ),
     'drupal/standard' => 
     array (
@@ -1716,6 +1725,15 @@
       array (
       ),
       'reference' => 'a478cb11f66a6ac48d8954216cfed9aa06a501a1',
+    ),
+    'phpmailer/phpmailer' => 
+    array (
+      'pretty_version' => 'v6.5.3',
+      'version' => '6.5.3.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'baeb7cde6b60b1286912690ab0693c7789a31e71',
     ),
     'phpseclib/phpseclib' => 
     array (

@@ -126,6 +126,7 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
             'Psr\\Container\\' => 14,
             'Psr\\Cache\\' => 10,
             'PhpParser\\' => 10,
+            'PHPMailer\\PHPMailer\\' => 20,
         ),
         'O' => 
         array (
@@ -434,6 +435,10 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
         'PhpParser\\' => 
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
+        ),
+        'PHPMailer\\PHPMailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
         'OAT\\Library\\Lti1p3DeepLinking\\' => 
         array (

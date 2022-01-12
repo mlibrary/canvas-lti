@@ -60,6 +60,7 @@ return array(
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
     'Psr\\Cache\\' => array($vendorDir . '/psr/cache/src'),
     'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),
+    'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
     'OAT\\Library\\Lti1p3DeepLinking\\' => array($vendorDir . '/oat-sa/lib-lti1p3-deep-linking/src'),
     'OAT\\Library\\Lti1p3Core\\' => array($vendorDir . '/oat-sa/lib-lti1p3-core/src'),
     'Nyholm\\Psr7\\' => array($vendorDir . '/nyholm/psr7/src'),
