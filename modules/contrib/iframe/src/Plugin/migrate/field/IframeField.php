@@ -1,15 +1,21 @@
 <?php
 
-namespace Drupal\iframe\Plugin\migrate\cckfield;
+namespace Drupal\iframe\Plugin\migrate\field;
 
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate_drupal\Plugin\migrate\field\FieldPluginBase;
+use Drupal\migrate_drupal\Annotation\MigrateField;
 
 /**
+ * Field migration plugin from D7 to D8.
  * Class IframeField.
  *
  * @MigrateCckField(
  *   id = "iframe",
+ *   core = {7},
+ *   type_map = {
+ *    "iframe" = "iframe"
+ *   },
  *   source_module = "iframe",
  *   destination_module = "iframe"
  * )
@@ -35,10 +41,9 @@ class IframeField extends FieldPluginBase {
    */
   public function processCckFieldValues(MigrationInterface $migration, $field_name, $data) {
     $process = [
-      'plugin' => 'd6_cck_iframe',
+      'plugin' => 'd7_cck_iframe',
       'source' => $field_name,
     ];
     $migration->mergeProcessOfProperty($field_name, $process);
   }
-
 }
