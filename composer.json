@@ -78,6 +78,9 @@
           "drupal/token": {
             "https://www.drupal.org/node/919760": "https://www.drupal.org/files/issues/2020-02-10/token--current_page_object_token--919760--81.patch"
           },
+          "drupal/lti_tool_provider": {
+            "add a test student user": "patches/test-student.patch"
+          },
           "drupal/beautytips": {
             "put all beautytips on top-note that UI may allow soon": "patches/put-all-beautytips-on-top.patch",
             "change default from title to data-title to accomodate layout_builder_component_attributes-note that UI may allow soon": "patches/use-data-title-in-beautytips.patch"

@@ -1,0 +1,18 @@
+diff --git a/src/Authentication/Provider/LTIToolProviderBase.php b/src/Authentication/Provider/LTIToolProviderBase.php
+index b6ea9c3e..def612c3 100644
+--- a/src/Authentication/Provider/LTIToolProviderBase.php
++++ b/src/Authentication/Provider/LTIToolProviderBase.php
+@@ -135,6 +135,13 @@ protected function provisionUser(LTIToolProviderContextInterface $context): User
+     $name = $context->getUserIdentity()->getName();
+     $mail = $context->getUserIdentity()->getEmail();
+ 
++    $full_context = $context->getContext();
++    if ((isset($full_context['lis_person_name_full']) && $full_context['lis_person_name_full'] == 'Test Student') &&
++       (isset($full_context['roles']) && $full_context['roles'] == 'Learner')) {
++      $name = 'Test Student';
++      $mail = 'teststudent@umich.edu';
++    }
++
+     if (empty($name)) {
+       throw new Exception('Name not available for user provisioning.');
+     }
