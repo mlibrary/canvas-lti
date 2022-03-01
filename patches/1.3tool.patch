@@ -1,0 +1,29 @@
+diff --git a/modules/contrib/lti_tool_provider/src/Authentication/Provider/LTIToolProviderBase.php b/modules/contrib/lti_tool_provider/src/Authentication/Provider/LTIToolProviderBase.php
+index 8a332ce1..b1f6fc0f 100644
+--- a/modules/contrib/lti_tool_provider/src/Authentication/Provider/LTIToolProviderBase.php
++++ b/modules/contrib/lti_tool_provider/src/Authentication/Provider/LTIToolProviderBase.php
+@@ -132,10 +132,20 @@ abstract class LTIToolProviderBase implements AuthenticationProviderInterface {
+    * @throws \Exception
+    */
+   protected function provisionUser(LTIToolProviderContextInterface $context): UserInterface {
+-    $name = $context->getUserIdentity()->getName();
+-    $mail = $context->getUserIdentity()->getEmail();
+-
+-    $full_context = $context->getContext();
++    $version=$context->getVersion();
++    if ($version == 'V1P3') {
++      $payload = $context->getPayload();
++      $claims = $payload->getToken()->getClaims();
++      $name = $claims->all()['sub'];
++      $iss = $claims->all()['iss'];
++      $domain = parse_url($iss, PHP_URL_HOST);
++      $mail = $name.'@'.$domain;
++    }
++    else {
++      $full_context = $context->getContext();
++      $name = $context->getUserIdentity()->getName();
++      $mail = $context->getUserIdentity()->getEmail();
++    }
+     if ((isset($full_context['lis_person_name_full']) && $full_context['lis_person_name_full'] == 'Test Student') &&
+        (isset($full_context['roles']) && $full_context['roles'] == 'Learner')) {
+       $name = 'Test Student';

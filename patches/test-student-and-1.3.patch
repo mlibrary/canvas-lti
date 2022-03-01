@@ -1,0 +1,32 @@
+diff --git a/src/Authentication/Provider/LTIToolProviderBase.php b/src/Authentication/Provider/LTIToolProviderBase.php
+index b6ea9c3e..b1f6fc0f 100644
+--- a/src/Authentication/Provider/LTIToolProviderBase.php
++++ b/src/Authentication/Provider/LTIToolProviderBase.php
+@@ -132,8 +132,25 @@ abstract class LTIToolProviderBase implements AuthenticationProviderInterface {
+    * @throws \Exception
+    */
+   protected function provisionUser(LTIToolProviderContextInterface $context): UserInterface {
+-    $name = $context->getUserIdentity()->getName();
+-    $mail = $context->getUserIdentity()->getEmail();
++    $version=$context->getVersion();
++    if ($version == 'V1P3') {
++      $payload = $context->getPayload();
++      $claims = $payload->getToken()->getClaims();
++      $name = $claims->all()['sub'];
++      $iss = $claims->all()['iss'];
++      $domain = parse_url($iss, PHP_URL_HOST);
++      $mail = $name.'@'.$domain;
++    }
++    else {
++      $full_context = $context->getContext();
++      $name = $context->getUserIdentity()->getName();
++      $mail = $context->getUserIdentity()->getEmail();
++    }
++    if ((isset($full_context['lis_person_name_full']) && $full_context['lis_person_name_full'] == 'Test Student') &&
++       (isset($full_context['roles']) && $full_context['roles'] == 'Learner')) {
++      $name = 'Test Student';
++      $mail = 'teststudent@umich.edu';
++    }
+ 
+     if (empty($name)) {
+       throw new Exception('Name not available for user provisioning.');
