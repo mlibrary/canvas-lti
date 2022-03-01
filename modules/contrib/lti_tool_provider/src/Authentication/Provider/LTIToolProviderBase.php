@@ -135,13 +135,6 @@ abstract class LTIToolProviderBase implements AuthenticationProviderInterface {
     $name = $context->getUserIdentity()->getName();
     $mail = $context->getUserIdentity()->getEmail();
 
-    $full_context = $context->getContext();
-    if ((isset($full_context['lis_person_name_full']) && $full_context['lis_person_name_full'] == 'Test Student') &&
-       (isset($full_context['roles']) && $full_context['roles'] == 'Learner')) {
-      $name = 'Test Student';
-      $mail = 'teststudent@umich.edu';
-    }
-
     if (empty($name)) {
       throw new Exception('Name not available for user provisioning.');
     }
