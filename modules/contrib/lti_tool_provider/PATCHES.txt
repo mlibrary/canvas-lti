@@ -5,3 +5,7 @@ add a test student user and fix 1.3
 Source: patches/test-student-and-1.3.patch
 
 
+locate existing nodes for 1.1 compatibility
+Source: patches/find-existing-nodes-for-lti1.1-compatibility.patch
+
+

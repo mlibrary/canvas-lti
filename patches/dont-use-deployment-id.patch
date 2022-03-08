@@ -1,0 +1,14 @@
+diff --git a/vendor/oat-sa/lib-lti1p3-core/src/Message/Launch/Validator/Tool/ToolLaunchValidator.php b/vendor/oat-sa/lib-lti1p3-core/src/Message/Launch/Validator/Tool/ToolLaunchValidator.php
+index 5661483e..fc61eac8 100644
+--- a/vendor/oat-sa/lib-lti1p3-core/src/Message/Launch/Validator/Tool/ToolLaunchValidator.php
++++ b/vendor/oat-sa/lib-lti1p3-core/src/Message/Launch/Validator/Tool/ToolLaunchValidator.php
+@@ -238,8 +238,7 @@ class ToolLaunchValidator extends AbstractLaunchValidator implements ToolLaunchV
+         if (!$payload->hasClaim(LtiMessagePayloadInterface::CLAIM_LTI_DEPLOYMENT_ID)) {
+             throw new LtiException('ID token deployment_id claim is missing');
+         }
+-
+-        if (!$registration->hasDeploymentId($payload->getDeploymentId())) {
++        if (!$registration->hasDeploymentId($payload->getDeploymentId()) && $registration->getDefaultDeploymentId() != 'DONT USE') {
+             throw new LtiException('ID token deployment_id claim not valid for this registration');
+         }
+ 
