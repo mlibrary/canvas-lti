@@ -1,5 +1,5 @@
 diff --git a/modules/contrib/lti_tool_provider/modules/lti_tool_provider_provision/src/Services/ProvisionService.php b/modules/contrib/lti_tool_provider/modules/lti_tool_provider_provision/src/Services/ProvisionService.php
-index 6bc7722b..6365f88d 100644
+index 6bc7722b..ba03d13a 100644
 --- a/modules/contrib/lti_tool_provider/modules/lti_tool_provider_provision/src/Services/ProvisionService.php
 +++ b/modules/contrib/lti_tool_provider/modules/lti_tool_provider_provision/src/Services/ProvisionService.php
 @@ -216,8 +216,43 @@ class ProvisionService {
@@ -28,12 +28,12 @@ index 6bc7722b..6365f88d 100644
 +          ->execute();
 +        $existing_ids[$name] = array_values($existing_ids[$name]);
 +      }
-+      $existing_id = array_intersect(
++      $existing_id = array_values(array_intersect(
 +        $existing_ids['field_context_id'],
 +        $existing_ids['field_context_label'],
 +        $existing_ids['field_context_title'],
 +        $existing_ids['field_resource_link_id']
-+      );
++      ));
 +      if (count($existing_id) == 1) {
 +        $entity = $this->entityTypeManager->getStorage($entityType)->load($existing_id[0]);
 +      }
