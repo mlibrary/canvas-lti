@@ -216,43 +216,8 @@ class ProvisionService {
 
     $bundleType = $this->entityTypeManager->getDefinition($entityType)
       ->getKey('bundle');
-    $version=$context->getVersion();
-    $entity = NULL;
-    if ($version == 'V1P3') {
-      $payload = $context->getPayload();
-      $claims = $payload->getToken()->getClaims()->all();
-      $the_context = $claims['https://purl.imsglobal.org/spec/lti/claim/context'];
-      $entityDefaults = [
-        'field_context_id' => 'id',
-        'field_context_label' => 'label',
-        'field_context_title' => 'title',
-        'field_resource_link_id' => 'id'
-      ];
-      $existing_ids = [];
-      foreach ($entityDefaults as $name => $entityDefault) {
-        $existing_ids[$name] = \Drupal::entityQuery($entityType)
-          ->condition($bundleType, $entityBundle)
-          ->condition($name, $the_context[$entityDefault])
-          ->execute();
-        $existing_ids[$name] = array_values($existing_ids[$name]);
-      }
-      $existing_id = array_intersect(
-        $existing_ids['field_context_id'],
-        $existing_ids['field_context_label'],
-        $existing_ids['field_context_title'],
-        $existing_ids['field_resource_link_id']
-      );
-      if (count($existing_id) == 1) {
-        $entity = $this->entityTypeManager->getStorage($entityType)->load($existing_id[0]);
-      }
-      else if (count($existing_id) > 1) {
-        \Drupal::messenger()->addWarning(t('Several Library Tools were found for this course. Please contact <a href="mailto:design-discovery@umich.edu">design-discovery@umich.edu</a> if you would like to link to one of them.'));
-      }
-    }
-    if (!$entity) {
-      $entity = $this->entityTypeManager->getStorage($entityType)
-        ->create([$bundleType => $entityBundle]);
-    }
+    $entity = $this->entityTypeManager->getStorage($entityType)
+      ->create([$bundleType => $entityBundle]);
 
     $event = new LtiToolProviderProvisionCreateProvisionedEntityEvent($context, $entity);
     $this->eventDispatcher->dispatch(LtiToolProviderProvisionEvents::CREATE_ENTITY, $event);

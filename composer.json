@@ -82,9 +82,6 @@
             "add a test student user and fix 1.3": "patches/test-student-and-1.3.patch",
             "locate existing nodes for 1.1 compatibility": "patches/find-existing-nodes-for-lti1.1-compatibility.patch"
           },
-          "oat-sa/lib-lti1p3-core": {
-            "dont use deployment id for validation": "patches/dont-use-deployment-id.patch"
-          },
           "drupal/beautytips": {
             "put all beautytips on top-note that UI may allow soon": "patches/put-all-beautytips-on-top.patch",
             "change default from title to data-title to accomodate layout_builder_component_attributes-note that UI may allow soon": "patches/use-data-title-in-beautytips.patch"

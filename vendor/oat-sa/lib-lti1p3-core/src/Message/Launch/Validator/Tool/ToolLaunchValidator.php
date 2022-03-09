@@ -238,7 +238,8 @@ class ToolLaunchValidator extends AbstractLaunchValidator implements ToolLaunchV
         if (!$payload->hasClaim(LtiMessagePayloadInterface::CLAIM_LTI_DEPLOYMENT_ID)) {
             throw new LtiException('ID token deployment_id claim is missing');
         }
-        if (!$registration->hasDeploymentId($payload->getDeploymentId()) && $registration->getDefaultDeploymentId() != 'DONT USE') {
+
+        if (!$registration->hasDeploymentId($payload->getDeploymentId())) {
             throw new LtiException('ID token deployment_id claim not valid for this registration');
         }
 
