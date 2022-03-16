@@ -132,20 +132,10 @@ abstract class LTIToolProviderBase implements AuthenticationProviderInterface {
    * @throws \Exception
    */
   protected function provisionUser(LTIToolProviderContextInterface $context): UserInterface {
-    $version=$context->getVersion();
-    if ($version == 'V1P3') {
-      $payload = $context->getPayload();
-      $claims = $payload->getToken()->getClaims();
-      $name = $claims->all()['sub'];
-      $iss = $claims->all()['iss'];
-      $domain = parse_url($iss, PHP_URL_HOST);
-      $mail = $name.'@'.$domain;
-    }
-    else {
-      $full_context = $context->getContext();
-      $name = $context->getUserIdentity()->getName();
-      $mail = $context->getUserIdentity()->getEmail();
-    }
+    $name = $context->getUserIdentity()->getName();
+    $mail = $context->getUserIdentity()->getEmail();
+
+    $full_context = $context->getContext();
     if ((isset($full_context['lis_person_name_full']) && $full_context['lis_person_name_full'] == 'Test Student') &&
        (isset($full_context['roles']) && $full_context['roles'] == 'Learner')) {
       $name = 'Test Student';

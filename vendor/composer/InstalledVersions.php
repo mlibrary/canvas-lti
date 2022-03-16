@@ -32,7 +32,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '5cc7ba59793030e540f28921544615fa698999b1',
+    'reference' => 'a3c9ffe514b2ff92805fce7572119c2a94fa8516',
     'name' => 'drupal/recommended-project',
   ),
   'versions' => 
@@ -1255,7 +1255,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '5cc7ba59793030e540f28921544615fa698999b1',
+      'reference' => 'a3c9ffe514b2ff92805fce7572119c2a94fa8516',
     ),
     'drupal/responsive_image' => 
     array (
