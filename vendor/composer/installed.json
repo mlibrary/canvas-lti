@@ -4157,7 +4157,7 @@
                     }
                 },
                 "patches_applied": {
-                    "add a test student user and fix 1.3": "patches/test-student.patch"
+                    "add a test student user and fix 1.3": "patches/test-student-1.1and1.3.patch"
                 }
             },
             "installation-source": "dist",
