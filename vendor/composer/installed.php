@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'f5403e9cea9137c82df8a5edbc190b892b9f41ef',
+    'reference' => '94664f7313808876dd6236e26190a827eefa966d',
     'name' => 'drupal/recommended-project',
   ),
   'versions' => 
@@ -1229,7 +1229,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'f5403e9cea9137c82df8a5edbc190b892b9f41ef',
+      'reference' => '94664f7313808876dd6236e26190a827eefa966d',
     ),
     'drupal/responsive_image' => 
     array (

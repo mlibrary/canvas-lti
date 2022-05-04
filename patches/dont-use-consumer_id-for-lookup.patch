@@ -1,0 +1,14 @@
+diff --git a/modules/contrib/lti_tool_provider/modules/lti_tool_provider_provision/src/Services/ProvisionService.php b/modules/contrib/lti_tool_provider/modules/lti_tool_provider_provision/src/Services/ProvisionService.php
+index 6bc7722b..8aa27085 100644
+--- a/modules/contrib/lti_tool_provider/modules/lti_tool_provider_provision/src/Services/ProvisionService.php
++++ b/modules/contrib/lti_tool_provider/modules/lti_tool_provider_provision/src/Services/ProvisionService.php
+@@ -183,7 +183,8 @@ class ProvisionService {
+       $provision = $this->entityTypeManager->getStorage('lti_tool_provider_provision')
+         ->loadByProperties(
+           [
+-            'consumer_id' => $consumer_id,
++// Since all consumers are same canvas instance with different settings we dont want this.
++//            'consumer_id' => $consumer_id,
+             'context_id' => $context_id,
+             'resource_link_id' => $resource_link_id,
+           ]

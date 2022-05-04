@@ -4157,7 +4157,8 @@
                     }
                 },
                 "patches_applied": {
-                    "add a test student user and fix 1.3": "patches/test-student-1.1and1.3.patch"
+                    "add a test student user and fix 1.3": "patches/test-student-1.1and1.3.patch",
+                    "dont use consumer id for entity lookup": "patches/dont-use-consumer_id-for-lookup.patch"
                 }
             },
             "installation-source": "dist",
@@ -6650,6 +6651,11 @@
             },
             "time": "2021-12-15T15:52:29+00:00",
             "type": "library",
+            "extra": {
+                "patches_applied": {
+                    "dont use deployment id for validation": "patches/dont-use-deployment-id.patch"
+                }
+            },
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {

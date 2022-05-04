@@ -1,0 +1,116 @@
+diff --git a/modules/contrib/lti_tool_provider/modules/lti_tool_provider_provision/config/schema/lti_tool_provider_provision.schema.yml b/modules/contrib/lti_tool_provider/modules/lti_tool_provider_provision/config/schema/lti_tool_provider_provision.schema.yml
+index 8cbecffe..c2a9f03b 100644
+--- a/modules/contrib/lti_tool_provider/modules/lti_tool_provider_provision/config/schema/lti_tool_provider_provision.schema.yml
++++ b/modules/contrib/lti_tool_provider/modules/lti_tool_provider_provision/config/schema/lti_tool_provider_provision.schema.yml
+@@ -72,3 +72,6 @@ lti_tool_provider_provision.settings:
+         lti_attribute:
+           type: boolean
+           label: Value (True or false).
++    v1p3_entity_lookup:
++      type: boolean
++      label: Allow for an existing entity lookup
+diff --git a/modules/contrib/lti_tool_provider/modules/lti_tool_provider_provision/src/Form/V1p3LtiToolProviderProvisionSettingsForm.php b/modules/contrib/lti_tool_provider/modules/lti_tool_provider_provision/src/Form/V1p3LtiToolProviderProvisionSettingsForm.php
+index 2b207002..5ad282c9 100644
+--- a/modules/contrib/lti_tool_provider/modules/lti_tool_provider_provision/src/Form/V1p3LtiToolProviderProvisionSettingsForm.php
++++ b/modules/contrib/lti_tool_provider/modules/lti_tool_provider_provision/src/Form/V1p3LtiToolProviderProvisionSettingsForm.php
+@@ -29,6 +29,7 @@ class V1p3LtiToolProviderProvisionSettingsForm extends ConfigFormBase {
+     $entitySync = $form_state->getValue('entity_sync') ? $form_state->getValue('entity_sync') : $settings->get('v1p3_entity_sync');
+     $allowedRolesEnabled = $form_state->getValue('allowed_roles_enabled') ? $form_state->getValue('allowed_roles_enabled') : $settings->get('v1p3_allowed_roles_enabled');
+     $allowedRoles = $form_state->getValue('allowed_roles') ? $form_state->getValue('allowed_roles') : $settings->get('v1p3_allowed_roles');
++    $entityLookup = $form_state->getValue('entity_lookup') ? $form_state->getValue('entity_lookup') : $settings->get('v1p3_entity_lookup');
+ 
+     $form['#attributes']['id'] = uniqid($this->getFormId());
+ 
+@@ -151,6 +152,21 @@ class V1p3LtiToolProviderProvisionSettingsForm extends ConfigFormBase {
+       ];
+     }
+ 
++    if ($entityBundle && $entitySync) {
++      $form['entity_lookup'] = [
++        '#type' => 'checkbox',
++        '#title' => $this->t('Allow for an existing entity lookup.'),
++        '#default_value' => $entityLookup,
++        '#states' => [
++          'visible' => [
++            ':input[name="entity_sync"]' => [
++              'checked' => TRUE,
++            ],
++          ],
++        ],
++      ];
++    }
++
+     return parent::buildForm($form, $form_state);
+   }
+ 
+@@ -173,6 +189,7 @@ class V1p3LtiToolProviderProvisionSettingsForm extends ConfigFormBase {
+     $entityRedirect = $form_state->getValue('entity_redirect');
+     $entitySync = $form_state->getValue('entity_sync');
+     $allowedRolesEnabled = $form_state->getValue('allowed_roles_enabled');
++    $entityLookup = $form_state->getValue('entity_lookup');
+ 
+     $settings->set('v1p3_entity_type', $entityType);
+     $settings->set('v1p3_entity_bundle', $entityBundle);
+@@ -194,6 +211,8 @@ class V1p3LtiToolProviderProvisionSettingsForm extends ConfigFormBase {
+     }
+     $settings->set('v1p3_allowed_roles', $allowedRoles);
+ 
++    $settings->set('v1p3_entity_lookup', $entityLookup)->save();
++
+     $settings->save();
+ 
+     parent::submitForm($form, $form_state);
+diff --git a/modules/contrib/lti_tool_provider/modules/lti_tool_provider_provision/src/Services/ProvisionService.php b/modules/contrib/lti_tool_provider/modules/lti_tool_provider_provision/src/Services/ProvisionService.php
+index 6bc7722b..8624ea1f 100644
+--- a/modules/contrib/lti_tool_provider/modules/lti_tool_provider_provision/src/Services/ProvisionService.php
++++ b/modules/contrib/lti_tool_provider/modules/lti_tool_provider_provision/src/Services/ProvisionService.php
+@@ -216,8 +216,47 @@ class ProvisionService {
+ 
+     $bundleType = $this->entityTypeManager->getDefinition($entityType)
+       ->getKey('bundle');
+-    $entity = $this->entityTypeManager->getStorage($entityType)
+-      ->create([$bundleType => $entityBundle]);
++    $version = $context->getVersion();
++    $entity = NULL;
++    if ($version == 'V1P3') {
++      $entityLookup = $this->config->get('v1p3_entity_lookup');
++      if ($entityLookup) {
++        $payload = $context->getPayload();
++        $claims = $payload->getToken()->getClaims()->all();
++        $the_context = $claims['https://purl.imsglobal.org/spec/lti/claim/context'];
++        $entityDefaults = [
++          'field_context_id' => 'id',
++          'field_context_label' => 'label',
++          'field_context_title' => 'title',
++          'field_resource_link_id' => 'id'
++        ];
++        $existing_ids = [];
++        foreach ($entityDefaults as $name => $entityDefault) {
++          $existing_ids[$name] = \Drupal::entityQuery($entityType)
++            ->condition($bundleType, $entityBundle)
++            ->condition($name, $the_context[$entityDefault])
++            ->execute();
++          $existing_ids[$name] = array_values($existing_ids[$name]);
++        }
++        $existing_id = array_values(array_intersect(
++          $existing_ids['field_context_id'],
++// Not using because may be different
++//          $existing_ids['field_context_label'],
++//          $existing_ids['field_context_title'],
++          $existing_ids['field_resource_link_id']
++        ));
++        if (count($existing_id) == 1) {
++          $entity = $this->entityTypeManager->getStorage($entityType)->load($existing_id[0]);
++        }
++        else if (count($existing_id) > 1 || count($potential_id) > 1) {
++          \Drupal::messenger()->addWarning(t('Several Library Tools were found for this course. Please contact <a href="mailto:design-discovery@umich.edu">design-discovery@umich.edu</a> if you would like to link to one of them.'));
++        }
++      }
++    }
++    if (!$entity) {
++      $entity = $this->entityTypeManager->getStorage($entityType)
++        ->create([$bundleType => $entityBundle]);
++    }
+ 
+     $event = new LtiToolProviderProvisionCreateProvisionedEntityEvent($context, $entity);
+     $this->eventDispatcher->dispatch(LtiToolProviderProvisionEvents::CREATE_ENTITY, $event);

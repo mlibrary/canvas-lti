@@ -183,7 +183,8 @@ class ProvisionService {
       $provision = $this->entityTypeManager->getStorage('lti_tool_provider_provision')
         ->loadByProperties(
           [
-            'consumer_id' => $consumer_id,
+// Since all consumers are same canvas instance with different settings we dont want this.
+//            'consumer_id' => $consumer_id,
             'context_id' => $context_id,
             'resource_link_id' => $resource_link_id,
           ]

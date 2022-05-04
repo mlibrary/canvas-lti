@@ -5,3 +5,7 @@ add a test student user and fix 1.3
 Source: patches/test-student-1.1and1.3.patch
 
 
+dont use consumer id for entity lookup
+Source: patches/dont-use-consumer_id-for-lookup.patch
+
+
