@@ -138,6 +138,12 @@ abstract class LTIToolProviderBase implements AuthenticationProviderInterface {
     $version=$context->getVersion();
     $full_context = [];
     if ($version == 'V1P3') {
+      if (empty($name)) {
+        $name = $context->getUserIdentity()->getIdentifier();
+      }
+      if (empty($mail)) {
+        $mail = $name.'@lib.umich.edu';
+      }
       $payload = $context->getPayload();
       $claims = $payload->getToken()->getClaims()->all();
       $full_context['lis_person_name_full'] = $claims['name'];
