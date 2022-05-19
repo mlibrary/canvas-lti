@@ -1,0 +1,57 @@
+diff --git a/modules/contrib/lti_tool_provider/src/Authentication/Provider/LTIToolProviderBase.php b/modules/contrib/lti_tool_provider/src/Authentication/Provider/LTIToolProviderBase.php
+index b6ea9c3e..addfde6e 100644
+--- a/modules/contrib/lti_tool_provider/src/Authentication/Provider/LTIToolProviderBase.php
++++ b/modules/contrib/lti_tool_provider/src/Authentication/Provider/LTIToolProviderBase.php
+@@ -135,6 +135,52 @@ abstract class LTIToolProviderBase implements AuthenticationProviderInterface {
+     $name = $context->getUserIdentity()->getName();
+     $mail = $context->getUserIdentity()->getEmail();
+ 
++    $version=$context->getVersion();
++    $full_context = [];
++    if ($version == 'V1P3') {
++      $name = $context->getUserIdentity()->getIdentifier();
++      $user = user_load_by_name($name);
++      $mail_user = NULL;
++      if (!empty($mail)) {
++        $users = $this->entityTypeManager->getStorage('user')->loadByProperties(['mail' => $mail, 'status' => 1]);
++        $mail_user = reset($users);
++      }
++      if (!empty($mail_user)) {
++        $mail_name = $mail_user->getAccountName();
++        if ($mail_name != $name) {
++          if (!empty($user)) {
++            user_cancel([], $user->id(), 'user_cancel_reassign');
++            $user->delete();
++          }
++          $user = $mail_user;
++          $name = $user->getAccountName();
++        }
++      }
++      if (empty($user)) {
++        $mail = $name.'@lib.umich.edu';
++      }
++      else {
++        $mail = $user->getEmail();
++      }
++      $payload = $context->getPayload();
++      $claims = $payload->getToken()->getClaims()->all();
++      $full_context['lis_person_name_full'] = isset($claims['name']) ? $claims['name'] : null;
++      $roles = $claims['https://purl.imsglobal.org/spec/lti/claim/roles'];
++      if (in_array('http://purl.imsglobal.org/vocab/lis/v2/membership#Learner', $roles) &&
++          in_array('http://purl.imsglobal.org/vocab/lti/system/person#TestUser', $roles)) {
++        $full_context['roles'] = 'Learner';
++      }
++    }
++    else {
++      $full_context = $context->getContext();
++    }
++
++    if ((isset($full_context['lis_person_name_full']) && $full_context['lis_person_name_full'] == 'Test Student') &&
++       (isset($full_context['roles']) && $full_context['roles'] == 'Learner')) {
++      $name = 'Test Student';
++      $mail = 'teststudent@umich.edu';
++    }
++
+     if (empty($name)) {
+       throw new Exception('Name not available for user provisioning.');
+     }

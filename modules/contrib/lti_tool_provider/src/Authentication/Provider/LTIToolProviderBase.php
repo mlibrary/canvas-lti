@@ -138,15 +138,33 @@ abstract class LTIToolProviderBase implements AuthenticationProviderInterface {
     $version=$context->getVersion();
     $full_context = [];
     if ($version == 'V1P3') {
-      if (empty($name)) {
-        $name = $context->getUserIdentity()->getIdentifier();
+      $name = $context->getUserIdentity()->getIdentifier();
+      $user = user_load_by_name($name);
+      $mail_user = NULL;
+      if (!empty($mail)) {
+        $users = $this->entityTypeManager->getStorage('user')->loadByProperties(['mail' => $mail, 'status' => 1]);
+        $mail_user = reset($users);
       }
-      if (empty($mail)) {
+      if (!empty($mail_user)) {
+        $mail_name = $mail_user->getAccountName();
+        if ($mail_name != $name) {
+          if (!empty($user)) {
+            user_cancel([], $user->id(), 'user_cancel_reassign');
+            $user->delete();
+          }
+          $user = $mail_user;
+          $name = $user->getAccountName();
+        }
+      }
+      if (empty($user)) {
         $mail = $name.'@lib.umich.edu';
+      }
+      else {
+        $mail = $user->getEmail();
       }
       $payload = $context->getPayload();
       $claims = $payload->getToken()->getClaims()->all();
-      $full_context['lis_person_name_full'] = $claims['name'];
+      $full_context['lis_person_name_full'] = isset($claims['name']) ? $claims['name'] : null;
       $roles = $claims['https://purl.imsglobal.org/spec/lti/claim/roles'];
       if (in_array('http://purl.imsglobal.org/vocab/lis/v2/membership#Learner', $roles) &&
           in_array('http://purl.imsglobal.org/vocab/lti/system/person#TestUser', $roles)) {
