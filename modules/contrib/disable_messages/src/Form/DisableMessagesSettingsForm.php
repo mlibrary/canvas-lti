@@ -40,9 +40,12 @@ class DisableMessagesSettingsForm extends ConfigFormBase {
       ->set('disable_messages_page_filter_paths', $form_state->getValue('disable_messages_page_filter_paths'))
       ->set('disable_messages_ignore_patterns', $form_state->getValue('disable_messages_ignore_patterns'))
       ->set('disable_messages_ignore_regex', $regexps)
+      ->set('disable_messages_enable_permissions', $form_state->getValue('disable_messages_enable_permissions'))
       ->set('disable_messages_enable_debug', $form_state->getValue('disable_messages_enable_debug'))
+      ->set('disable_messages_strip_html_tags', $form_state->getValue('disable_messages_strip_html_tags'))
       ->set('disable_messages_ignore_case', $form_state->getValue('disable_messages_ignore_case'))
       ->set('disable_messages_debug_visible_div', $form_state->getValue('disable_messages_debug_visible_div'))
+      ->set('disable_messages_ignore_exclude', $form_state->getValue('disable_messages_ignore_exclude'))
       ->save();
 
     parent::submitForm($form, $form_state);
@@ -65,6 +68,12 @@ class DisableMessagesSettingsForm extends ConfigFormBase {
       '#description' => $this->t('Enter messages that should not be shown to end users. Regular expressions are supported. You do not have to include the opening and closing forward slashes for the regular expression. The system will automatically add /^ and $/ at the beginning and end of the pattern to ensure that the match is always a full match instead of a partial match. This will help prevent unexpected filtering of messages. So if you want to filter out a specific message ensure that you add the full message including any punctuation and additional HTML if any. Add one per line. See <a href="@PCRE" target="_blank"> PCRE </a> documentation for details on regular expressions.', ['@PCRE' => 'https://us3.php.net/manual/en/book.pcre.php']),
       '#default_value' => $this->config('disable_messages.settings')->get('disable_messages_ignore_patterns'),
     ];
+    $form['disable_messages_strip_html_tags'] = array(
+      '#type' => 'checkbox',
+      '#title' => $this->t('Strip HTMl tags'),
+      '#default_value' => $this->config('disable_messages.settings')->get('disable_messages_strip_html_tags'),
+      '#description' => $this->t('Check this to strip the HTMl tags while matching the patterns.'),
+    );
     $form['disable_messages_ignore_case'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Ignore case'),
@@ -73,14 +82,9 @@ class DisableMessagesSettingsForm extends ConfigFormBase {
     ];
     $form['disable_messages_filter_options'] = [
       '#type' => 'fieldset',
-      '#title' => $this->t('Page and user level filtering options'),
+      '#title' => $this->t('Page level filtering options'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
-    ];
-    $form['disable_messages_filter_options']['role_information'] = [
-      '#type' => 'item',
-      '#title' => $this->t('Filtering by role'),
-      '#markup' => $this->t('By default, permission to view all message types are given for all roles. You can change this in <a href="@link" target="_blank">administer permissions</a> to limit the roles which can view a given message type.', ['@link' => Url::fromRoute('user.admin_permissions')->toString()]),
     ];
     $options = [
       $this->t('Apply filters on all pages.'),
@@ -106,18 +110,40 @@ class DisableMessagesSettingsForm extends ConfigFormBase {
       '#default_value' => $this->config('disable_messages.settings')->get('disable_messages_page_filter_paths'),
       '#description' => $description,
     ];
-    $form['disable_messages_filter_options']['disable_messages_exclude_users'] = [
+    $form['disable_messages_filter_user_options'] = [
+      '#type' => 'details',
+      '#open' => FALSE,
+      '#title' => $this->t('User level filtering options (Advanced)'),
+    ];
+    $form['disable_messages_filter_user_options']['role_information'] = [
+      '#type' => 'item',
+      '#title' => $this->t('Filtering by permissions'),
+      '#markup' => $this->t(
+        "By default, permission to view all message types are granted to all roles on install. If you enable this, you will have to explicitly configure the permissions for the roles which are expected to see the messages of the given type. Ideally, all roles should be given the permission to view status messages. You can set the permissions at <a href='@link' target='_blank'>administer permissions</a> to set the roles which can view a given message type. Also users with 'Exclude from filtering' permission will see all messages irrespective of the configuration. Admininstrator role will by default have this. You can use the debug option 'Ignore the exclude role permission' to test filtering even when logged in as an Administrator user.",
+        [
+          '@link' => Url::fromRoute(
+            'user.admin_permissions', [], [
+              'fragment' => 'module-disable_messages',
+            ])->toString(),
+        ]),
+    ];
+    $form['disable_messages_filter_user_options']['disable_messages_enable_permissions'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable permission checking'),
+      '#default_value' => $this->config('disable_messages.settings')->get('disable_messages_enable_permissions'),
+      '#description' => $this->t("Enable filtering messages by permissions assigned to roles. Read implication above before enabling this. The permission 'Exclude from filtering' is checked irrespective of this setting. The 'Exclude from filtering' is primarily given as an administratory capability to see all messages irrespective of filtering configuration. If you still want to test the filtering system as an administrator user, use the debug option 'Ignore the exclude role permission' below in the debug options."),
+    ];
+    $form['disable_messages_filter_user_options']['disable_messages_exclude_users'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Users excluded from filtering'),
       '#size' => 40,
       '#default_value' => $this->config('disable_messages.settings')->get('disable_messages_exclude_users'),
-      '#description' => $this->t('Comma separated list of user ids to be excluded from any filtering. All messages will be shown to all the listed users irrespective of their permissons to view the corresponding type of message.'),
+      '#description' => $this->t("Comma separated list of user ids to be excluded from any filtering. All messages will be shown to all the listed users irrespective of their permissons to view the corresponding type of message."),
     ];
     $form['disable_messages_debug'] = [
-      '#type' => 'fieldset',
+      '#type' => 'details',
+      '#open' => FALSE,
       '#title' => $this->t('Debug options'),
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
     ];
     $form['disable_messages_debug']['disable_messages_enable_debug'] = [
       '#type' => 'checkbox',
@@ -131,7 +157,16 @@ class DisableMessagesSettingsForm extends ConfigFormBase {
       '#default_value' => $this->config('disable_messages.settings')->get('disable_messages_debug_visible_div'),
       '#description' => $this->t("Frustrated with having to view source everytime? Don't worry. Enable this to show the debug messages in a visible div. <strong>Remember to disable this on the production sites if you enable debug there :)</strong>."),
     ];
-    $form['#submit'][] = 'disable_messages_settings_form_submit';
+    $form['disable_messages_debug']['disable_messages_ignore_exclude'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Ignore the exclude role permission'),
+      '#default_value' => $this->config('disable_messages.settings')->get('disable_messages_ignore_exclude'),
+      '#description' => $this->t(
+        "Administrator role gets all the permissions. So they are excluded from
+        filtering by default. Use this to ignore the exclude filtering permission
+        to allow you to test the filtering without having to switch users."
+      ),
+    ];
     return parent::buildForm($form, $form_state);
   }
 

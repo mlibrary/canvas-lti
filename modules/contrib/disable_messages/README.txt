@@ -1,26 +1,31 @@
-Description
------------
-Gives a site owner options to disable specific messages shown to end users.  
+INTRODUCTION
+============
+
+Gives a site owner options to disable specific messages shown to end users.
 The core drupal message system as offered by drupal_set_message
 is an excellent way for modules to send out messages to the end users.
 However not all drupal site owners are keen to show all the messages
 sent out by drupal core and all modules to their users. This module
 gives site administrators a reasonably powerful way to filter out
 messages shown to the end users.
- 
-Features
+
+
+FEATURES
 --------
+
 1. Filter out messages that match a full text string exactly.
 2. Filter out messages that match a regular expression.
-3. Permissions to specifically hide all messages of a given type from 
-    any role.
+3. Permissions to specifically hide all messages of a given type from
+   any role.
 4. Disable all filtering for specific users.
 5. Disable all filtering for specific paths.
 6. Apply filtering only for specific paths.
 7. Debug system to get messages in the HTML without showing it to the end users.
 
-Installation
+
+INSTALLATION
 ------------
+
 1. Extract the tar.gz into your 'modules' or directory.
 2. Enable the module at 'administer >> modules'.
    Note: The installation process will grant view permissions
@@ -32,7 +37,14 @@ Installation
    Development >> Disable Messages.
 4. Configure permissions in Administration >> People >> Permissions.
 
-Configuration
+
+REQUIREMENTS
+------------
+
+The module has releases for Drupal 7, 8 and 9.
+
+
+CONFIGURATION
 -------------
 1. Visit the configuration page at:
    'Administration >> Configuration >> Development >> Disable Messages'
@@ -44,9 +56,9 @@ Configuration
    regular expression. The system will automatically add /^ and $/
    at the beginning and end of the pattern to ensure that the match is
    always a full match instead of a partial match. This will help
-   prevent unexpected filtering of messages. So if you want to filter
-   out a specific message ensure that you add the full message including
-   any punctuation and additional HTML if any.
+   prevent unexpected filtering of messages. If you know the exact
+   message to filter, add the entire message including punctuations
+   and additional HTML (if any).
 
    If you are familiar with wildcard searches using *, and not Regular
    Expressions, you can achieve the exact same thing by using .* as your
@@ -74,19 +86,18 @@ Configuration
 5. Hit 'Save Configuration' to save the settings.
 
 6. Visit 'Administration >> People >> Permissions' to set permissions.
-   When the module is first enabled it will granted permissions
-   to view all message types to each site role.
+   When the module is first enabled filtering by permissions is disabled
+   by default. If you are enabling this, you will have to go to the
+   permissions configurations page and then assign relevant permissions
+   to the different roles against the different message types.
+
    Assign the 'view <type> message' to roles who should be able to see
    the given <type> of messages. Users who do not have the permissions
    to see a given type of messages will not be able to see any of the
    messages of the given type. Useful to hide warning and error
    messages from end users on a production site.
 
-Uninstallation
---------------
-1. Disable the module.
-2. Uninstall the module
 
-Credits
+CREDITS
 -------
 Written by Zyxware, http://www.zyxware.com/
