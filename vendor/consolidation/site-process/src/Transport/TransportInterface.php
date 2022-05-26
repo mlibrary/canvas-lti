@@ -5,8 +5,8 @@ namespace Consolidation\SiteProcess\Transport;
 use Consolidation\SiteProcess\SiteProcess;
 
 /**
- * Transports know how to wrap a command such that it runs on a remote system
- * via some other command.
+ * SshTransport knows how to wrap a command such that it runs on a remote
+ * system via the ssh cli.
  *
  * There is always a transport for every factory, and visa-versa.
  *

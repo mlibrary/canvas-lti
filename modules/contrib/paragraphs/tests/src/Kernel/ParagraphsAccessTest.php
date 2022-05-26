@@ -17,7 +17,7 @@ class ParagraphsAccessTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = [
+  public static $modules = [
     'paragraphs',
   ];
 

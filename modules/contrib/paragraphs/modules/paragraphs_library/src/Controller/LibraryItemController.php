@@ -196,7 +196,6 @@ class LibraryItemController extends ControllerBase implements ContainerInjection
     $result = $this->entityTypeManager->getStorage('paragraphs_library_item')->getQuery()
       ->allRevisions()
       ->condition('id', $library_item->id())
-      ->accessCheck(TRUE)
       ->sort($library_item->getEntityType()->getKey('revision'), 'DESC')
       ->pager(50)
       ->execute();

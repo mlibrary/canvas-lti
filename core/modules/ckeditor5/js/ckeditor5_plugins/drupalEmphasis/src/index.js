@@ -3,7 +3,7 @@
 import DrupalEmphasis from './drupalemphasis';
 
 /**
- * @private
+ * @internal
  */
 export default {
   DrupalEmphasis,

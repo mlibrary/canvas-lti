@@ -30,11 +30,11 @@ import DrupalElementStyleEditing from './drupalelementstyle/drupalelementstyleed
  * @see module:drupalMedia/drupalmediaediting~DrupalMediaEditing
  * @see module:drupalMedia/drupalmediatoolbar~DrupalMediaToolbar
  *
- * @private
+ * @internal
  */
 export default class DrupalElementStyle extends Plugin {
   /**
-   * @inheritdoc
+   * @inheritDoc
    */
   static get requires() {
     return [DrupalElementStyleEditing, DrupalElementStyleUi];

@@ -8,4 +8,3 @@ services:
     arguments: ['@cache.bootstrap', '@lock', '@entity_type.manager']
     tags:
       - { name: needs_destruction }
-

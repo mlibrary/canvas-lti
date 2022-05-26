@@ -1,11 +1,6 @@
 CHANGELOG
 =========
 
-6.7.1
------
-
-* `LtiMessage` auto submit script wrapped by `window.onload` callback
-
 6.7.0
 -----
 

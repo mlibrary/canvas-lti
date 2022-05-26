@@ -51,7 +51,7 @@ class VersionParser
      */
     public static function parseStability($version)
     {
-        $version = (string) preg_replace('{#.+$}', '', (string) $version);
+        $version = (string) preg_replace('{#.+$}', '', $version);
 
         if (strpos($version, 'dev-') === 0 || '-dev' === substr($version, -4)) {
             return 'dev';
@@ -85,7 +85,7 @@ class VersionParser
      */
     public static function normalizeStability($stability)
     {
-        $stability = strtolower((string) $stability);
+        $stability = strtolower($stability);
 
         return $stability === 'rc' ? 'RC' : $stability;
     }
@@ -94,7 +94,7 @@ class VersionParser
      * Normalizes a version string to be able to perform comparisons on it.
      *
      * @param string $version
-     * @param ?string $fullVersion optional complete version string to give more context
+     * @param string $fullVersion optional complete version string to give more context
      *
      * @throws \UnexpectedValueException
      *
@@ -102,7 +102,7 @@ class VersionParser
      */
     public function normalize($version, $fullVersion = null)
     {
-        $version = trim((string) $version);
+        $version = trim($version);
         $origVersion = $version;
         if (null === $fullVersion) {
             $fullVersion = $version;
@@ -195,7 +195,7 @@ class VersionParser
      */
     public function parseNumericAliasPrefix($branch)
     {
-        if (preg_match('{^(?P<version>(\d++\\.)*\d++)(?:\.x)?-dev$}i', (string) $branch, $matches)) {
+        if (preg_match('{^(?P<version>(\d++\\.)*\d++)(?:\.x)?-dev$}i', $branch, $matches)) {
             return $matches['version'] . '.';
         }
 
@@ -211,7 +211,7 @@ class VersionParser
      */
     public function normalizeBranch($name)
     {
-        $name = trim((string) $name);
+        $name = trim($name);
 
         if (preg_match('{^v?(\d++)(\.(?:\d++|[xX*]))?(\.(?:\d++|[xX*]))?(\.(?:\d++|[xX*]))?$}i', $name, $matches)) {
             $version = '';
@@ -231,8 +231,6 @@ class VersionParser
      * @param string $name
      *
      * @return string
-     *
-     * @deprecated No need to use this anymore in theory, Composer 2 does not normalize any branch names to 9999999-dev anymore
      */
     public function normalizeDefaultBranch($name)
     {
@@ -240,7 +238,7 @@ class VersionParser
             return '9999999-dev';
         }
 
-        return (string) $name;
+        return $name;
     }
 
     /**
@@ -252,9 +250,9 @@ class VersionParser
      */
     public function parseConstraints($constraints)
     {
-        $prettyConstraint = (string) $constraints;
+        $prettyConstraint = $constraints;
 
-        $orConstraints = preg_split('{\s*\|\|?\s*}', trim((string) $constraints));
+        $orConstraints = preg_split('{\s*\|\|?\s*}', trim($constraints));
         if (false === $orConstraints) {
             throw new \RuntimeException('Failed to preg_split string: '.$constraints);
         }

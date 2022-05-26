@@ -6,9 +6,9 @@ import DrupalImageUploadEditing from './drupalimageuploadediting';
 import DrupalFileRepository from './drupalfilerepository';
 
 /**
- * Integrates the CKEditor image upload with Drupal.
+ * Integrates the CKEditor image upload with the Drupal.
  *
- * @private
+ * @internal
  */
 class DrupalImageUpload extends Plugin {
   /**

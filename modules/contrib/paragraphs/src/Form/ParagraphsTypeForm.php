@@ -69,7 +69,7 @@ class ParagraphsTypeForm extends EntityForm {
     $paragraphs_type = $this->entity;
 
     if (!$paragraphs_type->isNew()) {
-      $form['#title'] = ($this->t('Edit %title paragraph type', [
+      $form['#title'] = (t('Edit %title paragraph type', [
         '%title' => $paragraphs_type->label(),
       ]));
     }
@@ -107,18 +107,17 @@ class ParagraphsTypeForm extends EntityForm {
     }
 
     $form['description'] = [
-      '#title' => $this->t('Description'),
+      '#title' => t('Description'),
       '#type' => 'textarea',
       '#default_value' => $paragraphs_type->getDescription(),
-      '#description' => $this->t('This text will be displayed on the <em>Add new paragraph</em> page.'),
+      '#description' => t('This text will be displayed on the <em>Add new paragraph</em> page.'),
     ];
 
     // Loop over the plugins that can be applied to this paragraph type.
     if ($behavior_plugin_definitions = $this->paragraphsBehaviorManager->getApplicableDefinitions($paragraphs_type)) {
       $form['message'] = [
         '#type' => 'container',
-        '#markup' => $this->t('Behavior plugins are only supported by the stable paragraphs widget.', [], ['context' =>
-          'paragraphs']),
+        '#markup' => $this->t('Behavior plugins are only supported by the EXPERIMENTAL paragraphs widget.', [], ['context' => 'paragraphs']),
         '#attributes' => ['class' => ['messages', 'messages--warning']]
       ];
       $form['behavior_plugins'] = [

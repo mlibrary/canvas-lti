@@ -234,10 +234,11 @@ class Agent
      * Signal that agent forwarding should
      * be requested when a channel is opened
      *
+     * @param Net_SSH2 $ssh
      * @return bool
      * @access public
      */
-    function startSSHForwarding()
+    function startSSHForwarding($ssh)
     {
         if ($this->forward_status == self::FORWARD_NONE) {
             $this->forward_status = self::FORWARD_REQUEST;

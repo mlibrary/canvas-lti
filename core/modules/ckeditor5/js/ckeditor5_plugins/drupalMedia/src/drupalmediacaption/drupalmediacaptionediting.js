@@ -174,25 +174,25 @@ function modelCaptionToCaptionAttribute(editor) {
  *
  * @extends module:core/plugin~Plugin
  *
- * @private
+ * @internal
  */
 export default class DrupalMediaCaptionEditing extends Plugin {
   /**
-   * @inheritdoc
+   * @inheritDoc
    */
   static get requires() {
     return [];
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    */
   static get pluginName() {
     return 'DrupalMediaCaptionEditing';
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    */
   constructor(editor) {
     super(editor);
@@ -208,7 +208,7 @@ export default class DrupalMediaCaptionEditing extends Plugin {
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    */
   init() {
     const editor = this.editor;

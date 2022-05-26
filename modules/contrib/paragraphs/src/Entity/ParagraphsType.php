@@ -118,7 +118,7 @@ class ParagraphsType extends ConfigEntityBundleBase implements ParagraphsTypeInt
       // Compose the default icon file destination.
       $icon_meta = stream_get_meta_data($icon_data);
       // File extension from MIME, only JPG/JPEG, PNG and SVG expected.
-      [, $icon_file_ext] = explode('image/', $icon_meta['mediatype']);
+      list(, $icon_file_ext) = explode('image/', $icon_meta['mediatype']);
       // SVG special case.
       if ($icon_file_ext == 'svg+xml') {
         $icon_file_ext = 'svg';
@@ -159,11 +159,9 @@ class ParagraphsType extends ConfigEntityBundleBase implements ParagraphsTypeInt
    * {@inheritdoc}
    */
   public function getIconFile() {
-    if ($this->icon_uuid !== NULL) {
-      $icon = $this->getFileByUuid($this->icon_uuid) ?: $this->restoreDefaultIcon();
-      if ($icon) {
-        return $icon;
-      }
+    $icon = $this->getFileByUuid($this->icon_uuid) ?: $this->restoreDefaultIcon();
+    if ($this->icon_uuid && $icon) {
+      return $icon;
     }
 
     return FALSE;

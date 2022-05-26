@@ -8,10 +8,10 @@ use Psr\Http\Message\StreamInterface;
 
 use function array_pop;
 use function implode;
+use function ltrim;
 use function preg_match;
 use function sprintf;
 use function str_replace;
-use function trim;
 use function ucwords;
 
 /**
@@ -21,9 +21,9 @@ use function ucwords;
  */
 abstract class AbstractSerializer
 {
-    public const CR  = "\r";
-    public const EOL = "\r\n";
-    public const LF  = "\n";
+    const CR  = "\r";
+    const EOL = "\r\n";
+    const LF  = "\n";
 
     /**
      * Retrieve a single line from the stream.
@@ -95,7 +95,7 @@ abstract class AbstractSerializer
                 if (! isset($headers[$currentHeader])) {
                     $headers[$currentHeader] = [];
                 }
-                $headers[$currentHeader][] = trim($matches['value'], "\t ");
+                $headers[$currentHeader][] = ltrim($matches['value']);
                 continue;
             }
 
@@ -109,7 +109,7 @@ abstract class AbstractSerializer
 
             // Append continuation to last header value found
             $value = array_pop($headers[$currentHeader]);
-            $headers[$currentHeader][] = $value . ' ' . trim($line, "\t ");
+            $headers[$currentHeader][] = $value . ltrim($line);
         }
 
         // use RelativeStream to avoid copying initial stream into memory

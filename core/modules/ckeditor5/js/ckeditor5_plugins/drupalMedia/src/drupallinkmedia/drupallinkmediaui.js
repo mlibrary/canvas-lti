@@ -8,7 +8,7 @@ import linkIcon from '../../../../../icons/link.svg';
 /**
  * The link media UI plugin.
  *
- * @private
+ * @internal
  */
 export default class DrupalLinkMediaUI extends Plugin {
   /**

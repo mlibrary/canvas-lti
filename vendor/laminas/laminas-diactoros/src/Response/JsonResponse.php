@@ -16,11 +16,6 @@ use function json_last_error_msg;
 use function sprintf;
 
 use const JSON_ERROR_NONE;
-use const JSON_HEX_AMP;
-use const JSON_HEX_APOS;
-use const JSON_HEX_QUOT;
-use const JSON_HEX_TAG;
-use const JSON_UNESCAPED_SLASHES;
 
 /**
  * JSON response.
@@ -34,15 +29,15 @@ class JsonResponse extends Response
     use InjectContentTypeTrait;
 
     /**
-     * Default flags for json_encode
+     * Default flags for json_encode; value of:
+     *
+     * <code>
+     * JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES
+     * </code>
      *
      * @const int
      */
-    public const DEFAULT_JSON_FLAGS = JSON_HEX_TAG
-        | JSON_HEX_APOS
-        | JSON_HEX_AMP
-        | JSON_HEX_QUOT
-        | JSON_UNESCAPED_SLASHES;
+    const DEFAULT_JSON_FLAGS = 79;
 
     /**
      * @var mixed

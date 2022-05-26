@@ -7,9 +7,7 @@ import { logWarning } from 'ckeditor5/src/utils';
 import DrupalImageUploadAdapter from './drupalimageuploadadapter';
 
 /**
- * Provides a Drupal upload adapter.
- *
- * @private
+ * @internal
  */
 export default class DrupalFileRepository extends Plugin {
   /**

@@ -18,7 +18,7 @@ class ParagraphsTypeHasEnabledBehaviorPluginTest extends KernelTestBase {
    *
    * @var array
    */
-  protected static $modules = [
+  public static $modules = [
     'paragraphs',
     'user',
     'paragraphs_test',
@@ -35,7 +35,7 @@ class ParagraphsTypeHasEnabledBehaviorPluginTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void{
+  protected function setUp() {
     parent::setUp();
     $this->installEntitySchema('user');
     $this->installEntitySchema('paragraph');

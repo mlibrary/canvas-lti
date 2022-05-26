@@ -23,7 +23,7 @@ class ParagraphsEntityMethodsTest extends KernelTestBase {
    *
    * @var string[]
    */
-  protected static $modules = [
+  public static $modules = [
     'paragraphs',
     'node',
     'user',
@@ -36,7 +36,7 @@ class ParagraphsEntityMethodsTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->installEntitySchema('user');
     $this->installEntitySchema('node');

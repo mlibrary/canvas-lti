@@ -91,7 +91,7 @@ class ExprBuilder
     /**
      * Tests if the value is empty.
      *
-     * @return $this
+     * @return ExprBuilder
      */
     public function ifEmpty()
     {

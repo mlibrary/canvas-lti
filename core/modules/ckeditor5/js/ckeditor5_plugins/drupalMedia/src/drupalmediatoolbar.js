@@ -26,26 +26,17 @@ function normalizeDeclarativeConfig(config) {
 }
 
 /**
- * @private
+ * @internal
  */
 export default class DrupalMediaToolbar extends Plugin {
-  /**
-   * @inheritdoc
-   */
   static get requires() {
     return [WidgetToolbarRepository];
   }
 
-  /**
-   * @inheritdoc
-   */
   static get pluginName() {
     return 'DrupalMediaToolbar';
   }
 
-  /**
-   * @inheritdoc
-   */
   afterInit() {
     const { editor } = this;
     const widgetToolbarRepository = editor.plugins.get(WidgetToolbarRepository);

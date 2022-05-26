@@ -17,7 +17,7 @@ import MediaImageTextAlternativeEditing from './mediaimagetextalternative/mediai
 import MediaImageTextAlternativeUi from './mediaimagetextalternative/mediaimagetextalternativeui';
 
 /**
- * @private
+ * @internal
  */
 export default {
   DrupalMedia,

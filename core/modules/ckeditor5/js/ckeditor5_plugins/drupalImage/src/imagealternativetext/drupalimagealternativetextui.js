@@ -40,21 +40,21 @@ import MissingAlternativeTextView from './ui/missingalternativetextview';
  */
 export default class DrupalImageAlternativeTextUi extends Plugin {
   /**
-   * @inheritdoc
+   * @inheritDoc
    */
   static get requires() {
     return [ContextualBalloon];
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    */
   static get pluginName() {
     return 'DrupalImageTextAlternativeUI';
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    */
   init() {
     this._createButton();
@@ -112,7 +112,7 @@ export default class DrupalImageAlternativeTextUi extends Plugin {
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    */
   destroy() {
     super.destroy();

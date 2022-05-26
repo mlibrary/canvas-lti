@@ -1,7 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 // cSpell:words insertdrupalmediacommand
 import { Command } from 'ckeditor5/src/core';
-import { groupNameToModelAttributeKey } from './utils';
 
 /**
  * @module drupalMedia/insertdrupalmediacommand
@@ -13,6 +12,9 @@ function createDrupalMedia(writer, attributes) {
 }
 
 /**
+ * @internal
+ */
+/**
  * The insert media command.
  *
  * The command is registered by the `DrupalMediaEditing` plugin as
@@ -21,7 +23,6 @@ function createDrupalMedia(writer, attributes) {
  * In order to insert media at the current selection position, execute the
  * command and pass the attributes desired in the drupal-media element:
  *
- * @example
  *    editor.execute('insertDrupalMedia', {
  *      'alt': 'Alt text',
  *      'data-align': 'left',
@@ -30,8 +31,6 @@ function createDrupalMedia(writer, attributes) {
  *      'data-entity-uuid': 'media-entity-uuid',
  *      'data-view-mode': 'default',
  *    });
- *
- * @private
  */
 export default class InsertDrupalMediaCommand extends Command {
   execute(attributes) {
@@ -68,19 +67,14 @@ export default class InsertDrupalMediaCommand extends Command {
       const elementStyleEditing = this.editor.plugins.get(
         'DrupalElementStyleEditing',
       );
-
-      const { normalizedStyles } = elementStyleEditing;
       // eslint-disable-next-line no-restricted-syntax
-      for (const group of Object.keys(normalizedStyles)) {
-        // eslint-disable-next-line no-restricted-syntax
-        for (const style of elementStyleEditing.normalizedStyles[group]) {
-          if (
-            attributes[style.attributeName] &&
-            style.attributeValue === attributes[style.attributeName]
-          ) {
-            const modelAttribute = groupNameToModelAttributeKey(group);
-            modelAttributes[modelAttribute] = style.name;
-          }
+      for (const style of elementStyleEditing.normalizedStyles) {
+        if (
+          attributes[style.attributeName] &&
+          style.attributeValue === attributes[style.attributeName]
+        ) {
+          modelAttributes.drupalElementStyle = style.name;
+          break;
         }
       }
     }

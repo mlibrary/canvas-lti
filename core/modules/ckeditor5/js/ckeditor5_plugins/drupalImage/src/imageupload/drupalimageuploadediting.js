@@ -2,9 +2,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 
 /**
- * Adds Drupal-specific attributes to the CKEditor 5 image element.
- *
- * @private
+ * @internal
  */
 export default class DrupalImageUploadEditing extends Plugin {
   /**

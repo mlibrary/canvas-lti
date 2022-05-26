@@ -36,11 +36,11 @@ function getCaptionFromDrupalMediaModelElement(drupalMediaModelElement) {
  *
  * @extends module:core/command~Command
  *
- * @private
+ * @internal
  */
 export default class ToggleDrupalMediaCaptionCommand extends Command {
   /**
-   * @inheritdoc
+   * @inheritDoc
    */
   refresh() {
     const selection = this.editor.model.document.selection;

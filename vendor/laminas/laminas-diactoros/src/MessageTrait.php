@@ -18,9 +18,7 @@ use function is_resource;
 use function is_string;
 use function preg_match;
 use function sprintf;
-use function str_replace;
 use function strtolower;
-use function trim;
 
 /**
  * Trait implementing the various methods defined in MessageInterface.
@@ -196,26 +194,26 @@ trait MessageTrait
      * immutability of the message, and MUST return an instance that has the
      * new and/or updated header and value.
      *
-     * @param string $name Case-insensitive header field name.
+     * @param string $header Case-insensitive header field name.
      * @param string|string[] $value Header value(s).
      * @return static
      * @throws Exception\InvalidArgumentException for invalid header names or values.
      */
-    public function withHeader($name, $value) : MessageInterface
+    public function withHeader($header, $value) : MessageInterface
     {
-        $this->assertHeader($name);
+        $this->assertHeader($header);
 
-        $normalized = strtolower($name);
+        $normalized = strtolower($header);
 
         $new = clone $this;
-        if ($new->hasHeader($name)) {
+        if ($new->hasHeader($header)) {
             unset($new->headers[$new->headerNames[$normalized]]);
         }
 
         $value = $this->filterHeaderValue($value);
 
-        $new->headerNames[$normalized] = $name;
-        $new->headers[$name]           = $value;
+        $new->headerNames[$normalized] = $header;
+        $new->headers[$header]         = $value;
 
         return $new;
     }
@@ -232,20 +230,20 @@ trait MessageTrait
      * immutability of the message, and MUST return an instance that has the
      * new header and/or value.
      *
-     * @param string $name Case-insensitive header field name to add.
+     * @param string $header Case-insensitive header field name to add.
      * @param string|string[] $value Header value(s).
      * @return static
      * @throws Exception\InvalidArgumentException for invalid header names or values.
      */
-    public function withAddedHeader($name, $value) : MessageInterface
+    public function withAddedHeader($header, $value) : MessageInterface
     {
-        $this->assertHeader($name);
+        $this->assertHeader($header);
 
-        if (! $this->hasHeader($name)) {
-            return $this->withHeader($name, $value);
+        if (! $this->hasHeader($header)) {
+            return $this->withHeader($header, $value);
         }
 
-        $header = $this->headerNames[strtolower($name)];
+        $header = $this->headerNames[strtolower($header)];
 
         $new = clone $this;
         $value = $this->filterHeaderValue($value);
@@ -262,16 +260,16 @@ trait MessageTrait
      * immutability of the message, and MUST return an instance that removes
      * the named header.
      *
-     * @param string $name Case-insensitive header field name to remove.
+     * @param string $header Case-insensitive header field name to remove.
      * @return static
      */
-    public function withoutHeader($name) : MessageInterface
+    public function withoutHeader($header) : MessageInterface
     {
-        if (! is_string($name) || $name === '' || ! $this->hasHeader($name)) {
+        if (! $this->hasHeader($header)) {
             return clone $this;
         }
 
-        $normalized = strtolower($name);
+        $normalized = strtolower($header);
         $original   = $this->headerNames[$normalized];
 
         $new = clone $this;
@@ -400,13 +398,7 @@ trait MessageTrait
         return array_map(function ($value) {
             HeaderSecurity::assertValid($value);
 
-            $value = (string)$value;
-
-            // Normalize line folding to a single space (RFC 7230#3.2.4).
-            $value = str_replace(["\r\n\t", "\r\n "], ' ', $value);
-
-            // Remove optional whitespace (OWS, RFC 7230#3.2.3) around the header value.
-            return trim($value, "\t ");
+            return (string) $value;
         }, array_values($values));
     }
 

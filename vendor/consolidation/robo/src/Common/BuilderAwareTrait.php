@@ -40,7 +40,7 @@ trait BuilderAwareTrait
     /**
      * @return \Robo\Collection\CollectionBuilder
      *
-     * @param \Robo\Symfony\ConsoleIO $io
+     * @param \Robo\Symfony\ConsoleIO
      */
     protected function collectionBuilder($io = null)
     {

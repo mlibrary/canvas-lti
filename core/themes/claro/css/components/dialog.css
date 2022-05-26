@@ -168,6 +168,6 @@
   }
 
 #drupal-off-canvas .form-item .form-item__description {
-    color: #f3f4f9;
+    color: var(--color-whitesmoke);
     font-size: 0.75rem;
   }

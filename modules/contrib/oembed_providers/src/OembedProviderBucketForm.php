@@ -16,8 +16,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class OembedProviderBucketForm extends EntityForm {
 
-  use HelperTrait;
-
   /**
    * The decorated oEmbed ProviderRepository.
    *
@@ -85,7 +83,7 @@ class OembedProviderBucketForm extends EntityForm {
     $entity = $this->entity;
 
     $form['security_warning'] = [
-      '#markup' => $this->disabledProviderSecurityWarning(),
+      '#markup' => HelperTrait::disabledProviderSecurityWarning(),
       // Simulate warning message.
       '#prefix' => '<div role="contentinfo" aria-label="Warning message" class="messages messages--warning">',
       '#suffix' => '</div>',

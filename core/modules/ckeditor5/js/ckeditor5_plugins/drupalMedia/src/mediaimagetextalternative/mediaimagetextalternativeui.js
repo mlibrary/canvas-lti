@@ -23,21 +23,21 @@ import TextAlternativeFormView from './ui/textalternativeformview';
  */
 export default class MediaImageTextAlternativeUi extends Plugin {
   /**
-   * @inheritdoc
+   * @inheritDoc
    */
   static get requires() {
     return [ContextualBalloon];
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    */
   static get pluginName() {
     return 'MediaImageTextAlternativeUi';
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    */
   init() {
     this._createButton();
@@ -45,7 +45,7 @@ export default class MediaImageTextAlternativeUi extends Plugin {
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    */
   destroy() {
     super.destroy();

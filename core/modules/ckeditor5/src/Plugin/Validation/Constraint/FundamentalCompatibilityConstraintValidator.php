@@ -115,7 +115,7 @@ class FundamentalCompatibilityConstraintValidator extends ConstraintValidator im
   private function checkHtmlRestrictionsAreCompatible(FilterFormatInterface $text_format, FundamentalCompatibilityConstraint $constraint): void {
     $fundamental = new HTMLRestrictions($this->pluginManager->getProvidedElements(self::FUNDAMENTAL_CKEDITOR5_PLUGINS));
 
-    // @todo Remove in favor of HTMLRestrictions::diff() in https://www.drupal.org/project/drupal/issues/3231336
+    // @todo Remove in favor of HTMLRestrictions::diff() in https://www.drupal.org/project/drupal/issues/3231334
     $html_restrictions = $text_format->getHtmlRestrictions();
     $minimum_tags = array_keys($fundamental->getAllowedElements());
     $forbidden_minimum_tags = isset($html_restrictions['forbidden_tags'])
@@ -129,11 +129,11 @@ class FundamentalCompatibilityConstraintValidator extends ConstraintValidator im
         ->addViolation();
     }
 
-    // @todo Remove early return in https://www.drupal.org/project/drupal/issues/3231336
+    // @todo Remove early return in https://www.drupal.org/project/drupal/issues/3231334
     if (!isset($html_restrictions['allowed'])) {
       return;
     }
-    if (!$fundamental->diff(HTMLRestrictions::fromTextFormat($text_format))->allowsNothing()) {
+    if (!$fundamental->diff(HTMLRestrictions::fromTextFormat($text_format))->isEmpty()) {
       $offending_filter = static::findHtmlRestrictorFilterNotAllowingTags($text_format, $fundamental);
       $this->context->buildViolation($constraint->nonAllowedElementsMessage)
         ->setParameter('%filter_label', $offending_filter->getLabel())
@@ -165,18 +165,18 @@ class FundamentalCompatibilityConstraintValidator extends ConstraintValidator im
       $diff_allowed = $allowed->diff($provided);
       $diff_elements = $provided->diff($allowed);
 
-      if (!$diff_allowed->allowsNothing()) {
+      if (!$diff_allowed->isEmpty()) {
         $this->context->buildViolation($constraint->notSupportedElementsMessage)
-          ->setParameter('@list', implode(' ', $provided->toCKEditor5ElementsArray()))
-          ->setParameter('@diff', implode(' ', $diff_allowed->toCKEditor5ElementsArray()))
+          ->setParameter('@list', $provided->toFilterHtmlAllowedTagsString())
+          ->setParameter('@diff', $diff_allowed->toFilterHtmlAllowedTagsString())
           ->atPath("filters.$filter_plugin_id")
           ->addViolation();
       }
 
-      if (!$diff_elements->allowsNothing()) {
+      if (!$diff_elements->isEmpty()) {
         $this->context->buildViolation($constraint->missingElementsMessage)
-          ->setParameter('@list', implode(' ', $provided->toCKEditor5ElementsArray()))
-          ->setParameter('@diff', implode(' ', $diff_elements->toCKEditor5ElementsArray()))
+          ->setParameter('@list', $provided->toFilterHtmlAllowedTagsString())
+          ->setParameter('@diff', $diff_elements->toFilterHtmlAllowedTagsString())
           ->atPath("filters.$filter_plugin_id")
           ->addViolation();
       }
@@ -278,7 +278,7 @@ class FundamentalCompatibilityConstraintValidator extends ConstraintValidator im
 
     foreach ($filters as $filter) {
       // Return any filter not allowing >=1 of the required tags.
-      if (!$required->diff(HTMLRestrictions::fromFilterPluginInstance($filter))->allowsNothing()) {
+      if (!$required->diff(HTMLRestrictions::fromFilterPluginInstance($filter))->isEmpty()) {
         return $filter;
       }
     }

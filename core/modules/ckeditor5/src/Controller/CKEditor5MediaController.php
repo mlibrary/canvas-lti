@@ -102,7 +102,6 @@ class CKEditor5MediaController extends ControllerBase {
     }
     $image_field = $this->getMediaImageSourceFieldName($media);
     $response = [];
-    $response['type'] = $media->bundle();
     if ($image_field) {
       $response['imageSourceMetadata'] = [
         'alt' => $this->entityRepository->getTranslationFromContext($media)->{$image_field}->alt,

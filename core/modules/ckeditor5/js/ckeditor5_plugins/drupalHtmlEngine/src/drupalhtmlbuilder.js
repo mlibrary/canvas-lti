@@ -3,15 +3,7 @@
 /**
  * HTML builder that converts document fragments into strings.
  *
- * Escapes ampersand characters (`&`) and angle brackets (`<` and `>`) when
- * transforming data to HTML. This is required because
- * \Drupal\Component\Utility\Xss::filter fails to parse element attributes
- * values containing unescaped HTML entities.
- *
- * @see https://www.drupal.org/project/drupal/issues/3227831
- * @see DrupalHtmlBuilder._escapeAttribute
- *
- * @private
+ * @internal
  */
 export default class DrupalHtmlBuilder {
   /**
@@ -49,7 +41,7 @@ export default class DrupalHtmlBuilder {
   }
 
   /**
-   * Converts a document fragment into an HTML string appended to the value.
+   * Converts document fragment into HTML string and appends to the value.
    *
    * @param {DocumentFragment} node
    *   A document fragment to be appended to the value.
@@ -65,7 +57,7 @@ export default class DrupalHtmlBuilder {
   }
 
   /**
-   * Appends an element node to the value.
+   * Appends element node to the value.
    *
    * @param {DocumentFragment} node
    *   A document fragment to be appended to the value.
@@ -130,9 +122,7 @@ export default class DrupalHtmlBuilder {
    * @private
    */
   _appendText(node) {
-    // Repack the text into another node and extract using innerHTML. This
-    // works around text nodes not having an innerHTML property and textContent
-    // not encoding entities.
+    // Text node doesn't have innerHTML property and textContent doesn't encode
     // entities. That's why the text is repacked into another node and extracted
     // using innerHTML.
     const doc = document.implementation.createHTMLDocument('');
@@ -143,7 +133,7 @@ export default class DrupalHtmlBuilder {
   }
 
   /**
-   * Appends a string to the value.
+   * Appends string to the value.
    *
    * @param {string} str
    *  A string to be appended to the value.
@@ -166,9 +156,6 @@ export default class DrupalHtmlBuilder {
    *
    * @param {string} text
    *  A string to be escaped.
-   *
-   * @return {string}
-   *  Escaped string.
    *
    * @see https://www.w3.org/TR/2008/REC-xml-20081126/#NT-AttValue
    * @see https://html.spec.whatwg.org/multipage/parsing.html#attribute-value-(single-quoted)-state

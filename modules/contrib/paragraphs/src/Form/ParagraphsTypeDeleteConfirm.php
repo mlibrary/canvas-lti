@@ -17,7 +17,6 @@ class ParagraphsTypeDeleteConfirm extends EntityDeleteForm {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $num_paragraphs = $this->entityTypeManager->getStorage('paragraph')->getQuery()
       ->condition('type', $this->entity->id())
-      ->accessCheck(FALSE)
       ->count()
       ->execute();
     if ($num_paragraphs) {
@@ -50,7 +49,6 @@ class ParagraphsTypeDeleteConfirm extends EntityDeleteForm {
     $storage = $this->entityTypeManager->getStorage('paragraph');
     $ids = $storage->getQuery()
       ->condition('type', $this->entity->id())
-      ->accessCheck(FALSE)
       ->execute();
 
     if (!empty($ids)) {

@@ -5,21 +5,13 @@ import DrupalMediaCaptionEditing from './drupalmediacaption/drupalmediacaptioned
 import DrupalMediaCaptionUI from './drupalmediacaption/drupalmediacaptionui';
 
 /**
- * Provides the caption feature on Drupal media elements.
- *
- * @private
+ * @internal
  */
 export default class DrupalMediaCaption extends Plugin {
-  /**
-   * @inheritdoc
-   */
   static get requires() {
     return [DrupalMediaCaptionEditing, DrupalMediaCaptionUI];
   }
 
-  /**
-   * @inheritdoc
-   */
   static get pluginName() {
     return 'DrupalMediaCaption';
   }

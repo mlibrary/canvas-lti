@@ -8,6 +8,17 @@
 use Drupal\oembed_providers\Entity\ProviderBucket;
 
 /**
+ * Implements hook_install().
+ */
+function oembed_providers_install() {
+  // Use $is_syncing parameter when Drupal 8.8 reaches EOL.
+  // https://www.drupal.org/node/3098920.
+  if (!\Drupal::isConfigSyncing()) {
+    \Drupal::messenger()->addWarning(t('The <em>oEmbed Providers</em> module now manages oEmbed providers. Allowed oEmbed providers must be designated. <a href="@url">Configure <em>Allowed Providers</em> settings</a>', ['@url' => '/admin/config/media/oembed-providers/allowed-providers']));
+  }
+}
+
+/**
  * Convert 1.x.x allowed providers into "video" bucket.
  */
 function oembed_providers_update_8201() {

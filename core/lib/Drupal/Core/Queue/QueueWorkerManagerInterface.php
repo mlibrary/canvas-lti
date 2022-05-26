@@ -9,11 +9,4 @@ use Drupal\Component\Plugin\PluginManagerInterface;
  */
 interface QueueWorkerManagerInterface extends PluginManagerInterface {
 
-  /**
-   * The default time duration in seconds spent calling a queue worker.
-   *
-   * @var int
-   */
-  public const DEFAULT_QUEUE_CRON_TIME = 15;
-
 }

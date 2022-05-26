@@ -3,11 +3,9 @@
 namespace Drupal\Tests\paragraphs_library\FunctionalJavascript;
 
 use Behat\Mink\Element\Element;
-use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
-use Drupal\paragraphs\Entity\ParagraphsType;
 use Drupal\Tests\field_ui\Traits\FieldUiTestTrait;
+use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\Tests\paragraphs\FunctionalJavascript\ParagraphsTestBaseTrait;
-use Drupal\Tests\paragraphs\Traits\ParagraphsCoreVersionUiTestTrait;
 use Drupal\Tests\paragraphs\Traits\ParagraphsLastEntityQueryTrait;
 
 /**
@@ -17,7 +15,7 @@ use Drupal\Tests\paragraphs\Traits\ParagraphsLastEntityQueryTrait;
  */
 class ParagraphsContentModerationTest extends WebDriverTestBase {
 
-  use ParagraphsTestBaseTrait, FieldUiTestTrait, ParagraphsLastEntityQueryTrait, ParagraphsCoreVersionUiTestTrait;
+  use ParagraphsTestBaseTrait, FieldUiTestTrait, ParagraphsLastEntityQueryTrait;
 
   /**
    * A user with permission to bypass access content.
@@ -60,9 +58,9 @@ class ParagraphsContentModerationTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp(): void {
+  public function setUp() {
     parent::setUp();
-    $this->addParagraphedContentType('paragraphed_moderated_test', 'field_paragraphs');
+    $this->addParagraphedContentType('paragraphed_moderated_test', 'field_paragraphs', 'entity_reference_paragraphs');
 
     $this->addParagraphsType('text');
     $this->addFieldtoParagraphType('text', 'field_text', 'text');
@@ -114,7 +112,10 @@ class ParagraphsContentModerationTest extends WebDriverTestBase {
       'view all revisions',
     ]);
 
-    $this->placeDefaultBlocks();
+    $this->drupalPlaceBlock('system_breadcrumb_block');
+    $this->drupalPlaceBlock('local_tasks_block');
+    $this->drupalPlaceBlock('local_actions_block');
+    $this->drupalPlaceBlock('page_title_block');
 
     $this->drupalLogin($this->adminUser);
   }
@@ -259,11 +260,10 @@ class ParagraphsContentModerationTest extends WebDriverTestBase {
     $this->drupalGet("/node/{$host_node_id}/edit");
     $page->fillField('title[0][value]', 'Host page 1 (rev 4)');
     $page->fillField('field_paragraphs[1][subform][field_text][0][value]', 'Direct paragraph text 2 modified again');
-    $row = $assert_session->elementExists('css', '#field-paragraphs-add-more-wrapper tr.draggable:nth-of-type(3)');
-    $dropdown = $assert_session->elementExists('css', '.paragraphs-dropdown', $row);
-    $dropdown->click();
     $paragraph3_remove_button = $assert_session->elementExists('css', 'input[name="field_paragraphs_2_remove"]');
     $paragraph3_remove_button->press();
+    $paragraph3_confirm_remove_button = $assert_session->waitForElement('css', 'input[name="field_paragraphs_2_confirm_remove"]');
+    $paragraph3_confirm_remove_button->press();
     $assert_session->assertWaitOnAjaxRequest();
     $page->selectFieldOption('moderation_state[0][state]', 'draft');
     $page->find('css', 'a[href="#edit-revision-information"]')->click();
@@ -406,13 +406,11 @@ class ParagraphsContentModerationTest extends WebDriverTestBase {
     $nodes = \Drupal::entityTypeManager()->getStorage('node')->getQuery()
       ->allRevisions()
       ->condition($host_node->getEntityType()->getKey('id'), $host_node->id())
-      ->accessCheck(TRUE)
       ->execute();
     $this->assertEquals(7, count($nodes));
     $library_items = \Drupal::entityTypeManager()->getStorage('paragraphs_library_item')->getQuery()
       ->allRevisions()
       ->condition($library_item->getEntityType()->getKey('id'), $library_item->id())
-      ->accessCheck(TRUE)
       ->execute();
     $this->assertEquals(6, count($library_items));
 
@@ -423,56 +421,6 @@ class ParagraphsContentModerationTest extends WebDriverTestBase {
     $assert_session->pageTextContains('Content types');
     $assert_session->elementNotExists('css', 'a[href$="' . $this->workflow->id() . '/type/paragraph"]');
     $assert_session->elementExists('css', 'a[href$="' . $this->workflow->id() . '/type/node"]');
-
-    // Promote a library and assert that is published when created.
-    $paragraph_type = ParagraphsType::load('text');
-    $paragraph_type->setThirdPartySetting('paragraphs_library', 'allow_library_conversion', TRUE);
-    $paragraph_type->save();
-    $this->drupalGet('/node/add/paragraphed_moderated_test');
-    $page->fillField('title[0][value]', 'Host page 1');
-    $dropbutton_paragraphs = $assert_session->elementExists('css', '#field-paragraphs-add-more-wrapper .dropbutton-arrow');
-    $dropbutton_paragraphs->click();
-    $add_text_paragraph = $assert_session->elementExists('css', '#field-paragraphs-text-add-more');
-    $add_text_paragraph->press();
-    $textfield = $assert_session->waitForElement('css', 'input[name="field_paragraphs[0][subform][field_text][0][value]"]');
-    $this->assertNotNull($textfield);
-    $page->fillField('field_paragraphs[0][subform][field_text][0][value]', 'Promoted library item');
-    $first_row = $assert_session->elementExists('css', '#field-paragraphs-add-more-wrapper tr.draggable:nth-of-type(1)');
-    $dropdown = $assert_session->elementExists('css', '.paragraphs-dropdown', $first_row);
-    $dropdown->click();
-    $add_above_button = $assert_session->elementExists('css', 'input[name="field_paragraphs_0_promote_to_library"]', $first_row);
-    $add_above_button->click();
-    $library_item = $this->getLastEntityOfType('paragraphs_library_item', TRUE);
-    $this->assertEquals('published', $library_item->moderation_state->value);
-
-    // Assert the unpublished indicator for library items.
-    ParagraphsType::load('text')->setThirdPartySetting('paragraphs_library', 'allow_library_conversion', TRUE)->save();
-    $this->drupalGet('node/add');
-    $title = $assert_session->fieldExists('Title');
-    $title->setValue('Paragraph test');
-    $element = $page->find('xpath', '//*[contains(@class, "dropbutton-toggle")]');
-    $element->click();
-    $button = $page->findButton('Add text');
-    $button->press();
-    $assert_session->waitForElementVisible('css', '.ui-dialog');
-    $page->fillField('field_paragraphs[0][subform][field_text][0][value]', 'This is a reusable text UPDATED.');
-    $first_row = $assert_session->elementExists('css', '#field-paragraphs-add-more-wrapper tr.draggable:nth-of-type(1)');
-    $dropdown = $assert_session->elementExists('css', '.paragraphs-dropdown', $first_row);
-    $dropdown->click();
-    $page->pressButton('Promote to library');
-    $assert_session->assertWaitOnAjaxRequest();
-    // New library items are published by default.
-    $status_icon = $page->find('css', '.paragraph-formatter.paragraphs-icon-view');
-    $this->assertNull($status_icon);
-    // Archive the library item and assert there is a unpublished icon.
-    $edit_button = $page->find('css', 'input[name^="field_reusable_paragraph_edit_button"]');
-    $edit_button->press();
-    $assert_session->waitForElementVisible('css', '.ui-dialog');
-    $assert_session->elementExists('css', '.ui-dialog')->selectFieldOption('moderation_state[0][state]', 'archived');
-    $page->find('css', '.ui-dialog-buttonset button:contains("Save")')->press();
-    $assert_session->assertWaitOnAjaxRequest();
-    $status_icon = $page->find('css', '.paragraphs-icon-view');
-    $this->assertTrue($status_icon->isVisible());
   }
 
   /**

@@ -1,6 +1,6 @@
 /**
  * @file
- * Provides the admin UI for CKEditor 5.
+ * Provides admin UI for the CKEditor 5.
  */
 
 ((Drupal, drupalSettings, $, JSON, once, Sortable, { tabbable }) => {
@@ -49,14 +49,14 @@
     }
 
     /**
-     * Notifies subscribers about new values.
+     * Notifies subscribers about new value.
      */
     notify() {
       this._listeners.forEach((listener) => listener(this._value));
     }
 
     /**
-     * Subscribes a listener callback to changes.
+     * Subscribes to be notified for changes.
      *
      * @param {Function} listener
      *   The function to be called when a new value is set.
@@ -862,7 +862,7 @@
    * @return {string}
    *   The selected buttons markup.
    *
-   * @private
+   * @internal
    */
   Drupal.theme.ckeditor5SelectedButtons = ({ buttons }) => {
     return `
@@ -886,7 +886,7 @@
    * @return {string}
    *   The CKEditor 5 divider buttons markup.
    *
-   * @private
+   * @internal
    */
   Drupal.theme.ckeditor5DividerButtons = ({ buttons }) => {
     return `
@@ -910,7 +910,7 @@
    * @return {string}
    *   The CKEditor 5 available buttons markup.
    *
-   * @private
+   * @internal
    */
   Drupal.theme.ckeditor5AvailableButtons = ({ buttons }) => {
     return `
@@ -940,7 +940,7 @@
    * @return {string}
    *   The CKEditor 5 buttons markup.
    *
-   * @private
+   * @internal
    */
   Drupal.theme.ckeditor5Button = ({ button: { label, id }, listType }) => {
     const buttonInstructions = {
@@ -986,7 +986,7 @@
    * @return {string}
    *   The CKEditor 5 admin UI markup.
    *
-   * @private
+   * @internal
    */
   Drupal.theme.ckeditor5Admin = ({
     availableButtons,

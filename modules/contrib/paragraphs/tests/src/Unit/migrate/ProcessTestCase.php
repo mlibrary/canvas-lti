@@ -20,7 +20,7 @@ abstract class ProcessTestCase extends MigrateProcessTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setup() {
     parent::setUp();
 
     $this->entityTypeBundleInfo = $this->getMockBuilder(EntityTypeBundleInfo::class)

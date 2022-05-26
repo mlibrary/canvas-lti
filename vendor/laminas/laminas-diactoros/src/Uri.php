@@ -43,14 +43,14 @@ class Uri implements UriInterface
      *
      * @const string
      */
-    public const CHAR_SUB_DELIMS = '!\$&\'\(\)\*\+,;=';
+    const CHAR_SUB_DELIMS = '!\$&\'\(\)\*\+,;=';
 
     /**
      * Unreserved characters used in user info, paths, query strings, and fragments.
      *
      * @const string
      */
-    public const CHAR_UNRESERVED = 'a-zA-Z0-9_\-\.~\pL';
+    const CHAR_UNRESERVED = 'a-zA-Z0-9_\-\.~\pL';
 
     /**
      * @var int[] Array indexed by valid scheme names to their corresponding ports.
@@ -457,7 +457,7 @@ class Uri implements UriInterface
         $this->scheme    = isset($parts['scheme']) ? $this->filterScheme($parts['scheme']) : '';
         $this->userInfo  = isset($parts['user']) ? $this->filterUserInfoPart($parts['user']) : '';
         $this->host      = isset($parts['host']) ? strtolower($parts['host']) : '';
-        $this->port      = $parts['port'] ?? null;
+        $this->port      = isset($parts['port']) ? $parts['port'] : null;
         $this->path      = isset($parts['path']) ? $this->filterPath($parts['path']) : '';
         $this->query     = isset($parts['query']) ? $this->filterQuery($parts['query']) : '';
         $this->fragment  = isset($parts['fragment']) ? $this->filterFragment($parts['fragment']) : '';

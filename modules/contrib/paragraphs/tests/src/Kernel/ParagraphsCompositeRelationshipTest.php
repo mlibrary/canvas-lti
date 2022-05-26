@@ -25,7 +25,7 @@ class ParagraphsCompositeRelationshipTest extends KernelTestBase {
    *
    * @var array
    */
-  protected static $modules = array(
+  public static $modules = array(
     'paragraphs',
     'node',
     'user',
@@ -39,7 +39,7 @@ class ParagraphsCompositeRelationshipTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     // Create paragraphs and article content types.
     $values = ['type' => 'article', 'name' => 'Article'];

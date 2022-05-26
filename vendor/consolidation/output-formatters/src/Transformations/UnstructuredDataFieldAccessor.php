@@ -2,7 +2,6 @@
 namespace Consolidation\OutputFormatters\Transformations;
 
 use Dflydev\DotAccessData\Data;
-use Dflydev\DotAccessData\Exception\MissingPathException;
 
 class UnstructuredDataFieldAccessor
 {
@@ -18,11 +17,7 @@ class UnstructuredDataFieldAccessor
         $data = new Data($this->data);
         $result = new Data();
         foreach ($fields as $key => $label) {
-            $item = null;
-            try {
-                $item = $data->get($key);
-            } catch (MissingPathException $e) {
-            }
+            $item = $data->get($key);
             if (isset($item)) {
                 if ($label == '.') {
                     if (!is_array($item)) {

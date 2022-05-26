@@ -26,7 +26,7 @@ class ParagraphsProcessOnValueTest extends ProcessTestCase {
   /**
    * {@inheritdoc}
    */
-  public function setUp(): void {
+  public function setup() {
     parent::setup();
     $configuration = [
       'source_value' => 'source',

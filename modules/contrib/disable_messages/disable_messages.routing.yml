@@ -4,4 +4,4 @@ disable_messages.settings_form:
     _title: 'Disable messages'
     _form: \Drupal\disable_messages\Form\DisableMessagesSettingsForm
   requirements:
-    _permission: 'administer disable messages'
+    _permission: 'administer site configuration'

@@ -3,6 +3,7 @@
 namespace Drupal\paragraphs\Plugin\migrate\process;
 
 use Drupal\migrate\MigrateExecutableInterface;
+use Drupal\migrate\MigrateSkipRowException;
 use Drupal\migrate\Row;
 
 /**
@@ -42,14 +43,9 @@ class ParagraphsProcessOnValue extends ProcessPluginBase {
       throw new \InvalidArgumentException("Required argument 'process' not set or invalid for paragraphs_process_on_value plugin");
     }
     $source_value = $row->getSourceProperty($this->configuration['source_value']);
-
     if (is_null($source_value)) {
-      // This is probably a migration that shouldn't be touched by Paragraphs.
-      // For example, throwing an exception here would prevent the migration of
-      // the comment field configurations.
-      return $value;
+      throw new MigrateSkipRowException('Argument source_value is not valid for ProcessOnValue plugin');
     }
-
     if ($source_value === $this->configuration['expected_value']) {
       $process = $this->configuration['process'];
 

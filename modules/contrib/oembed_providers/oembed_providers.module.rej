@@ -1,0 +1,10 @@
+--- oembed_providers.module
++++ oembed_providers.module
+@@ -34,6 +34,7 @@ function oembed_providers_media_source_info_alter(array &$sources) {
+       'class' => 'Drupal\media\Plugin\media\Source\OEmbed',
+       'default_name_metadata_attribute' => 'default_name',
+       'thumbnail_uri_metadata_attribute' => 'thumbnail_uri',
++      'forms' => ['media_library_add' => 'Drupal\media_library\Form\OEmbedForm'], 
+     ];
+   }
+ }

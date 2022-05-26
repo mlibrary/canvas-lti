@@ -75,7 +75,7 @@ trait Comparison
      */
     public function equalTo($date): bool
     {
-        return $this == $this->resolveCarbon($date);
+        return $this == $date;
     }
 
     /**
@@ -155,7 +155,7 @@ trait Comparison
      */
     public function greaterThan($date): bool
     {
-        return $this > $this->resolveCarbon($date);
+        return $this > $date;
     }
 
     /**
@@ -256,7 +256,7 @@ trait Comparison
      */
     public function lessThan($date): bool
     {
-        return $this < $this->resolveCarbon($date);
+        return $this < $date;
     }
 
     /**
@@ -448,7 +448,7 @@ trait Comparison
      */
     public function isWeekend()
     {
-        return \in_array($this->dayOfWeek, static::$weekendDays, true);
+        return \in_array($this->dayOfWeek, static::$weekendDays);
     }
 
     /**
@@ -621,19 +621,19 @@ trait Comparison
             'microsecond' => 'Y-m-d H:i:s.u',
         ];
 
-        if (isset($units[$unit])) {
-            return $this->isSameAs($units[$unit], $date);
+        if (!isset($units[$unit])) {
+            if (isset($this->$unit)) {
+                return $this->resolveCarbon($date)->$unit === $this->$unit;
+            }
+
+            if ($this->localStrictModeEnabled ?? static::isStrictModeEnabled()) {
+                throw new BadComparisonUnitException($unit);
+            }
+
+            return false;
         }
 
-        if (isset($this->$unit)) {
-            return $this->resolveCarbon($date)->$unit === $this->$unit;
-        }
-
-        if ($this->localStrictModeEnabled ?? static::isStrictModeEnabled()) {
-            throw new BadComparisonUnitException($unit);
-        }
-
-        return false;
+        return $this->isSameAs($units[$unit], $date);
     }
 
     /**

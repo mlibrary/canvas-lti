@@ -68,13 +68,12 @@ abstract class AbstractTranslator extends Translation\Translator
     public static function get($locale = null)
     {
         $locale = $locale ?: 'en';
-        $key = static::class === Translator::class ? $locale : static::class.'|'.$locale;
 
-        if (!isset(static::$singletons[$key])) {
-            static::$singletons[$key] = new static($locale);
+        if (!isset(static::$singletons[$locale])) {
+            static::$singletons[$locale] = new static($locale);
         }
 
-        return static::$singletons[$key];
+        return static::$singletons[$locale];
     }
 
     public function __construct($locale, MessageFormatterInterface $formatter = null, $cacheDir = null, $debug = false)
@@ -250,7 +249,11 @@ abstract class AbstractTranslator extends Translation\Translator
      */
     protected function loadMessagesFromFile($locale)
     {
-        return isset($this->messages[$locale]) || $this->resetMessages($locale);
+        if (isset($this->messages[$locale])) {
+            return true;
+        }
+
+        return $this->resetMessages($locale);
     }
 
     /**
@@ -334,7 +337,7 @@ abstract class AbstractTranslator extends Translation\Translator
             $completeLocaleChunks = preg_split('/[_.-]+/', $completeLocale);
 
             $getScore = function ($language) use ($completeLocaleChunks) {
-                return self::compareChunkLists($completeLocaleChunks, preg_split('/[_.-]+/', $language));
+                return static::compareChunkLists($completeLocaleChunks, preg_split('/[_.-]+/', $language));
             };
 
             usort($locales, function ($first, $second) use ($getScore) {
@@ -355,13 +358,13 @@ abstract class AbstractTranslator extends Translation\Translator
             parent::setLocale($macroLocale);
         }
 
-        if (!$this->loadMessagesFromFile($locale) && !$this->initializing) {
-            return false;
+        if ($this->loadMessagesFromFile($locale) || $this->initializing) {
+            parent::setLocale($locale);
+
+            return true;
         }
 
-        parent::setLocale($locale);
-
-        return true;
+        return false;
     }
 
     /**

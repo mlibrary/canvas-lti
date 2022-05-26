@@ -101,46 +101,16 @@ class HTMLRestrictionsTest extends UnitTestCase {
       ['foo' => ['baz' => TRUE], 'bar' => ['qux' => ['a' => TRUE, 'b' => TRUE]]],
       NULL,
     ];
-
-    // Invalid global attribute `*` HTML tag restrictions.
-    yield 'INVALID: global attribute tag allowing no attributes' => [
-      ['*' => FALSE],
-      'The value for the special "*" global attribute HTML tag must be an array of attribute restrictions.',
-    ];
-    yield 'INVALID: global attribute tag allowing any attribute' => [
-      ['*' => TRUE],
-      'The value for the special "*" global attribute HTML tag must be an array of attribute restrictions.',
-    ];
-
-    // Valid global attribute `*` HTML tag restrictions.
-    yield 'VALID: global attribute tag with attribute allowed' => [
-      ['*' => ['foo' => TRUE]],
-      NULL,
-    ];
-    yield 'VALID: global attribute tag with attribute forbidden' => [
-      ['*' => ['foo' => FALSE]],
-      NULL,
-    ];
-    yield 'VALID: global attribute tag with attribute allowed, specific attribute values allowed' => [
-      ['*' => ['foo' => ['a' => TRUE, 'b' => TRUE]]],
-      NULL,
-    ];
-    // @todo Nothing in Drupal core uses this ability, and no custom/contrib
-    //   module is known to use this. Therefore this is left for the future.
-    yield 'VALID BUT NOT YET SUPPORTED: global attribute tag with attribute allowed, specific attribute values forbidden' => [
-      ['*' => ['foo' => ['a' => FALSE, 'b' => FALSE]]],
-      'The "*" HTML tag has attribute restriction "foo", but it is not an array of key-value pairs, with HTML tag attribute values as keys and TRUE as values.',
-    ];
   }
 
   /**
-   * @covers ::allowsNothing()
+   * @covers ::isEmpty()
    * @covers ::getAllowedElements()
    * @dataProvider providerCounting
    */
   public function testCounting(array $elements, bool $expected_is_empty, int $expected_concrete_only_count, int $expected_concrete_plus_wildcard_count): void {
     $r = new HTMLRestrictions($elements);
-    $this->assertSame($expected_is_empty, $r->allowsNothing());
+    $this->assertSame($expected_is_empty, $r->isEmpty());
     $this->assertCount($expected_concrete_only_count, $r->getAllowedElements());
     $this->assertCount($expected_concrete_only_count, $r->getAllowedElements(TRUE));
     $this->assertCount($expected_concrete_plus_wildcard_count, $r->getAllowedElements(FALSE));
@@ -154,46 +124,25 @@ class HTMLRestrictionsTest extends UnitTestCase {
       0,
     ];
 
-    yield 'one concrete tag' => [
+    yield 'one' => [
       ['a' => TRUE],
       FALSE,
       1,
       1,
     ];
 
-    yield 'one wildcard tag: considered to allow nothing because no concrete tag to resolve onto' => [
-      ['$text-container' => ['class' => ['text-align-left' => TRUE]]],
-      FALSE,
-      0,
-      1,
-    ];
-
-    yield 'two concrete tags' => [
+    yield 'two' => [
       ['a' => TRUE, 'b' => FALSE],
       FALSE,
       2,
       2,
     ];
 
-    yield 'one concrete tag, one wildcard tag' => [
-      ['a' => TRUE, '$text-container' => ['class' => ['text-align-left' => TRUE]]],
+    yield 'two of which one is a wildcard' => [
+      ['a' => TRUE, '$text-container' => FALSE],
       FALSE,
       1,
       2,
-    ];
-
-    yield 'only globally allowed attribute: considered to allow something' => [
-      ['*' => ['lang' => TRUE]],
-      FALSE,
-      1,
-      1,
-    ];
-
-    yield 'only globally forbidden attribute: considered to allow nothing' => [
-      ['*' => ['style' => FALSE]],
-      TRUE,
-      1,
-      1,
     ];
   }
 
@@ -218,22 +167,21 @@ class HTMLRestrictionsTest extends UnitTestCase {
     $this->assertSame($expected, HTMLRestrictions::fromTextFormat($text_format->reveal())->getAllowedElements());
     $this->assertSame($expected_raw, HTMLRestrictions::fromTextFormat($text_format->reveal())->getAllowedElements(FALSE));
 
-    // @see \Drupal\filter\Plugin\Filter\FilterHtml::getHTMLRestrictions()
-    $filter_html_additional_expectations = [
-      '*' => [
-        'style' => FALSE,
-        'on*' => FALSE,
-        'lang' => TRUE,
-        'dir' => ['ltr' => TRUE, 'rtl' => TRUE],
-      ],
-    ];
     // ::fromFilterPluginInstance()
     $filter_plugin_instance = $this->prophesize(FilterInterface::class);
     $filter_plugin_instance->getHTMLRestrictions()->willReturn([
-      'allowed' => $expected_raw + $filter_html_additional_expectations,
+      'allowed' => $expected_raw + [
+        // @see \Drupal\filter\Plugin\Filter\FilterHtml::getHTMLRestrictions()
+        '*' => [
+          'style' => FALSE,
+          'on*' => FALSE,
+          'lang' => TRUE,
+          'dir' => ['ltr' => TRUE, 'rtl' => TRUE],
+        ],
+      ],
     ]);
-    $this->assertSame($expected + $filter_html_additional_expectations, HTMLRestrictions::fromFilterPluginInstance($filter_plugin_instance->reveal())->getAllowedElements());
-    $this->assertSame($expected_raw + $filter_html_additional_expectations, HTMLRestrictions::fromFilterPluginInstance($filter_plugin_instance->reveal())->getAllowedElements(FALSE));
+    $this->assertSame($expected, HTMLRestrictions::fromFilterPluginInstance($filter_plugin_instance->reveal())->getAllowedElements());
+    $this->assertSame($expected_raw, HTMLRestrictions::fromFilterPluginInstance($filter_plugin_instance->reveal())->getAllowedElements(FALSE));
   }
 
   public function providerConvenienceConstructors(): \Generator {
@@ -1163,96 +1111,6 @@ class HTMLRestrictionsTest extends UnitTestCase {
         'union' => 'b',
       ];
     }
-
-    // Global attribute `*` HTML tag + global attribute `*` HTML tag cases.
-    yield 'global attribute tag + global attribute tag: no overlap in attributes' => [
-      'a' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => FALSE]]),
-      'b' => new HTMLRestrictions(['*' => ['baz' => FALSE]]),
-      'diff' => 'a',
-      'intersection' => HTMLRestrictions::emptySet(),
-      'union' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => FALSE, 'baz' => FALSE]]),
-    ];
-    yield 'global attribute tag + global attribute tag: no overlap in attributes — vice versa' => [
-      'a' => new HTMLRestrictions(['*' => ['baz' => FALSE]]),
-      'b' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => FALSE]]),
-      'diff' => 'a',
-      'intersection' => HTMLRestrictions::emptySet(),
-      'union' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => FALSE, 'baz' => FALSE]]),
-    ];
-    yield 'global attribute tag + global attribute tag: overlap in attributes, same attribute value restrictions' => [
-      'a' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => FALSE, 'dir' => ['ltr' => TRUE, 'rtl' => TRUE]]]),
-      'b' => new HTMLRestrictions(['*' => ['bar' => FALSE, 'dir' => ['ltr' => TRUE, 'rtl' => TRUE]]]),
-      'diff' => new HTMLRestrictions(['*' => ['foo' => TRUE]]),
-      'intersection' => 'b',
-      'union' => 'a',
-    ];
-    yield 'global attribute tag + global attribute tag: overlap in attributes, same attribute value restrictions — vice versa' => [
-      'a' => new HTMLRestrictions(['*' => ['bar' => FALSE, 'dir' => ['ltr' => TRUE, 'rtl' => TRUE]]]),
-      'b' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => FALSE, 'dir' => ['ltr' => TRUE, 'rtl' => TRUE]]]),
-      'diff' => HTMLRestrictions::emptySet(),
-      'intersection' => 'a',
-      'union' => 'b',
-    ];
-    yield 'global attribute tag + global attribute tag: overlap in attributes, different attribute value restrictions' => [
-      'a' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => FALSE, 'dir' => ['ltr' => TRUE, 'rtl' => TRUE]]]),
-      'b' => new HTMLRestrictions(['*' => ['bar' => TRUE, 'dir' => TRUE, 'foo' => FALSE]]),
-      'diff' => 'a',
-      'intersection' => new HTMLRestrictions(['*' => ['bar' => FALSE, 'dir' => ['ltr' => TRUE, 'rtl' => TRUE], 'foo' => FALSE]]),
-      'union' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => TRUE, 'dir' => TRUE]]),
-    ];
-    yield 'global attribute tag + global attribute tag: overlap in attributes, different attribute value restrictions — vice versa' => [
-      'a' => new HTMLRestrictions(['*' => ['bar' => TRUE, 'dir' => TRUE, 'foo' => FALSE]]),
-      'b' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => FALSE, 'dir' => ['ltr' => TRUE, 'rtl' => TRUE]]]),
-      'diff' => 'a',
-      'intersection' => new HTMLRestrictions(['*' => ['bar' => FALSE, 'dir' => ['ltr' => TRUE, 'rtl' => TRUE], 'foo' => FALSE]]),
-      'union' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => TRUE, 'dir' => TRUE]]),
-    ];
-
-    // Global attribute `*` HTML tag + concrete tag.
-    yield 'global attribute tag + concrete tag' => [
-      'a' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => FALSE]]),
-      'b' => new HTMLRestrictions(['p' => FALSE]),
-      'diff' => 'a',
-      'intersection' => HTMLRestrictions::emptySet(),
-      'union' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => FALSE], 'p' => FALSE]),
-    ];
-    yield 'global attribute tag + concrete tag — vice versa' => [
-      'a' => new HTMLRestrictions(['p' => FALSE]),
-      'b' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => FALSE]]),
-      'diff' => 'a',
-      'intersection' => HTMLRestrictions::emptySet(),
-      'union' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => FALSE], 'p' => FALSE]),
-    ];
-    yield 'global attribute tag + concrete tag with allowed attribute' => [
-      'a' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => FALSE]]),
-      'b' => new HTMLRestrictions(['p' => ['baz' => TRUE]]),
-      'diff' => 'a',
-      'intersection' => HTMLRestrictions::emptySet(),
-      'union' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => FALSE], 'p' => ['baz' => TRUE]]),
-    ];
-    yield 'global attribute tag + concrete tag with allowed attribute — vice versa' => [
-      'a' => new HTMLRestrictions(['p' => ['baz' => TRUE]]),
-      'b' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => FALSE]]),
-      'diff' => 'a',
-      'intersection' => HTMLRestrictions::emptySet(),
-      'union' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => FALSE], 'p' => ['baz' => TRUE]]),
-    ];
-
-    // Global attribute `*` HTML tag + wildcard tag.
-    yield 'global attribute tag + wildcard tag' => [
-      'a' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => FALSE]]),
-      'b' => new HTMLRestrictions(['$text-container' => ['class' => TRUE]]),
-      'diff' => 'a',
-      'intersection' => HTMLRestrictions::emptySet(),
-      'union' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => FALSE], '$text-container' => ['class' => TRUE]]),
-    ];
-    yield 'global attribute tag + wildcard tag — vice versa' => [
-      'a' => new HTMLRestrictions(['$text-container' => ['class' => TRUE]]),
-      'b' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => FALSE]]),
-      'diff' => 'a',
-      'intersection' => HTMLRestrictions::emptySet(),
-      'union' => new HTMLRestrictions(['*' => ['foo' => TRUE, 'bar' => FALSE], '$text-container' => ['class' => TRUE]]),
-    ];
   }
 
   /**
@@ -1279,15 +1137,9 @@ class HTMLRestrictionsTest extends UnitTestCase {
     ];
 
     yield 'with wildcards' => [
-      new HTMLRestrictions(['div' => FALSE, '$text-container' => ['data-llama' => TRUE], '*' => ['on*' => FALSE, 'dir' => ['ltr' => TRUE, 'rtl' => TRUE]]]),
+      new HTMLRestrictions(['div' => FALSE, '$text-container' => ['data-llama' => TRUE]]),
       new HTMLRestrictions(['$text-container' => ['data-llama' => TRUE]]),
-      new HTMLRestrictions(['div' => FALSE, '*' => ['on*' => FALSE, 'dir' => ['ltr' => TRUE, 'rtl' => TRUE]]]),
-    ];
-
-    yield 'wildcards and global attribute tag' => [
-      new HTMLRestrictions(['$text-container' => ['data-llama' => TRUE], '*' => ['on*' => FALSE, 'dir' => ['ltr' => TRUE, 'rtl' => TRUE]]]),
-      new HTMLRestrictions(['$text-container' => ['data-llama' => TRUE]]),
-      new HTMLRestrictions(['*' => ['on*' => FALSE, 'dir' => ['ltr' => TRUE, 'rtl' => TRUE]]]),
+      new HTMLRestrictions(['div' => FALSE]),
     ];
 
     yield 'only wildcards' => [

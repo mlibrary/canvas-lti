@@ -6,9 +6,6 @@ namespace Nyholm\Psr7\Factory;
 
 use Http\Message\{MessageFactory, StreamFactory, UriFactory};
 use Nyholm\Psr7\{Request, Response, Stream, Uri};
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
 /**
@@ -19,17 +16,17 @@ use Psr\Http\Message\UriInterface;
  */
 class HttplugFactory implements MessageFactory, StreamFactory, UriFactory
 {
-    public function createRequest($method, $uri, array $headers = [], $body = null, $protocolVersion = '1.1'): RequestInterface
+    public function createRequest($method, $uri, array $headers = [], $body = null, $protocolVersion = '1.1')
     {
         return new Request($method, $uri, $headers, $body, $protocolVersion);
     }
 
-    public function createResponse($statusCode = 200, $reasonPhrase = null, array $headers = [], $body = null, $version = '1.1'): ResponseInterface
+    public function createResponse($statusCode = 200, $reasonPhrase = null, array $headers = [], $body = null, $version = '1.1')
     {
         return new Response((int) $statusCode, $headers, $body, $version, $reasonPhrase);
     }
 
-    public function createStream($body = null): StreamInterface
+    public function createStream($body = null)
     {
         return Stream::create($body ?? '');
     }

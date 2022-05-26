@@ -18,9 +18,6 @@ class AdminUiTest extends CKEditor5TestBase {
   protected static $modules = [
     'media_library',
     'ckeditor',
-    // @todo Remove in https://www.drupal.org/project/drupal/issues/3269657
-    'ckeditor5_plugin_elements_subset',
-    'ckeditor5_incompatible_filter_test',
   ];
 
   /**
@@ -71,12 +68,11 @@ class AdminUiTest extends CKEditor5TestBase {
     $assert_session->waitForText('Machine name');
     $page->checkField('roles[authenticated]');
 
-    // Enable a filter that is incompatible with CKEditor 5, so validation is
-    // triggered when attempting to switch.
-    $incompatible_filter_name = 'filters[filter_incompatible][status]';
+    // Enable a filter that is incompatible with CKEditor 5 if not configured
+    // correctly, so validation is triggered when attempting to switch.
     $number_ajax_instances_before = $this->getSession()->evaluateScript('Drupal.ajax.instances.length');
-    $this->assertTrue($page->hasUncheckedField($incompatible_filter_name));
-    $page->checkField($incompatible_filter_name);
+    $this->assertTrue($page->hasUncheckedField('filters[filter_html][status]'));
+    $page->checkField('filters[filter_html][status]');
     $this->assertEmpty($assert_session->waitForElement('css', '.ajax-progress-throbber'));
     $assert_session->assertWaitOnAjaxRequest();
     $number_ajax_instances_after = $this->getSession()->evaluateScript('Drupal.ajax.instances.length');
@@ -85,20 +81,18 @@ class AdminUiTest extends CKEditor5TestBase {
     $page->selectFieldOption('editor[editor]', 'ckeditor5');
     $assert_session->assertWaitOnAjaxRequest();
 
-    $filter_warning = 'CKEditor 5 only works with HTML-based text formats. The "A TYPE_MARKUP_LANGUAGE filter incompatible with CKEditor 5" (filter_incompatible) filter implies this text format is not HTML anymore.';
-
     // The presence of this validation error message confirms the AJAX callback
     // was invoked.
-    $assert_session->pageTextContains($filter_warning);
+    $assert_session->pageTextContains('CKEditor 5 needs at least the <p> and <br> tags to be allowed to be able to function. They are not allowed by the "Limit allowed HTML tags and correct faulty HTML" (filter_html) filter.');
 
     // Disable the incompatible filter. This should trigger another AJAX rebuild
     // which will include the removal of the validation error as the issue has
     // been corrected.
-    $this->assertTrue($page->hasCheckedField($incompatible_filter_name));
-    $page->uncheckField($incompatible_filter_name);
+    $this->assertTrue($page->hasCheckedField('filters[filter_html][status]'));
+    $page->uncheckField('filters[filter_html][status]');
     $this->assertNotEmpty($assert_session->waitForElement('css', '.ajax-progress-throbber'));
     $assert_session->assertWaitOnAjaxRequest();
-    $assert_session->pageTextNotContains($filter_warning);
+    $assert_session->pageTextNotContains('CKEditor 5 needs at least the <p> and <br> tags to be allowed to be able to function. They are not allowed by the "Limit allowed HTML tags and correct faulty HTML" (filter_html) filter.');
   }
 
   /**
@@ -221,20 +215,6 @@ class AdminUiTest extends CKEditor5TestBase {
 
     // The source plugin config form should be present.
     $assert_session->elementExists('css', '[data-drupal-selector="edit-editor-settings-plugins-ckeditor5-sourceediting"]');
-
-    // The filter-dependent configurable plugin should not be present.
-    // @todo Change to `media_media` plugin in https://www.drupal.org/project/drupal/issues/3269657
-    // cSpell:disable-next-line
-    $assert_session->elementNotExists('css', '[data-drupal-selector="edit-editor-settings-plugins-ckeditor5-plugin-elements-subset-sneakysuperset"]');
-
-    // Enable the filter that the configurable plugin depends on.
-    $this->assertTrue($page->hasUncheckedField('filters[media_embed][status]'));
-    $page->checkField('filters[media_embed][status]');
-    $assert_session->assertWaitOnAjaxRequest();
-
-    // The filter-dependent configurable plugin should be present.
-    // cSpell:disable-next-line
-    $assert_session->elementExists('css', '[data-drupal-selector="edit-editor-settings-plugins-ckeditor5-plugin-elements-subset-sneakysuperset"]');
   }
 
   /**

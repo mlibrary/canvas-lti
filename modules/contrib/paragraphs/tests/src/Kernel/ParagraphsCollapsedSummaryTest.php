@@ -27,7 +27,7 @@ class ParagraphsCollapsedSummaryTest extends KernelTestBase {
    *
    * @var array
    */
-  protected static $modules = [
+  public static $modules = [
     'paragraphs',
     'user',
     'system',
@@ -41,7 +41,7 @@ class ParagraphsCollapsedSummaryTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->installEntitySchema('user');
     $this->installEntitySchema('paragraph');

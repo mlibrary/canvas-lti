@@ -28,7 +28,6 @@ trait LoginAdminTrait {
       'administer node form display',
       'administer paragraph fields',
       'administer paragraph form display',
-      'bypass node access',
     ];
 
     if ($reset_permissions) {

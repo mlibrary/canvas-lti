@@ -51,10 +51,10 @@ class Request implements RequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getHeader($name) : array
+    public function getHeader($header) : array
     {
-        if (empty($name) || ! $this->hasHeader($name)) {
-            if (strtolower($name) === 'host'
+        if (! $this->hasHeader($header)) {
+            if (strtolower($header) === 'host'
                 && $this->uri->getHost()
             ) {
                 return [$this->getHostFromUri()];
@@ -63,7 +63,7 @@ class Request implements RequestInterface
             return [];
         }
 
-        $header = $this->headerNames[strtolower($name)];
+        $header = $this->headerNames[strtolower($header)];
 
         return $this->headers[$header];
     }

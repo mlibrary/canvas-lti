@@ -4,7 +4,6 @@ namespace Robo;
 
 use Composer\Autoload\ClassLoader;
 use League\Container\Container;
-use League\Container\Definition\DefinitionInterface;
 use Psr\Container\ContainerInterface;
 use Robo\Common\ProcessExecutor;
 use Consolidation\Config\ConfigInterface;
@@ -22,7 +21,7 @@ use Symfony\Component\Process\Process;
 class Robo
 {
     const APPLICATION_NAME = 'Robo';
-    const VERSION = '3.0.10';
+    const VERSION = '3.0.7';
 
     /**
      * The currently active container object, or NULL if not initialized yet.
@@ -221,22 +220,6 @@ class Robo
     }
 
     /**
-     * Adds a shared instance to the container. This is to support 3.x and 4.x of league/container.
-     * @param \Psr\Container\ContainerInterface $container
-     * @param string $id
-     * @param mixed $concrete
-     * @return \League\Container\Definition\DefinitionInterface
-     */
-    public static function addShared(ContainerInterface $container, string $id, $concrete)
-    {
-        if (method_exists($container, 'addShared')) {
-            return $container->addShared($id, $concrete);
-        } else {
-            return $container->share($id, $concrete);
-        }
-    }
-
-    /**
      * Initialize a container with all of the default Robo services.
      * IMPORTANT:  after calling this method, clients MUST call:
      *
@@ -279,51 +262,51 @@ class Robo
         $config->set(Config::DECORATED, $output->isDecorated());
         $config->set(Config::INTERACTIVE, $input->isInteractive());
 
-        self::addShared($container, 'application', $app);
-        self::addShared($container, 'config', $config);
-        self::addShared($container, 'input', $input);
-        self::addShared($container, 'output', $output);
-        self::addShared($container, 'outputAdapter', \Robo\Common\OutputAdapter::class);
-        self::addShared($container, 'classLoader', $classLoader);
+        $container->share('application', $app);
+        $container->share('config', $config);
+        $container->share('input', $input);
+        $container->share('output', $output);
+        $container->share('outputAdapter', \Robo\Common\OutputAdapter::class);
+        $container->share('classLoader', $classLoader);
 
         // Register logging and related services.
-        self::addShared($container, 'logStyler', \Robo\Log\RoboLogStyle::class);
-        self::addShared($container, 'logger', \Robo\Log\RoboLogger::class)
+        $container->share('logStyler', \Robo\Log\RoboLogStyle::class);
+        $container->share('logger', \Robo\Log\RoboLogger::class)
             ->addArgument('output')
             ->addMethodCall('setLogOutputStyler', ['logStyler']);
         $container->add('progressBar', \Symfony\Component\Console\Helper\ProgressBar::class)
             ->addArgument('output');
-        self::addShared($container, 'progressIndicator', \Robo\Common\ProgressIndicator::class)
+        $container->share('progressIndicator', \Robo\Common\ProgressIndicator::class)
             ->addArgument('progressBar')
             ->addArgument('output');
-        self::addShared($container, 'resultPrinter', \Robo\Log\ResultPrinter::class);
+        $container->share('resultPrinter', \Robo\Log\ResultPrinter::class);
         $container->add('simulator', \Robo\Task\Simulator::class);
-        self::addShared($container, 'globalOptionsEventListener', \Robo\GlobalOptionsEventListener::class)
+        $container->share('globalOptionsEventListener', \Robo\GlobalOptionsEventListener::class)
             ->addMethodCall('setApplication', ['application']);
-        self::addShared($container, 'injectConfigEventListener', \Consolidation\Config\Inject\ConfigForCommand::class)
+        $container->share('injectConfigEventListener', \Consolidation\Config\Inject\ConfigForCommand::class)
             ->addArgument('config')
             ->addMethodCall('setApplication', ['application']);
-        self::addShared($container, 'collectionProcessHook', \Robo\Collection\CollectionProcessHook::class);
-        self::addShared($container, 'alterOptionsCommandEvent', \Consolidation\AnnotatedCommand\Options\AlterOptionsCommandEvent::class)
+        $container->share('collectionProcessHook', \Robo\Collection\CollectionProcessHook::class);
+        $container->share('alterOptionsCommandEvent', \Consolidation\AnnotatedCommand\Options\AlterOptionsCommandEvent::class)
             ->addArgument('application');
-        self::addShared($container, 'hookManager', \Consolidation\AnnotatedCommand\Hooks\HookManager::class)
+        $container->share('hookManager', \Consolidation\AnnotatedCommand\Hooks\HookManager::class)
             ->addMethodCall('addCommandEvent', ['alterOptionsCommandEvent'])
             ->addMethodCall('addCommandEvent', ['injectConfigEventListener'])
             ->addMethodCall('addCommandEvent', ['globalOptionsEventListener'])
             ->addMethodCall('addResultProcessor', ['collectionProcessHook', '*']);
-        self::addShared($container, 'eventDispatcher', \Symfony\Component\EventDispatcher\EventDispatcher::class)
+        $container->share('eventDispatcher', \Symfony\Component\EventDispatcher\EventDispatcher::class)
             ->addMethodCall('addSubscriber', ['hookManager']);
-        self::addShared($container, 'formatterManager', \Consolidation\OutputFormatters\FormatterManager::class)
+        $container->share('formatterManager', \Consolidation\OutputFormatters\FormatterManager::class)
             ->addMethodCall('addDefaultFormatters', [])
             ->addMethodCall('addDefaultSimplifiers', []);
-        self::addShared($container, 'prepareTerminalWidthOption', \Consolidation\AnnotatedCommand\Options\PrepareTerminalWidthOption::class)
+        $container->share('prepareTerminalWidthOption', \Consolidation\AnnotatedCommand\Options\PrepareTerminalWidthOption::class)
             ->addMethodCall('setApplication', ['application']);
-        self::addShared($container, 'symfonyStyleInjector', \Robo\Symfony\SymfonyStyleInjector::class);
-        self::addShared($container, 'consoleIOInjector', \Robo\Symfony\ConsoleIOInjector::class);
-        self::addShared($container, 'parameterInjection', \Consolidation\AnnotatedCommand\ParameterInjection::class)
+        $container->share('symfonyStyleInjector', \Robo\Symfony\SymfonyStyleInjector::class);
+        $container->share('consoleIOInjector', \Robo\Symfony\ConsoleIOInjector::class);
+        $container->share('parameterInjection', \Consolidation\AnnotatedCommand\ParameterInjection::class)
             ->addMethodCall('register', ['Symfony\Component\Console\Style\SymfonyStyle', 'symfonyStyleInjector'])
             ->addMethodCall('register', ['Robo\Symfony\ConsoleIO', 'consoleIOInjector']);
-        self::addShared($container, 'commandProcessor', \Consolidation\AnnotatedCommand\CommandProcessor::class)
+        $container->share('commandProcessor', \Consolidation\AnnotatedCommand\CommandProcessor::class)
             ->addArgument('hookManager')
             ->addMethodCall('setFormatterManager', ['formatterManager'])
             ->addMethodCall('addPrepareFormatter', ['prepareTerminalWidthOption'])
@@ -337,13 +320,13 @@ class Robo
                     }
                 ]
             );
-        self::addShared($container, 'stdinHandler', \Consolidation\AnnotatedCommand\Input\StdinHandler::class);
-        self::addShared($container, 'commandFactory', \Consolidation\AnnotatedCommand\AnnotatedCommandFactory::class)
+        $container->share('stdinHandler', \Consolidation\AnnotatedCommand\Input\StdinHandler::class);
+        $container->share('commandFactory', \Consolidation\AnnotatedCommand\AnnotatedCommandFactory::class)
             ->addMethodCall('setCommandProcessor', ['commandProcessor'])
             // Public methods from the class Robo\Commo\IO that should not be
             // added as available commands.
             ->addMethodCall('addIgnoredCommandsRegexp', ['/^currentState$|^restoreState$/']);
-        self::addShared($container, 'relativeNamespaceDiscovery', \Robo\ClassDiscovery\RelativeNamespaceDiscovery::class)
+        $container->share('relativeNamespaceDiscovery', \Robo\ClassDiscovery\RelativeNamespaceDiscovery::class)
             ->addArgument('classLoader');
 
         // Deprecated: favor using collection builders to direct use of collections.

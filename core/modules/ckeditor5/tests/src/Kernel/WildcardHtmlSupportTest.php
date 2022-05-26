@@ -85,12 +85,7 @@ class WildcardHtmlSupportTest extends KernelTestBase {
       ))
     ));
     $config = $this->manager->getCKEditor5PluginConfig($editor);
-    $ghs_configuration = $config['config']['htmlSupport']['allow'];
-    // The first two entries in the GHS configuration are from the
-    // `ckeditor5_globalAttributeDir` and `ckeditor5_globalAttributeLang`
-    // plugins. They are out of scope for this test, so omit them.
-    $ghs_configuration = array_slice($ghs_configuration, 2);
-    $this->assertEquals($expected_ghs_configuration, $ghs_configuration);
+    $this->assertEquals($expected_ghs_configuration, $config['config']['htmlSupport']['allow']);
   }
 
   public function providerGhsConfiguration(): array {

@@ -15,7 +15,7 @@ class ParagraphsFieldInstanceSettingsTest extends ProcessTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->row->expects($this->any())
       ->method('getSourceProperty')
@@ -39,7 +39,7 @@ class ParagraphsFieldInstanceSettingsTest extends ProcessTestCase {
 
     $value = $this->plugin->transform($source, $this->migrateExecutable, $this->row, 'settings');
 
-    $this->assertEquals($expected, $value);
+    $this->assertArrayEquals($expected, $value);
   }
 
   /**

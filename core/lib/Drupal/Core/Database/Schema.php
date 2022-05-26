@@ -180,12 +180,7 @@ abstract class Schema implements PlaceholderInterface {
    * Finds all tables that are like the specified base table name.
    *
    * @param string $table_expression
-   *   A case-insensitive pattern against which table names are compared. Both
-   *   '_' and '%' are treated like wildcards in MySQL 'LIKE' expressions, where
-   *   '_' matches any single character and '%' matches an arbitrary number of
-   *   characters (including zero characters). So 'foo%bar' matches table names
-   *   like 'foobar', 'fooXBar', 'fooXBaR',  or 'fooXxBar'; whereas 'foo_bar'
-   *   matches 'fooXBar' and 'fooXBaR' but not 'fooBar' or 'fooXxxBar'.
+   *   An SQL expression, for example "cache_%" (without the quotes).
    *
    * @return array
    *   Both the keys and the values are the matching tables.

@@ -25,12 +25,14 @@ class FieldCollectionItemRevision extends FieldCollectionItem {
    * {@inheritdoc}
    */
   public function getIds() {
-    return [
+    $ids = [
       'revision_id' => [
         'type' => 'integer',
         'alias' => 'fr',
       ],
     ];
+
+    return $ids;
   }
 
 }

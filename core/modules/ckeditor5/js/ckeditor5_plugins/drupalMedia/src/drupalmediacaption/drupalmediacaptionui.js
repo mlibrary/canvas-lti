@@ -6,7 +6,7 @@ import { getMediaCaptionFromModelSelection } from './utils';
 /**
  * The caption media UI plugin.
  *
- * @private
+ * @internal
  */
 export default class DrupalMediaCaptionUI extends Plugin {
   /**

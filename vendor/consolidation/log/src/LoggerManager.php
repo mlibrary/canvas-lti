@@ -5,7 +5,6 @@ use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;
 use Psr\Log\InvalidArgumentException;
 use Psr\Log\LogLevel;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * LoggerManager is a PSR-3 logger that can delegate
@@ -16,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Greg Anderson <greg.1.anderson@greenknowe.org>
  */
-class LoggerManager extends AbstractLogger implements StylableLoggerInterface, SettableLogOutputStreamInterface
+class LoggerManager extends AbstractLogger implements StylableLoggerInterface
 {
     /** @var LoggerInterface[] */
     protected $loggers = [];
@@ -26,10 +25,6 @@ class LoggerManager extends AbstractLogger implements StylableLoggerInterface, S
     protected $outputStyler;
     /** @var array */
     protected $formatFunctionMap = [];
-    /** @var OutputInterface */
-    protected $outputStream;
-    /** @var OutputInterface */
-    protected $errorStream;
 
     /**
      * reset removes all loggers from the manager.
@@ -49,40 +44,6 @@ class LoggerManager extends AbstractLogger implements StylableLoggerInterface, S
     {
         $this->outputStyler = $outputStyler;
         $this->formatFunctionMap = $this->formatFunctionMap;
-
-        foreach ($this->getLoggers() as $logger) {
-            if ($logger instanceof StylableLoggerInterface) {
-                $logger->setLogOutputStyler($this->outputStyler, $this->formatFunctionMap);
-            }
-        }
-    }
-
-    /**
-     * setOutputStream will remember an output stream that should be
-     * applied to every logger added to this manager.
-     */
-    public function setOutputStream($output)
-    {
-        $this->outputStream = $output;
-        foreach ($this->getLoggers() as $logger) {
-            if ($logger instanceof SettableLogOutputStreamInterface) {
-                $logger->setOutputStream($this->outputStream);
-            }
-        }
-    }
-
-    /**
-     * setErrorStream will remember an error stream that should be
-     * applied to every logger added to this manager.
-     */
-    public function setErrorStream($error)
-    {
-        $this->errorStream = $error;
-        foreach ($this->getLoggers() as $logger) {
-            if ($logger instanceof SettableLogOutputStreamInterface) {
-                $logger->setErrorStream($this->errorStream);
-            }
-        }
     }
 
     /**
@@ -100,14 +61,6 @@ class LoggerManager extends AbstractLogger implements StylableLoggerInterface, S
         // being added.
         if ($this->outputStyler && $logger instanceof StylableLoggerInterface) {
             $logger->setLogOutputStyler($this->outputStyler, $this->formatFunctionMap);
-        }
-        if ($logger instanceof SettableLogOutputStreamInterface) {
-            if ($this->outputStream) {
-                $logger->setOutputStream($this->outputStream);
-            }
-            if ($this->errorStream) {
-                $logger->setErrorStream($this->errorStream);
-            }
         }
         $this->loggers[$name] = $logger;
         return $this;

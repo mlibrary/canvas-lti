@@ -2,7 +2,7 @@
 
 Initialize Symfony Console commands from annotated/attributed command class methods.
 
-[![CI](https://github.com/consolidation/annotated-command/actions/workflows/ci.yml/badge.svg?branch=4.x)](https://github.com/consolidation/annotated-command/actions/workflows/ci.yml)
+[![ci](https://github.com/consolidation/annotated-command/workflows/CI/badge.svg)](https://travis-ci.org/consolidation/annotated-command)
 [![scrutinizer](https://scrutinizer-ci.com/g/consolidation/annotated-command/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/consolidation/annotated-command/?branch=master)
 [![codecov](https://codecov.io/gh/consolidation/annotated-command/branch/main/graph/badge.svg?token=CAaB7ofhxx)](https://codecov.io/gh/consolidation/annotated-command)
 [![license](https://poser.pugx.org/consolidation/annotated-command/license)](https://packagist.org/packages/consolidation/annotated-command)

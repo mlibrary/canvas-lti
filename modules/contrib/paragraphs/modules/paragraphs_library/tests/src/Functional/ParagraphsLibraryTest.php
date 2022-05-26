@@ -3,21 +3,21 @@
 namespace Drupal\Tests\paragraphs_library\Functional;
 
 use Drupal\Core\Url;
-use Drupal\Tests\paragraphs\Functional\WidgetStable\ParagraphsTestBase;
+use Drupal\Tests\paragraphs\Functional\Experimental\ParagraphsExperimentalTestBase;
 
 /**
  * Tests paragraphs library functionality.
  *
  * @group paragraphs_library
  */
-class ParagraphsLibraryTest extends ParagraphsTestBase {
+class ParagraphsLibraryTest extends ParagraphsExperimentalTestBase {
 
   /**
    * Modules to enable.
    *
    * @var array
    */
-  protected static $modules = [
+  public static $modules = [
     'views',
     'paragraphs_library',
   ];
@@ -25,7 +25,7 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->addParagraphedContentType('paragraphed_test');
   }
@@ -47,21 +47,17 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     // Add a new library item.
     $this->drupalGet('admin/content/paragraphs');
     $this->clickLink('Add library item');
-    $this->submitForm([], 'paragraphs_text_paragraph_add_more');
+    $this->drupalPostForm(NULL, [], 'paragraphs_text_paragraph_add_more');
     $edit = [
       'label[0][value]' => 're usable paragraph label',
       'paragraphs[0][subform][field_text][0][value]' => 're_usable_text',
     ];
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->clickLink('re usable paragraph label');
     $this->assertSession()->responseContains('bartik/css/base/elements.css');
     $this->clickLink('Edit');
     $this->assertSession()->responseNotContains('class="messages messages--warning"');
-    $items = \Drupal::entityQuery('paragraphs_library_item')
-      ->accessCheck(TRUE)
-      ->sort('id', 'DESC')
-      ->range(0, 1)
-      ->execute();
+    $items = \Drupal::entityQuery('paragraphs_library_item')->sort('id', 'DESC')->range(0, 1)->execute();
     $library_item_id = reset($items);
 
     // Assert local tasks and URLs.
@@ -89,13 +85,12 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     $this->assertSession()->fieldExists('paragraphs[0][subform][field_text][0][value]');
 
     // Create a node with the library paragraph.
-    $this->drupalGet('node/add/paragraphed_test');
-    $this->submitForm([], 'field_paragraphs_from_library_add_more');
+    $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_from_library_add_more');
     $edit = [
       'title[0][value]' => 'library_test',
       'field_paragraphs[0][subform][field_reusable_paragraph][0][target_id]' => 're usable paragraph label (1)'
     ];
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, 'Save');
 
     $library_items = \Drupal::entityTypeManager()->getStorage('paragraphs_library_item')->loadByProperties(['label' => 're usable paragraph label']);
     $this->drupalGet('admin/content/paragraphs/' . current($library_items)->id() . '/edit');
@@ -183,13 +178,12 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     $from_library_view_display->save();
 
     // Create a new node with the library paragraph.
-    $this->drupalGet('node/add/paragraphed_test');
-    $this->submitForm([], 'field_paragraphs_from_library_add_more');
+    $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_from_library_add_more');
     $edit = [
       'title[0][value]' => 'library_test_new',
       'field_paragraphs[0][subform][field_reusable_paragraph][0][target_id]' => 're usable paragraph label (1)'
     ];
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, 'Save');
     // Assert that the paragraph is shown correctly.
     $node_two = $this->getNodeByTitle('library_test_new');
     $this->assertSession()->addressEquals('node/' . $node_two->id());
@@ -199,13 +193,13 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     $this->assertSession()->elementTextNotContains('css', '.paragraph--type--from-library', 'Paragraphs');
 
     $this->drupalGet('node/' . $node_two->id() . '/edit');
-    $this->submitForm([], 'field_paragraphs_from_library_add_more');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_from_library_add_more');
     $edit = [
       'title[0][value]' => 'library_test_new',
       'field_paragraphs[0][subform][field_reusable_paragraph][0][target_id]' => 're usable paragraph label (1)',
       'field_paragraphs[1][subform][field_reusable_paragraph][0][target_id]' => 're usable paragraph label (1)',
     ];
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, 'Save');
 
     $reusable_paragraphs_text = $this->xpath('//div[contains(@class, "field--name-field-paragraphs")]/div[@class="field__items"]/div[1]//div[@class="field__item"]/p');
     $this->assertEquals($reusable_paragraphs_text[0]->getText(), 're_usable_text');
@@ -226,7 +220,7 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     $edit = [
       'paragraphs[0][subform][field_text][0][value]' => 're_usable_text_new',
     ];
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, t('Save'));
 
     // Check in both nodes that the text is updated. Test as anonymous user, so
     // that the cache is populated.
@@ -245,7 +239,7 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     $edit = [
       'status[value]' => FALSE,
     ];
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->drupalGet('node/' . $node_one->id());
     $this->assertSession()->pageTextContains('re_usable_text_new');
 
@@ -260,7 +254,7 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     $edit = [
       'status[value]' => TRUE,
     ];
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->drupalGet('node/' . $node_one->id());
     $this->assertSession()->pageTextContains('re_usable_text_new');
 
@@ -296,7 +290,7 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     $this->assertSession()->linkExists('Manage display');
     // Assert that users can create fields to
     $this->clickLink('Manage fields');
-    $this->clickLink('Add field');
+    $this->clickLink(t('Add field'));
     $this->assertSession()->statusCodeEquals(200);
     $this->assertSession()->pageTextNotContains('plugin does not exist');
     $this->drupalGet('admin/config/content');
@@ -321,32 +315,31 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     // Add a new library item.
     $this->drupalGet('admin/content/paragraphs');
     $this->clickLink('Add library item');
-    $this->submitForm([], 'paragraphs_text_add_more');
+    $this->drupalPostForm(NULL, [], 'paragraphs_text_add_more');
     $edit = [
       'label[0][value]' => 'reusable paragraph label',
       'paragraphs[0][subform][field_text][0][value]' => 'reusable_text',
     ];
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->assertSession()->pageTextContains('Paragraph reusable paragraph label has been created.');
 
     // Add created library item to a node.
-    $this->drupalGet('node/add/paragraphed_test');
-    $this->submitForm([], 'field_paragraphs_from_library_add_more');
+    $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_from_library_add_more');
     $edit = [
       'title[0][value]' => 'Node with converted library item',
       'field_paragraphs[0][subform][field_reusable_paragraph][0][target_id]' => 'reusable paragraph label',
     ];
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, 'Save');
     $this->assertSession()->pageTextContains('paragraphed_test Node with converted library item has been created.');
     $this->assertSession()->pageTextContains('reusable_text');
 
     // Convert library item to paragraph.
     $this->clickLink('Edit');
-    $this->submitForm([], 'field_paragraphs_0_unlink_from_library');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_unlink_from_library');
     $this->assertSession()->fieldExists('field_paragraphs[0][subform][field_text][0][value]');
     $this->assertSession()->fieldNotExists('field_paragraphs[0][subform][field_reusable_paragraph][0][target_id]');
     $this->assertSession()->pageTextContains('reusable_text');
-    $this->submitForm([], 'Save');
+    $this->drupalPostForm(NULL, [], 'Save');
     $this->assertSession()->pageTextContains('reusable_text');
   }
 
@@ -367,12 +360,11 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     static::fieldUIAddNewField('admin/structure/paragraphs_type/' . $paragraph_type, 'text', 'Text', 'text_long', [], []);
 
     $edit = ['allow_library_conversion' => 1];
-    $this->drupalGet('admin/structure/paragraphs_type/text');
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm('admin/structure/paragraphs_type/text', $edit, 'Save');
 
     // Adding library item is available with the administer library permission.
     $this->drupalGet('node/add/paragraphed_test');
-    $this->submitForm([], 'Add text');
+    $this->drupalPostForm(NULL, NULL, 'Add text');
     $this->assertSession()->buttonExists('field_paragraphs_0_promote_to_library');
     $this->drupalGet('admin/content/paragraphs/add/default');
     $this->assertSession()->statusCodeEquals(200);
@@ -382,7 +374,7 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     $user_role = end($user_roles);
     user_role_revoke_permissions($user_role, ['administer paragraphs library']);
     $this->drupalGet('node/add/paragraphed_test');
-    $this->submitForm([], 'Add text');
+    $this->drupalPostForm(NULL, NULL, 'Add text');
     $this->assertSession()->buttonNotExists('field_paragraphs_0_promote_to_library');
     $this->drupalGet('admin/content/paragraphs/add/default');
     $this->assertSession()->statusCodeEquals(403);
@@ -391,20 +383,19 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     $edit = [
       'behavior_plugins[test_text_color][enabled]' => TRUE,
     ];
-    $this->drupalGet('admin/structure/paragraphs_type/text');
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm('admin/structure/paragraphs_type/text', $edit, 'Save');
     // Assign "create paragraph library item" permission to a user.
     user_role_grant_permissions($user_role, ['create paragraph library item']);
     $this->drupalGet('admin/content/paragraphs/add/default');
     $this->assertSession()->statusCodeEquals(200);
     $this->drupalGet('node/add/paragraphed_test');
-    $this->submitForm([], 'Add text');
+    $this->drupalPostForm(NULL, NULL, 'Add text');
     $this->assertSession()->buttonExists('field_paragraphs_0_promote_to_library');
     $this->assertSession()->responseContains('Promote to library');
     $edit = [
       'field_paragraphs[0][subform][field_text][0][value]' => 'Random text for testing converting into library.',
     ];
-    $this->submitForm($edit, 'field_paragraphs_0_promote_to_library');
+    $this->drupalPostForm(NULL, $edit, 'field_paragraphs_0_promote_to_library');
     $this->assertSession()->pageTextContains('From library');
     $this->assertSession()->pageTextContains('Reusable paragraph');
     $this->assertSession()->fieldExists('field_paragraphs[0][subform][field_reusable_paragraph][0][target_id]');
@@ -413,21 +404,21 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     ];
     $this->assertSession()->buttonNotExists('field_paragraphs_0_promote_to_library');
     $this->assertSession()->buttonExists('field_paragraphs_0_unlink_from_library');
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, 'Save');
     $this->drupalGet('node/1');
     $this->assertSession()->pageTextContains('Random text for testing converting into library.');
 
     // Create library item from existing paragraph item.
     $this->drupalGet('node/add/paragraphed_test');
-    $this->submitForm([], 'Add text');
+    $this->drupalPostForm(NULL, NULL, 'Add text');
     $edit = [
       'title[0][value]' => 'NodeTitle',
       'field_paragraphs[0][subform][field_text][0][value]' => 'Random text for testing converting into library.',
     ];
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, 'Save');
     $node = $this->getNodeByTitle('NodeTitle');
     $this->drupalGet('node/' . $node->id() . '/edit');
-    $this->submitForm($edit, 'field_paragraphs_0_promote_to_library');
+    $this->drupalPostForm(NULL, $edit, 'field_paragraphs_0_promote_to_library');
     user_role_grant_permissions($user_role, ['administer paragraphs library']);
     $this->drupalGet('/admin/content/paragraphs');
     $this->assertSession()->pageTextContains('Text');
@@ -435,8 +426,7 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
 
     // Test disallow convesrion.
     $edit = ['allow_library_conversion' => FALSE];
-    $this->drupalGet('admin/structure/paragraphs_type/text');
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm('admin/structure/paragraphs_type/text', $edit, 'Save');
 
     /** @var \Drupal\Core\Config\ConfigFactoryInterface $config_factory */
     $config_factory = \Drupal::service('config.factory');
@@ -444,7 +434,7 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     $this->assertFalse(isset($third_party['paragraphs_library']['allow_library_conversion']));
 
     $this->drupalGet('node/add/paragraphed_test');
-    $this->submitForm([], 'Add text');
+    $this->drupalPostForm(NULL, NULL, 'Add text');
     $this->assertSession()->responseNotContains('Promote to library');
 
     // Test that the checkbox is not visible on from_library.
@@ -472,15 +462,14 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     $edit = [
       'fields[field_paragraphs][type]' => 'paragraphs',
     ];
-    $this->submitForm($edit, 'Save');
-    $this->drupalGet('admin/content/paragraphs/add/default');
-    $this->submitForm([], 'paragraphs_nested_test_add_more');
-    $this->submitForm([], 'paragraphs_0_subform_field_paragraphs_text_add_more');
+    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm('admin/content/paragraphs/add/default', [], 'paragraphs_nested_test_add_more');
+    $this->drupalPostForm(NULL, [], 'paragraphs_0_subform_field_paragraphs_text_add_more');
     $edit = [
       'label[0][value]' => 'Test nested',
       'paragraphs[0][subform][field_paragraphs][0][subform][field_text][0][value]' => 'test text paragraph',
     ];
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->assertSession()->pageTextContains('test text paragraph');
 
     // Assert that the user with the access content permission can see the
@@ -515,26 +504,26 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     $this->clickLink('Add library item');
 
     // Check the label validation.
-    $this->submitForm([], 'Save');
+    $this->drupalPostForm(NULL, [], t('Save'));
     $this->assertSession()->pageTextContains('Label field is required.');
     $edit = [
       'label[0][value]' => 're usable paragraph label',
     ];
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, t('Save'));
 
     // Check the paragraph validation.
     $this->assertSession()->pageTextContains('Paragraphs field is required.');
-    $this->submitForm([], 'paragraphs_text_paragraph_add_more');
+    $this->drupalPostForm(NULL, [], 'paragraphs_text_paragraph_add_more');
     $edit['paragraphs[0][subform][field_text][0][value]'] = 're_usable_text';
 
     // Check that the library item is created.
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->assertSession()->pageTextContains('Paragraph re usable paragraph label has been created.');
     $this->clickLink('Edit');
     $edit = [
       'paragraphs[0][subform][field_text][0][value]' => 'new text',
     ];
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->assertSession()->pageTextContains('Paragraph re usable paragraph label has been updated.');
   }
 
@@ -554,23 +543,23 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     // Add a library item with paragraphs type "Text".
     $this->drupalGet('admin/content/paragraphs');
     $this->clickLink('Add library item');
-    $this->submitForm([], 'paragraphs_text_add_more');
+    $this->drupalPostForm(NULL, [], 'paragraphs_text_add_more');
     $edit = [
       'label[0][value]' => 'reusable paragraph label',
       'paragraphs[0][subform][field_text][0][value]' => 'reusable_text',
     ];
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->assertSession()->pageTextContains('Paragraph reusable paragraph label has been created.');
 
     // Create a node with a "From library" paragraph referencing the library
     // item.
     $this->drupalGet('node/add/paragraphed_test');
-    $this->submitForm([], 'field_paragraphs_from_library_add_more');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_from_library_add_more');
     $edit = [
       'title[0][value]' => 'library_test',
       'field_paragraphs[0][subform][field_reusable_paragraph][0][target_id]' => 'reusable paragraph label',
     ];
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->assertSession()->pageTextContains('paragraphed_test library_test has been created.');
 
     // Disallow the paragraphs type "Text" for the used content type.
@@ -580,13 +569,13 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
       'settings[handler_settings][target_bundles_drag_drop][from_library][enabled]' => 1,
       'settings[handler_settings][target_bundles_drag_drop][text][enabled]' => FALSE,
     ];
-    $this->submitForm($edit, 'Save settings');
+    $this->drupalPostForm(NULL, $edit, t('Save settings'));
     $this->assertSession()->pageTextContains('Saved field_paragraphs configuration.');
 
     // Check that the node now fails validation.
     $node = $this->getNodeByTitle('library_test');
     $this->drupalGet('node/' . $node->id() . '/edit');
-    $this->submitForm([], 'Save');
+    $this->drupalPostForm(NULL, [], t('Save'));
     $this->assertSession()->addressEquals('node/' . $node->id() . '/edit');
     $this->assertSession()->pageTextContains('The Reusable paragraph field cannot contain a text paragraph, because the parent field_paragraphs field disallows it.');
   }
@@ -614,13 +603,13 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
 
     // Add nested paragraph directly in library.
     $this->drupalGet('admin/content/paragraphs/add/default');
-    $this->submitForm([], 'paragraphs_nested_paragraph_add_more');
-    $this->submitForm([], 'paragraphs_0_subform_field_err_field_test_content_add_more');
+    $this->drupalPostForm(NULL, NULL, 'paragraphs_nested_paragraph_add_more');
+    $this->drupalPostForm(NULL, NULL, 'paragraphs_0_subform_field_err_field_test_content_add_more');
     $edit = [
       'label[0][value]' => 'Test revisions nested original',
       'paragraphs[0][subform][field_err_field][0][subform][field_paragraphs_text][0][value]' => 'Example text for revision original.',
     ];
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, 'Save');
     $this->assertSession()->pageTextContains('Paragraph Test revisions nested original has been created.');
 
     // Check revisions tab.
@@ -635,7 +624,7 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
       'label[0][value]' => 'Test revisions nested first change',
       'paragraphs[0][subform][field_err_field][0][subform][field_paragraphs_text][0][value]' => 'Example text for revision first change.',
     ];
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, 'Save');
 
     // Check previous revision.
     $storage = \Drupal::entityTypeManager()->getStorage('paragraphs_library_item');
@@ -653,9 +642,14 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
 
     // Test reverting revision.
     $this->clickLink('Revert');
-    $this->assertSession()->responseContains('Are you sure you want to revert revision from ' . $date_formatter->format($revision->getChangedTime()) . '?');
-    $this->submitForm([], 'Revert');
-    $this->assertSession()->pageTextContains('Test revisions nested original has been reverted to the revision from ' . $date_formatter->format($revision->getChangedTime()) . '.');
+    $this->assertSession()->responseContains(t('Are you sure you want to revert revision from %revision-date?', [
+      '%revision-date' => $date_formatter->format($revision->getChangedTime())
+    ]));
+    $this->drupalPostForm(NULL, NULL, 'Revert');
+    $this->assertSession()->responseContains(t('%title has been reverted to the revision from %revision-date.', [
+      '%title' => 'Test revisions nested original',
+      '%revision-date' => $date_formatter->format($revision->getChangedTime())
+    ]));
 
     // Check current revision.
     $current_revision = $storage->loadRevision(3);
@@ -666,9 +660,13 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     // Test deleting revision.
     $revision_for_deleting = $storage->loadRevision(2);
     $this->clickLink('Delete');
-    $this->assertSession()->responseContains('Are you sure you want to delete revision from ' . $date_formatter->format($revision_for_deleting->getChangedTime()));
-    $this->submitForm([], 'Delete');
-    $this->assertSession()->pageTextContains('Revision from ' . $date_formatter->format($revision_for_deleting->getChangedTime()) .' has been deleted.');
+    $this->assertSession()->responseContains(t('Are you sure you want to delete revision from %revision-date', [
+      '%revision-date' => $date_formatter->format($revision_for_deleting->getChangedTime())
+    ]));
+    $this->drupalPostForm(NULL, NULL, 'Delete');
+    $this->assertSession()->responseContains(t('Revision from %revision-date has been deleted.', [
+      '%revision-date' => $date_formatter->format($revision_for_deleting->getChangedTime())
+    ]));
   }
 
 }

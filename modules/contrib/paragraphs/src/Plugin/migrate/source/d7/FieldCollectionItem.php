@@ -50,9 +50,6 @@ class FieldCollectionItem extends FieldableEntity {
     // bundles retrieved.
     if ($this->configuration['field_name']) {
       $query->condition('f.field_name', $this->configuration['field_name']);
-      $query->addField('fc', 'entity_type', 'parent_type');
-      $query->addField('fc', 'entity_id', 'parent_id');
-      $query->innerJoin('field_revision_' . $this->configuration['field_name'], 'fc', 'fc.' . $this->configuration['field_name'] . '_value = f.item_id and fc.' . $this->configuration['field_name'] . '_revision_id = f.revision_id');
     }
     return $query;
   }
@@ -88,8 +85,6 @@ class FieldCollectionItem extends FieldableEntity {
       'revision_id' => $this->t('The field_collection_item revision id'),
       'bundle' => $this->t('The field_collection bundle'),
       'field_name' => $this->t('The field_collection field_name'),
-      'parent_type' => $this->t('The type of the parent entity'),
-      'parent_id' => $this->t('The identifier of the parent entity'),
     ];
 
     return $fields;
@@ -99,12 +94,14 @@ class FieldCollectionItem extends FieldableEntity {
    * {@inheritdoc}
    */
   public function getIds() {
-    return [
+    $ids = [
       'item_id' => [
         'type' => 'integer',
         'alias' => 'f',
       ],
     ];
+
+    return $ids;
   }
 
 }

@@ -18,17 +18,20 @@ class ParagraphsFieldMigrationTest extends ParagraphsMigrationTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = [
+  public static $modules = [
     'comment',
     'datetime',
     'datetime_range',
+    'entity_reference_revisions',
     'field',
     'file',
     'image',
     'link',
     'menu_ui',
+    'migrate_drupal',
     'node',
     'options',
+    'paragraphs',
     'system',
     'taxonomy',
     'telephone',
