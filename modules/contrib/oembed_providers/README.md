@@ -48,7 +48,7 @@ Access to all functionality provided by this module is controlled with the
 
 On the *oEmbed Providers* configuration page
 (/admin/config/media/oembed-providers), global configuration is managed.
- 
+
 ## External Fetch
 
 By default, *Media* retrieves a JSON file with a listing of oEmbed providers
@@ -78,12 +78,20 @@ result in a media source with the machine name 'oembed:remote_image'.
 
 By default, core Media provides a 'Remote Video' media source with YouTube and
 Vimeo as allowed providers. In order to override the default
-'oembed:remote_video' media source, create a provider bucket with a machine
-name of 'remote_video'.
+'oembed:video' media source, create a provider bucket with a machine
+name of 'video'.
 
 A media source can be used for a given Media Type.
 
 Provider buckets are stored in configuration as config entities.
+
+## PROVIDER BUCKET MACHINE NAME CHARACTER LIMIT
+
+The machine name of provider buckets should be no longer than 14 characters.
+
+See https://www.drupal.org/project/oembed_providers/issues/3267697, which
+references the following core bug:
+https://www.drupal.org/project/drupal/issues/3276845.
 
 # CUSTOM PROVIDERS
 
