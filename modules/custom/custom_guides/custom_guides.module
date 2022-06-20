@@ -90,6 +90,36 @@ function _custom_guides($args) {
     $url = trim($guide->url);
     $guide_id = trim($guide->entity_id);
 
+    //verify valid url and republish or update based on guide id and title
+    if (strpos($url, 'https://') === false) {
+      $errors[] = 'An error occurred.';
+      $errors[] = 'Title '.$title.' with guide id '.$guide_id.' has url '.$url.' which isnt valid';
+      $query = \Drupal::entityQuery('taxonomy_term')
+        ->condition('vid', 'research_guides')
+        ->condition('name', $title)
+        ->condition('field_entity_id.value', $guide_id);
+      $guide_term = $query->execute();
+      $guide_term = array_values($guide_term);
+      if (isset($guide_term[0]) && !empty($guide_term[0])) {
+        $guide_term = \Drupal\taxonomy\Entity\Term::load($guide_term[0]);
+        $guide_term->get('status')->setValue([['value' => 1]]);
+        $guide_term->save();
+        $errors[] = 'Reverting guide id '.$guide_id.' with title '.$title;
+        foreach ($errors as $error) {
+          Drush::output()->writeln($error);
+        }
+        continue;
+      }
+      else {
+        //The title or guide id must have changed. We'll update with non-friendly url.
+        $url = 'https://guides.lib.umich.edu'.$url;
+        $errors[] = 'Creating or updating guide id '.$guide_id.' with title '.$title.' and url '.$url;
+        foreach ($errors as $error) {
+          Drush::output()->writeln($error);
+        }
+      }
+    }
+
     //check for duplicates
     if (in_array($url, $the_guides)) {
       $errors[] = 'guide:'.$url.' - has a duplicate';
