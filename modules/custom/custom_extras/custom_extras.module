@@ -204,7 +204,13 @@ function custom_extras_node_presave(NodeInterface $node) {
             $data = _custom_extras_encoding(file_get_contents($s_url_count));
             $specialists[0]['url'] = $s_url;
             // we need to be explicit on height. mod default is 701
-            $specialists[0]['height'] = count($data) * 105 + 10;
+            if (is_countable($data)) {
+              $specialists[0]['height'] = count($data) * 105 + 10;
+            }
+            else {
+              // No specialists found.
+              $specialists[0]['height'] = 105;
+            }
             $paragraph->get('field_library_specialists')->setValue($specialists);
             $paragraph->save();
             break;
