@@ -6,7 +6,7 @@ core_version_requirement: ^8 || ^9
 dependencies:
   - jquery_ui:jquery_ui
 
-# Information added by Drupal.org packaging script on 2022-05-05
-version: '8.x-1.3'
+# Information added by Drupal.org packaging script on 2022-08-10
+version: '8.x-1.4'
 project: 'jquery_ui_checkboxradio'
-datestamp: 1651736238
+datestamp: 1660134658

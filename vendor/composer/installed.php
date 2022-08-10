@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '94ba4a66b1a963477562514feaa7cef8938e579e',
+    'reference' => 'a9f5b238d2c72c90d7f26df4451ec79a4c63459d',
     'name' => 'drupal/recommended-project',
   ),
   'versions' => 
@@ -955,12 +955,12 @@
     ),
     'drupal/jquery_ui_checkboxradio' => 
     array (
-      'pretty_version' => '1.3.0',
-      'version' => '1.3.0.0',
+      'pretty_version' => '1.4.0',
+      'version' => '1.4.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '8.x-1.3',
+      'reference' => '8.x-1.4',
     ),
     'drupal/jquery_ui_controlgroup' => 
     array (
@@ -1229,7 +1229,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '94ba4a66b1a963477562514feaa7cef8938e579e',
+      'reference' => 'a9f5b238d2c72c90d7f26df4451ec79a4c63459d',
     ),
     'drupal/responsive_image' => 
     array (
