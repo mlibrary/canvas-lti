@@ -73,7 +73,7 @@ class Cookie implements AuthenticationProviderInterface, EventSubscriberInterfac
     $applies = $request->hasSession() && $this->sessionConfiguration->hasSession($request);
     if (!$applies && $request->query->has('check_logged_in')) {
       $domain = ltrim(ini_get('session.cookie_domain'), '.') ?: $request->getHttpHost();
-      $this->messenger->addMessage($this->t('To log in to this site, your browser must accept cookies from the domain %domain.', ['%domain' => $domain]), 'error');
+      $this->messenger->addMessage($this->t('To log in to this site, your browser must accept cookies from the domain %domain. If you are using Safari, also disable "Prevent cross-site tracking"', ['%domain' => $domain]), 'error');
     }
     return $applies;
   }
