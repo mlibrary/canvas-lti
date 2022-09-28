@@ -13,3 +13,7 @@ https://www.drupal.org/node/3048327
 Source: https://www.drupal.org/files/issues/2020-11-24/3048327-21.patch
 
 
+safari 403 message addition
+Source: patches/safari-403.patch
+
+

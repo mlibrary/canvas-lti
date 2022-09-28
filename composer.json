@@ -24,7 +24,7 @@
         "drupal/block_classes": "^1.0",
         "drupal/conditional_fields": "^4.0@alpha",
         "drupal/console": "^1.0.2",
-        "drupal/core": "9.3.19",
+        "drupal/core": "^9.3.19",
         "drupal/devel": "^4.0",
         "drupal/disable_messages": "^2.0",
         "drupal/extra_field_description": "^1.6",
