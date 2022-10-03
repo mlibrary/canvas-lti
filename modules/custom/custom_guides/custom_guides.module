@@ -84,11 +84,14 @@ function _custom_guides($args) {
   //keep track of guides to find duplicates
   $the_guides = array();
   //for every guide
-  foreach ($guide_data->response->docs as $guide) {
+  foreach ($guide_data as $guide) {
     //strip any whitespace
-    $title = trim($guide->title);
-    $url = trim($guide->url);
-    $guide_id = trim($guide->entity_id);
+    $title = trim($guide->name);
+    $url = trim($guide->friendly_url);
+    if (empty($url)) {
+      $url = trim($guide->url);
+    }
+    $guide_id = trim($guide->id);
 
     //verify valid url and republish or update based on guide id and title
     if (strpos($url, 'https://') === false) {
