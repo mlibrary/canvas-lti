@@ -11,9 +11,8 @@ use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Entity\TypedData\EntityDataDefinitionInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Render\BubbleableMetadata;
-use Drupal\Core\Render\Element;
-use Drupal\Component\Utility\Crypt;
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Routing\RouteObjectInterface;
 use Drupal\Core\TypedData\DataReferenceDefinitionInterface;
 use Drupal\Core\Url;
 use Drupal\field\FieldStorageConfigInterface;
@@ -23,8 +22,6 @@ use Drupal\node\Entity\NodeType;
 use Drupal\node\NodeInterface;
 use Drupal\system\Entity\Menu;
 use Drupal\user\UserInterface;
-use Symfony\Cmf\Component\Routing\RouteObjectInterface;
-use Drupal\Core\TypedData\PrimitiveInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Entity\ContentEntityTypeInterface;
 use Drupal\image\Entity\ImageStyle;
@@ -281,19 +278,6 @@ function token_token_info() {
     'description' => t("The menu link's root."),
     'type' => 'menu-link',
   ];
-  foreach (\Drupal::entityTypeManager()->getDefinitions() as $entity_type_id => $entity_type) {
-    // Do not generate tokens if the entity doesn't define a token type or is
-    // not a content entity.
-    if (!$entity_type->get('token_type') || (!$entity_type instanceof ContentEntityTypeInterface)) {
-      continue;
-    }
-
-    $info['tokens']['current-page'][$entity_type_id] = [
-      'name' => t('The current %type', ['%type' => $entity_type_id]),
-      'description' => t("The current page object if that's a %type", ['%type' => $entity_type_id]),
-      'type' => \Drupal::service('token.entity_mapper')->getTokenTypeForEntityType($entity_type_id),
-    ];
-  }
 
   // Language tokens.
   $info['types']['language'] = [
@@ -320,6 +304,19 @@ function token_token_info() {
     'name' => t('Path prefix'),
     'description' => t('Path prefix for URLs in the language.'),
   ];
+  foreach (\Drupal::entityTypeManager()->getDefinitions() as $entity_type_id => $entity_type) {
+    // Do not generate tokens if the entity doesn't define a token type or is
+    // not a content entity.
+    if (!$entity_type->get('token_type') || (!$entity_type instanceof ContentEntityTypeInterface)) {
+      continue;
+    }
+
+    $info['tokens']['current-page'][$entity_type_id] = [
+      'name' => t('The current %type', ['%type' => $entity_type_id]),
+      'description' => t("The current page object if that's a %type", ['%type' => $entity_type_id]),
+      'type' => \Drupal::service('token.entity_mapper')->getTokenTypeForEntityType($entity_type_id),
+    ];
+  }
 
   // Current page tokens.
   $info['types']['current-page'] = [
@@ -581,6 +578,7 @@ function token_tokens($type, array $tokens, array $data, array $options, Bubblea
           $count = \Drupal::entityQueryAggregate('node')
             ->aggregate('nid', 'COUNT')
             ->condition('type', $node_type->id())
+            ->accessCheck(TRUE)
             ->execute();
           $replacements[$original] = (int) $count;
           break;
@@ -1761,7 +1759,7 @@ function field_tokens($type, $tokens, array $data, array $options, BubbleableMet
       // For [entity:field_name:0], [entity:field_name:0:value] and
       // [entity:field_name:value] tokens.
       else {
-        list($field_name, $delta) = explode(':', $name, 2);
+        [$field_name, $delta] = explode(':', $name, 2);
         if (!is_numeric($delta)) {
           unset($delta);
         }

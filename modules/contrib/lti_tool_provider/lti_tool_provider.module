@@ -78,3 +78,14 @@ function parse_roles($roles): array {
 
   return $parsedRoles;
 }
+
+/**
+ * Implements hook_page_attachments().
+ */
+function lti_tool_provider_page_attachments(array &$page) {
+  $page['#attached']['library'][] = 'lti_tool_provider/allow_storage';
+  $settings = [
+    'site' => \Drupal::request()->getSchemeAndHttpHost().\Drupal::request()->getBaseUrl(),
+  ];
+  $page['#attached']['drupalSettings']['ltiToolProvider']['allowStorage'] = $settings;
+}

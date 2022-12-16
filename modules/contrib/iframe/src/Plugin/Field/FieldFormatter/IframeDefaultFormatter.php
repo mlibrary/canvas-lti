@@ -49,8 +49,8 @@ class IframeDefaultFormatter extends FormatterBase {
     // field_settings on concrete field
     $field_settings = $this->getFieldSettings();
     //\iframe_debug(3, __METHOD__, $settings);
-    \iframe_debug(3, __METHOD__, $field_settings);
-    \iframe_debug(3, __METHOD__, $items->getValue());
+    //\iframe_debug(3, __METHOD__, $field_settings);
+    //\iframe_debug(3, __METHOD__, $items->getValue());
     $allow_attributes = [ 'url', 'width', 'height', 'title' ];
     foreach ($items as $delta => $item) {
       if (empty($item->url)) {

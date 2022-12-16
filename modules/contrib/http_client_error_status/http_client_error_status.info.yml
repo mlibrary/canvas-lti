@@ -1,0 +1,9 @@
+name: 'HTTP Client Error Status Block Condition'
+type: module
+description: 'Provide HTTP client error status context plugin'
+core_version_requirement: ^8.8.3 || ^9 || ^10
+
+# Information added by Drupal.org packaging script on 2022-06-19
+version: '3.0.0'
+project: 'http_client_error_status'
+datestamp: 1655679057

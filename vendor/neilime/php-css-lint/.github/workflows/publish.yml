@@ -3,21 +3,31 @@ name: Publish
 on:
   push:
     tags: [v*]
+  workflow_dispatch:
 
 jobs:
-  homepage:
+  site:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v3
       - run: |
-          mkdir -p ./artifact/wiki
-          cp ./README.md ./artifact/wiki/Home.md
           mkdir -p ./artifact/site
+
+          echo -e "theme: jekyll-theme-cayman" > ./artifact/site/_config.yml
+
           echo -e "---\nlayout: default\ntitle: Home\n---\n" > ./artifact/site/index.md
           echo "$(sed -r s"/(\{%[^%]+%\})/{% raw %}\1{% endraw %}/g" ./README.md)" >> ./artifact/site/index.md
 
-      - uses: actions/upload-artifact@v2
+          mkdir -p ./artifact/site/installation
+          echo -e "---\nlayout: default\ntitle: Installation\n---\n" > ./artifact/site/installation/index.md
+          echo "$(sed -r s"/(\{%[^%]+%\})/{% raw %}\1{% endraw %}/g" ./docs/installation.md)" >> ./artifact/site/installation/index.md
+
+          mkdir -p ./artifact/site/usage
+          echo -e "---\nlayout: default\ntitle: Usage\n---\n" > ./artifact/site/usage/index.md
+          echo "$(sed -r s"/(\{%[^%]+%\})/{% raw %}\1{% endraw %}/g" ./docs/usage.md)" >> ./artifact/site/usage/index.md
+
+      - uses: actions/upload-artifact@v3
         with:
           name: artifact
           path: ./artifact
@@ -26,78 +36,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@master
-      - name: Setup PHP, with composer and extensions
-        uses: shivammathur/setup-php@master #https://github.com/shivammathur/setup-php
-        with:
-          php-version: 8.0
-          extensions: json
-          coverage: pcov
+      - uses: actions/checkout@v3
 
-      - name: Get composer cache directory
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - name: Cache composer dependencies
-        uses: actions/cache@v2.1.4
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: ${{ runner.os }}-composer-
-
-      - name: Install dependencies
+      - name: 📃 Generate PHP documentation
         run: |
-          composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
-          composer require clean/phpdoc-md --dev;
+          docker run --rm -v $(pwd):/data phpdoc/phpdoc:3 -d ./src -t ./artifact/site/phpdoc
 
-      - name: Configure phpdoc-md
-        run: |
-          mkdir -p ./artifact/site/phpdoc;
-
-          php -d display_errors=0 -d error_reporting=0 -r "file_put_contents('.phpdoc-md','<?php
-              return (object)[
-                \'rootNamespace\' => \'CssLint\', 
-                \'destDirectory\' => \'./artifact/site/phpdoc\',
-                \'format\' => \'github\',
-                \'classes\' => '.var_export (array_values(array_filter(
-                    array_keys(require('./vendor/composer/autoload_classmap.php')),
-                    function(\$className) {
-                      return strpos(\$className, 'CssLint') === 0;
-                    }                                  
-                )), true).'
-              ];
-            ');
-          ";
-
-      - name: Execute phpdoc-md
-        run: |
-          vendor/bin/phpdoc-md -v
-          mv ./artifact/site/phpdoc/README.md ./artifact/site/phpdoc/index.md
-
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: artifact
           path: ./artifact
 
   build_and_deploy:
     runs-on: ubuntu-latest
-    needs: [homepage, phpdoc]
+    needs: [site, phpdoc]
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: artifact
-      - uses: peaceiris/actions-gh-pages@v3
+          path: ./artifact
+
+      - uses: peaceiris/actions-gh-pages@v3.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./artifact/site
           enable_jekyll: true
-          keep_files: true
-
-      - uses: Decathlon/wiki-page-creator-action@v2.0.3
-        env:
-          GH_PAT: ${{ secrets.GITHUB_TOKEN }}
-          ACTION_MAIL: action@github.com
-          ACTION_NAME: GitHub Action
-          OWNER: ${{ github.actor }}
-          REPO_NAME: ${{ github.repository }}
-          MD_FOLDER: ./artifact/wiki

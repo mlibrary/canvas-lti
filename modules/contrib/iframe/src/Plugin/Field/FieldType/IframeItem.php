@@ -120,14 +120,14 @@ class IframeItem extends FieldItemBase {
         'width' => [
           'description' => 'The iframe width.',
           'type' => 'varchar',
-          'length' => 4,
+          'length' => 7,
           'not null' => FALSE,
           'default' => '600',
         ],
         'height' => [
           'description' => 'The iframe height.',
           'type' => 'varchar',
-          'length' => 4,
+          'length' => 7,
           'not null' => FALSE,
           'default' => '800',
         ],

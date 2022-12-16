@@ -48,7 +48,7 @@ class IframeWidgetBase extends WidgetBase {
    * Translate the description for iframe width/height only once.
    */
   protected static function getSizedescription() {
-    return t('The iframe\'s width and height can be set in pixels as a number only ("500" for 500 pixels) or in a percentage value followed by the percent symbol (%) ("50%" for 50 percent).');
+    return t('The iframe\'s width and height can be set in pixels as a number only ("500" for 500 pixels) or in a percentage value followed by the percent symbol (%) ("50%" for 50 percent), further supported for width em/rem/vw and for height em/rem/vh.');
   }
 
   /**
@@ -83,8 +83,8 @@ class IframeWidgetBase extends WidgetBase {
       // ''
       '#default_value' => $settings['width'],
       '#description' => self::getSizedescription(),
-      '#maxlength' => 4,
-      '#size' => 4,
+      '#maxlength' => 7,
+      '#size' => 7,
     ];
     $element['height'] = [
       '#type' => 'textfield',
@@ -92,8 +92,8 @@ class IframeWidgetBase extends WidgetBase {
       // ''
       '#default_value' => $settings['height'],
       '#description' => self::getSizedescription(),
-      '#maxlength' => 4,
-      '#size' => 4,
+      '#maxlength' => 7,
+      '#size' => 7,
     ];
     $element['headerlevel'] = [
       '#type' => 'select',
@@ -310,8 +310,8 @@ class IframeWidgetBase extends WidgetBase {
       '#type' => 'textfield',
       '#default_value' => isset($settings['width']) ? $settings['width'] : '',
       '#description' => self::getSizedescription(),
-      '#maxlength' => 4,
-      '#size' => 4,
+      '#maxlength' => 7,
+      '#size' => 7,
       '#weight' => 3,
       '#element_validate' => [[$this, 'validateWidth']],
     ] + $required;
@@ -320,8 +320,8 @@ class IframeWidgetBase extends WidgetBase {
       '#title' => $this->t('Iframe Height'),
       '#default_value' => isset($settings['height']) ? $settings['height'] : '',
       '#description' => self::getSizedescription(),
-      '#maxlength' => 4,
-      '#size' => 4,
+      '#maxlength' => 7,
+      '#size' => 7,
       '#weight' => 4,
       '#element_validate' => [[$this, 'validateHeight']],
     ] + $required;
@@ -350,7 +350,7 @@ class IframeWidgetBase extends WidgetBase {
 
     // \iframe_debug(0, 'validateWidth', $me);
     if (!empty($me['url']) && isset($me['width'])) {
-      if (empty($me['width']) || !preg_match('#^(\d+\%?|auto)$#', $me['width'])) {
+      if (empty($me['width']) || !preg_match('#^(\d+(?:\%|em|rem|vw)?|auto)$#', $me['width'])) {
         $form_state->setError($form, self::getSizedescription());
       }
     }
@@ -368,7 +368,7 @@ class IframeWidgetBase extends WidgetBase {
 
     // \iframe_debug(0, 'validateHeight', $me);
     if (!empty($me['url']) && isset($me['height'])) {
-      if (empty($me['height']) || !preg_match('#^(\d+\%?|auto)$#', $me['height'])) {
+      if (empty($me['height']) || !preg_match('#^(\d+(?:\%|em|rem|vh)?|auto)$#', $me['height'])) {
         $form_state->setError($form, self::getSizedescription());
       }
     }

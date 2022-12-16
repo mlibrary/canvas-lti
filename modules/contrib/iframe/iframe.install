@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Entity\Sql\SqlContentEntityStorage;
+use Drupal\iframe\FieldTypeUpdateUtil;
 
 /**
  * Implements hook_install().
@@ -36,100 +37,32 @@ function iframe_update_8101(&$sandbox) {
   // Caches have to be cleared first to ensure new fields are detected in the
   // code.
   drupal_flush_all_caches();
-
-  /** @var \Drupal\Core\Entity\EntityFieldManagerInterface $entityFieldManager */
-  $entityFieldManager = \Drupal::service('entity_field.manager');
-  $entityDefinitionUpdateManager = \Drupal::entityDefinitionUpdateManager();
-  $entityTypeManager = \Drupal::entityTypeManager();
-
-  $iframeFieldMap = $entityFieldManager->getFieldMapByFieldType('iframe');
-  $schema = \Drupal::database()->schema();
-
-  // Loop through the array of iframe fields keyed by entity type...
-  foreach ($iframeFieldMap as $entityTypeId => $fields) {
-    foreach (array_keys($fields) as $fieldName) {
-      $fieldStorageDefinition = $entityDefinitionUpdateManager->getFieldStorageDefinition($fieldName, $entityTypeId);
-
-      // ... if the field is in a ContentEntity stored in SQL...
-      $storage = $entityTypeManager->getStorage($entityTypeId);
-      if ($storage instanceof SqlContentEntityStorage) {
-        // ... get a map of field columns to SQL columns for that field.
-        $tableMapping = $storage->getTableMapping([
-          $fieldName => $fieldStorageDefinition,
-        ]);
-
-        $tableNames = $tableMapping->getDedicatedTableNames();
-        $columns = $tableMapping->getColumnNames($fieldName);
-
-        // For each table (e.g.: data, revision), check whether the
-        // 'allowfullscreen' column exists. If it does not, create it.
-        foreach ($tableNames as $tableName) {
-          $field_schema = $fieldStorageDefinition->getSchema();
-
-          $fieldExists = $schema->fieldExists($tableName, $columns['allowfullscreen']);
-          $tableExists = $schema->tableExists($tableName);
-
-          if ($fieldExists === FALSE && $tableExists) {
-            $schema->addField($tableName, $columns['allowfullscreen'], $field_schema['columns']['allowfullscreen']);
-          }
-        }
-      }
-
-      // Make sure the field storage definition is updated.
-      $entityDefinitionUpdateManager->updateFieldStorageDefinition($fieldStorageDefinition);
-    }
-  }
+  // 8204 fixes the database schema
 }
 
 /**
  * Add a headerlevel column to iframe fields that do not have it yet.
  */
 function iframe_update_8201(&$sandbox) {
+  // 8204 fixes the database schema
+}
+
+/**
+ * dummy for not working update-hook
+ */
+function iframe_update_8203(&$sandbox) {
+  // 8204 fixes the database schema
+}
+
+/**
+ * increase fields width and height to varchar(7), supersedes update number 8202
+ */
+function iframe_update_8204(&$sandbox) {
   // Caches have to be cleared first to ensure new fields are detected in the
   // code.
   drupal_flush_all_caches();
 
-  /** @var \Drupal\Core\Entity\EntityFieldManagerInterface $entityFieldManager */
-  $entityFieldManager = \Drupal::service('entity_field.manager');
-  $entityDefinitionUpdateManager = \Drupal::entityDefinitionUpdateManager();
-  $entityTypeManager = \Drupal::entityTypeManager();
-
-  $iframeFieldMap = $entityFieldManager->getFieldMapByFieldType('iframe');
-  $schema = \Drupal::database()->schema();
-
-  // Loop through the array of iframe fields keyed by entity type...
-  foreach ($iframeFieldMap as $entityTypeId => $fields) {
-    foreach (array_keys($fields) as $fieldName) {
-      $fieldStorageDefinition = $entityDefinitionUpdateManager->getFieldStorageDefinition($fieldName, $entityTypeId);
-
-      // ... if the field is in a ContentEntity stored in SQL...
-      $storage = $entityTypeManager->getStorage($entityTypeId);
-      if ($storage instanceof SqlContentEntityStorage) {
-        // ... get a map of field columns to SQL columns for that field.
-        $tableMapping = $storage->getTableMapping([
-          $fieldName => $fieldStorageDefinition,
-        ]);
-
-        $tableNames = $tableMapping->getDedicatedTableNames();
-        $columns = $tableMapping->getColumnNames($fieldName);
-
-        // For each table (e.g.: data, revision), check whether the
-        // 'allowfullscreen' column exists. If it does not, create it.
-        foreach ($tableNames as $tableName) {
-          $field_schema = $fieldStorageDefinition->getSchema();
-
-          $fieldExists = $schema->fieldExists($tableName, $columns['headerlevel']);
-          $tableExists = $schema->tableExists($tableName);
-
-          if ($fieldExists === FALSE && $tableExists) {
-            $schema->addField($tableName, $columns['headerlevel'], $field_schema['columns']['headerlevel']);
-          }
-        }
-      }
-
-      // Make sure the field storage definition is updated.
-      $entityDefinitionUpdateManager->updateFieldStorageDefinition($fieldStorageDefinition);
-    }
-  }
+  $field_type = 'iframe';
+  FieldTypeUpdateUtil::_field_type_schema_column_spec_change_helper($field_type);
 }
 

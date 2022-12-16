@@ -24,7 +24,7 @@ class IframeSchemaTest extends EntityKernelTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'iframe',
     'link',
   ];

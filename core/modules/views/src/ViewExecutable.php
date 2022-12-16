@@ -24,6 +24,7 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
  * @see https://www.drupal.org/node/2849674
  * @see https://bugs.php.net/bug.php?id=66052
  */
+#[\AllowDynamicProperties]
 class ViewExecutable {
 
   /**
@@ -340,9 +341,12 @@ class ViewExecutable {
   public $inited;
 
   /**
-   * The rendered output of the exposed form.
+   * The render array for the exposed form.
    *
-   * @var string
+   * In cases that the exposed form is rendered as a block this will be an
+   * empty array.
+   *
+   * @var array
    */
   public $exposed_widgets;
 
@@ -2492,8 +2496,6 @@ class ViewExecutable {
     // state during unserialization.
     $this->serializationData = [
       'storage' => $this->storage->id(),
-      'views_data' => $this->viewsData->_serviceId,
-      'route_provider' => $this->routeProvider->_serviceId,
       'current_display' => $this->current_display,
       'args' => $this->args,
       'current_page' => $this->current_page,
@@ -2520,8 +2522,8 @@ class ViewExecutable {
 
       // Attach all necessary services.
       $this->user = \Drupal::currentUser();
-      $this->viewsData = \Drupal::service($this->serializationData['views_data']);
-      $this->routeProvider = \Drupal::service($this->serializationData['route_provider']);
+      $this->viewsData = \Drupal::service('views.views_data');
+      $this->routeProvider = \Drupal::service('router.route_provider');
 
       // Restore the state of this executable.
       if ($request = \Drupal::request()) {
