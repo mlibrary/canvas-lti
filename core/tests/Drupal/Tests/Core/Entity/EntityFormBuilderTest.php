@@ -52,21 +52,21 @@ class EntityFormBuilderTest extends UnitTestCase {
     $form_controller = $this->createMock('Drupal\Core\Entity\EntityFormInterface');
     $form_controller->expects($this->any())
       ->method('getFormId')
-      ->willReturn('the_form_id');
+      ->will($this->returnValue('the_form_id'));
     $this->entityTypeManager->expects($this->any())
       ->method('getFormObject')
       ->with('the_entity_type', 'default')
-      ->willReturn($form_controller);
+      ->will($this->returnValue($form_controller));
 
     $this->formBuilder->expects($this->once())
       ->method('buildForm')
       ->with($form_controller, $this->isInstanceOf('Drupal\Core\Form\FormStateInterface'))
-      ->willReturn('the form contents');
+      ->will($this->returnValue('the form contents'));
 
     $entity = $this->createMock('Drupal\Core\Entity\EntityInterface');
     $entity->expects($this->once())
       ->method('getEntityTypeId')
-      ->willReturn('the_entity_type');
+      ->will($this->returnValue('the_entity_type'));
 
     $this->assertSame('the form contents', $this->entityFormBuilder->getForm($entity));
   }

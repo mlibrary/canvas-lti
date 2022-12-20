@@ -66,9 +66,6 @@ class FormTest extends FieldTestBase {
    */
   protected $field;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 
@@ -278,7 +275,8 @@ class FormTest extends FieldTestBase {
     $this->assertSession()->fieldNotExists("{$field_name}[1][value]");
 
     // Check if aria-describedby attribute is placed on multiple value widgets.
-    $this->assertSession()->elementAttributeContains('xpath', '//table[@id="field-unlimited-values"]', 'aria-describedby', 'edit-field-unlimited--description');
+    $elements = $this->xpath('//table[@id="field-unlimited-values" and @aria-describedby="edit-field-unlimited--description"]');
+    $this->assertTrue(isset($elements[0]), 'aria-describedby attribute is properly placed on multiple value widgets.');
 
     // Press 'add more' button -> 2 widgets.
     $this->submitForm([], 'Add another item');
@@ -364,7 +362,8 @@ class FormTest extends FieldTestBase {
     // Display creation form -> 1 widget.
     $this->drupalGet('entity_test/add');
     // Check that the Required symbol is present for the multifield label.
-    $this->assertSession()->elementAttributeContains('xpath', "//h4[contains(@class, 'label') and contains(text(), '{$this->field['label']}')]", 'class', 'js-form-required');
+    $element = $this->xpath('//h4[contains(@class, "label") and contains(@class, "js-form-required") and contains(text(), :value)]', [':value' => $this->field['label']]);
+    $this->assertTrue(isset($element[0]), 'Required symbol added field label.');
     // Check that the label of the field input is visually hidden and contains
     // the field title and an indication of the delta for a11y.
     $this->assertSession()->elementExists('xpath', "//label[@for='edit-field-unlimited-0-value' and contains(@class, 'visually-hidden') and contains(text(), '{$this->field['label']} (value 1)')]");

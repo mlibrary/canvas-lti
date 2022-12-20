@@ -11,7 +11,6 @@ use GuzzleHttp\RequestOptions;
  * Tests accessing the Quick Edit endpoints.
  *
  * @group quickedit
- * @group legacy
  */
 class QuickEditEndPointAccessTest extends BrowserTestBase {
 

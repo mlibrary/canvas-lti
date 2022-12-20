@@ -71,10 +71,8 @@ class MemoryStorage extends StorageBase {
    * {@inheritdoc}
    */
   public function rename($key, $new_key) {
-    if ($key !== $new_key) {
-      $this->data[$new_key] = $this->data[$key];
-      unset($this->data[$key]);
-    }
+    $this->data[$new_key] = $this->data[$key];
+    unset($this->data[$key]);
   }
 
   /**

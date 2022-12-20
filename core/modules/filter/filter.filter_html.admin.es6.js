@@ -3,7 +3,7 @@
  * Attaches behavior for updating filter_html's settings automatically.
  */
 
-(function ($, Drupal, document) {
+(function ($, Drupal, _, document) {
   if (Drupal.filterConfiguration) {
     /**
      * Implement a live setting parser to prevent text editors from automatically
@@ -17,9 +17,9 @@
        *   An array of filter rules.
        */
       getRules() {
-        const currentValue = document.querySelector(
+        const currentValue = $(
           '#edit-filters-filter-html-settings-allowed-html',
-        ).value;
+        ).val();
         const rules =
           Drupal.behaviors.filterFilterHtmlUpdating._parseSetting(currentValue);
 
@@ -33,21 +33,6 @@
         return rules;
       },
     };
-  }
-
-  /**
-   * Gets the values that are present in one array but not another.
-   *
-   * @param {Array[]} args
-   *   The list of arrays to process.
-   *
-   * @return {Array}
-   *   Returns the first array without the values present in other arrays.
-   */
-  function difference(...args) {
-    return args.reduce((mainData, otherData) =>
-      mainData.filter((data) => !otherData.includes(data)),
-    );
   }
 
   /**
@@ -90,7 +75,7 @@
         that.$allowedHTMLFormItem = $(formItem);
         that.$allowedHTMLDescription = that.$allowedHTMLFormItem
           .closest('.js-form-item')
-          .find('#edit-filters-filter-html-settings-allowed-html--description');
+          .find('.description');
         that.userTags = that._parseSetting(formItem.value);
 
         // Update the new allowed tags based on added text editor features.
@@ -114,9 +99,9 @@
 
         // When the allowed tags list is manually changed, update userTags.
         that.$allowedHTMLFormItem.on('change.updateUserTags', function () {
-          that.userTags = difference(
-            Object.values(that._parseSetting(this.value)),
-            Object.values(that.autoTags),
+          that.userTags = _.difference(
+            that._parseSetting(this.value),
+            that.autoTags,
           );
         });
       });
@@ -136,18 +121,14 @@
       this.$allowedHTMLDescription.find('.editor-update-message').remove();
 
       // If any auto-created tags: insert message and update form item.
-      if (Object.keys(this.autoTags).length > 0) {
+      if (!_.isEmpty(this.autoTags)) {
         this.$allowedHTMLDescription.append(
           Drupal.theme('filterFilterHTMLUpdateMessage', this.autoTags),
         );
-
-        const userTagsWithoutOverrides = {};
-        Object.keys(this.userTags)
-          .filter((tag) => !this.autoTags.hasOwnProperty(tag))
-          .forEach((tag) => {
-            userTagsWithoutOverrides[tag] = this.userTags[tag];
-          });
-
+        const userTagsWithoutOverrides = _.omit(
+          this.userTags,
+          _.keys(this.autoTags),
+        );
         this.$allowedHTMLFormItem.val(
           `${this._generateSetting(
             userTagsWithoutOverrides,
@@ -190,7 +171,7 @@
           featureRule = feature[f];
           for (let t = 0; t < featureRule.required.tags.length; t++) {
             tag = featureRule.required.tags[t];
-            if (!editorRequiredTags.hasOwnProperty(tag)) {
+            if (!_.has(editorRequiredTags, tag)) {
               filterRule = new Drupal.FilterHTMLRule();
               filterRule.restrictedTags.tags = [tag];
               // @todo Neither Drupal.FilterHtmlRule nor
@@ -202,32 +183,22 @@
               //   https://www.drupal.org/node/2567801 lands.
               filterRule.restrictedTags.allowed.attributes =
                 featureRule.required.attributes.slice(0);
-              if (
-                userAllowedTags[tag] !== undefined &&
-                userAllowedTags[tag].restrictedTags.allowed.classes[0] !== ''
-              ) {
-                filterRule.restrictedTags.allowed.classes =
-                  featureRule.required.classes.slice(0);
-              }
+              filterRule.restrictedTags.allowed.classes =
+                featureRule.required.classes.slice(0);
               editorRequiredTags[tag] = filterRule;
             }
             // The tag is already allowed, add any additionally allowed
             // attributes.
             else {
               filterRule = editorRequiredTags[tag];
-              filterRule.restrictedTags.allowed.attributes = [
-                ...filterRule.restrictedTags.allowed.attributes,
-                ...featureRule.required.attributes,
-              ];
-              if (
-                userAllowedTags[tag] !== undefined &&
-                userAllowedTags[tag].restrictedTags.allowed.classes[0] !== ''
-              ) {
-                filterRule.restrictedTags.allowed.classes = [
-                  ...filterRule.restrictedTags.allowed.classes,
-                  ...featureRule.required.classes,
-                ];
-              }
+              filterRule.restrictedTags.allowed.attributes = _.union(
+                filterRule.restrictedTags.allowed.attributes,
+                featureRule.required.attributes,
+              );
+              filterRule.restrictedTags.allowed.classes = _.union(
+                filterRule.restrictedTags.allowed.classes,
+                featureRule.required.classes,
+              );
             }
           }
         }
@@ -243,7 +214,7 @@
       Object.keys(editorRequiredTags).forEach((tag) => {
         // If userAllowedTags does not contain a rule for this editor-required
         // tag, then add it to the list of automatically allowed tags.
-        if (!userAllowedTags.hasOwnProperty(tag)) {
+        if (!_.has(userAllowedTags, tag)) {
           autoAllowedTags[tag] = editorRequiredTags[tag];
         }
         // Otherwise, if userAllowedTags already allows this tag, then check if
@@ -256,28 +227,28 @@
             userAllowedTags[tag].restrictedTags.allowed.attributes;
           const needsAdditionalAttributes =
             requiredAttributes.length &&
-            difference(requiredAttributes, allowedAttributes).length;
+            _.difference(requiredAttributes, allowedAttributes).length;
           const requiredClasses =
             editorRequiredTags[tag].restrictedTags.allowed.classes;
           const allowedClasses =
             userAllowedTags[tag].restrictedTags.allowed.classes;
           const needsAdditionalClasses =
             requiredClasses.length &&
-            difference(requiredClasses, allowedClasses).length;
+            _.difference(requiredClasses, allowedClasses).length;
           if (needsAdditionalAttributes || needsAdditionalClasses) {
             autoAllowedTags[tag] = userAllowedTags[tag].clone();
           }
           if (needsAdditionalAttributes) {
-            autoAllowedTags[tag].restrictedTags.allowed.attributes = [
-              ...allowedAttributes,
-              ...requiredAttributes,
-            ];
+            autoAllowedTags[tag].restrictedTags.allowed.attributes = _.union(
+              allowedAttributes,
+              requiredAttributes,
+            );
           }
           if (needsAdditionalClasses) {
-            autoAllowedTags[tag].restrictedTags.allowed.classes = [
-              ...allowedClasses,
-              ...requiredClasses,
-            ];
+            autoAllowedTags[tag].restrictedTags.allowed.classes = _.union(
+              allowedClasses,
+              requiredClasses,
+            );
           }
         }
       });
@@ -351,32 +322,33 @@
      *   The string representation of the setting. e.g. "<p> <br> <a>"
      */
     _generateSetting(tags) {
-      return Object.keys(tags).reduce((setting, tag) => {
-        const rule = tags[tag];
-        const allowedClasses = rule.restrictedTags.allowed.classes;
+      return _.reduce(
+        tags,
+        (setting, rule, tag) => {
+          if (setting.length) {
+            setting += ' ';
+          }
 
-        if (setting.length) {
-          setting += ' ';
-        }
+          setting += `<${tag}`;
+          if (rule.restrictedTags.allowed.attributes.length) {
+            setting += ` ${rule.restrictedTags.allowed.attributes.join(' ')}`;
+          }
+          // @todo Drupal.FilterHtmlRule does not allow for generic attribute
+          //   value restrictions, only for the "class" and "style" attribute's
+          //   values. The filter_html filter always disallows the "style"
+          //   attribute, so we only need to support "class" attribute value
+          //   restrictions. Fix once https://www.drupal.org/node/2567801 lands.
+          if (rule.restrictedTags.allowed.classes.length) {
+            setting += ` class="${rule.restrictedTags.allowed.classes.join(
+              ' ',
+            )}"`;
+          }
 
-        setting += `<${tag}`;
-        if (rule.restrictedTags.allowed.attributes.length) {
-          setting += ` ${rule.restrictedTags.allowed.attributes.join(' ')}`;
-        }
-        // @todo Drupal.FilterHtmlRule does not allow for generic attribute
-        //   value restrictions, only for the "class" and "style" attribute's
-        //   values. The filter_html filter always disallows the "style"
-        //   attribute, so we only need to support "class" attribute value
-        //   restrictions. Fix once https://www.drupal.org/node/2567801 lands.
-        if (allowedClasses.length === 1 && allowedClasses[0] === '') {
-          setting += ' class';
-        } else if (allowedClasses.length) {
-          setting += ` class="${allowedClasses.join(' ')}"`;
-        }
-
-        setting += '>';
-        return setting;
-      }, '');
+          setting += '>';
+          return setting;
+        },
+        '',
+      );
     },
   };
 
@@ -401,4 +373,4 @@
     html += '</p>';
     return html;
   };
-})(jQuery, Drupal, document);
+})(jQuery, Drupal, _, document);

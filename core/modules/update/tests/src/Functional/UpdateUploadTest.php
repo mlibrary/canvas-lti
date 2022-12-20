@@ -12,7 +12,7 @@ use Drupal\Tests\TestFileCreationTrait;
  *
  * @group update
  */
-class UpdateUploadTest extends UpdateUploaderTestBase {
+class UpdateUploadTest extends UpdateTestBase {
 
   use TestFileCreationTrait {
     getTestFiles as drupalGetTestFiles;
@@ -30,9 +30,6 @@ class UpdateUploadTest extends UpdateUploaderTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     $admin_user = $this->drupalCreateUser([

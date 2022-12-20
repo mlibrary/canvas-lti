@@ -23,7 +23,7 @@ class ThemeTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'starterkit_theme';
+  protected $defaultTheme = 'classy';
 
   /**
    * {@inheritdoc}
@@ -149,7 +149,8 @@ class ThemeTest extends BrowserTestBase {
    */
   public function testPreprocessHtml() {
     $this->drupalGet('');
-    $this->assertSession()->elementsCount('xpath', '/body[@theme_test_page_variable="Page variable is an array."]', 1);
+    $attributes = $this->xpath('/body[@theme_test_page_variable="Page variable is an array."]');
+    $this->assertCount(1, $attributes, 'In template_preprocess_html(), the page variable is still an array (not rendered yet).');
     $this->assertSession()->pageTextContains('theme test page bottom markup');
   }
 
@@ -160,9 +161,7 @@ class ThemeTest extends BrowserTestBase {
     \Drupal::service('module_installer')->install(['block', 'theme_region_test']);
 
     // Place a block.
-    $this->drupalPlaceBlock('system_main_block', [
-      'region' => 'sidebar_first',
-    ]);
+    $this->drupalPlaceBlock('system_main_block');
     $this->drupalGet('');
     $elements = $this->cssSelect(".region-sidebar-first.new_class");
     $this->assertCount(1, $elements, 'New class found.');
@@ -193,14 +192,6 @@ class ThemeTest extends BrowserTestBase {
         $this->assertEquals((string) $value, $items[$key]->getText());
       }
     }
-  }
-
-  /**
-   * Ensures that preprocess callbacks can be defined.
-   */
-  public function testPreprocessCallback() {
-    $this->drupalGet('theme-test/preprocess-callback');
-    $this->assertSession()->pageTextContains('Make Drupal full of kittens again!');
   }
 
 }

@@ -35,7 +35,8 @@ class LocaleImportFunctionalTest extends BrowserTestBase {
   protected $adminUser;
 
   /**
-   * A user able to create languages, import translations, access site reports.
+   * A user able to create languages, import translations and access site
+   * reports.
    *
    * @var \Drupal\user\Entity\User
    */
@@ -366,7 +367,7 @@ class LocaleImportFunctionalTest extends BrowserTestBase {
   /**
    * Tests .po file import with user.settings configuration.
    */
-  public function testConfigTranslationImportingPoFile() {
+  public function testConfigtranslationImportingPoFile() {
     // Set the language code.
     $langcode = 'de';
 

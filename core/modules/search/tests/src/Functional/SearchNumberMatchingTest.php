@@ -59,9 +59,6 @@ class SearchNumberMatchingTest extends BrowserTestBase {
    */
   protected $nodes;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

@@ -3,14 +3,7 @@
 
 /**
  * @file
- * A script to generate proxy classes for lazy services.
- *
- * For help, type this command from the root directory of an installed Drupal
- * site: php core/scripts/generate-proxy-class.php -h generate-proxy-class
- *
- * @ingroup container
- *
- * @see lazy_services
+ * A command line application to generate proxy classes.
  */
 
 use Drupal\Core\Command\GenerateProxyClassApplication;
@@ -27,7 +20,7 @@ if (PHP_SAPI !== 'cli') {
 $autoloader = require __DIR__ . '/../../autoload.php';
 $request = Request::createFromGlobals();
 Settings::initialize(dirname(__DIR__, 2), DrupalKernel::findSitePath($request), $autoloader);
-DrupalKernel::createFromRequest($request, $autoloader, 'prod')->boot();
+$kernel = DrupalKernel::createFromRequest($request, $autoloader, 'prod')->boot();
 
 // Run the database dump command.
 $application = new GenerateProxyClassApplication(new ProxyBuilder());

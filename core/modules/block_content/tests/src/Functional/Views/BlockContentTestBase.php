@@ -6,6 +6,7 @@ use Drupal\block_content\Entity\BlockContent;
 use Drupal\block_content\Entity\BlockContentType;
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Tests\views\Functional\ViewTestBase;
+use Drupal\views\Tests\ViewTestData;
 
 /**
  * Base class for all block_content tests.
@@ -39,15 +40,16 @@ abstract class BlockContentTestBase extends ViewTestBase {
     'block_content_test_views',
   ];
 
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp($import_test_views = TRUE, $modules = ['block_content_test_views']) {
-    parent::setUp($import_test_views, $modules);
+  protected function setUp($import_test_views = TRUE) {
+    parent::setUp($import_test_views);
     // Ensure the basic bundle exists. This is provided by the standard profile.
     $this->createBlockContentType(['id' => 'basic']);
 
     $this->adminUser = $this->drupalCreateUser($this->permissions);
+
+    if ($import_test_views) {
+      ViewTestData::createTestViews(static::class, ['block_content_test_views']);
+    }
   }
 
   /**

@@ -3,6 +3,3 @@ type: module
 description: 'Support database contrib driver testing.'
 package: Testing
 version: VERSION
-dependencies:
-  - drupal:mysql
-  - drupal:pgsql

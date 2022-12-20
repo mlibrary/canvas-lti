@@ -7,7 +7,6 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Image\ImageFactory;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\ElementInfoManagerInterface;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\file\Entity\File;
 use Drupal\file\Plugin\Field\FieldWidget\FileWidget;
 use Drupal\image\Entity\ImageStyle;
@@ -72,12 +71,12 @@ class ImageWidget extends FileWidget {
     $element = parent::settingsForm($form, $form_state);
 
     $element['preview_image_style'] = [
-      '#title' => $this->t('Preview image style'),
+      '#title' => t('Preview image style'),
       '#type' => 'select',
       '#options' => image_style_options(FALSE),
-      '#empty_option' => '<' . $this->t('no preview') . '>',
+      '#empty_option' => '<' . t('no preview') . '>',
       '#default_value' => $this->getSetting('preview_image_style'),
-      '#description' => $this->t('The preview image will be shown while editing the content.'),
+      '#description' => t('The preview image will be shown while editing the content.'),
       '#weight' => 15,
     ];
 
@@ -97,10 +96,10 @@ class ImageWidget extends FileWidget {
     // their styles in code.
     $image_style_setting = $this->getSetting('preview_image_style');
     if (isset($image_styles[$image_style_setting])) {
-      $preview_image_style = $this->t('Preview image style: @style', ['@style' => $image_styles[$image_style_setting]]);
+      $preview_image_style = t('Preview image style: @style', ['@style' => $image_styles[$image_style_setting]]);
     }
     else {
-      $preview_image_style = $this->t('No preview');
+      $preview_image_style = t('No preview');
     }
 
     array_unshift($summary, $preview_image_style);
@@ -257,10 +256,10 @@ class ImageWidget extends FileWidget {
 
     // Add the additional alt and title fields.
     $element['alt'] = [
-      '#title' => new TranslatableMarkup('Alternative text'),
+      '#title' => t('Alternative text'),
       '#type' => 'textfield',
       '#default_value' => $item['alt'] ?? '',
-      '#description' => new TranslatableMarkup('Short description of the image used by screen readers and displayed when the image is not loaded. This is important for accessibility.'),
+      '#description' => t('Short description of the image used by screen readers and displayed when the image is not loaded. This is important for accessibility.'),
       // @see https://www.drupal.org/node/465106#alt-text
       '#maxlength' => 512,
       '#weight' => -12,
@@ -270,9 +269,9 @@ class ImageWidget extends FileWidget {
     ];
     $element['title'] = [
       '#type' => 'textfield',
-      '#title' => new TranslatableMarkup('Title'),
+      '#title' => t('Title'),
       '#default_value' => $item['title'] ?? '',
-      '#description' => new TranslatableMarkup('The title is used as a tool tip when the user hovers the mouse over the image.'),
+      '#description' => t('The title is used as a tool tip when the user hovers the mouse over the image.'),
       '#maxlength' => 1024,
       '#weight' => -11,
       '#access' => (bool) $item['fids'] && $element['#title_field'],

@@ -18,7 +18,8 @@ trait AssertBlockAppearsTrait {
    *   The block entity to find on the page.
    */
   protected function assertBlockAppears(Block $block) {
-    $this->assertSession()->elementExists('xpath', "//div[@id = 'block-{$block->id()}']");
+    $result = $this->findBlockInstance($block);
+    $this->assertNotEmpty($result, sprintf('The block %s should appear on the page.', $block->id()));
   }
 
   /**
@@ -28,7 +29,8 @@ trait AssertBlockAppearsTrait {
    *   The block entity to find on the page.
    */
   protected function assertNoBlockAppears(Block $block) {
-    $this->assertSession()->elementNotExists('xpath', "//div[@id = 'block-{$block->id()}']");
+    $result = $this->findBlockInstance($block);
+    $this->assertEmpty($result, sprintf('The block %s should not appear on the page.', $block->id()));
   }
 
   /**
@@ -39,14 +41,8 @@ trait AssertBlockAppearsTrait {
    *
    * @return array
    *   The result from the xpath query.
-   *
-   * @deprecated in drupal:9.5.0 and is removed from drupal:11.0.0. There is no
-   *   replacement.
-   *
-   * @see https://www.drupal.org/node/3293310
    */
   protected function findBlockInstance(Block $block) {
-    @trigger_error(__METHOD__ . '() is deprecated in drupal:9.5.0 and is removed from drupal:11.0.0. There is no replacement. See https://www.drupal.org/node/3293310', E_USER_DEPRECATED);
     return $this->xpath('//div[@id = :id]', [':id' => 'block-' . $block->id()]);
   }
 

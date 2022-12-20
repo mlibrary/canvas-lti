@@ -22,7 +22,7 @@ class ProcessingTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'starterkit_theme';
+  protected $defaultTheme = 'classy';
 
   /**
    * Tests batches triggered outside of form submission.

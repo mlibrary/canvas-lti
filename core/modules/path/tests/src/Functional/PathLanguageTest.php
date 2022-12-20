@@ -33,9 +33,6 @@ class PathLanguageTest extends PathTestBase {
    */
   protected $webUser;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

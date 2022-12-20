@@ -11,9 +11,7 @@ use Drupal\layout_builder\OverridesSectionStorageInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * An event subscriber to prepare section storage.
- *
- * Section storage works via the
+ * An event subscriber to prepare section storage via the
  * \Drupal\layout_builder\Event\PrepareLayoutEvent.
  *
  * @see \Drupal\layout_builder\Event\PrepareLayoutEvent

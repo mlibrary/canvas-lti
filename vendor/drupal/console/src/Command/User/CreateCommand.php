@@ -246,7 +246,7 @@ class CreateCommand extends Command
 
             $result['success'] = [
                 'user-id' => $user->id(),
-                'username' => $user->getAccountName(),
+                'username' => $user->getUsername(),
                 'password' => $password,
                 'email' => $user->getEmail(),
                 'roles' => implode(', ', $roles),

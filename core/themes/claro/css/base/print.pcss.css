@@ -1,8 +1,6 @@
 @media print {
   * {
-    /* Black prints faster */
-    /* https://github.com/h5bp/main.css/blob/main/dist/_print.css#L14 */
-    color: #000 !important;
+    color: #000 !important; /* Black prints faster: h5bp.com/s */
     background-color: transparent !important;
     box-shadow: none !important;
     text-shadow: none !important;
@@ -16,7 +14,7 @@
     page-break-inside: avoid;
   }
   thead {
-    display: table-header-group;
+    display: table-header-group; /* h5bp.com/t */
   }
   tr,
   img {

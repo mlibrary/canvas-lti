@@ -15,7 +15,7 @@ use Drupal\Core\Serialization\Yaml;
 function paragraphs_type_help_add_field_config($field_name) {
   $entity_type_id = 'paragraphs_type_help';
   $entity_bundle = 'paragraphs_type_help';
-  $config_path = \Drupal::service('extension.list.module')->getPath('paragraphs_type_help') . '/config/install';
+  $config_path = drupal_get_path('module', 'paragraphs_type_help') . '/config/install';
   $storage_config_file = $config_path . "/field.storage.{$entity_type_id}.{$field_name}.yml";
   $field_config_file = $config_path . "/field.field.{$entity_type_id}.{$entity_bundle}.{$field_name}.yml";
 

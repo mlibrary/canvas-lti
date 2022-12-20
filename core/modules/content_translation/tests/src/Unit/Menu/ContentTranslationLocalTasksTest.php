@@ -11,9 +11,6 @@ use Drupal\Tests\Core\Menu\LocalTaskIntegrationTestBase;
  */
 class ContentTranslationLocalTasksTest extends LocalTaskIntegrationTestBase {
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     $this->directoryList = [
       'content_translation' => 'core/modules/content_translation',
@@ -34,9 +31,9 @@ class ContentTranslationLocalTasksTest extends LocalTaskIntegrationTestBase {
     $content_translation_manager = $this->createMock('Drupal\content_translation\ContentTranslationManagerInterface');
     $content_translation_manager->expects($this->any())
       ->method('getSupportedEntityTypes')
-      ->willReturn([
+      ->will($this->returnValue([
         'node' => $entity_type,
-      ]);
+      ]));
     \Drupal::getContainer()->set('content_translation.manager', $content_translation_manager);
     \Drupal::getContainer()->set('string_translation', $this->getStringTranslationStub());
   }

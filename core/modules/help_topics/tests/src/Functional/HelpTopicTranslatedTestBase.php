@@ -4,8 +4,6 @@ namespace Drupal\Tests\help_topics\Functional;
 
 use Drupal\Tests\BrowserTestBase;
 
-// cspell:ignore hilfetestmodul übersetzung
-
 /**
  * Provides a base class for functional help topic tests that use translation.
  *
@@ -30,16 +28,15 @@ abstract class HelpTopicTranslatedTestBase extends BrowserTestBase {
   protected function setUp() {
     parent::setUp();
 
-    // These tests rely on some markup from the 'Claro' theme, as well as an
-    // optional block added when Claro is enabled.
-    \Drupal::service('theme_installer')->install(['claro']);
+    // These tests rely on some markup from the 'Seven' theme.
+    \Drupal::service('theme_installer')->install(['seven']);
     \Drupal::configFactory()->getEditable('system.theme')
-      ->set('admin', 'claro')
+      ->set('admin', 'seven')
       ->save(TRUE);
 
     // Place various blocks.
     $settings = [
-      'theme' => 'claro',
+      'theme' => 'seven',
       'region' => 'help',
     ];
     $this->placeBlock('help_block', $settings);
@@ -76,8 +73,8 @@ msgstr "ABC-Hilfetestmodul"
 msgid "Test translation."
 msgstr "Übersetzung testen."
 
-msgid "Non-word-item to translate."
-msgstr "Non-word-german sdfwedrsdf."
+msgid "Nonworditem totranslate."
+msgstr "Nonwordgerman sdfwedrsdf."
 
 ENDPO;
     include_once $this->root . '/core/includes/install.core.inc';

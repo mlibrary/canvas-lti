@@ -16,7 +16,7 @@ class CommentPagerTest extends CommentTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'classy';
 
   /**
    * Confirms comment paging works correctly with flat and threaded comments.

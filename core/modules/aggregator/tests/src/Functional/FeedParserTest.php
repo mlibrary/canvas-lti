@@ -11,7 +11,6 @@ use Drupal\aggregator\Entity\Item;
  * Tests the built-in feed parser with valid feed samples.
  *
  * @group aggregator
- * @group legacy
  */
 class FeedParserTest extends AggregatorTestBase {
 

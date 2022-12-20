@@ -4,6 +4,7 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function (_ref) {
   var behaviors = _ref.behaviors;
   behaviors.js_interaction_test_trigger_link = {

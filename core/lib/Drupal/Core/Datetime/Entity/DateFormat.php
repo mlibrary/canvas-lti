@@ -48,7 +48,7 @@ class DateFormat extends ConfigEntityBase implements DateFormatInterface {
   /**
    * The date format pattern.
    *
-   * @var string
+   * @var array
    */
   protected $pattern;
 

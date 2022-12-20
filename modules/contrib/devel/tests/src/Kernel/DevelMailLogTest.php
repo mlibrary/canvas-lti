@@ -186,7 +186,7 @@ EOF;
    * Configure devel_mail_log as default mail backend.
    */
   private function setDevelMailLogAsDefaultBackend() {
-    // @todo can this be avoided?
+    // TODO can this be avoided?
     // KernelTestBase enforce the usage of 'test_mail_collector' plugin for
     // collect the mails. Since we need to test devel mail plugin we manually
     // configure the mail implementation to use 'devel_mail_log'.

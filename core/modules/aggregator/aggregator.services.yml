@@ -14,9 +14,3 @@ services:
   logger.channel.aggregator:
     parent: logger.channel_base
     arguments: ['aggregator']
-  feed.bridge.reader:
-    class: Drupal\aggregator\ZfExtensionManagerSfContainer
-    calls:
-      - [setContainer, ['@service_container']]
-      - [setStandalone, ['\Laminas\Feed\Reader\StandaloneExtensionManager']]
-    arguments: ['feed.reader.']

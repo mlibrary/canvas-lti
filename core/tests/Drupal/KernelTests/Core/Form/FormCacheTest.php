@@ -38,9 +38,6 @@ class FormCacheTest extends KernelTestBase {
    */
   protected $formState;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

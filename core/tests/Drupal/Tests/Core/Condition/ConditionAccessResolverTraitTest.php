@@ -34,25 +34,25 @@ class ConditionAccessResolverTraitTest extends UnitTestCase {
     $condition_true = $this->createMock('Drupal\Core\Condition\ConditionInterface');
     $condition_true->expects($this->any())
       ->method('execute')
-      ->willReturn(TRUE);
+      ->will($this->returnValue(TRUE));
     $condition_false = $this->createMock('Drupal\Core\Condition\ConditionInterface');
     $condition_false->expects($this->any())
       ->method('execute')
-      ->willReturn(FALSE);
+      ->will($this->returnValue(FALSE));
     $condition_exception = $this->createMock('Drupal\Core\Condition\ConditionInterface');
     $condition_exception->expects($this->any())
       ->method('execute')
       ->will($this->throwException(new ContextException()));
     $condition_exception->expects($this->atLeastOnce())
       ->method('isNegated')
-      ->willReturn(FALSE);
+      ->will($this->returnValue(FALSE));
     $condition_negated = $this->createMock('Drupal\Core\Condition\ConditionInterface');
     $condition_negated->expects($this->any())
       ->method('execute')
       ->will($this->throwException(new ContextException()));
     $condition_negated->expects($this->atLeastOnce())
       ->method('isNegated')
-      ->willReturn(TRUE);
+      ->will($this->returnValue(TRUE));
 
     $conditions = [];
     $data[] = [$conditions, 'and', TRUE];

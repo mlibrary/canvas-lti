@@ -41,10 +41,10 @@
       // Twist the toggle.
       $toggle.toggleClass('open', switcher);
       // Adjust the toggle text.
-      $toggle.find('.action').each((index, element) => {
+      $toggle
+        .find('.action')
         // Expand Structure, Collapse Structure.
-        element.textContent = switcher ? ui.handleClose : ui.handleOpen;
-      });
+        .text(switcher ? ui.handleClose : ui.handleOpen);
     }
 
     /**
@@ -107,9 +107,8 @@
         const $item = $(element);
         if ($item.children('ul.toolbar-menu').length) {
           const $box = $item.children('.toolbar-box');
-          const $link = $box.find('a');
           options.text = Drupal.t('@label', {
-            '@label': $link.length ? $link[0].textContent : '',
+            '@label': $box.find('a').text(),
           });
           $item
             .children('.toolbar-box')

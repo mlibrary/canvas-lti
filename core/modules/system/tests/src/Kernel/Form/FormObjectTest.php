@@ -19,9 +19,6 @@ class FormObjectTest extends ConfigFormTestBase {
    */
   protected static $modules = ['form_test'];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

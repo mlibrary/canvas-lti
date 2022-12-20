@@ -44,11 +44,4 @@ class ComplexDataNormalizer extends NormalizerBase {
     return $attributes;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function hasCacheableSupportsMethod(): bool {
-    return TRUE;
-  }
-
 }

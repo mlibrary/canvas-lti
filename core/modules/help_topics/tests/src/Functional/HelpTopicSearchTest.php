@@ -5,9 +5,6 @@ namespace Drupal\Tests\help_topics\Functional;
 use Drupal\Tests\Traits\Core\CronRunTrait;
 use Drupal\help_topics\Plugin\Search\HelpSearch;
 
-// cspell:ignore asdrsad barmm foomm hilfetestmodul sdeeeee sqruct
-// cspell:ignore wcsrefsdf übersetzung
-
 /**
  * Verifies help topic search.
  *
@@ -29,7 +26,7 @@ class HelpTopicSearchTest extends HelpTopicTranslatedTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'classy';
 
   /**
    * {@inheritdoc}
@@ -66,9 +63,9 @@ class HelpTopicSearchTest extends HelpTopicTranslatedTestBase {
     // Before running cron, verify that a search returns no results and shows
     // warning.
     $this->drupalGet('search/help');
-    $this->submitForm(['keys' => 'not-a-word-english'], 'Search');
+    $this->submitForm(['keys' => 'notawordenglish'], 'Search');
     $this->assertSearchResultsCount(0);
-    $this->assertSession()->statusMessageContains('Help search is not fully indexed', 'warning');
+    $this->assertSession()->pageTextContains('is not fully indexed');
 
     // Run cron until the topics are fully indexed, with a limit of 100 runs
     // to avoid infinite loops.
@@ -86,9 +83,9 @@ class HelpTopicSearchTest extends HelpTopicTranslatedTestBase {
     $this->assertSession()->pageTextContains('100% of the site has been indexed');
     // Search and verify there is no warning.
     $this->drupalGet('search/help');
-    $this->submitForm(['keys' => 'not-a-word-english'], 'Search');
+    $this->submitForm(['keys' => 'notawordenglish'], 'Search');
     $this->assertSearchResultsCount(1);
-    $this->assertSession()->statusMessageNotContains('Help search is not fully indexed');
+    $this->assertSession()->pageTextNotContains('is not fully indexed');
   }
 
   /**
@@ -103,26 +100,26 @@ class HelpTopicSearchTest extends HelpTopicTranslatedTestBase {
     // by the topics that come from
     // \Drupal\help_topics_test\Plugin\HelpSection\TestHelpSection.
     $this->drupalGet('search/help');
-    $this->submitForm(['keys' => 'not-a-word-english'], 'Search');
+    $this->submitForm(['keys' => 'notawordenglish'], 'Search');
     $this->assertSearchResultsCount(1);
     $session->linkExists('Foo in English title wcsrefsdf');
 
     // Same for German.
     $this->drupalGet('search/help', ['language' => $german]);
-    $this->submitForm(['keys' => 'not-a-word-german'], 'Search');
+    $this->submitForm(['keys' => 'notawordgerman'], 'Search');
     $this->assertSearchResultsCount(1);
     $session->linkExists('Foomm Foreign heading');
 
     // Verify when we search in English for a word that only exists in German,
     // we get no results.
     $this->drupalGet('search/help');
-    $this->submitForm(['keys' => 'not-a-word-german'], 'Search');
+    $this->submitForm(['keys' => 'notawordgerman'], 'Search');
     $this->assertSearchResultsCount(0);
     $session->pageTextContains('no results');
 
     // Same for German.
     $this->drupalGet('search/help', ['language' => $german]);
-    $this->submitForm(['keys' => 'not-a-word-english'], 'Search');
+    $this->submitForm(['keys' => 'notawordenglish'], 'Search');
     $this->assertSearchResultsCount(0);
     $session->pageTextContains('no results');
 
@@ -144,7 +141,7 @@ class HelpTopicSearchTest extends HelpTopicTranslatedTestBase {
     // that we can search for translated regular help topics, in both English
     // and German.
     $this->drupalGet('search/help');
-    $this->submitForm(['keys' => 'non-word-item'], 'Search');
+    $this->submitForm(['keys' => 'nonworditem'], 'Search');
     $this->assertSearchResultsCount(1);
     $session->linkExists('ABC Help Test module');
     // Click the link and verify we ended up on the topic page.
@@ -152,7 +149,7 @@ class HelpTopicSearchTest extends HelpTopicTranslatedTestBase {
     $session->pageTextContains('This is a test');
 
     $this->drupalGet('search/help', ['language' => $german]);
-    $this->submitForm(['keys' => 'non-word-german'], 'Search');
+    $this->submitForm(['keys' => 'nonwordgerman'], 'Search');
     $this->assertSearchResultsCount(1);
     $session->linkExists('ABC-Hilfetestmodul');
     $this->clickLink('ABC-Hilfetestmodul');
@@ -161,13 +158,13 @@ class HelpTopicSearchTest extends HelpTopicTranslatedTestBase {
     // Verify that we can search from the admin/help page.
     $this->drupalGet('admin/help');
     $session->pageTextContains('Search help');
-    $this->submitForm(['keys' => 'non-word-item'], 'Search');
+    $this->submitForm(['keys' => 'nonworditem'], 'Search');
     $this->assertSearchResultsCount(1);
     $session->linkExists('ABC Help Test module');
 
     // Same for German.
     $this->drupalGet('admin/help', ['language' => $german]);
-    $this->submitForm(['keys' => 'non-word-german'], 'Search');
+    $this->submitForm(['keys' => 'nonwordgerman'], 'Search');
     $this->assertSearchResultsCount(1);
     $session->linkExists('ABC-Hilfetestmodul');
 
@@ -231,12 +228,12 @@ class HelpTopicSearchTest extends HelpTopicTranslatedTestBase {
     $session->pageTextContains('Search help');
 
     $this->drupalGet('search/help');
-    $this->submitForm(['keys' => 'non-word-item'], 'Search');
+    $this->submitForm(['keys' => 'nonworditem'], 'Search');
     $this->assertSearchResultsCount(1);
     $session->linkExists('ABC Help Test module');
 
     $this->drupalGet('search/help');
-    $this->submitForm(['keys' => 'not-a-word-english'], 'Search');
+    $this->submitForm(['keys' => 'notawordenglish'], 'Search');
     $this->assertSearchResultsCount(0);
     $session->pageTextContains('no results');
 
@@ -244,7 +241,7 @@ class HelpTopicSearchTest extends HelpTopicTranslatedTestBase {
     // searchable.
     \Drupal::service('module_installer')->uninstall(['help_topics_test']);
     $this->drupalGet('search/help');
-    $this->submitForm(['keys' => 'non-word-item'], 'Search');
+    $this->submitForm(['keys' => 'nonworditem'], 'Search');
     $this->assertSearchResultsCount(0);
   }
 
@@ -261,7 +258,7 @@ class HelpTopicSearchTest extends HelpTopicTranslatedTestBase {
     $this->drupalGet('admin/modules/uninstall');
     $this->submitForm($edit, 'Uninstall');
     $this->submitForm([], 'Uninstall');
-    $this->assertSession()->statusMessageContains('The selected modules have been uninstalled.', 'status');
+    $this->assertSession()->pageTextContains('The selected modules have been uninstalled.');
     $this->drupalGet('admin/help');
     $this->assertSession()->statusCodeEquals(200);
   }
@@ -278,7 +275,7 @@ class HelpTopicSearchTest extends HelpTopicTranslatedTestBase {
     $this->drupalGet('admin/modules/uninstall');
     $this->submitForm($edit, 'Uninstall');
     $this->submitForm([], 'Uninstall');
-    $this->assertSession()->statusMessageContains('The selected modules have been uninstalled.', 'status');
+    $this->assertSession()->pageTextContains('The selected modules have been uninstalled.');
     $this->drupalGet('admin/help');
     $this->assertSession()->statusCodeEquals(200);
 

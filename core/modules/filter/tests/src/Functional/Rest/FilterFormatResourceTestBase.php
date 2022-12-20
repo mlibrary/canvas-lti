@@ -3,9 +3,9 @@
 namespace Drupal\Tests\filter\Functional\Rest;
 
 use Drupal\filter\Entity\FilterFormat;
-use Drupal\Tests\rest\Functional\EntityResource\ConfigEntityResourceTestBase;
+use Drupal\Tests\rest\Functional\EntityResource\EntityResourceTestBase;
 
-abstract class FilterFormatResourceTestBase extends ConfigEntityResourceTestBase {
+abstract class FilterFormatResourceTestBase extends EntityResourceTestBase {
 
   /**
    * {@inheritdoc}
@@ -83,7 +83,6 @@ abstract class FilterFormatResourceTestBase extends ConfigEntityResourceTestBase
    */
   protected function getNormalizedPostEntity() {
     // @todo Update in https://www.drupal.org/node/2300677.
-    return [];
   }
 
 }

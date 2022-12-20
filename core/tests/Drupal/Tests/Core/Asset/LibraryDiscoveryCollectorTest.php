@@ -150,7 +150,7 @@ class LibraryDiscoveryCollectorTest extends UnitTestCase {
     $this->lock->expects($this->once())
       ->method('acquire')
       ->with($lock_key)
-      ->willReturn(TRUE);
+      ->will($this->returnValue(TRUE));
     $this->cache->expects($this->exactly(2))
       ->method('get')
       ->with('library_info:kitten_theme')

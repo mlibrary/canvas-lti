@@ -4,6 +4,7 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function (Drupal, Backbone, $, Sortable) {
   Drupal.ckeditor.VisualView = Backbone.View.extend({
     events: {
@@ -20,6 +21,7 @@
       this.insertPlaceholders();
       this.applySorting();
       var groupNamesVisible = this.model.get('groupNamesVisible');
+
       if (changedAttributes && changedAttributes.changes && changedAttributes.changes.isDirty) {
         this.model.set({
           groupNamesVisible: true
@@ -28,11 +30,9 @@
         });
         groupNamesVisible = true;
       }
+
       this.$el.find('[data-toolbar="active"]').toggleClass('ckeditor-group-names-are-visible', groupNamesVisible);
-      var $toggle = this.$el.find('.ckeditor-groupnames-toggle');
-      $toggle.each(function (index, element) {
-        element.textContent = groupNamesVisible ? Drupal.t('Hide group names') : Drupal.t('Show group names');
-      }).attr('aria-pressed', groupNamesVisible);
+      this.$el.find('.ckeditor-groupnames-toggle').text(groupNamesVisible ? Drupal.t('Hide group names') : Drupal.t('Show group names')).attr('aria-pressed', groupNamesVisible);
       return this;
     },
     onGroupNameClick: function onGroupNameClick(event) {
@@ -52,6 +52,7 @@
           $group.trigger('focus');
         }
       }
+
       Drupal.ckeditor.openGroupNameDialog(this, $(Drupal.theme('ckeditorToolbarGroup')), insertNewGroup);
       event.preventDefault();
     },
@@ -71,6 +72,7 @@
     },
     applySorting: function applySorting() {
       var _this = this;
+
       Array.prototype.forEach.call(this.el.querySelectorAll('.ckeditor-buttons:not(.js-sortable)'), function (buttons) {
         buttons.classList.add('js-sortable');
         Sortable.create(buttons, {
@@ -104,15 +106,18 @@
     },
     insertPlaceholderRow: function insertPlaceholderRow() {
       var $rows = this.$el.find('.ckeditor-row');
+
       if (!$rows.eq(-1).hasClass('placeholder')) {
         this.$el.find('.ckeditor-toolbar-active').children('.ckeditor-active-toolbar-configuration').append(Drupal.theme('ckeditorRow'));
       }
+
       $rows = this.$el.find('.ckeditor-row');
       var len = $rows.length;
       $rows.filter(function (index, row) {
         if (index + 1 === len) {
           return false;
         }
+
         return $(row).find('.ckeditor-toolbar-group').not('.placeholder').length === 0;
       }).remove();
     },
@@ -121,6 +126,7 @@
         var $row = $(this);
         var $groups = $row.find('.ckeditor-toolbar-group');
         var $button = $row.find('.ckeditor-add-new-group');
+
         if ($button.length === 0) {
           $row.children('.ckeditor-toolbar-groups').append(Drupal.theme('ckeditorNewButtonGroup'));
         } else if (!$groups.eq(-1).hasClass('ckeditor-add-new-group')) {

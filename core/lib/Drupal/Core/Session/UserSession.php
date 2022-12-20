@@ -7,7 +7,6 @@ namespace Drupal\Core\Session;
  *
  * @todo: Change all properties to protected.
  */
-#[\AllowDynamicProperties]
 class UserSession implements AccountInterface {
 
   /**

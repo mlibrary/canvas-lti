@@ -10,13 +10,12 @@ namespace Drupal\Console\Command\Database;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
+use Symfony\Component\Process\ProcessBuilder;
 use Drupal\Console\Core\Command\Command;
 use Drupal\Console\Command\Shared\ConnectTrait;
 
 class ClientCommand extends Command
 {
-
     use ConnectTrait;
 
     /**
@@ -26,9 +25,7 @@ class ClientCommand extends Command
     {
         $this
             ->setName('database:client')
-            ->setDescription(
-                $this->trans('commands.database.client.description')
-            )
+            ->setDescription($this->trans('commands.database.client.description'))
             ->addArgument(
                 'database',
                 InputArgument::OPTIONAL,
@@ -52,23 +49,23 @@ class ClientCommand extends Command
     {
         $database = $input->getArgument('database');
         $learning = $input->getOption('learning');
-        $target   = $input->getArgument('target');
+        $target = $input->getArgument('target');
 
         $databaseConnection = $this->resolveConnection($database, $target);
-        $connection         = $this->getConnectionString($databaseConnection);
+        $connection = $this->getConnectionString($databaseConnection);
 
         if ($learning) {
             $this->getIo()->commentBlock(
                 sprintf(
-                    $this->trans(
-                        'commands.database.client.messages.connection'
-                    ),
+                    $this->trans('commands.database.client.messages.connection'),
                     $connection
                 )
             );
         }
 
-        $process = new Process(explode(' ', $connection));
+        $processBuilder = new ProcessBuilder([]);
+        $processBuilder->setArguments(explode(' ', $connection));
+        $process = $processBuilder->getProcess();
         $process->setTty('true');
         $process->run();
 
@@ -78,5 +75,4 @@ class ClientCommand extends Command
 
         return 0;
     }
-
 }

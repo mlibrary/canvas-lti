@@ -89,11 +89,6 @@ class InstallHelper implements ContainerInjectionInterface {
   protected $nodeIdMap;
 
   /**
-   * The module's path.
-   */
-  protected $module_path;
-
-  /**
    * Constructs a new InstallHelper object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager

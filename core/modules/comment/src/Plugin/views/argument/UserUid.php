@@ -7,9 +7,8 @@ use Drupal\views\Plugin\views\argument\ArgumentPluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * The views user ID argument handler.
- *
- * Accepts a user ID to check for nodes that the user posted or commented on.
+ * Argument handler to accept a user id to check for nodes that
+ * user posted or commented on.
  *
  * @ingroup views_argument_handlers
  *

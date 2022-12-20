@@ -57,13 +57,14 @@ class HelpTopicTest extends BrowserTestBase {
   protected function setUp(): void {
     parent::setUp();
 
-    // These tests rely on some markup from the 'stark' theme and we test theme
+    // These tests rely on some markup from the 'Seven' theme and we test theme
     // provided help topics.
-    \Drupal::service('theme_installer')->install(['help_topics_test_theme']);
+    \Drupal::service('theme_installer')->install(['seven', 'help_topics_test_theme']);
+    \Drupal::service('config.factory')->getEditable('system.theme')->set('admin', 'seven')->save();
 
     // Place various blocks.
     $settings = [
-      'theme' => 'stark',
+      'theme' => 'seven',
       'region' => 'help',
     ];
     $this->placeBlock('help_block', $settings);
@@ -172,7 +173,7 @@ class HelpTopicTest extends BrowserTestBase {
         // Verify page information.
         $name = $info['name'];
         $session->titleEquals($name . ' | Drupal');
-        $session->responseContains('<h1>' . $name . '</h1>');
+        $session->responseContains('<h1 class="page-title">' . $name . '</h1>');
         foreach ($info['tags'] as $tag) {
           $session->responseHeaderContains('X-Drupal-Cache-Tags', $tag);
         }

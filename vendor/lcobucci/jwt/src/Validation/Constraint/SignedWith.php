@@ -1,18 +1,19 @@
 <?php
-declare(strict_types=1);
 
 namespace Lcobucci\JWT\Validation\Constraint;
 
 use Lcobucci\JWT\Signer;
 use Lcobucci\JWT\Token;
-use Lcobucci\JWT\UnencryptedToken;
+use Lcobucci\JWT\Validation\Constraint;
 use Lcobucci\JWT\Validation\ConstraintViolation;
-use Lcobucci\JWT\Validation\SignedWith as SignedWithInterface;
 
-final class SignedWith implements SignedWithInterface
+final class SignedWith implements Constraint
 {
-    private Signer $signer;
-    private Signer\Key $key;
+    /** @var Signer */
+    private $signer;
+
+    /** @var Signer\Key */
+    private $key;
 
     public function __construct(Signer $signer, Signer\Key $key)
     {
@@ -20,18 +21,14 @@ final class SignedWith implements SignedWithInterface
         $this->key    = $key;
     }
 
-    public function assert(Token $token): void
+    public function assert(Token $token)
     {
-        if (! $token instanceof UnencryptedToken) {
-            throw ConstraintViolation::error('You should pass a plain token', $this);
+        if ($token->headers()->get('alg') !== $this->signer->getAlgorithmId()) {
+            throw new ConstraintViolation('Token signer mismatch');
         }
 
-        if ($token->headers()->get('alg') !== $this->signer->algorithmId()) {
-            throw ConstraintViolation::error('Token signer mismatch', $this);
-        }
-
-        if (! $this->signer->verify($token->signature()->hash(), $token->payload(), $this->key)) {
-            throw ConstraintViolation::error('Token signature mismatch', $this);
+        if (! $this->signer->verify((string) $token->signature(), $token->getPayload(), $this->key)) {
+            throw new ConstraintViolation('Token signature mismatch');
         }
     }
 }

@@ -6,7 +6,6 @@ use Drupal\Tests\rest\Functional\BasicAuthResourceTestTrait;
 
 /**
  * @group rest
- * @group legacy
  */
 class FeedJsonBasicAuthTest extends FeedResourceTestBase {
 

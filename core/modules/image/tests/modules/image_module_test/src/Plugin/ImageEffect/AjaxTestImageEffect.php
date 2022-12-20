@@ -33,7 +33,7 @@ class AjaxTestImageEffect extends ConfigurableImageEffectBase {
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form['test_parameter'] = [
       '#type' => 'number',
-      '#title' => $this->t('Test parameter'),
+      '#title' => t('Test parameter'),
       '#default_value' => $this->configuration['test_parameter'],
       '#min' => 0,
     ];

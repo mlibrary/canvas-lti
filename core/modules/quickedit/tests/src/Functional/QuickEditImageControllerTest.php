@@ -11,7 +11,6 @@ use Drupal\Tests\TestFileCreationTrait;
  * Tests the endpoints used by the "image" in-place editor.
  *
  * @group quickedit
- * @group legacy
  */
 class QuickEditImageControllerTest extends BrowserTestBase {
 

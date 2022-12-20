@@ -10,7 +10,6 @@ use Drupal\rdf\Entity\RdfMapping;
 /**
  * @coversDefaultClass \Drupal\rdf\Entity\RdfMapping
  * @group rdf
- * @group legacy
  */
 class RdfMappingConfigEntityUnitTest extends UnitTestCase {
 
@@ -51,7 +50,7 @@ class RdfMappingConfigEntityUnitTest extends UnitTestCase {
     $this->entityType = $this->createMock('\Drupal\Core\Entity\EntityTypeInterface');
     $this->entityType->expects($this->any())
       ->method('getProvider')
-      ->willReturn('entity');
+      ->will($this->returnValue('entity'));
 
     $this->entityTypeManager = $this->createMock(EntityTypeManagerInterface::class);
 
@@ -73,14 +72,14 @@ class RdfMappingConfigEntityUnitTest extends UnitTestCase {
     $target_entity_type = $this->createMock('\Drupal\Core\Entity\EntityTypeInterface');
     $target_entity_type->expects($this->any())
       ->method('getProvider')
-      ->willReturn('test_module');
+      ->will($this->returnValue('test_module'));
     $values = ['targetEntityType' => $target_entity_type_id];
     $target_entity_type->expects($this->any())
       ->method('getBundleEntityType')
-      ->willReturn(NULL);
+      ->will($this->returnValue(NULL));
     $target_entity_type->expects($this->any())
       ->method('getBundleConfigDependency')
-      ->willReturn(['type' => 'module', 'name' => 'test_module']);
+      ->will($this->returnValue(['type' => 'module', 'name' => 'test_module']));
 
     $this->entityTypeManager->expects($this->any())
       ->method('getDefinition')
@@ -103,16 +102,13 @@ class RdfMappingConfigEntityUnitTest extends UnitTestCase {
     $target_entity_type = $this->createMock('\Drupal\Core\Entity\EntityTypeInterface');
     $target_entity_type->expects($this->any())
       ->method('getProvider')
-      ->willReturn('test_module');
+      ->will($this->returnValue('test_module'));
     $bundle_id = $this->randomMachineName(10);
     $values = ['targetEntityType' => $target_entity_type_id , 'bundle' => $bundle_id];
 
     $target_entity_type->expects($this->any())
       ->method('getBundleConfigDependency')
-      ->willReturn([
-        'type' => 'config',
-        'name' => 'test_module.type.' . $bundle_id,
-      ]);
+      ->will($this->returnValue(['type' => 'config', 'name' => 'test_module.type.' . $bundle_id]));
 
     $this->entityTypeManager->expects($this->any())
       ->method('getDefinition')

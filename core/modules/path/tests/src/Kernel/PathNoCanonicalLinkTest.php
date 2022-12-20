@@ -27,9 +27,6 @@ class PathNoCanonicalLinkTest extends KernelTestBase {
     'system',
   ];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

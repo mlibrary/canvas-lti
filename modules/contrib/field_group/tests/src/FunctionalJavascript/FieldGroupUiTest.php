@@ -21,10 +21,10 @@ class FieldGroupUiTest extends WebDriverTestBase {
    *
    * @var array
    */
-  protected static $modules = ['node', 'field_ui', 'field_group'];
+  public static $modules = ['node', 'field_ui', 'field_group'];
 
   /**
-   * The current tested node type.
+   * The current tested node type
    *
    * @var string
    */
@@ -38,7 +38,7 @@ class FieldGroupUiTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp(): void {
+  public function setUp() {
     parent::setUp();
 
     // Create test user.

@@ -4,6 +4,7 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function ($, Drupal, Sortable) {
   Drupal.behaviors.MediaLibraryWidgetSortable = {
     attach: function attach(context) {
@@ -14,7 +15,7 @@
           handle: '.js-media-library-item-preview',
           onEnd: function onEnd() {
             $(widget).children().each(function (index, child) {
-              $(child).find('.js-media-library-item-weight')[0].value = index;
+              $(child).find('.js-media-library-item-weight').val(index);
             });
           }
         });
@@ -27,16 +28,10 @@
         show: Drupal.t('Show media item weights'),
         hide: Drupal.t('Hide media item weights')
       };
-      var mediaLibraryToggle = once('media-library-toggle', '.js-media-library-widget-toggle-weight', context);
-      $(mediaLibraryToggle).on('click', function (e) {
+      $(once('media-library-toggle', '.js-media-library-widget-toggle-weight', context)).on('click', function (e) {
         e.preventDefault();
-        var $target = $(e.currentTarget);
-        e.currentTarget.textContent = $target.hasClass('active') ? strings.show : strings.hide;
-        $target.toggleClass('active').closest('.js-media-library-widget').find('.js-media-library-item-weight').parent().toggle();
-      });
-      mediaLibraryToggle.forEach(function (item) {
-        item.textContent = strings.show;
-      });
+        $(e.currentTarget).toggleClass('active').text($(e.currentTarget).hasClass('active') ? strings.hide : strings.show).closest('.js-media-library-widget').find('.js-media-library-item-weight').parent().toggle();
+      }).text(strings.show);
       $(once('media-library-toggle', '.js-media-library-item-weight', context)).parent().hide();
     }
   };

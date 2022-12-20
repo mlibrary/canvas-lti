@@ -4,28 +4,24 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
-(function (Drupal, Backbone) {
+
+(function (Drupal, Backbone, Modernizr) {
   Drupal.contextual.RegionView = Backbone.View.extend({
     events: function events() {
-      var touchStart = false;
-      return {
-        touchstart: function touchstart() {
-          touchStart = true;
-        },
+      var mapping = {
         mouseenter: function mouseenter() {
-          if (!touchStart) {
-            this.model.set('regionIsHovered', true);
-          }
+          this.model.set('regionIsHovered', true);
         },
         mouseleave: function mouseleave() {
-          if (!touchStart) {
-            this.model.close().blur().set('regionIsHovered', false);
-          }
-        },
-        mousemove: function mousemove() {
-          touchStart = false;
+          this.model.close().blur().set('regionIsHovered', false);
         }
       };
+
+      if (Modernizr.touchevents) {
+        mapping = {};
+      }
+
+      return mapping;
     },
     initialize: function initialize() {
       this.listenTo(this.model, 'change:hasFocus', this.render);
@@ -35,4 +31,4 @@
       return this;
     }
   });
-})(Drupal, Backbone);
+})(Drupal, Backbone, Modernizr);

@@ -61,11 +61,13 @@
 .ui-state-disabled,
 .ui-widget-content .ui-state-disabled {
   opacity: 0.35;
+  filter: alpha(opacity=35);
 }
 
 .ui-priority-secondary,
 .ui-widget-content .ui-priority-secondary {
   opacity: 0.7;
+  filter: alpha(opacity=70);
 }
 
 /**
@@ -586,7 +588,7 @@
 
 .ui-progressbar .ui-progressbar-value {
   height: 1.5em;
-  background: #003ecc url(../../../../misc/progress.gif);
+  background: #0072b9 url(../../../../misc/progress.gif);
 }
 
 /**
@@ -623,13 +625,13 @@
 .ui-autocomplete .ui-menu-item-wrapper.ui-state-active {
   margin: 0;
   color: #fff;
-  background: #003ecc;
+  background: #003cc5;
 }
 
 .ui-autocomplete .ui-menu-item.ui-state-focus,
 .autocomplete .ui-menu-item.ui-state-hover {
   margin: 0;
-  background: #003ecc;
+  background: #0072b9;
 }
 
 .ui-autocomplete .ui-state-focus a,

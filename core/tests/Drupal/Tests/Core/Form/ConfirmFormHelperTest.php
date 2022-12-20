@@ -24,7 +24,7 @@ class ConfirmFormHelperTest extends UnitTestCase {
     $form = $this->createMock('Drupal\Core\Form\ConfirmFormInterface');
     $form->expects($this->any())
       ->method('getCancelText')
-      ->willReturn($cancel_text);
+      ->will($this->returnValue($cancel_text));
 
     $link = ConfirmFormHelper::buildCancelLink($form, new Request());
     $this->assertSame($cancel_text, $link['#title']);
@@ -42,7 +42,7 @@ class ConfirmFormHelperTest extends UnitTestCase {
     $form = $this->createMock('Drupal\Core\Form\ConfirmFormInterface');
     $form->expects($this->any())
       ->method('getCancelUrl')
-      ->willReturn($cancel_route);
+      ->will($this->returnValue($cancel_route));
     $link = ConfirmFormHelper::buildCancelLink($form, new Request());
     $this->assertEquals(Url::fromRoute($route_name), $link['#url']);
     $this->assertSame(['contexts' => ['url.query_args:destination']], $link['#cache']);
@@ -58,7 +58,7 @@ class ConfirmFormHelperTest extends UnitTestCase {
     $form = $this->createMock('Drupal\Core\Form\ConfirmFormInterface');
     $form->expects($this->any())
       ->method('getCancelUrl')
-      ->willReturn($expected);
+      ->will($this->returnValue($expected));
     $link = ConfirmFormHelper::buildCancelLink($form, new Request());
     $this->assertEquals($expected, $link['#url']);
     $this->assertSame(['contexts' => ['url.query_args:destination']], $link['#cache']);
@@ -81,7 +81,7 @@ class ConfirmFormHelperTest extends UnitTestCase {
     $form = $this->createMock('Drupal\Core\Form\ConfirmFormInterface');
     $form->expects($this->any())
       ->method('getCancelUrl')
-      ->willReturn($cancel_route);
+      ->will($this->returnValue($cancel_route));
     $link = ConfirmFormHelper::buildCancelLink($form, new Request());
     $this->assertSame($cancel_route, $link['#url']);
     $this->assertSame(['contexts' => ['url.query_args:destination']], $link['#cache']);

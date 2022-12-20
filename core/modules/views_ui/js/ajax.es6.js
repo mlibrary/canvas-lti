@@ -144,9 +144,8 @@
       re,
       `${response.title} $1 ${response.siteName}`,
     );
-    document.querySelectorAll('h1.page-title').forEach((item) => {
-      item.textContent = response.title;
-    });
+
+    $('h1.page-title').text(response.title);
   };
 
   /**
@@ -195,13 +194,8 @@
         const href = $(this).attr('href');
         // Cut of #views-tabset.
         const displayId = href.substr(11);
-        const viewsPreviewId = document.querySelector(
-          '#views-live-preview #preview-display-id',
-        );
-        if (viewsPreviewId) {
-          // Set the form element if it is present.
-          viewsPreviewId.value = displayId;
-        }
+        // Set the form element.
+        $('#views-live-preview #preview-display-id').val(displayId);
       });
     },
   };

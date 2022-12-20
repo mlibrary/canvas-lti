@@ -30,9 +30,9 @@
 
       if (timestamp > lastViewTimestamp) {
         // Turn the placeholder into an actual "new" indicator.
-        placeholder.textContent = newCommentString;
-        $placeholder
+        const $comment = $(placeholder)
           .removeClass('hidden')
+          .text(newCommentString)
           .closest('.js-comment')
           // Add 'new' class to the comment, so it can be styled.
           .addClass('new');
@@ -41,13 +41,13 @@
         // this is the first new comment in the DOM.
         if (isFirstNewComment) {
           isFirstNewComment = false;
-          $placeholder.prev().before('<a id="new"></a>');
+          $comment.prev().before('<a id="new"></a>');
           // If the URL points to the first new comment, then scroll to that
           // comment.
           if (window.location.hash === '#new') {
             window.scrollTo(
               0,
-              $placeholder.offset().top - Drupal.displace.offsets.top,
+              $comment.offset().top - Drupal.displace.offsets.top,
             );
           }
         }

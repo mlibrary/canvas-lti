@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\system\Functional\Form;
 
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Url;
 use Drupal\Tests\BrowserTestBase;
 
@@ -59,16 +60,32 @@ class ConfirmFormTest extends BrowserTestBase {
    */
   public function testConfirmFormWithExternalDestination() {
     $this->drupalGet('form-test/confirm-form');
-    $this->assertSession()->linkByHrefExists(Url::fromRoute('form_test.route8')->toString());
+    $this->assertCancelLinkUrl(Url::fromRoute('form_test.route8'));
     $this->drupalGet('form-test/confirm-form', ['query' => ['destination' => 'node']]);
-    $this->assertSession()->linkByHrefExists(Url::fromUri('internal:/node')->toString());
+    $this->assertCancelLinkUrl(Url::fromUri('internal:/node'));
     $this->drupalGet('form-test/confirm-form', ['query' => ['destination' => 'http://example.com']]);
-    $this->assertSession()->linkByHrefExists(Url::fromRoute('form_test.route8')->toString());
+    $this->assertCancelLinkUrl(Url::fromRoute('form_test.route8'));
     $this->drupalGet('form-test/confirm-form', ['query' => ['destination' => '<front>']]);
-    $this->assertSession()->linkByHrefExists(Url::fromRoute('<front>')->toString());
+    $this->assertCancelLinkUrl(Url::fromRoute('<front>'));
     // Other invalid destinations, should fall back to the form default.
     $this->drupalGet('form-test/confirm-form', ['query' => ['destination' => '/http://example.com']]);
-    $this->assertSession()->linkByHrefExists(Url::fromRoute('form_test.route8')->toString());
+    $this->assertCancelLinkUrl(Url::fromRoute('form_test.route8'));
+  }
+
+  /**
+   * Asserts that a cancel link is present pointing to the provided URL.
+   *
+   * @param \Drupal\Core\Url $url
+   *   The url to check for.
+   * @param string $message
+   *   The assert message.
+   *
+   * @internal
+   */
+  public function assertCancelLinkUrl(Url $url, string $message = ''): void {
+    $links = $this->xpath('//a[@href=:url]', [':url' => $url->toString()]);
+    $message = ($message ? $message : new FormattableMarkup('Cancel link with URL %url found.', ['%url' => $url->toString()]));
+    $this->assertTrue(isset($links[0]), $message);
   }
 
 }

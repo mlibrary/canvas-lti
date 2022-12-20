@@ -16,7 +16,7 @@
     attach(context) {
       function updateFilterGuidelines(event) {
         const $this = $(event.target);
-        const { value } = event.target;
+        const value = $this.val();
         $this
           .closest('.js-filter-wrapper')
           .find('[data-drupal-format-id]')

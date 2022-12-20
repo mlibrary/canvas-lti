@@ -15,9 +15,6 @@ class FilterDefaultConfigTest extends KernelTestBase {
 
   protected static $modules = ['system', 'user', 'filter', 'filter_test'];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

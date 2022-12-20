@@ -30,11 +30,8 @@ class ViewsBulkTest extends ViewTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  /**
-   * {@inheritdoc}
-   */
-  public function setUp($import_test_views = TRUE, $modules = ['views_test_config']): void {
-    parent::setUp($import_test_views, $modules);
+  public function setUp($import_test_views = TRUE): void {
+    parent::setUp($import_test_views);
 
     $this->drupalCreateContentType(['type' => 'page']);
     $this->admin_user = $this->createUser(['bypass node access', 'administer nodes', 'access content overview']);

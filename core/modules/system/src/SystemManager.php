@@ -107,7 +107,6 @@ class SystemManager {
 
     // Check run-time requirements and status information.
     $requirements = $this->moduleHandler->invokeAll('requirements', ['runtime']);
-    $this->moduleHandler->alter('requirements', $requirements);
     uasort($requirements, function ($a, $b) {
       if (!isset($a['weight'])) {
         if (!isset($b['weight'])) {
@@ -128,7 +127,7 @@ class SystemManager {
    *   An array of requirements, in the same format as is returned by
    *   hook_requirements().
    *
-   * @return int
+   * @return
    *   The highest severity in the array.
    */
   public function getMaxSeverity(&$requirements) {

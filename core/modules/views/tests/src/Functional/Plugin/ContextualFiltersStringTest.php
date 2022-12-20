@@ -24,7 +24,7 @@ class ContextualFiltersStringTest extends ViewTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'starterkit_theme';
+  protected $defaultTheme = 'classy';
 
   /**
    * Views used by this test.
@@ -50,8 +50,8 @@ class ContextualFiltersStringTest extends ViewTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp($import_test_views = TRUE, $modules = ['views_test_config']): void {
-    parent::setUp($import_test_views, $modules);
+  protected function setUp($import_test_views = TRUE): void {
+    parent::setUp($import_test_views);
 
     // Create Roles and users.
     $this->role1 = $this->drupalCreateRole(['access content'], 'editor', 'Editor');

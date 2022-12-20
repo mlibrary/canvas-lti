@@ -36,11 +36,6 @@ class PathAliasTest extends ResourceTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $resourceTypeIsVersionable = TRUE;
-
-  /**
-   * {@inheritdoc}
-   */
   protected static $patchProtectedFieldNames = [];
 
   /**
@@ -74,10 +69,7 @@ class PathAliasTest extends ResourceTestBase {
    * {@inheritdoc}
    */
   protected function getExpectedDocument() {
-    $base_url = Url::fromUri('base:/jsonapi/path_alias/path_alias/' . $this->entity->uuid())->setAbsolute();
-    $self_url = clone $base_url;
-    $version_identifier = 'id:' . $this->entity->getRevisionId();
-    $self_url = $self_url->setOption('query', ['resourceVersion' => $version_identifier]);
+    $self_url = Url::fromUri('base:/jsonapi/path_alias/path_alias/' . $this->entity->uuid())->setAbsolute()->toString(TRUE)->getGeneratedUrl();
     return [
       'jsonapi' => [
         'meta' => [
@@ -88,13 +80,13 @@ class PathAliasTest extends ResourceTestBase {
         'version' => '1.0',
       ],
       'links' => [
-        'self' => ['href' => $base_url->toString()],
+        'self' => ['href' => $self_url],
       ],
       'data' => [
         'id' => $this->entity->uuid(),
         'type' => static::$resourceTypeName,
         'links' => [
-          'self' => ['href' => $self_url->toString()],
+          'self' => ['href' => $self_url],
         ],
         'attributes' => [
           'alias' => '/frontpage1',

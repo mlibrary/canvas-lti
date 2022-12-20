@@ -4,9 +4,9 @@ namespace Drupal\FunctionalTests\Rest;
 
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\node\Entity\NodeType;
-use Drupal\Tests\rest\Functional\EntityResource\ConfigEntityResourceTestBase;
+use Drupal\Tests\rest\Functional\EntityResource\EntityResourceTestBase;
 
-abstract class EntityFormDisplayResourceTestBase extends ConfigEntityResourceTestBase {
+abstract class EntityFormDisplayResourceTestBase extends EntityResourceTestBase {
 
   /**
    * {@inheritdoc}
@@ -137,7 +137,6 @@ abstract class EntityFormDisplayResourceTestBase extends ConfigEntityResourceTes
    */
   protected function getNormalizedPostEntity() {
     // @todo Update in https://www.drupal.org/node/2300677.
-    return [];
   }
 
   /**

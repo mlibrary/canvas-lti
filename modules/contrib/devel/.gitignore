@@ -33,4 +33,3 @@ docker-compose.override.yml
 /.env
 .envrc
 .envrc.local
-.composer-plugin.env

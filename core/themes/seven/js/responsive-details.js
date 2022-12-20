@@ -4,15 +4,19 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function ($, Drupal) {
   Drupal.behaviors.responsiveDetails = {
     attach: function attach(context) {
       var details = once('responsive-details', 'details', context);
+
       if (!details.length) {
         return;
       }
+
       var $details = $(details);
       var $summaries = $details.find('> summary');
+
       function detailsToggle(matches) {
         if (matches) {
           $details.attr('open', true);
@@ -24,9 +28,11 @@
           $summaries.off('.details-open');
         }
       }
+
       function handleDetailsMQ(event) {
         detailsToggle(event.matches);
       }
+
       var mql = window.matchMedia('(min-width:48em)');
       mql.addListener(handleDetailsMQ);
       detailsToggle(mql.matches);

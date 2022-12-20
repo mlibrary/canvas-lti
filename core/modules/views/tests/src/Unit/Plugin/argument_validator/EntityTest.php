@@ -60,7 +60,7 @@ class EntityTest extends UnitTestCase {
     $mock_entity = $this->getMockForAbstractClass('Drupal\Core\Entity\EntityBase', [], '', FALSE, TRUE, TRUE, ['bundle', 'access']);
     $mock_entity->expects($this->any())
       ->method('bundle')
-      ->willReturn('test_bundle');
+      ->will($this->returnValue('test_bundle'));
     $mock_entity->expects($this->any())
       ->method('access')
       ->willReturnMap([
@@ -72,7 +72,7 @@ class EntityTest extends UnitTestCase {
     $mock_entity_bundle_2 = $this->getMockForAbstractClass('Drupal\Core\Entity\EntityBase', [], '', FALSE, TRUE, TRUE, ['bundle', 'access']);
     $mock_entity_bundle_2->expects($this->any())
       ->method('bundle')
-      ->willReturn('test_bundle_2');
+      ->will($this->returnValue('test_bundle_2'));
     $mock_entity_bundle_2->expects($this->any())
       ->method('access')
       ->willReturnMap([
@@ -100,7 +100,7 @@ class EntityTest extends UnitTestCase {
     $this->entityTypeManager->expects($this->any())
       ->method('getStorage')
       ->with('entity_test')
-      ->willReturn($storage);
+      ->will($this->returnValue($storage));
 
     $this->executable = $this->getMockBuilder('Drupal\views\ViewExecutable')
       ->disableOriginalConstructor()

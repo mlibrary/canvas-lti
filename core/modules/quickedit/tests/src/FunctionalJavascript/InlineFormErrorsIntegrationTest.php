@@ -9,7 +9,6 @@ use Drupal\node\Entity\NodeType;
  * Tests Inline Form Errors compatibility with Quick Edit.
  *
  * @group quickedit
- * @group legacy
  */
 class InlineFormErrorsIntegrationTest extends WebDriverTestBase {
 
@@ -27,7 +26,7 @@ class InlineFormErrorsIntegrationTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'starterkit_theme';
+  protected $defaultTheme = 'classy';
 
   /**
    * An editor user with permissions to access the in-place editor.

@@ -32,7 +32,6 @@ class TestMigrateExecutable extends MigrateExecutable {
    */
   public function setStringTranslation(TranslationInterface $string_translation) {
     $this->stringTranslation = $string_translation;
-    return $this;
   }
 
   /**

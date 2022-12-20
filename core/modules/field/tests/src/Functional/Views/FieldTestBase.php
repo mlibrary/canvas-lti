@@ -5,6 +5,7 @@ namespace Drupal\Tests\field\Functional\Views;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\node\Entity\NodeType;
 use Drupal\Tests\views\Functional\ViewTestBase;
+use Drupal\views\Tests\ViewTestData;
 use Drupal\field\Entity\FieldStorageConfig;
 
 /**
@@ -34,23 +35,23 @@ abstract class FieldTestBase extends ViewTestBase {
   public $fieldStorages;
 
   /**
-   * Stores the fields of the field storage.
+   * Stores the fields of the field storage. They have the same keys as the
+   * field storages.
    *
    * @var array
    */
   public $fields;
 
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp($import_test_views = TRUE, $modules = ['field_test_views']) {
-    parent::setUp($import_test_views, $modules);
+  protected function setUp($import_test_views = TRUE) {
+    parent::setUp($import_test_views);
 
     // Ensure the page node type exists.
     NodeType::create([
       'type' => 'page',
       'name' => 'page',
     ])->save();
+
+    ViewTestData::createTestViews(static::class, ['field_test_views']);
   }
 
   public function setUpFieldStorages($amount = 3, $type = 'string') {

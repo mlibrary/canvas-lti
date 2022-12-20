@@ -584,14 +584,14 @@ class NodeSearch extends ConfigurableSearchPluginBase implements AccessibleInter
     // Add advanced search keyword-related boxes.
     $form['advanced'] = [
       '#type' => 'details',
-      '#title' => $this->t('Advanced search'),
+      '#title' => t('Advanced search'),
       '#attributes' => ['class' => ['search-advanced']],
       '#access' => $this->account && $this->account->hasPermission('use advanced search'),
       '#open' => $used_advanced,
     ];
     $form['advanced']['keywords-fieldset'] = [
       '#type' => 'fieldset',
-      '#title' => $this->t('Keywords'),
+      '#title' => t('Keywords'),
     ];
 
     $form['advanced']['keywords'] = [
@@ -601,7 +601,7 @@ class NodeSearch extends ConfigurableSearchPluginBase implements AccessibleInter
 
     $form['advanced']['keywords-fieldset']['keywords']['or'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Containing any of the words'),
+      '#title' => t('Containing any of the words'),
       '#size' => 30,
       '#maxlength' => 255,
       '#default_value' => $defaults['or'] ?? '',
@@ -609,7 +609,7 @@ class NodeSearch extends ConfigurableSearchPluginBase implements AccessibleInter
 
     $form['advanced']['keywords-fieldset']['keywords']['phrase'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Containing the phrase'),
+      '#title' => t('Containing the phrase'),
       '#size' => 30,
       '#maxlength' => 255,
       '#default_value' => $defaults['phrase'] ?? '',
@@ -617,7 +617,7 @@ class NodeSearch extends ConfigurableSearchPluginBase implements AccessibleInter
 
     $form['advanced']['keywords-fieldset']['keywords']['negative'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Containing none of the words'),
+      '#title' => t('Containing none of the words'),
       '#size' => 30,
       '#maxlength' => 255,
       '#default_value' => $defaults['negative'] ?? '',
@@ -627,11 +627,11 @@ class NodeSearch extends ConfigurableSearchPluginBase implements AccessibleInter
     $types = array_map(['\Drupal\Component\Utility\Html', 'escape'], node_type_get_names());
     $form['advanced']['types-fieldset'] = [
       '#type' => 'fieldset',
-      '#title' => $this->t('Types'),
+      '#title' => t('Types'),
     ];
     $form['advanced']['types-fieldset']['type'] = [
       '#type' => 'checkboxes',
-      '#title' => $this->t('Only of the type(s)'),
+      '#title' => t('Only of the type(s)'),
       '#prefix' => '<div class="criterion">',
       '#suffix' => '</div>',
       '#options' => $types,
@@ -640,7 +640,7 @@ class NodeSearch extends ConfigurableSearchPluginBase implements AccessibleInter
 
     $form['advanced']['submit'] = [
       '#type' => 'submit',
-      '#value' => $this->t('Advanced search'),
+      '#value' => t('Advanced search'),
       '#prefix' => '<div class="action">',
       '#suffix' => '</div>',
       '#weight' => 100,
@@ -651,16 +651,16 @@ class NodeSearch extends ConfigurableSearchPluginBase implements AccessibleInter
     $language_list = $this->languageManager->getLanguages(LanguageInterface::STATE_ALL);
     foreach ($language_list as $langcode => $language) {
       // Make locked languages appear special in the list.
-      $language_options[$langcode] = $language->isLocked() ? $this->t('- @name -', ['@name' => $language->getName()]) : $language->getName();
+      $language_options[$langcode] = $language->isLocked() ? t('- @name -', ['@name' => $language->getName()]) : $language->getName();
     }
     if (count($language_options) > 1) {
       $form['advanced']['lang-fieldset'] = [
         '#type' => 'fieldset',
-        '#title' => $this->t('Languages'),
+        '#title' => t('Languages'),
       ];
       $form['advanced']['lang-fieldset']['language'] = [
         '#type' => 'checkboxes',
-        '#title' => $this->t('Languages'),
+        '#title' => t('Languages'),
         '#prefix' => '<div class="criterion">',
         '#suffix' => '</div>',
         '#options' => $language_options,
@@ -823,7 +823,7 @@ class NodeSearch extends ConfigurableSearchPluginBase implements AccessibleInter
     // Output form for defining rank factor weights.
     $form['content_ranking'] = [
       '#type' => 'details',
-      '#title' => $this->t('Content ranking'),
+      '#title' => t('Content ranking'),
       '#open' => TRUE,
     ];
     $form['content_ranking']['info'] = [

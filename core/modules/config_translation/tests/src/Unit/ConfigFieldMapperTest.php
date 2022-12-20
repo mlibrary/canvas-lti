@@ -88,23 +88,23 @@ class ConfigFieldMapperTest extends UnitTestCase {
     $entity_type
       ->expects($this->any())
       ->method('getConfigPrefix')
-      ->willReturn('config_prefix');
+      ->will($this->returnValue('config_prefix'));
 
     $this->entityTypeManager
       ->expects($this->any())
       ->method('getDefinition')
-      ->willReturn($entity_type);
+      ->will($this->returnValue($entity_type));
 
     $field_storage = $this->createMock('Drupal\field\FieldStorageConfigInterface');
     $field_storage
       ->expects($this->any())
       ->method('id')
-      ->willReturn('field_storage_id');
+      ->will($this->returnValue('field_storage_id'));
 
     $this->entity
       ->expects($this->any())
       ->method('getFieldStorageDefinition')
-      ->willReturn($field_storage);
+      ->will($this->returnValue($field_storage));
 
     $result = $this->configFieldMapper->setEntity($this->entity);
     $this->assertTrue($result);

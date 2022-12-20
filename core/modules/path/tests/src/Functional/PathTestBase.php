@@ -19,9 +19,6 @@ abstract class PathTestBase extends BrowserTestBase {
    */
   protected static $modules = ['node', 'path'];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp() {
     parent::setUp();
 

@@ -55,7 +55,7 @@ class DateFieldTest extends UnitTestCase {
     $migration->expects($this->once())
       ->method('mergeProcessOfProperty')
       ->with('field_date', $pipeline)
-      ->willReturn($migration);
+      ->will($this->returnValue($migration));
 
     $plugin = new DateField([], '', []);
     $plugin->defineValueProcessPipeline($migration, 'field_date', $data);

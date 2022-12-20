@@ -138,11 +138,15 @@ interface FormBuilderInterface {
    *
    * For example:
    * @code
-   * // Set the administrator role to 'content_editor'.
-   * $values['user_admin_role'] = 'content_editor';
+   * // register a new user
    * $form_state = new FormState();
+   * $values['name'] = 'robo-user';
+   * $values['mail'] = 'robouser@example.com';
+   * $values['pass']['pass1'] = 'password';
+   * $values['pass']['pass2'] = 'password';
+   * $values['op'] = t('Create new account');
    * $form_state->setValues($values);
-   * \Drupal::formBuilder()->submitForm(RoleSettingsForm::class, $form_state);
+   * \Drupal::formBuilder()->submitForm('user_register_form', $form_state);
    * @endcode
    *
    * @param \Drupal\Core\Form\FormInterface|string $form_arg

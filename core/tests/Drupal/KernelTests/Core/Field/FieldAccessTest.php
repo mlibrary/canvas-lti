@@ -38,9 +38,6 @@ class FieldAccessTest extends KernelTestBase {
    */
   protected $activeUid;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     // Install field configuration.
@@ -57,7 +54,7 @@ class FieldAccessTest extends KernelTestBase {
     // The users table is needed for creating dummy user accounts.
     $this->installEntitySchema('user');
     // Register entity_test text field.
-    $this->container->get('module_handler')->loadInclude('entity_test', 'install');
+    module_load_install('entity_test');
     entity_test_install();
   }
 

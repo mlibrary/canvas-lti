@@ -1,33 +1,25 @@
-# Internal libraries, do not depend on these.
-# CKEditor 5 has a much faster release cadence for major and minor releases
-# than Drupal. CKEditor 5 does not provide continued support for major or
-# minor releases; they almost never issue patch releases. Drupal therefore
-# has to keep its integration up-to-date with upstream. It is hence
-# impossible to provide "stable overrides", since the stability is not
-# controlled by Drupal, but by upstream.
-# Hence all CKEditor 5 asset libraries are considered internal.
-# @see https://ckeditor.com/docs/ckeditor5/latest/support/versioning-policy.html
+# cspell:ignore imageupload
 
-internal.ckeditor5.language:
+ckeditor5.language:
   css:
     component:
       css/language.css: {}
   dependencies:
     - core/ckeditor5.language
 
-internal.drupal.ckeditor5.htmlEngine:
+drupal.ckeditor5.internal:
   js:
     js/build/drupalHtmlEngine.js: { minified: true }
   dependencies:
     - core/ckeditor5
-    - core/ckeditor5.essentials
+    - core/ckeditor5.internal
 
-internal.drupal.ckeditor5:
+drupal.ckeditor5:
   js:
     js/ckeditor5.js: {}
   css:
     theme:
-      css/editor.css: { }
+      css/quickedit.css: { }
   dependencies:
     - core/jquery
     - core/once
@@ -37,24 +29,30 @@ internal.drupal.ckeditor5:
     - core/ckeditor5.editorDecoupled
     - core/ckeditor5
     - editor/drupal.editor
-    - ckeditor5/internal.ie11.user.warnings
-    - ckeditor5/internal.drupal.ckeditor5.stylesheets
+    - ckeditor5/ie11.user.warnings
+    - ckeditor5/drupal.ckeditor5.stylesheets
     - core/drupalSettings
     - core/drupal.message
 
 # Library used for dynamically loading CKEditor 5 stylesheets from the default
 # front end theme.
 # @see ckeditor5_library_info_alter()
-internal.drupal.ckeditor5.stylesheets:
+drupal.ckeditor5.stylesheets:
   version: VERSION
   css: []
 
-internal.drupal.ckeditor5.codeBlock:
+drupal.ckeditor5.quickedit-temporary-work-around:
+  deprecated: "Temporary work-around until https://www.drupal.org/project/drupal/issues/3196689 lands."
+  css:
+    theme:
+      css/quickedit-override.css: {}
+
+drupal.ckeditor5.codeBlock:
   dependencies:
     - core/ckeditor5.codeBlock
     - core/ckeditor5.htmlSupport
 
-internal.drupal.ckeditor5.image:
+drupal.ckeditor5.image:
   js:
     js/build/drupalImage.js: { minified: true }
   css:
@@ -65,7 +63,7 @@ internal.drupal.ckeditor5.image:
     - core/ckeditor5
     - core/ckeditor5.image
 
-internal.drupal.ckeditor5.emphasis:
+drupal.ckeditor5.emphasis:
   version: VERSION
   js:
     js/build/drupalEmphasis.js: { minified: true }
@@ -73,8 +71,9 @@ internal.drupal.ckeditor5.emphasis:
     - core/ckeditor5
     - core/ckeditor5.basic
 
-internal.drupal.ckeditor5.media:
+drupal.ckeditor5.media:
   js:
+    js/media_embed_ckeditor5.theme.js: {}
     js/build/drupalMedia.js: { minified: true }
   css:
     theme:
@@ -82,16 +81,15 @@ internal.drupal.ckeditor5.media:
   dependencies:
     - core/ckeditor5
     - core/drupal
-    - media/media_embed_ckeditor_theme
 
-internal.drupal.ckeditor5.mediaAlign:
+drupal.ckeditor5.mediaAlign:
   css:
     theme:
       css/media-alignment.css: { }
   dependencies:
-    - ckeditor5/internal.drupal.ckeditor5.media
+    - ckeditor5/drupal.ckeditor5.media
 
-internal.ie11.user.warnings:
+ie11.user.warnings:
   js:
     js/ie11.user.warnings.js: { }
   css:
@@ -102,7 +100,7 @@ internal.ie11.user.warnings:
     - core/drupal.message
     - editor/drupal.editor
 
-internal.ie11.filter.warnings:
+ie11.filter.warnings:
   js:
     js/ie11.filter.warnings.js: {}
   dependencies:
@@ -110,7 +108,7 @@ internal.ie11.filter.warnings:
     - core/drupal.message
     - core/once
 
-internal.drupal.ckeditor5.filter.admin:
+drupal.ckeditor5.filter.admin:
   js:
     js/ckeditor5.filter.admin.js: {}
   dependencies:
@@ -119,7 +117,7 @@ internal.drupal.ckeditor5.filter.admin:
     - core/drupal.ajax
     - core/drupalSettings
 
-internal.admin:
+admin:
   js:
     js/ckeditor5.admin.js: { }
   css:
@@ -131,100 +129,89 @@ internal.admin:
     - core/jquery
     - core/once
 
-internal.admin.specialCharacters:
+admin.specialCharacters:
   css:
     theme:
       css/special-characters.css: { }
 
-internal.admin.removeFormat:
+admin.removeFormat:
   css:
     theme:
       css/remove-format.css: { }
 
-internal.admin.essentials:
+admin.internal:
   css:
     theme:
-      css/essentials.admin.css: { }
+      css/internal.admin.css: { }
 
-internal.admin.basic:
+admin.basic:
   css:
     theme:
       css/basic.admin.css: { }
 
-internal.admin.blockquote:
+admin.blockquote:
   css:
     theme:
       css/blockquote.admin.css: { }
 
-internal.admin.link:
+admin.link:
   css:
     theme:
       css/link.admin.css: { }
 
-internal.admin.list:
+admin.list:
   css:
     theme:
       css/list.admin.css: { }
 
-internal.admin.heading:
+admin.heading:
   css:
     theme:
       css/heading.admin.css: { }
   dependencies:
-    - core/ckeditor5.essentials
+    - core/ckeditor5.internal
 
-internal.admin.horizontalLine:
+admin.horizontalLine:
   css:
     theme:
       css/horizontal-line.admin.css: { }
 
-internal.admin.alignment:
+admin.alignment:
   css:
     theme:
       css/alignment.admin.css: { }
 
-internal.admin.indent:
+admin.imageupload:
+  css:
+    theme:
+      css/imageupload.admin.css: { }
+
+admin.indent:
   css:
     theme:
       css/indent.admin.css: { }
 
-internal.admin.language:
+admin.language:
   css:
     theme:
       css/language.admin.css: { }
 
-internal.admin.drupalmedia:
+admin.drupalmedia:
   css:
     theme:
       css/drupalmedia.admin.css: { }
 
-internal.admin.sourceEditing:
+admin.sourceEditing:
   css:
     theme:
       css/source-editing.admin.css: { }
 
-internal.admin.style:
-  js:
-    js/ckeditor5.style.admin.js: { }
-  css:
-    theme:
-      css/style.admin.css: { }
-  dependencies:
-    - core/jquery
-    - core/drupal
-    - core/drupal.vertical-tabs
-
-internal.admin.table:
+admin.table:
   css:
     theme:
       css/table.admin.css: { }
 
-internal.admin.codeBlock:
+admin.codeBlock:
   css:
     theme:
       css/code-block.admin.css: { }
-
-internal.admin.image:
-  css:
-    theme:
-      css/image.admin.css: { }

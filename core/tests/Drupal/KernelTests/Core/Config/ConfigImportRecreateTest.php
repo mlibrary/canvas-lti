@@ -28,9 +28,6 @@ class ConfigImportRecreateTest extends KernelTestBase {
    */
   protected static $modules = ['system', 'field', 'text', 'user', 'node'];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

@@ -169,7 +169,7 @@ class ProjectInfo {
    *   (optional) Array of additional elements to be collected from the .info.yml
    *   file. Defaults to array().
    *
-   * @return array
+   * @return
    *   Array of .info.yml file data we need for the update manager.
    *
    * @see \Drupal\Core\Utility\ProjectInfo::processInfoList()

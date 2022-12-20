@@ -31,22 +31,22 @@ class ForumManagerTest extends UnitTestCase {
 
     $config_factory->expects($this->once())
       ->method('get')
-      ->willReturn($config);
+      ->will($this->returnValue($config));
 
     $config->expects($this->once())
       ->method('get')
-      ->willReturn('forums');
+      ->will($this->returnValue('forums'));
 
     $entity_type_manager->expects($this->once())
       ->method('getStorage')
-      ->willReturn($storage);
+      ->will($this->returnValue($storage));
 
     // This is sufficient for testing purposes.
     $term = new \stdClass();
 
     $storage->expects($this->once())
       ->method('create')
-      ->willReturn($term);
+      ->will($this->returnValue($term));
 
     $connection = $this->getMockBuilder('\Drupal\Core\Database\Connection')
       ->disableOriginalConstructor()
@@ -74,7 +74,7 @@ class ForumManagerTest extends UnitTestCase {
 
     $manager->expects($this->once())
       ->method('getChildren')
-      ->willReturn([]);
+      ->will($this->returnValue([]));
 
     // Get the index once.
     $index1 = $manager->getIndex();

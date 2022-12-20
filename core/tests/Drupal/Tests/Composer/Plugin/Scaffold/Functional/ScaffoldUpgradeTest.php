@@ -34,13 +34,6 @@ class ScaffoldUpgradeTest extends TestCase {
   protected $fixtures;
 
   /**
-   * The Fixtures directory.
-   *
-   * @var string
-   */
-  protected $fixturesDir;
-
-  /**
    * {@inheritdoc}
    */
   protected function setUp(): void {

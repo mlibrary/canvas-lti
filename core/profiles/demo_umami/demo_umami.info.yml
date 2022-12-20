@@ -8,7 +8,8 @@ install:
   - big_pipe
   - block
   - breakpoint
-  - ckeditor5
+  - ckeditor
+  - color
   - config
   - contextual
   - contact
@@ -34,6 +35,7 @@ install:
   - toolbar
   - field_ui
   - file
+  - rdf
   - views
   - views_ui
   - tour
@@ -46,6 +48,6 @@ install:
   - config_translation
   - content_translation
 themes:
-  - claro
+  - seven
   - umami
 keep_english: true

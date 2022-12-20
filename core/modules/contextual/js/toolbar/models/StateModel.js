@@ -4,6 +4,7 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function (Drupal, Backbone) {
   Drupal.contextualToolbar.StateModel = Backbone.Model.extend({
     defaults: {

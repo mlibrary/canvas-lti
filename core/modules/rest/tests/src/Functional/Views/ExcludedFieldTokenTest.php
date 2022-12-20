@@ -4,6 +4,7 @@ namespace Drupal\Tests\rest\Functional\Views;
 
 use Drupal\node\Entity\Node;
 use Drupal\Tests\views\Functional\ViewTestBase;
+use Drupal\views\Tests\ViewTestData;
 use Drupal\views\Views;
 
 /**
@@ -47,8 +48,10 @@ class ExcludedFieldTokenTest extends ViewTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp($import_test_views = TRUE, $modules = ['rest_test_views']): void {
-    parent::setUp($import_test_views, $modules);
+  protected function setUp($import_test_views = TRUE): void {
+    parent::setUp($import_test_views);
+
+    ViewTestData::createTestViews(static::class, ['rest_test_views']);
 
     // Create some test content.
     for ($i = 1; $i <= 10; $i++) {

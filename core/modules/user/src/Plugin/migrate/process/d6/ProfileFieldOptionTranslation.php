@@ -29,7 +29,7 @@ class ProfileFieldOptionTranslation extends ProcessPluginBase {
       $list = array_map('trim', $list);
       $list = array_filter($list, 'strlen');
       if ($field_type === 'list_string') {
-        foreach ($list as $value) {
+        foreach ($list as $key => $value) {
           $allowed_values[] = ['label' => $value];
         }
       }

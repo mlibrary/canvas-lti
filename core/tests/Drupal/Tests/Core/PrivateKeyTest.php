@@ -53,7 +53,7 @@ class PrivateKeyTest extends UnitTestCase {
     $this->state->expects($this->once())
       ->method('get')
       ->with('system.private_key')
-      ->willReturn($this->key);
+      ->will($this->returnValue($this->key));
 
     $this->assertEquals($this->key, $this->privateKey->get());
   }
@@ -74,7 +74,7 @@ class PrivateKeyTest extends UnitTestCase {
     $this->state->expects($this->once())
       ->method('set')
       ->with('system.private_key', $random_name)
-      ->willReturn(TRUE);
+      ->will($this->returnValue(TRUE));
 
     $this->privateKey->set($random_name);
   }

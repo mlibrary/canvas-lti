@@ -21,7 +21,7 @@ class EntityReferenceRevisionsDiffTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = [
+  public static $modules = [
     'block_content',
     'node',
     'field',
@@ -38,7 +38,7 @@ class EntityReferenceRevisionsDiffTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     // Create article content type.
     $this->drupalCreateContentType(['type' => 'article', 'name' => 'Article']);
@@ -57,7 +57,6 @@ class EntityReferenceRevisionsDiffTest extends BrowserTestBase {
       'administer node form display',
       'view all revisions',
       'edit any article content',
-      'create article content',
     ]);
     $this->drupalLogin($admin_user);
     $this->drupalPlaceBlock('system_breadcrumb_block');
@@ -124,8 +123,8 @@ class EntityReferenceRevisionsDiffTest extends BrowserTestBase {
     $this->submitForm([], 'Compare selected revisions');
 
     // Assert the field changes.
-    $this->assertSession()->responseContains('class="diff-context diff-deletedline">' . $title_node_1);
-    $this->assertSession()->responseContains('class="diff-context diff-addedline">' . $title_node_2);
+    $this->assertRaw('class="diff-context diff-deletedline">' . $title_node_1);
+    $this->assertRaw('class="diff-context diff-addedline">' . $title_node_2);
   }
 
 }

@@ -27,9 +27,6 @@ class ThemeSettingsTest extends KernelTestBase {
    */
   protected $availableThemes;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     // Theme settings rely on System module's system.theme.global configuration.

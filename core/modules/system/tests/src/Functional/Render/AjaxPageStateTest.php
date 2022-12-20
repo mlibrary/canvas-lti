@@ -30,9 +30,6 @@ class AjaxPageStateTest extends BrowserTestBase {
    */
   protected $adminUser;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     // Create an administrator with all permissions.

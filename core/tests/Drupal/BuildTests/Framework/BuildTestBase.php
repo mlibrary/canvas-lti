@@ -143,13 +143,6 @@ abstract class BuildTestBase extends TestCase {
   private $commandProcess;
 
   /**
-   * The PHP executable finder.
-   *
-   * @var \Symfony\Component\Process\PhpExecutableFinder
-   */
-  private $phpFinder;
-
-  /**
    * {@inheritdoc}
    */
   public static function setUpBeforeClass() {

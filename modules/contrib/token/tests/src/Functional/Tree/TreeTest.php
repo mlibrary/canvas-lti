@@ -20,11 +20,13 @@ class TreeTest extends TokenTestBase {
   protected $account;
 
   /**
-   * {@inheritdoc}
+   * Modules to enable.
+   *
+   * @var array
    */
-  protected static $modules = ['node'];
+  public static $modules = ['node'];
 
-  public function setUp(): void {
+  public function setUp() {
     parent::setUp();
 
     $this->account = $this->drupalCreateUser(['administer account settings']);
@@ -94,7 +96,7 @@ class TreeTest extends TokenTestBase {
     // Request with show_restricted set to TRUE to show restricted tokens and
     // check for them.
     $this->drupalGet($this->getTokenTreeUrl(['token_types' => ['user'], 'show_restricted' => TRUE]));
-    $this->assertEquals('MISS', $this->getSession()->getResponseHeader('x-drupal-dynamic-cache'), 'Cache was not hit');
+    $this->assertEquals('MISS', $this->drupalGetHeader('x-drupal-dynamic-cache'), 'Cache was not hit');
     $this->assertTokenInTree('[user:one-time-login-url]', 'user');
     $this->assertTokenInTree('[user:original:cancel-url]', 'user--original');
   }

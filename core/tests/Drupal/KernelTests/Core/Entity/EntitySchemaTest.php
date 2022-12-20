@@ -31,20 +31,6 @@ class EntitySchemaTest extends EntityKernelTestBase {
   protected $database;
 
   /**
-   * The entity field manager.
-   *
-   * @var \Drupal\Core\Entity\EntityFieldManagerInterface
-   */
-  protected $entityFieldManager;
-
-  /**
-   * The entity definition update manager.
-   *
-   * @var \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface
-   */
-  protected $entityDefinitionUpdateManager;
-
-  /**
    * {@inheritdoc}
    */
   protected function setUp(): void {

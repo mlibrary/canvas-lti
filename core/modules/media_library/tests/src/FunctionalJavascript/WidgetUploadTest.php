@@ -18,11 +18,6 @@ class WidgetUploadTest extends MediaLibraryTestBase {
   use TestFileCreationTrait;
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Tests that uploads in the Media library's widget works as expected.
    */
   public function testWidgetUpload() {
@@ -141,10 +136,8 @@ class WidgetUploadTest extends MediaLibraryTestBase {
     $this->waitForText($png_image->filename);
 
     // Remove the item.
-    $assert_session->elementTextContains('css', '.field--name-field-twin-media', $png_image->filename);
     $assert_session->elementExists('css', '.field--name-field-twin-media')->pressButton('Remove');
-    $this->waitForElementTextContains('#drupal-live-announce', $png_image->filename . ' has been removed');
-    $assert_session->elementTextNotContains('css', '.field--name-field-twin-media', $png_image->filename);
+    $this->waitForNoText($png_image->filename);
 
     $this->openMediaLibraryForField('field_twin_media');
     $this->switchToMediaType('Three');
@@ -480,10 +473,8 @@ class WidgetUploadTest extends MediaLibraryTestBase {
     $this->waitForText($png_image->filename);
 
     // Remove the item.
-    $assert_session->elementTextContains('css', '.field--name-field-twin-media', $png_image->filename);
     $assert_session->elementExists('css', '.field--name-field-twin-media')->pressButton('Remove');
-    $this->waitForElementTextContains('#drupal-live-announce', $png_image->filename . ' has been removed');
-    $assert_session->elementTextNotContains('css', '.field--name-field-twin-media', $png_image->filename);
+    $this->waitForNoText($png_image->filename);
 
     $this->openMediaLibraryForField('field_twin_media');
     $this->switchToMediaType('Three');

@@ -3,6 +3,7 @@
 namespace Drupal\Tests\user\Functional\Views;
 
 use Drupal\Tests\views\Functional\ViewTestBase;
+use Drupal\views\Tests\ViewTestData;
 
 /**
  * Tests the changed field.
@@ -30,11 +31,10 @@ class UserChangedTest extends ViewTestBase {
    */
   public static $testViews = ['test_user_changed'];
 
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp($import_test_views = TRUE, $modules = ['user_test_views']): void {
-    parent::setUp($import_test_views, $modules);
+  protected function setUp($import_test_views = TRUE): void {
+    parent::setUp($import_test_views);
+
+    ViewTestData::createTestViews(static::class, ['user_test_views']);
 
     $this->enableViewsTestModule();
   }

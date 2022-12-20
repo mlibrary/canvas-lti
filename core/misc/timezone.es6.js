@@ -13,13 +13,12 @@
     attach(context, settings) {
       const timezone = once('timezone', '.timezone-detect', context);
       if (timezone.length) {
+        const $timezone = $(timezone);
         const tz = new Intl.DateTimeFormat().resolvedOptions().timeZone;
         // Ensure that the timezone value returned by the browser is supported
         // by the server.
-        if (tz && $(timezone).find(`option[value="${tz}"]`).length) {
-          timezone.forEach((item) => {
-            item.value = tz;
-          });
+        if (tz && $timezone.find(`option[value="${tz}"]`).length) {
+          $timezone.val(tz);
           return;
         }
 
@@ -72,9 +71,7 @@
           dataType: 'json',
           success(data) {
             if (data) {
-              document.querySelectorAll('.timezone-detect').forEach((item) => {
-                item.value = data;
-              });
+              $timezone.val(data);
             }
           },
         });

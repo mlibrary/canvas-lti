@@ -4,10 +4,12 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function ($, Drupal) {
   Drupal.behaviors.localeTranslateDirty = {
     attach: function attach() {
       var form = once('localetranslatedirty', '#locale-translate-edit-form');
+
       if (form.length) {
         var $form = $(form);
         $form.one('formUpdated.localeTranslateDirty', 'table', function () {
@@ -20,6 +22,7 @@
           var rowToMark = once('localemark', $row);
           var marker = Drupal.theme('localeTranslateChangedMarker');
           $row.addClass('changed');
+
           if (rowToMark.length) {
             $(rowToMark).find('td:first-child .js-form-item').append(marker);
           }
@@ -29,6 +32,7 @@
     detach: function detach(context, settings, trigger) {
       if (trigger === 'unload') {
         var form = once.remove('localetranslatedirty', '#locale-translate-edit-form');
+
         if (form.length) {
           $(form).off('formUpdated.localeTranslateDirty');
         }
@@ -38,6 +42,7 @@
   Drupal.behaviors.hideUpdateInformation = {
     attach: function attach(context, settings) {
       var table = once('expand-updates', '#locale-translation-status-form');
+
       if (table.length) {
         var $table = $(table);
         var $tbodies = $table.find('tbody');
@@ -45,13 +50,17 @@
           if (e.keyCode && e.keyCode !== 13 && e.keyCode !== 32) {
             return;
           }
+
           e.preventDefault();
           var $tr = $(this).closest('tr');
           $tr.toggleClass('expanded');
-          var $localePrefix = $tr.find('.locale-translation-update__prefix');
-          if ($localePrefix.length) {
-            $localePrefix[0].textContent = $tr.hasClass('expanded') ? Drupal.t('Hide description') : Drupal.t('Show description');
-          }
+          $tr.find('.locale-translation-update__prefix').text(function () {
+            if ($tr.hasClass('expanded')) {
+              return Drupal.t('Hide description');
+            }
+
+            return Drupal.t('Show description');
+          });
         });
         $table.find('.requirements, .links').hide();
       }

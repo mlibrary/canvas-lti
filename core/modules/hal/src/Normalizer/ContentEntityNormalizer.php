@@ -269,11 +269,4 @@ class ContentEntityNormalizer extends NormalizerBase {
     return $typed_data_ids;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function hasCacheableSupportsMethod(): bool {
-    return TRUE;
-  }
-
 }

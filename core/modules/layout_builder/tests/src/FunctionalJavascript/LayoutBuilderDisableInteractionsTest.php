@@ -27,7 +27,6 @@ class LayoutBuilderDisableInteractionsTest extends WebDriverTestBase {
   protected static $modules = [
     'block',
     'block_content',
-    'field_ui',
     'filter',
     'filter_test',
     'layout_builder',
@@ -40,7 +39,7 @@ class LayoutBuilderDisableInteractionsTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'starterkit_theme';
+  protected $defaultTheme = 'classy';
 
   /**
    * {@inheritdoc}

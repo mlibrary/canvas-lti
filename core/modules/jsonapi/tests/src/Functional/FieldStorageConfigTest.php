@@ -10,7 +10,7 @@ use Drupal\field\Entity\FieldStorageConfig;
  *
  * @group jsonapi
  */
-class FieldStorageConfigTest extends ConfigEntityResourceTestBase {
+class FieldStorageConfigTest extends ResourceTestBase {
 
   /**
    * {@inheritdoc}
@@ -112,7 +112,6 @@ class FieldStorageConfigTest extends ConfigEntityResourceTestBase {
    */
   protected function getPostDocument() {
     // @todo Update in https://www.drupal.org/node/2300677.
-    return [];
   }
 
   /**

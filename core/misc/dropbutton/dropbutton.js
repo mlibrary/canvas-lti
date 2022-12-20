@@ -4,6 +4,7 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function ($, Drupal) {
   function DropButton(dropbutton, settings) {
     var options = $.extend({
@@ -13,6 +14,7 @@
     this.$dropbutton = $dropbutton;
     this.$list = $dropbutton.find('.dropbutton');
     this.$actions = this.$list.find('li').addClass('dropbutton-action');
+
     if (this.$actions.length > 1) {
       var $primary = this.$actions.slice(0, 1);
       var $secondary = this.$actions.slice(1);
@@ -28,18 +30,23 @@
       this.$dropbutton.addClass('dropbutton-single');
     }
   }
+
   function dropbuttonClickHandler(e) {
     e.preventDefault();
     $(e.target).closest('.dropbutton-wrapper').toggleClass('open');
   }
+
   Drupal.behaviors.dropButton = {
     attach: function attach(context, settings) {
       var dropbuttons = once('dropbutton', '.dropbutton-wrapper', context);
+
       if (dropbuttons.length) {
         var body = once('dropbutton-click', 'body');
+
         if (body.length) {
           $(body).on('click', '.dropbutton-toggle', dropbuttonClickHandler);
         }
+
         dropbuttons.forEach(function (dropbutton) {
           DropButton.dropbuttons.push(new DropButton(dropbutton, settings.dropbutton));
         });

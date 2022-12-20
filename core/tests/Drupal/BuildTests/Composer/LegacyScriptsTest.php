@@ -8,7 +8,6 @@ use Drupal\Composer\Composer;
 
 /**
  * @group Composer
- * @group legacy
  * @requires externalCommand composer
  * @coversDefaultClass \Drupal\Core\Composer\Composer
  */

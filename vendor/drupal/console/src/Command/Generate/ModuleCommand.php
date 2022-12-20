@@ -244,7 +244,6 @@ class ModuleCommand extends Command
               ->addCommand(
                 'generate:composer', [
                 '--module' => $machineName,
-                '--package-path' => $modulePath,
                 '--name' => 'drupal/' . $machineName,
                 '--type' => 'drupal-module',
                 '--description' => $description,

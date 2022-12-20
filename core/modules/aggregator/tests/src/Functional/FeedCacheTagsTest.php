@@ -11,7 +11,6 @@ use Drupal\user\RoleInterface;
  * Tests the Feed entity's cache tags.
  *
  * @group aggregator
- * @group legacy
  */
 class FeedCacheTagsTest extends EntityWithUriCacheTagsTestBase {
 

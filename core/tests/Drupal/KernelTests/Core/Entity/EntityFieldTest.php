@@ -53,9 +53,6 @@ class EntityFieldTest extends EntityKernelTestBase {
    */
   protected $entityFieldText;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 
@@ -67,7 +64,7 @@ class EntityFieldTest extends EntityKernelTestBase {
     }
 
     // Create the test field.
-    $this->container->get('module_handler')->loadInclude('entity_test', 'install');
+    module_load_install('entity_test');
     entity_test_install();
 
     // Install required default configuration for filter module.

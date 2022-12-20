@@ -4,6 +4,7 @@ namespace TestSuite;
 
 class CliTest extends \PHPUnit\Framework\TestCase
 {
+
     /**
      * @var \CssLint\Cli
      */

@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Laminas\Stdlib;
 
-use AllowDynamicProperties;
 use ArrayAccess;
-use ArrayIterator;
 use Countable;
 use Iterator;
 use IteratorAggregate;
@@ -19,7 +17,7 @@ use function array_keys;
 use function asort;
 use function class_exists;
 use function count;
-use function get_debug_type;
+use function get_class;
 use function get_object_vars;
 use function gettype;
 use function in_array;
@@ -32,7 +30,7 @@ use function natcasesort;
 use function natsort;
 use function serialize;
 use function sprintf;
-use function str_starts_with;
+use function strpos;
 use function uasort;
 use function uksort;
 use function unserialize;
@@ -41,13 +39,7 @@ use function unserialize;
  * Custom framework ArrayObject implementation
  *
  * Extends version-specific "abstract" implementation.
- *
- * @template TKey of array-key
- * @template TValue
- * @template-implements IteratorAggregate<TKey, TValue>
- * @template-implements ArrayAccess<TKey, TValue>
  */
-#[AllowDynamicProperties]
 class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Countable
 {
     /**
@@ -61,24 +53,26 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
      */
     public const ARRAY_AS_PROPS = 2;
 
-    /** @var array<TKey, TValue> */
+    /** @var array */
     protected $storage;
 
-    /** @var self::STD_PROP_LIST|self::ARRAY_AS_PROPS */
+    /** @var int */
     protected $flag;
 
-    /** @var class-string<Iterator> */
+    /** @var string */
     protected $iteratorClass;
 
-    /** @var list<string> */
+    /** @var array */
     protected $protectedProperties;
 
     /**
-     * @param array<TKey, TValue>|object               $input Object values must act like ArrayAccess
-     * @param self::STD_PROP_LIST|self::ARRAY_AS_PROPS $flags
-     * @param class-string<Iterator>                   $iteratorClass
+     * Constructor
+     *
+     * @param array|object $input Object values must act like ArrayAccess
+     * @param int          $flags
+     * @param string       $iteratorClass
      */
-    public function __construct($input = [], $flags = self::STD_PROP_LIST, $iteratorClass = ArrayIterator::class)
+    public function __construct($input = [], $flags = self::STD_PROP_LIST, $iteratorClass = 'ArrayIterator')
     {
         $this->setFlags($flags);
         $this->storage = $input;
@@ -89,10 +83,10 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
     /**
      * Returns whether the requested key exists
      *
-     * @param TKey $key
+     * @param  mixed $key
      * @return bool
      */
-    public function __isset(mixed $key)
+    public function __isset($key)
     {
         if ($this->flag === self::ARRAY_AS_PROPS) {
             return $this->offsetExists($key);
@@ -108,11 +102,11 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
     /**
      * Sets the value at the specified key to value
      *
-     * @param TKey $key
-     * @param TValue $value
+     * @param  mixed $key
+     * @param  mixed $value
      * @return void
      */
-    public function __set(mixed $key, mixed $value)
+    public function __set($key, $value)
     {
         if ($this->flag === self::ARRAY_AS_PROPS) {
             $this->offsetSet($key, $value);
@@ -129,10 +123,10 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
     /**
      * Unsets the value at the specified key
      *
-     * @param TKey $key
+     * @param  mixed $key
      * @return void
      */
-    public function __unset(mixed $key)
+    public function __unset($key)
     {
         if ($this->flag === self::ARRAY_AS_PROPS) {
             $this->offsetUnset($key);
@@ -149,10 +143,10 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
     /**
      * Returns the value at the specified key by reference
      *
-     * @param TKey $key
-     * @return TValue|null
+     * @param  mixed $key
+     * @return mixed
      */
-    public function &__get(mixed $key)
+    public function &__get($key)
     {
         if ($this->flag === self::ARRAY_AS_PROPS) {
             $ret = &$this->offsetGet($key);
@@ -170,10 +164,10 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
     /**
      * Appends the value
      *
-     * @param TValue $value
+     * @param  mixed $value
      * @return void
      */
-    public function append(mixed $value)
+    public function append($value)
     {
         $this->storage[] = $value;
     }
@@ -191,7 +185,7 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
     /**
      * Get the number of public properties in the ArrayObject
      *
-     * @return positive-int|0
+     * @return int
      */
     #[ReturnTypeWillChange]
     public function count()
@@ -202,8 +196,8 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
     /**
      * Exchange the array for another one.
      *
-     * @param array<TKey, TValue>|ArrayObject<TKey, TValue>|ArrayIterator<TKey, TValue>|object $data
-     * @return array<TKey, TValue>
+     * @param  array|ArrayObject|ArrayIterator|object $data
+     * @return array
      */
     public function exchangeArray($data)
     {
@@ -230,7 +224,7 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
     /**
      * Creates a copy of the ArrayObject.
      *
-     * @return array<TKey, TValue>
+     * @return array
      */
     public function getArrayCopy()
     {
@@ -240,7 +234,7 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
     /**
      * Gets the behavior flags.
      *
-     * @return self::STD_PROP_LIST|self::ARRAY_AS_PROPS
+     * @return int
      */
     public function getFlags()
     {
@@ -250,7 +244,7 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
     /**
      * Create a new iterator from an ArrayObject instance
      *
-     * @return Iterator<TKey, TValue>
+     * @return Iterator
      */
     #[ReturnTypeWillChange]
     public function getIterator()
@@ -263,7 +257,7 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
     /**
      * Gets the iterator classname for the ArrayObject.
      *
-     * @return class-string<Iterator>
+     * @return string
      */
     public function getIteratorClass()
     {
@@ -303,23 +297,23 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
     /**
      * Returns whether the requested key exists
      *
-     * @param TKey $key
+     * @param  mixed $key
      * @return bool
      */
     #[ReturnTypeWillChange]
-    public function offsetExists(mixed $key)
+    public function offsetExists($key)
     {
         return isset($this->storage[$key]);
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the value at the specified key
      *
-     * @param TKey $key
-     * @return TValue|null
+     * @param  mixed $key
+     * @return mixed
      */
     #[ReturnTypeWillChange]
-    public function &offsetGet(mixed $key)
+    public function &offsetGet($key)
     {
         $ret = null;
         if (! $this->offsetExists($key)) {
@@ -333,12 +327,12 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
     /**
      * Sets the value at the specified key to value
      *
-     * @param TKey $key
-     * @param TValue $value
+     * @param  mixed $key
+     * @param  mixed $value
      * @return void
      */
     #[ReturnTypeWillChange]
-    public function offsetSet(mixed $key, mixed $value)
+    public function offsetSet($key, $value)
     {
         $this->storage[$key] = $value;
     }
@@ -346,11 +340,11 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
     /**
      * Unsets the value at the specified key
      *
-     * @param TKey $key
+     * @param  mixed $key
      * @return void
      */
     #[ReturnTypeWillChange]
-    public function offsetUnset(mixed $key)
+    public function offsetUnset($key)
     {
         if ($this->offsetExists($key)) {
             unset($this->storage[$key]);
@@ -370,7 +364,7 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
     /**
      * Magic method used for serializing of an instance.
      *
-     * @return array<string, mixed>
+     * @return array
      */
     public function __serialize()
     {
@@ -380,7 +374,7 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
     /**
      * Sets the behavior flags
      *
-     * @param self::STD_PROP_LIST|self::ARRAY_AS_PROPS $flags
+     * @param  int  $flags
      * @return void
      */
     public function setFlags($flags)
@@ -391,7 +385,7 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
     /**
      * Sets the iterator classname for the ArrayObject
      *
-     * @param  class-string<Iterator> $class
+     * @param  string $class
      * @return void
      */
     public function setIteratorClass($class)
@@ -402,7 +396,7 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
             return;
         }
 
-        if (str_starts_with($class, '\\')) {
+        if (strpos($class, '\\') === 0) {
             $class = '\\' . $class;
             if (class_exists($class)) {
                 $this->iteratorClass = $class;
@@ -417,7 +411,7 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
     /**
      * Sort the entries with a user-defined comparison function and maintain key association
      *
-     * @param  callable(TValue, TValue): int $function
+     * @param  callable $function
      * @return void
      */
     public function uasort($function)
@@ -430,7 +424,7 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
     /**
      * Sort the entries by keys using a user-defined comparison function
      *
-     * @param  callable(TKey, TKey): int $function
+     * @param  callable $function
      * @return void
      */
     public function uksort($function)
@@ -492,7 +486,9 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
                 throw new UnexpectedValueException(sprintf(
                     'Cannot deserialize %s instance: invalid iteratorClass; expected string, received %s',
                     self::class,
-                    get_debug_type($data['iteratorClass'])
+                    is_object($data['iteratorClass'])
+                        ? get_class($data['iteratorClass'])
+                        : gettype($data['iteratorClass'])
                 ));
             }
             $this->setIteratorClass($data['iteratorClass']);

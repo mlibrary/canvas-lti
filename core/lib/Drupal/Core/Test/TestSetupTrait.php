@@ -83,20 +83,6 @@ trait TestSetupTrait {
   protected $kernel;
 
   /**
-   * The database prefix of this test run.
-   *
-   * @var string
-   */
-  protected $databasePrefix;
-
-  /**
-   * The app root.
-   *
-   * @var string
-   */
-  protected $root;
-
-  /**
    * The temporary file directory for the test environment.
    *
    * This value has to match the temporary directory created in
@@ -167,7 +153,7 @@ trait TestSetupTrait {
       // Ensure no existing database gets in the way. If a default database
       // exists already it must be removed.
       Database::removeConnection('default');
-      $database = Database::convertDbUrlToConnectionInfo($db_url, $this->root ?? DRUPAL_ROOT, TRUE);
+      $database = Database::convertDbUrlToConnectionInfo($db_url, $this->root ?? DRUPAL_ROOT);
       Database::addConnectionInfo('default', 'default', $database);
     }
 

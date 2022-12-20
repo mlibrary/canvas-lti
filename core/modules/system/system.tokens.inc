@@ -54,18 +54,17 @@ function system_token_info() {
   $date_formatter = \Drupal::service('date.formatter');
 
   // Date related tokens.
-  $request_time = \Drupal::time()->getRequestTime();
   $date['short'] = [
     'name' => t("Short format"),
-    'description' => t("A date in 'short' format. (%date)", ['%date' => $date_formatter->format($request_time, 'short')]),
+    'description' => t("A date in 'short' format. (%date)", ['%date' => $date_formatter->format(REQUEST_TIME, 'short')]),
   ];
   $date['medium'] = [
     'name' => t("Medium format"),
-    'description' => t("A date in 'medium' format. (%date)", ['%date' => $date_formatter->format($request_time, 'medium')]),
+    'description' => t("A date in 'medium' format. (%date)", ['%date' => $date_formatter->format(REQUEST_TIME, 'medium')]),
   ];
   $date['long'] = [
     'name' => t("Long format"),
-    'description' => t("A date in 'long' format. (%date)", ['%date' => $date_formatter->format($request_time, 'long')]),
+    'description' => t("A date in 'long' format. (%date)", ['%date' => $date_formatter->format(REQUEST_TIME, 'long')]),
   ];
   $date['custom'] = [
     'name' => t("Custom format"),
@@ -73,11 +72,11 @@ function system_token_info() {
   ];
   $date['since'] = [
     'name' => t("Time-since"),
-    'description' => t("A date in 'time-since' format. (%date)", ['%date' => $date_formatter->formatTimeDiffSince($request_time - 360)]),
+    'description' => t("A date in 'time-since' format. (%date)", ['%date' => $date_formatter->formatTimeDiffSince(REQUEST_TIME - 360)]),
   ];
   $date['raw'] = [
     'name' => t("Raw timestamp"),
-    'description' => t("A date in UNIX timestamp format (%date)", ['%date' => $request_time]),
+    'description' => t("A date in UNIX timestamp format (%date)", ['%date' => REQUEST_TIME]),
   ];
 
   return [
@@ -158,7 +157,7 @@ function system_tokens($type, $tokens, array $data, array $options, BubbleableMe
 
   elseif ($type == 'date') {
     if (empty($data['date'])) {
-      $date = \Drupal::time()->getRequestTime();
+      $date = REQUEST_TIME;
       // We depend on the current request time, so the tokens are not cacheable
       // at all.
       $bubbleable_metadata->setCacheMaxAge(0);

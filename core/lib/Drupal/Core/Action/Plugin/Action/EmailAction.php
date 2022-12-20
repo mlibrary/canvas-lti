@@ -163,25 +163,25 @@ class EmailAction extends ConfigurableActionBase implements ContainerFactoryPlug
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form['recipient'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Recipient email address'),
+      '#title' => t('Recipient email address'),
       '#default_value' => $this->configuration['recipient'],
       '#maxlength' => '254',
-      '#description' => $this->t('You may also use tokens: [node:author:mail], [comment:author:mail], etc. Separate recipients with a comma.'),
+      '#description' => t('You may also use tokens: [node:author:mail], [comment:author:mail], etc. Separate recipients with a comma.'),
     ];
     $form['subject'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Subject'),
+      '#title' => t('Subject'),
       '#default_value' => $this->configuration['subject'],
       '#maxlength' => '254',
-      '#description' => $this->t('The subject of the message.'),
+      '#description' => t('The subject of the message.'),
     ];
     $form['message'] = [
       '#type' => 'textarea',
-      '#title' => $this->t('Message'),
+      '#title' => t('Message'),
       '#default_value' => $this->configuration['message'],
       '#cols' => '80',
       '#rows' => '20',
-      '#description' => $this->t('The message that should be sent. You may include placeholders like [node:title], [user:account-name], [user:display-name] and [comment:body] to represent data that will be different each time message is sent. Not all placeholders will be available in all contexts.'),
+      '#description' => t('The message that should be sent. You may include placeholders like [node:title], [user:account-name], [user:display-name] and [comment:body] to represent data that will be different each time message is sent. Not all placeholders will be available in all contexts.'),
     ];
     return $form;
   }
@@ -192,7 +192,7 @@ class EmailAction extends ConfigurableActionBase implements ContainerFactoryPlug
   public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
     if (!$this->emailValidator->isValid($form_state->getValue('recipient')) && strpos($form_state->getValue('recipient'), ':mail') === FALSE) {
       // We want the literal %author placeholder to be emphasized in the error message.
-      $form_state->setErrorByName('recipient', $this->t('Enter a valid email address or use a token email address such as %author.', ['%author' => '[node:author:mail]']));
+      $form_state->setErrorByName('recipient', t('Enter a valid email address or use a token email address such as %author.', ['%author' => '[node:author:mail]']));
     }
   }
 

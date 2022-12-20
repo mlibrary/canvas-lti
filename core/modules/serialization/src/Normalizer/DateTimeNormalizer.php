@@ -115,11 +115,4 @@ class DateTimeNormalizer extends NormalizerBase implements DenormalizerInterface
     throw new UnexpectedValueException(sprintf('The specified date "%s" is not in an accepted format: %s.', $data, $formats));
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function hasCacheableSupportsMethod(): bool {
-    return TRUE;
-  }
-
 }

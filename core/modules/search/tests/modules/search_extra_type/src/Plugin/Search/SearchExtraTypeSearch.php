@@ -26,7 +26,6 @@ class SearchExtraTypeSearch extends ConfigurableSearchPluginBase {
       $parameters['search_conditions'] = '';
     }
     parent::setSearch($keywords, $parameters, $attributes);
-    return $this;
   }
 
   /**
@@ -92,16 +91,16 @@ class SearchExtraTypeSearch extends ConfigurableSearchPluginBase {
     // Output form for defining rank factor weights.
     $form['extra_type_settings'] = [
       '#type' => 'fieldset',
-      '#title' => $this->t('Extra type settings'),
+      '#title' => t('Extra type settings'),
       '#tree' => TRUE,
     ];
 
     $form['extra_type_settings']['boost'] = [
       '#type' => 'select',
-      '#title' => $this->t('Boost method'),
+      '#title' => t('Boost method'),
       '#options' => [
-        'bi' => $this->t('Bistro mathematics'),
-        'ii' => $this->t('Infinite Improbability'),
+        'bi' => t('Bistromathic'),
+        'ii' => t('Infinite Improbability'),
       ],
       '#default_value' => $this->configuration['boost'],
     ];

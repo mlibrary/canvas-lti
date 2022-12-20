@@ -12,7 +12,6 @@ use Drupal\Tests\migrate\Kernel\MigrateSqlSourceTestBase;
  * @covers \Drupal\rdf\Plugin\migrate\source\d7\RdfMapping
  *
  * @group rdf
- * @group legacy
  */
 class RdfMappingTest extends MigrateSqlSourceTestBase {
 

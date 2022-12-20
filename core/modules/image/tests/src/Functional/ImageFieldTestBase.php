@@ -45,9 +45,6 @@ abstract class ImageFieldTestBase extends BrowserTestBase {
    */
   protected $adminUser;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp() {
     parent::setUp();
 

@@ -26,9 +26,6 @@ class PathAliasTest extends PathTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 
@@ -151,13 +148,13 @@ class PathAliasTest extends PathTestBase {
     $this->submitForm($edit, 'Save');
 
     // Confirm no duplicate was created.
-    $this->assertSession()->statusMessageContains("The alias {$edit['alias[0][value]']} is already in use in this language.", 'error');
+    $this->assertSession()->pageTextContains("The alias {$edit['alias[0][value]']} is already in use in this language.");
 
     $edit_upper = $edit;
     $edit_upper['alias[0][value]'] = mb_strtoupper($edit['alias[0][value]']);
     $this->drupalGet('admin/config/search/path/add');
     $this->submitForm($edit_upper, 'Save');
-    $this->assertSession()->statusMessageContains("The alias {$edit_upper['alias[0][value]']} could not be added because it is already in use in this language with different capitalization: {$edit['alias[0][value]']}.", 'error');
+    $this->assertSession()->pageTextContains("The alias {$edit_upper['alias[0][value]']} could not be added because it is already in use in this language with different capitalization: {$edit['alias[0][value]']}.");
 
     // Delete alias.
     $this->drupalGet('admin/config/search/path/edit/' . $pid);
@@ -218,7 +215,7 @@ class PathAliasTest extends PathTestBase {
     $edit['path[0][value]'] = '/node/' . $node2->id();
     $this->drupalGet('admin/config/search/path/edit/' . $pid);
     $this->submitForm($edit, 'Save');
-    $this->assertSession()->statusMessageContains('The alias has been saved.', 'status');
+    $this->assertSession()->pageTextContains('The alias has been saved.');
     $this->drupalGet($edit['alias[0][value]']);
     // Previous alias should no longer work.
     $this->assertSession()->pageTextNotContains($node4->label());
@@ -233,7 +230,7 @@ class PathAliasTest extends PathTestBase {
     $edit['path[0][value]'] = '/node/' . $node3->id();
     $this->drupalGet('admin/config/search/path/edit/' . $pid);
     $this->submitForm($edit, 'Save');
-    $this->assertSession()->statusMessageContains("The alias {$edit['alias[0][value]']} is already in use in this language.", 'error');
+    $this->assertSession()->pageTextContains("The alias {$edit['alias[0][value]']} is already in use in this language.");
 
     // Create an alias without a starting slash.
     $node5 = $this->drupalCreateNode();
@@ -246,8 +243,8 @@ class PathAliasTest extends PathTestBase {
     $this->submitForm($edit, 'Save');
 
     $this->assertSession()->addressEquals('admin/config/search/path/add');
-    $this->assertSession()->statusMessageContains('The source path has to start with a slash.', 'error');
-    $this->assertSession()->statusMessageContains('The alias path has to start with a slash.', 'error');
+    $this->assertSession()->pageTextContains('The source path has to start with a slash.');
+    $this->assertSession()->pageTextContains('The alias path has to start with a slash.');
   }
 
   /**
@@ -269,8 +266,10 @@ class PathAliasTest extends PathTestBase {
     $this->assertSession()->statusCodeEquals(200);
 
     // Confirm the 'canonical' and 'shortlink' URLs.
-    $this->assertSession()->elementExists('xpath', "//link[contains(@rel, 'canonical') and contains(@href, '" . $edit['path[0][alias]'] . "')]");
-    $this->assertSession()->elementExists('xpath', "//link[contains(@rel, 'shortlink') and contains(@href, 'node/" . $node1->id() . "')]");
+    $elements = $this->xpath("//link[contains(@rel, 'canonical') and contains(@href, '" . $edit['path[0][alias]'] . "')]");
+    $this->assertNotEmpty($elements, 'Page contains canonical link URL.');
+    $elements = $this->xpath("//link[contains(@rel, 'shortlink') and contains(@href, 'node/" . $node1->id() . "')]");
+    $this->assertNotEmpty($elements, 'Page contains shortlink URL.');
 
     $previous = $edit['path[0][alias]'];
     // Change alias to one containing "exotic" characters.
@@ -313,7 +312,7 @@ class PathAliasTest extends PathTestBase {
     $this->submitForm($edit, 'Save');
 
     // Confirm that the alias didn't make a duplicate.
-    $this->assertSession()->statusMessageContains("The alias {$edit['path[0][alias]']} is already in use in this language.", 'error');
+    $this->assertSession()->pageTextContains("The alias {$edit['path[0][alias]']} is already in use in this language.");
 
     // Delete alias.
     $this->drupalGet('node/' . $node1->id() . '/edit');
@@ -370,7 +369,7 @@ class PathAliasTest extends PathTestBase {
     $edit = ['path[0][alias]' => '0'];
     $this->drupalGet($node6->toUrl('edit-form'));
     $this->submitForm($edit, 'Save');
-    $this->assertSession()->statusMessageContains('The alias path has to start with a slash.', 'error');
+    $this->assertSession()->pageTextContains('The alias path has to start with a slash.');
 
     // Create an invalid alias with two leading slashes and verify that the
     // extra slash is removed when the link is generated. This ensures that URL
@@ -429,7 +428,7 @@ class PathAliasTest extends PathTestBase {
     $node_two = $this->drupalCreateNode();
     $this->drupalGet('node/' . $node_two->id() . '/edit');
     $this->submitForm($edit, 'Save');
-    $this->assertSession()->statusMessageContains("The alias {$edit['path[0][alias]']} is already in use in this language.", 'error');
+    $this->assertSession()->pageTextContains("The alias {$edit['path[0][alias]']} is already in use in this language.");
     $path_alias = $this->assertSession()->fieldExists('path[0][alias]');
     $this->assertSession()->fieldValueEquals('path[0][alias]', $edit['path[0][alias]']);
     $this->assertTrue($path_alias->hasClass('error'));
@@ -445,7 +444,7 @@ class PathAliasTest extends PathTestBase {
     // This error should still be present next to the field.
     $this->assertSession()->pageTextContains("The alias {$edit['path[0][alias]']} is already in use in this language.");
     // The validation error set for the page should include this text.
-    $this->assertSession()->statusMessageContains('1 error has been found: URL alias', 'error');
+    $this->assertSession()->pageTextContains('1 error has been found: URL alias');
     // The text 'URL alias' should be a link.
     $this->assertSession()->linkExists('URL alias');
     // The link should be to the ID of the URL alias field.

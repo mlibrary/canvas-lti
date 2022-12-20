@@ -22,6 +22,7 @@ class RestPermissionsTest extends KernelTestBase {
     'serialization',
     'basic_auth',
     'user',
+    'hal',
   ];
 
   /**

@@ -403,6 +403,8 @@ class ConfigurableLanguageManager extends LanguageManager implements Configurabl
    * {@inheritdoc}
    */
   public function getLanguageSwitchLinks($type, Url $url) {
+    $links = FALSE;
+
     if ($this->negotiator) {
       foreach ($this->negotiator->getNegotiationMethods($type) as $method_id => $method) {
         $reflector = new \ReflectionClass($method['class']);
@@ -420,7 +422,7 @@ class ConfigurableLanguageManager extends LanguageManager implements Configurabl
       }
     }
 
-    return $links ?? NULL;
+    return $links;
   }
 
   /**

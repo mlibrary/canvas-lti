@@ -45,8 +45,8 @@ class TaxonomyTermViewTest extends TaxonomyTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp($import_test_views = TRUE, $modules = []): void {
-    parent::setUp($import_test_views, $modules);
+  protected function setUp($import_test_views = TRUE): void {
+    parent::setUp($import_test_views);
 
     // Create an administrative user.
     $this->adminUser = $this->drupalCreateUser([

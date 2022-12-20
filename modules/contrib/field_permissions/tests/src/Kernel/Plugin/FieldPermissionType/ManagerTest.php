@@ -21,7 +21,7 @@ class ManagerTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = [
+  public static $modules = [
     'entity_test',
     'field',
     'field_permissions',
@@ -47,7 +47,7 @@ class ManagerTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp():void {
+  public function setUp() {
     parent::setUp();
 
     $this->installSchema('system', ['sequences']);

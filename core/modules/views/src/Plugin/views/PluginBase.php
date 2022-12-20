@@ -39,7 +39,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @ingroup views_plugins
  */
-#[\AllowDynamicProperties]
 abstract class PluginBase extends ComponentPluginBase implements ContainerFactoryPluginInterface, ViewsPluginInterface, DependentPluginInterface, TrustedCallbackInterface {
 
   /**
@@ -137,7 +136,6 @@ abstract class PluginBase extends ComponentPluginBase implements ContainerFactor
    */
   public function init(ViewExecutable $view, DisplayPluginBase $display, array &$options = NULL) {
     $this->view = $view;
-    $this->options = $this->options ?? [];
     $this->setOptionDefaults($this->options, $this->defineOptions());
     $this->displayHandler = $display;
 

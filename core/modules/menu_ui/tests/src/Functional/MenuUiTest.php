@@ -80,9 +80,6 @@ class MenuUiTest extends BrowserTestBase {
    */
   protected $items;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

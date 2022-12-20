@@ -25,22 +25,16 @@
       // Solid background.
       $colorPreview.css(
         'backgroundColor',
-        $colorPalette.find('input[name="palette[bg]"]')[0].value,
+        $colorPalette.find('input[name="palette[bg]"]').val(),
       );
 
       // Text preview.
       $colorPreview
         .find('.color-preview-main h2, .color-preview .preview-content')
-        .css(
-          'color',
-          $colorPalette.find('input[name="palette[text]"]')[0].value,
-        );
+        .css('color', $colorPalette.find('input[name="palette[text]"]').val());
       $colorPreview
         .find('.color-preview-content a')
-        .css(
-          'color',
-          $colorPalette.find('input[name="palette[link]"]')[0].value,
-        );
+        .css('color', $colorPalette.find('input[name="palette[link]"]').val());
 
       // Sidebar block.
       const $colorPreviewBlock = $colorPreview.find(
@@ -48,11 +42,11 @@
       );
       $colorPreviewBlock.css(
         'background-color',
-        $colorPalette.find('input[name="palette[sidebar]"]')[0].value,
+        $colorPalette.find('input[name="palette[sidebar]"]').val(),
       );
       $colorPreviewBlock.css(
         'border-color',
-        $colorPalette.find('input[name="palette[sidebarborders]"]')[0].value,
+        $colorPalette.find('input[name="palette[sidebarborders]"]').val(),
       );
 
       // Footer wrapper background.
@@ -60,14 +54,16 @@
         .find('.color-preview-footer-wrapper')
         .css(
           'background-color',
-          $colorPalette.find('input[name="palette[footer]"]')[0].value,
+          $colorPalette.find('input[name="palette[footer]"]').val(),
         );
 
       // CSS3 Gradients.
-      const gradientStart = $colorPalette.find('input[name="palette[top]"]')[0]
-        .value;
-      const gradientEnd = $colorPalette.find('input[name="palette[bottom]"]')[0]
-        .value;
+      const gradientStart = $colorPalette
+        .find('input[name="palette[top]"]')
+        .val();
+      const gradientEnd = $colorPalette
+        .find('input[name="palette[bottom]"]')
+        .val();
 
       $colorPreview
         .find('.color-preview-header')
@@ -80,7 +76,7 @@
         .find('.color-preview-site-name')
         .css(
           'color',
-          $colorPalette.find('input[name="palette[titleslogan]"]')[0].value,
+          $colorPalette.find('input[name="palette[titleslogan]"]').val(),
         );
     },
   };

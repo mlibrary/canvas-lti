@@ -33,15 +33,15 @@ class PathPluginTest extends NodeTestBase {
   /**
    * Contains all nodes used by this test.
    *
-   * @var \Drupal\node\Entity\Node[]
+   * @var Node[]
    */
   protected $nodes;
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp($import_test_views = TRUE, $modules = ['node_test_views']): void {
-    parent::setUp($import_test_views, $modules);
+  protected function setUp($import_test_views = TRUE): void {
+    parent::setUp($import_test_views);
 
     $this->drupalCreateContentType(['type' => 'article']);
 

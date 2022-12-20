@@ -67,7 +67,7 @@ class ConvertImageEffect extends ConfigurableImageEffectBase {
     );
     $form['extension'] = [
       '#type' => 'select',
-      '#title' => $this->t('Convert to'),
+      '#title' => t('Convert to'),
       '#default_value' => $this->configuration['extension'],
       '#required' => TRUE,
       '#options' => $options,

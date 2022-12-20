@@ -70,9 +70,6 @@ class EntitySerializationTest extends NormalizerTestBase {
    */
   protected $entityClass = 'Drupal\entity_test\Entity\EntityTest';
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 
@@ -210,7 +207,7 @@ class EntitySerializationTest extends NormalizerTestBase {
   }
 
   /**
-   * Tests entity serialization for core's formats by a registered Serializer.
+   * Tests registered Serializer's entity serialization for core's formats.
    */
   public function testSerialize() {
     // Test that Serializer responds using the ComplexDataNormalizer and
@@ -327,7 +324,7 @@ class EntitySerializationTest extends NormalizerTestBase {
     $this->serializer->denormalize([
       'serialized_long' => [
         [
-          'value' => 'boo',
+         'value' => 'boo',
         ],
       ],
       'type' => 'entity_test_serialized_field',

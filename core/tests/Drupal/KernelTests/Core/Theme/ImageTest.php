@@ -33,9 +33,6 @@ class ImageTest extends KernelTestBase {
    */
   protected $testImages;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 
@@ -91,6 +88,8 @@ class ImageTest extends KernelTestBase {
     $this->render($image);
 
     // Make sure the src attribute has the correct value.
+    /** @var \Drupal\Core\File\FileUrlGeneratorInterface $this->fileUrlGenerator */
+    $this->fileUrlGenerator = $this->fileUrlGenerator;
     $this->assertRaw($this->fileUrlGenerator->generateString($image['#uri']), 'Correct output for an image with the src attribute.');
   }
 

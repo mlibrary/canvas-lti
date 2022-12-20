@@ -265,7 +265,6 @@ class NodeTest extends ResourceTestBase {
       case 'DELETE':
         return "The 'access content' permission is required.";
     }
-    return '';
   }
 
   /**
@@ -378,10 +377,9 @@ class NodeTest extends ResourceTestBase {
     // Save the entity to invalidate caches.
     $this->entity->save();
     $uuid = $this->entity->uuid();
-    $language = $this->entity->language()->getId();
     $cache = \Drupal::service('render_cache')->get([
       '#cache' => [
-        'keys' => ['node--camelids', $uuid, $language],
+        'keys' => ['node--camelids', $uuid],
         'bin' => 'jsonapi_normalizations',
       ],
     ]);
@@ -417,7 +415,7 @@ class NodeTest extends ResourceTestBase {
   protected function assertNormalizedFieldsAreCached(array $field_names): void {
     $cache = \Drupal::service('render_cache')->get([
       '#cache' => [
-        'keys' => ['node--camelids', $this->entity->uuid(), $this->entity->language()->getId()],
+        'keys' => ['node--camelids', $this->entity->uuid()],
         'bin' => 'jsonapi_normalizations',
       ],
     ]);

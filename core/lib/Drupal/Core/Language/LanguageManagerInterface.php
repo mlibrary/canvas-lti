@@ -171,11 +171,8 @@ interface LanguageManagerInterface {
    * @param \Drupal\Core\Url $url
    *   The URL the switch links will be relative to.
    *
-   * @return object|null
-   *   An object with the following keys:
-   *   - links: An array of links indexed by the language ID
-   *   - method_id: The language negotiation method ID
-   *   or NULL if there are no language switch links.
+   * @return array
+   *   A keyed array of links ready to be themed.
    */
   public function getLanguageSwitchLinks($type, Url $url);
 

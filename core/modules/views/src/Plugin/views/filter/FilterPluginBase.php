@@ -46,8 +46,6 @@ use Drupal\views\ViewExecutable;
 abstract class FilterPluginBase extends HandlerBase implements CacheableDependencyInterface {
 
   /**
-   * The value.
-   *
    * Contains the actual value of the field,either configured in the views ui
    * or entered in the exposed filters.
    */
@@ -860,7 +858,7 @@ abstract class FilterPluginBase extends HandlerBase implements CacheableDependen
     }
     foreach ($this->options['group_info']['group_items'] as $id => $group) {
       if (!empty($group['title'])) {
-        $groups[$id] = $group['title'];
+        $groups[$id] = $id != 'All' ? $this->t($group['title']) : $group['title'];
       }
     }
 
@@ -884,7 +882,7 @@ abstract class FilterPluginBase extends HandlerBase implements CacheableDependen
         }
         unset($form[$value]['#default_value']);
         $user_input = $form_state->getUserInput();
-        if (empty($user_input[$value])) {
+        if (empty($user_input)) {
           $user_input[$value] = $this->group_info;
           $form_state->setUserInput($user_input);
         }
@@ -1509,7 +1507,7 @@ abstract class FilterPluginBase extends HandlerBase implements CacheableDependen
         }
 
         if ($this->operator != 'empty' && $this->operator != 'not empty') {
-          if ($value == 'All' || $value === 0 || $value === []) {
+          if ($value == 'All' || $value === []) {
             return FALSE;
           }
 

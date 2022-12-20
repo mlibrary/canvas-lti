@@ -139,8 +139,8 @@
         });
 
         // Change input value.
-        if (input.value && input.value !== color) {
-          input.value = color;
+        if ($(input).val() && $(input).val() !== color) {
+          $(input).val(color);
 
           // Update locked values.
           if (propagate) {

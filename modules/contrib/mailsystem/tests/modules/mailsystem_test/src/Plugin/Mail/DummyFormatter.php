@@ -20,7 +20,7 @@ class DummyFormatter implements MailInterface {
    */
   public function format(array $message) {
     // TODO: Implement format() method.
-    \dump([
+    \debug([
       'Subject' => $message['subject'],
       'Body' => $message['body'],
       'Headers' => $message['headers'],

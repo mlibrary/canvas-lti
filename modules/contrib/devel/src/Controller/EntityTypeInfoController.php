@@ -34,8 +34,6 @@ class EntityTypeInfoController extends ControllerBase {
    *
    * @param \Drupal\devel\DevelDumperManagerInterface $dumper
    *   The dumper service.
-   * @param \Drupal\Core\Entity\EntityLastInstalledSchemaRepositoryInterface $entityLastInstalledSchemaRepository
-   *   The installed entity definition repository service.
    */
   public function __construct(DevelDumperManagerInterface $dumper, EntityLastInstalledSchemaRepositoryInterface $entityLastInstalledSchemaRepository) {
     $this->dumper = $dumper;

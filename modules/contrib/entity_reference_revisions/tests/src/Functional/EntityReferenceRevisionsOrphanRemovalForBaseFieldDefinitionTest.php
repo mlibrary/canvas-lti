@@ -24,7 +24,7 @@ class EntityReferenceRevisionsOrphanRemovalForBaseFieldDefinitionTest extends En
    *
    * @var array
    */
-  protected static $modules = [
+  public static $modules = [
     'node',
     'field',
     'entity_reference_revisions',

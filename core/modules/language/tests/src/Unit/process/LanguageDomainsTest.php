@@ -32,7 +32,7 @@ class LanguageDomainsTest extends MigrateProcessTestCase {
     // to return TRUE to be able to test the process.
     $this->row->expects($this->once())
       ->method('getSourceProperty')
-      ->willReturn(TRUE);
+      ->will($this->returnValue(TRUE));
 
     // The language_domains plugin use $base_url to fill empty domains.
     global $base_url;

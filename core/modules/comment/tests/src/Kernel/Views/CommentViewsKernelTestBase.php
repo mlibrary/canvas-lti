@@ -39,9 +39,6 @@ abstract class CommentViewsKernelTestBase extends ViewsKernelTestBase {
    */
   protected $userStorage;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp($import_test_views = TRUE) {
     parent::setUp($import_test_views);
 

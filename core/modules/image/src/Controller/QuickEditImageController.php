@@ -2,8 +2,7 @@
 
 namespace Drupal\image\Controller;
 
-@trigger_error(__NAMESPACE__ . '\QuickEditImageController is deprecated in drupal:9.4.0 and is removed from drupal:10.0.0. Instead, use Drupal\quickedit\QuickEditImageController. See https://www.drupal.org/node/3271848', E_USER_DEPRECATED);
-
+use Drupal\Core\Cache\CacheableJsonResponse;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityDisplayRepositoryInterface;

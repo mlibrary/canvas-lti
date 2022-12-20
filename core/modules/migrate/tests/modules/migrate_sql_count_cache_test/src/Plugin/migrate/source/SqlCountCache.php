@@ -18,7 +18,7 @@ class SqlCountCache extends SqlBase {
    */
   public function fields() {
     return [
-      'id' => $this->t('Id'),
+      'id' => t('Id'),
     ];
   }
 

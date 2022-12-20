@@ -35,13 +35,13 @@ display:
       exposed_form:
         type: basic
         options:
-          submit_button: Submit
+          submit_button: Toepassen
           reset_button: false
           reset_button_label: Reset
-          exposed_sorts_label: Sort
+          exposed_sorts_label: 'Sorteren op'
           expose_sort_order: true
-          sort_asc_label: Ascending
-          sort_desc_label: Descending
+          sort_asc_label: Oplopend
+          sort_desc_label: Aflopend
       pager:
         type: mini
         options:
@@ -54,9 +54,9 @@ display:
             items_per_page_label: 'Items per pagina'
             items_per_page_options: '5, 10, 25, 50'
             items_per_page_options_all: false
-            items_per_page_options_all_label: '- All -'
+            items_per_page_options_all_label: '- Alle -'
             offset: false
-            offset_label: 'Start point'
+            offset_label: Startpunt
           tags:
             previous: ‹‹
             next: ››

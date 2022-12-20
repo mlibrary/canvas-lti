@@ -218,11 +218,10 @@ class RendererTest extends RendererTestBase {
     $data[] = [
       [
         '#markup' => 'foo',
-        '#pre_render' => [
-          function ($elements) {
-            $elements['#markup'] .= '<script>alert("bar");</script>';
-            return $elements;
-          },
+        '#pre_render' => [function ($elements) {
+          $elements['#markup'] .= '<script>alert("bar");</script>';
+          return $elements;
+        },
         ],
       ],
       'fooalert("bar");',
@@ -232,11 +231,10 @@ class RendererTest extends RendererTestBase {
       [
         '#markup' => 'foo',
         '#allowed_tags' => ['script'],
-        '#pre_render' => [
-          function ($elements) {
-            $elements['#markup'] .= '<script>alert("bar");</script>';
-            return $elements;
-          },
+        '#pre_render' => [function ($elements) {
+          $elements['#markup'] .= '<script>alert("bar");</script>';
+          return $elements;
+        },
         ],
       ],
       'foo<script>alert("bar");</script>',
@@ -246,11 +244,10 @@ class RendererTest extends RendererTestBase {
     $data[] = [
       [
         '#plain_text' => 'foo',
-        '#pre_render' => [
-          function ($elements) {
-            $elements['#plain_text'] .= '<script>alert("bar");</script>';
-            return $elements;
-          },
+        '#pre_render' => [function ($elements) {
+          $elements['#plain_text'] .= '<script>alert("bar");</script>';
+          return $elements;
+        },
         ],
       ],
       'foo&lt;script&gt;alert(&quot;bar&quot;);&lt;/script&gt;',

@@ -5,7 +5,6 @@ namespace Drupal\Tests\config\Functional;
 use Drupal\FunctionalTests\Installer\InstallerTestBase;
 use Drupal\Core\Config\InstallStorage;
 use Drupal\Core\Serialization\Yaml;
-use Drupal\Tests\RequirementsPageTrait;
 
 /**
  * Tests install profile config overrides can not add unmet dependencies.
@@ -13,8 +12,6 @@ use Drupal\Tests\RequirementsPageTrait;
  * @group Config
  */
 class ConfigInstallProfileUnmetDependenciesTest extends InstallerTestBase {
-
-  use RequirementsPageTrait;
 
   /**
    * The installation profile to install.

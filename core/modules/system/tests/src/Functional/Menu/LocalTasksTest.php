@@ -23,7 +23,7 @@ class LocalTasksTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'starterkit_theme';
+  protected $defaultTheme = 'classy';
 
   /**
    * The local tasks block under testing.
@@ -64,7 +64,6 @@ class LocalTasksTest extends BrowserTestBase {
       $expected = Url::fromRoute($route_name, $route_parameters)->toString();
       $this->assertEquals($expected, $elements[$index]->getAttribute('href'), "Task " . ($index + 1) . "number href " . $elements[$index]->getAttribute('href') . " equals $expected.");
     }
-    $this->assertEquals(count($routes), count($elements), 'Only expected local tasks are found.');
   }
 
   /**
@@ -93,7 +92,10 @@ class LocalTasksTest extends BrowserTestBase {
    * @internal
    */
   protected function assertNoLocalTasks(int $level = 0): void {
-    $this->assertSession()->elementNotExists('xpath', '//*[contains(@class, "' . ($level == 0 ? 'tabs primary' : 'tabs secondary') . '")]//a');
+    $elements = $this->xpath('//*[contains(@class, :class)]//a', [
+      ':class' => $level == 0 ? 'tabs primary' : 'tabs secondary',
+    ]);
+    $this->assertEmpty($elements, 'Local tasks not found.');
   }
 
   /**
@@ -188,8 +190,9 @@ class LocalTasksTest extends BrowserTestBase {
 
     $this->assertLocalTasks($tasks, 0);
 
-    $this->assertSession()->elementsCount('xpath', '//ul[contains(@class, "tabs")]//li[contains(@class, "active")]', 1);
-    $this->assertSession()->elementTextEquals('xpath', '//ul[contains(@class, "tabs")]//li[contains(@class, "active")]', 'upcasting sub1(active tab)');
+    $result = $this->xpath('//ul[contains(@class, "tabs")]//li[contains(@class, "active")]');
+    $this->assertCount(1, $result, 'There is one active tab.');
+    $this->assertEquals('upcasting sub1(active tab)', $result[0]->getText(), 'The "upcasting sub1" tab is active.');
 
     $this->drupalGet(Url::fromRoute('menu_test.local_task_test_upcasting_sub2', ['entity_test' => '1']));
 
@@ -199,8 +202,9 @@ class LocalTasksTest extends BrowserTestBase {
     ];
     $this->assertLocalTasks($tasks, 0);
 
-    $this->assertSession()->elementsCount('xpath', '//ul[contains(@class, "tabs")]//li[contains(@class, "active")]', 1);
-    $this->assertSession()->elementTextEquals('xpath', '//ul[contains(@class, "tabs")]//li[contains(@class, "active")]', 'upcasting sub2(active tab)');
+    $result = $this->xpath('//ul[contains(@class, "tabs")]//li[contains(@class, "active")]');
+    $this->assertCount(1, $result, 'There is one active tab.');
+    $this->assertEquals('upcasting sub2(active tab)', $result[0]->getText(), 'The "upcasting sub2" tab is active.');
   }
 
   /**
@@ -223,7 +227,6 @@ class LocalTasksTest extends BrowserTestBase {
       ['menu_test.local_task_test_tasks_view', []],
       ['menu_test.local_task_test_tasks_edit', []],
       ['menu_test.local_task_test_tasks_settings', []],
-      ['menu_test.local_task_test_tasks_settings_dynamic', []],
     ]);
 
     // Verify that local tasks in the second level doesn't appear.
@@ -259,26 +262,21 @@ class LocalTasksTest extends BrowserTestBase {
     $this->drupalLogin($this->rootUser);
     $this->drupalCreateContentType(['type' => 'page']);
 
-    // Only the Edit task. The block avoids showing a single tab.
-    $this->drupalGet('/admin/config/people/accounts');
-    $this->assertNoLocalTasks();
-
-    // Only the Edit and Manage permission tabs.
     $this->drupalGet('/admin/structure/types/manage/page');
-    $this->assertLocalTasks([
-      ['entity.node_type.edit_form', ['node_type' => 'page']],
-      ['entity.node_type.entity_permissions_form', ['node_type' => 'page']],
-    ]);
+
+    // Only the Edit task. The block avoids showing a single tab.
+    $this->assertNoLocalTasks();
 
     // Field UI adds the usual Manage fields etc tabs.
     \Drupal::service('module_installer')->install(['field_ui']);
+
     $this->drupalGet('/admin/structure/types/manage/page');
+
     $this->assertLocalTasks([
       ['entity.node_type.edit_form', ['node_type' => 'page']],
       ['entity.node.field_ui_fields', ['node_type' => 'page']],
       ['entity.entity_form_display.node.default', ['node_type' => 'page']],
       ['entity.entity_view_display.node.default', ['node_type' => 'page']],
-      ['entity.node_type.entity_permissions_form', ['node_type' => 'page']],
     ]);
   }
 

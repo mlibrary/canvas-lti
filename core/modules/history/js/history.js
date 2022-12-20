@@ -4,20 +4,24 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function ($, Drupal, drupalSettings, storage) {
   var currentUserID = parseInt(drupalSettings.user.uid, 10);
   var secondsIn30Days = 2592000;
   var thirtyDaysAgo = Math.round(new Date().getTime() / 1000) - secondsIn30Days;
   var embeddedLastReadTimestamps = false;
+
   if (drupalSettings.history && drupalSettings.history.lastReadTimestamps) {
     embeddedLastReadTimestamps = drupalSettings.history.lastReadTimestamps;
   }
+
   Drupal.history = {
     fetchTimestamps: function fetchTimestamps(nodeIDs, callback) {
       if (embeddedLastReadTimestamps) {
         callback();
         return;
       }
+
       $.ajax({
         url: Drupal.url('history/get_node_read_timestamps'),
         type: 'POST',
@@ -37,6 +41,7 @@
       if (embeddedLastReadTimestamps && embeddedLastReadTimestamps[nodeID]) {
         return parseInt(embeddedLastReadTimestamps[nodeID], 10);
       }
+
       return parseInt(storage.getItem("Drupal.history.".concat(currentUserID, ".").concat(nodeID)) || 0, 10);
     },
     markAsRead: function markAsRead(nodeID) {
@@ -48,6 +53,7 @@
           if (embeddedLastReadTimestamps && embeddedLastReadTimestamps[nodeID]) {
             return;
           }
+
           storage.setItem("Drupal.history.".concat(currentUserID, ".").concat(nodeID), timestamp);
         }
       });
@@ -56,9 +62,11 @@
       if (contentTimestamp < thirtyDaysAgo) {
         return false;
       }
+
       if (embeddedLastReadTimestamps && embeddedLastReadTimestamps[nodeID]) {
         return contentTimestamp > parseInt(embeddedLastReadTimestamps[nodeID], 10);
       }
+
       var minLastReadTimestamp = parseInt(storage.getItem("Drupal.history.".concat(currentUserID, ".").concat(nodeID)) || 0, 10);
       return contentTimestamp > minLastReadTimestamp;
     }

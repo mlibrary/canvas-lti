@@ -37,11 +37,8 @@ class ContentTranslationSettingsTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'classy';
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 
@@ -101,7 +98,8 @@ class ContentTranslationSettingsTest extends BrowserTestBase {
       'settings[comment][comment_article][fields][uid]' => FALSE,
     ];
     $this->assertSettings('comment', 'comment_article', FALSE, $edit);
-    $this->assertSession()->statusMessageContains('At least one field needs to be translatable to enable Comment_article for translation.', 'error');
+    $xpath_err = '//div[contains(@class, "error")]';
+    $this->assertNotEmpty($this->xpath($xpath_err), 'Enabling translation only for entity bundles generates a form error.');
 
     // Test that the translation settings are not stored if a non-configurable
     // language is set as default and the language selector is hidden.
@@ -113,7 +111,7 @@ class ContentTranslationSettingsTest extends BrowserTestBase {
       'settings[comment][comment_article][fields][comment_body]' => TRUE,
     ];
     $this->assertSettings('comment', 'comment_article', FALSE, $edit);
-    $this->assertSession()->statusMessageContains('Translation is not supported if language is always one of: Not specified, Not applicable', 'error');
+    $this->assertNotEmpty($this->xpath($xpath_err), 'Enabling translation with a fixed non-configurable language generates a form error.');
 
     // Test that a field shared among different bundles can be enabled without
     // needing to make all the related bundles translatable.
@@ -207,17 +205,6 @@ class ContentTranslationSettingsTest extends BrowserTestBase {
       $this->assertEquals($definitions['body']->isTranslatable(), $field->isTranslatable(), 'Configurable field translatability correctly switched.');
     }
 
-    // Test that we can't use the 'Not specified' default language when it is
-    // not showing in the language selector.
-    $edit = [
-      'language_configuration[langcode]' => 'und',
-      'language_configuration[language_alterable]' => FALSE,
-      'language_configuration[content_translation]' => TRUE,
-    ];
-    $this->drupalGet('admin/structure/types/manage/article');
-    $this->submitForm($edit, 'Save content type');
-    $this->getSession()->getPage()->hasContent('"Show language selector" is not compatible with translating content that has default language: und. Either do not hide the language selector or pick a specific language.');
-
     // Test that the order of the language list is similar to other language
     // lists, such as in Views UI.
     $this->drupalGet('admin/config/regional/content-language');
@@ -258,7 +245,7 @@ class ContentTranslationSettingsTest extends BrowserTestBase {
     $this->drupalGet('admin/config/people/accounts');
     $this->submitForm(['anonymous' => 'Save me please!'], 'Save configuration');
     $this->assertSession()->fieldValueEquals('anonymous', 'Save me please!');
-    $this->assertSession()->statusMessageContains('The configuration options have been saved.', 'status');
+    $this->assertSession()->pageTextContains('The configuration options have been saved.');
   }
 
   /**

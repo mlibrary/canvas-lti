@@ -67,7 +67,7 @@ class ContentEntityNormalizerTest extends UnitTestCase {
     $this->serializer->expects($this->any())
       ->method('normalize')
       ->with($this->containsOnlyInstancesOf('Drupal\Core\Field\FieldItemListInterface'), 'test_format', ['account' => NULL])
-      ->willReturn('test');
+      ->will($this->returnValue('test'));
 
     $definitions = [
       'field_accessible_external' => $this->createMockFieldListItem(TRUE, FALSE),
@@ -101,7 +101,7 @@ class ContentEntityNormalizerTest extends UnitTestCase {
     $this->serializer->expects($this->any())
       ->method('normalize')
       ->with($this->containsOnlyInstancesOf('Drupal\Core\Field\FieldItemListInterface'), 'test_format', $context)
-      ->willReturn('test');
+      ->will($this->returnValue('test'));
 
     // The mock account should get passed directly into the access() method on
     // field items from $context['account'].
@@ -137,7 +137,7 @@ class ContentEntityNormalizerTest extends UnitTestCase {
       ->shouldBeCalled();
     $content_entity_mock->expects($this->any())
       ->method('getTypedData')
-      ->willReturn($typed_data->reveal());
+      ->will($this->returnValue($typed_data->reveal()));
 
     return $content_entity_mock;
   }
@@ -159,7 +159,7 @@ class ContentEntityNormalizerTest extends UnitTestCase {
     $mock = $this->createMock('Drupal\Core\Field\FieldItemListInterface');
     $mock->expects($this->once())
       ->method('getDataDefinition')
-      ->willReturn($data_definition->reveal());
+      ->will($this->returnValue($data_definition->reveal()));
     $data_definition->isInternal()
       ->willReturn($internal)
       ->shouldBeCalled();
@@ -167,7 +167,7 @@ class ContentEntityNormalizerTest extends UnitTestCase {
       $mock->expects($this->once())
         ->method('access')
         ->with('view', $user_context)
-        ->willReturn($access);
+        ->will($this->returnValue($access));
     }
     return $mock;
   }

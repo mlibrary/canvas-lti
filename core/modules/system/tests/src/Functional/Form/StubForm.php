@@ -43,7 +43,7 @@ class StubForm extends FormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return $this->formId;
+    $this->formId;
   }
 
   /**

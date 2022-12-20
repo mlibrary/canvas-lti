@@ -9,10 +9,6 @@ use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ThemeHandler;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 /**
  * Class ExtensionManager
  *
@@ -20,7 +16,6 @@ error_reporting(E_ALL);
  */
 class Manager
 {
-
     /**
      * @var Site
      */
@@ -52,20 +47,44 @@ class Manager
     private $extension = null;
 
     /**
+     * @var Drupal\Core\Extension\ModuleExtensionList
+     */
+    private $extensionList;
+
+    /**
+     * @var ModuleHandlerInterface
+     */
+    protected $moduleHandler;
+
+    /**
+     * @var ThemeHandler
+     */
+    protected $themeHandler;
+
+    /**
      * ExtensionManager constructor.
      *
-     * @param  Site    $site
-     * @param  Client  $httpClient
-     * @param  string  $appRoot
+     * @param Site   $site
+     * @param Client $httpClient
+     * @param string $appRoot
+     * @param ModuleExtensionList $extensionList
+     * @param ModuleHandlerInterface $moduleHandler
+     * @param ThemeHandler  $themeHandler
      */
     public function __construct(
         Site $site,
         Client $httpClient,
-        $appRoot
+        $appRoot,
+        ModuleExtensionList $extensionList,
+        ModuleHandlerInterface $moduleHandler,
+        ThemeHandler $themeHandler
     ) {
-        $this->site       = $site;
+        $this->site = $site;
         $this->httpClient = $httpClient;
-        $this->appRoot    = $appRoot;
+        $this->appRoot = $appRoot;
+        $this->extensionList = $extensionList;
+        $this->moduleHandler = $moduleHandler;
+        $this->themeHandler = $themeHandler;
         $this->initialize();
     }
 
@@ -75,7 +94,6 @@ class Manager
     public function showInstalled()
     {
         $this->filters['showInstalled'] = true;
-
         return $this;
     }
 
@@ -85,7 +103,6 @@ class Manager
     public function showUninstalled()
     {
         $this->filters['showUninstalled'] = true;
-
         return $this;
     }
 
@@ -95,7 +112,6 @@ class Manager
     public function showCore()
     {
         $this->filters['showCore'] = true;
-
         return $this;
     }
 
@@ -105,13 +121,11 @@ class Manager
     public function showNoCore()
     {
         $this->filters['showNoCore'] = true;
-
         return $this;
     }
 
     /**
-     * @param  boolean  $nameOnly
-     *
+     * @param boolean $nameOnly
      * @return array
      */
     public function getList($nameOnly = false)
@@ -153,11 +167,11 @@ class Manager
     }
 
     /**
-     * @param  string  $extension
+     * @param string $extension
      */
     private function discoverExtension($extension)
     {
-        $this->extension              = $extension;
+        $this->extension = $extension;
         $this->extensions[$extension] = $this->discoverExtensions($extension);
 
         return $this;
@@ -168,48 +182,45 @@ class Manager
      */
     private function initialize()
     {
-        $this->extension  = 'module';
+        $this->extension = 'module';
         $this->extensions = [
-            'module'  => [],
-            'theme'   => [],
+            'module' => [],
+            'theme' => [],
             'profile' => [],
         ];
-        $this->filters    = [
-            'showInstalled'   => false,
+        $this->filters = [
+            'showInstalled' => false,
             'showUninstalled' => false,
-            'showCore'        => false,
-            'showNoCore'      => false,
+            'showCore' => false,
+            'showNoCore' => false
         ];
     }
 
     /**
-     * @param  string      $type
-     * @param  bool|false  $nameOnly
-     *
+     * @param string     $type
+     * @param bool|false $nameOnly
      * @return array
      */
     private function getExtensions(
         $type = 'module',
         $nameOnly = false
     ) {
-        $showInstalled   = $this->filters['showInstalled'];
+        $showInstalled = $this->filters['showInstalled'];
         $showUninstalled = $this->filters['showUninstalled'];
-        $showCore        = $this->filters['showCore'];
-        $showNoCore      = $this->filters['showNoCore'];
+        $showCore = $this->filters['showCore'];
+        $showNoCore = $this->filters['showNoCore'];
 
         $extensions = [];
         if (!array_key_exists($type, $this->extensions)) {
             return $extensions;
         }
 
-        $module_handler = \Drupal::service('module_handler');
         foreach ($this->extensions[$type] as $extension) {
             $name = $extension->getName();
 
-            $isInstalled = $type == 'module'
-                && $module_handler->moduleExists($name);
+            $isInstalled = $type=='module' && $this->moduleHandler->moduleExists($name);
             if (!$isInstalled && property_exists($extension, 'status')) {
-                $isInstalled = ($extension->status) ? true : false;
+                $isInstalled = ($extension->status)?true:false;
             }
             if (!$showInstalled && $isInstalled) {
                 continue;
@@ -228,25 +239,22 @@ class Manager
         }
 
 
-        return $nameOnly ? array_keys($extensions) : $extensions;
+        return $nameOnly?array_keys($extensions):$extensions;
     }
 
     /**
-     * @param  string  $type
-     *
+     * @param string $type
      * @return \Drupal\Core\Extension\Extension[]
      */
     private function discoverExtensions($type)
     {
         if ($type === 'module') {
             $this->site->loadLegacyFile('/core/modules/system/system.module');
-            $extensionList = \Drupal::service('extension.list.module');
-            $extensionList->reset()->getList();
+            $this->extensionList->reset()->getList();
         }
 
         if ($type === 'theme') {
-            $theme_handler = \Drupal::service('theme_handler');
-            $theme_handler->rebuildThemeData();
+            $this->themeHandler->rebuildThemeData();
         }
 
         /*
@@ -260,8 +268,7 @@ class Manager
     }
 
     /**
-     * @param  string  $name
-     *
+     * @param string $name
      * @return \Drupal\Console\Extension\Extension
      */
     public function getModule($name)
@@ -274,8 +281,7 @@ class Manager
     }
 
     /**
-     * @param  string  $name
-     *
+     * @param string $name
      * @return \Drupal\Console\Extension\Extension
      */
     public function getProfile($name)
@@ -288,8 +294,7 @@ class Manager
     }
 
     /**
-     * @param  string  $name
-     *
+     * @param string $name
      * @return \Drupal\Console\Extension\Extension
      */
     public function getTheme($name)
@@ -302,8 +307,8 @@ class Manager
     }
 
     /**
-     * @param  string  $type
-     * @param  string  $name
+     * @param string $type
+     * @param string $name
      *
      * @return \Drupal\Core\Extension\Extension
      */
@@ -321,8 +326,7 @@ class Manager
     }
 
     /**
-     * @param  \Drupal\Core\Extension\Extension  $extension
-     *
+     * @param \Drupal\Core\Extension\Extension $extension
      * @return \Drupal\Console\Extension\Extension
      */
     private function createExtension($extension)
@@ -341,71 +345,61 @@ class Manager
     }
 
     /**
-     * @param  string  $testType
-     * @param          $fullPath
-     *
+     * @param string   $testType
+     * @param $fullPath
      * @return string
      */
     public function getTestPath($testType, $fullPath = false)
     {
-        return $this->getPath($fullPath).'/Tests/'.$testType;
+        return $this->getPath($fullPath) . '/Tests/' . $testType;
     }
 
-    public function validateModuleFunctionExist(
-        $moduleName,
-        $function,
-        $moduleFile = null
-    ) {
+    public function validateModuleFunctionExist($moduleName, $function, $moduleFile = null)
+    {
         //Load module file to prevent issue of missing functions used in update
-        $module     = $this->getModule($moduleName);
+        $module = $this->getModule($moduleName);
         $modulePath = $module->getPath();
         if ($moduleFile) {
-            $this->site->loadLegacyFile($modulePath.'/'.$moduleFile);
+            $this->site->loadLegacyFile($modulePath . '/' . $moduleFile);
         } else {
-            $this->site->loadLegacyFile(
-                $modulePath.'/'.$module->getName().'.module'
-            );
+            $this->site->loadLegacyFile($modulePath . '/' . $module->getName() . '.module');
         }
 
         if (function_exists($function)) {
             return true;
         }
-
         return false;
     }
 
     /**
-     * @param  string  $moduleName
-     * @param  string  $pluginType
-     *
+     * @param string $moduleName
+     * @param string $pluginType
      * @return string
      */
     public function getPluginPath($moduleName, $pluginType)
     {
         $module = $this->getModule($moduleName);
 
-        return $module->getPath().'/src/Plugin/'.$pluginType;
+        return $module->getPath() . '/src/Plugin/' . $pluginType;
     }
 
     public function getDrupalExtension($type, $name)
     {
         $extension = $this->getExtension($type, $name);
-
         return $this->createExtension($extension);
     }
 
     /**
-     * @param  array   $extensions
-     * @param  string  $type
-     *
+     * @param array  $extensions
+     * @param string $type
      * @return array
      */
     public function checkExtensions(array $extensions, $type = 'module')
     {
         $checkextensions = [
-            'local_extensions'  => [],
+            'local_extensions' => [],
             'drupal_extensions' => [],
-            'no_extensions'     => [],
+            'no_extensions' => [],
         ];
 
         $local_extensions = $this->discoverExtension($type)
@@ -420,9 +414,7 @@ class Manager
                 $checkextensions['local_extensions'][] = $extension;
             } else {
                 try {
-                    $response    = $this->httpClient->head(
-                        'https://www.drupal.org/project/'.$extension
-                    );
+                    $response = $this->httpClient->head('https://www.drupal.org/project/' . $extension);
                     $header_link = $response->getHeader('link');
                     if (empty($header_link[0])) {
                         $checkextensions['no_extensions'][] = $extension;
@@ -437,5 +429,4 @@ class Manager
 
         return $checkextensions;
     }
-
 }

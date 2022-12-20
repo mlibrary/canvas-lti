@@ -345,7 +345,7 @@ class EntityReferenceItem extends FieldItemBase implements OptionsProviderInterf
    *   Either the bundle string, or NULL if there is no bundle.
    */
   protected static function getRandomBundle(EntityTypeInterface $entity_type, array $selection_settings) {
-    if ($entity_type->getKey('bundle')) {
+    if ($bundle_key = $entity_type->getKey('bundle')) {
       if (!empty($selection_settings['target_bundles'])) {
         $bundle_ids = $selection_settings['target_bundles'];
       }
@@ -362,7 +362,7 @@ class EntityReferenceItem extends FieldItemBase implements OptionsProviderInterf
   public function storageSettingsForm(array &$form, FormStateInterface $form_state, $has_data) {
     $element['target_type'] = [
       '#type' => 'select',
-      '#title' => $this->t('Type of item to reference'),
+      '#title' => t('Type of item to reference'),
       '#default_value' => $this->getSetting('target_type'),
       '#required' => TRUE,
       '#disabled' => $has_data,
@@ -413,7 +413,7 @@ class EntityReferenceItem extends FieldItemBase implements OptionsProviderInterf
     ];
     $form['handler'] = [
       '#type' => 'details',
-      '#title' => $this->t('Reference type'),
+      '#title' => t('Reference type'),
       '#open' => TRUE,
       '#tree' => TRUE,
       '#process' => [[static::class, 'formProcessMergeParent']],
@@ -421,7 +421,7 @@ class EntityReferenceItem extends FieldItemBase implements OptionsProviderInterf
 
     $form['handler']['handler'] = [
       '#type' => 'select',
-      '#title' => $this->t('Reference method'),
+      '#title' => t('Reference method'),
       '#options' => $handlers_options,
       '#default_value' => $field->getSetting('handler'),
       '#required' => TRUE,
@@ -430,7 +430,7 @@ class EntityReferenceItem extends FieldItemBase implements OptionsProviderInterf
     ];
     $form['handler']['handler_submit'] = [
       '#type' => 'submit',
-      '#value' => $this->t('Change handler'),
+      '#value' => t('Change handler'),
       '#limit_validation_errors' => [],
       '#attributes' => [
         'class' => ['js-hide'],

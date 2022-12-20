@@ -5,9 +5,9 @@ namespace Drupal\Tests\field\Functional\Rest;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\node\Entity\NodeType;
-use Drupal\Tests\rest\Functional\EntityResource\ConfigEntityResourceTestBase;
+use Drupal\Tests\rest\Functional\EntityResource\EntityResourceTestBase;
 
-abstract class FieldConfigResourceTestBase extends ConfigEntityResourceTestBase {
+abstract class FieldConfigResourceTestBase extends EntityResourceTestBase {
 
   /**
    * {@inheritdoc}
@@ -94,7 +94,6 @@ abstract class FieldConfigResourceTestBase extends ConfigEntityResourceTestBase 
    */
   protected function getNormalizedPostEntity() {
     // @todo Update in https://www.drupal.org/node/2300677.
-    return [];
   }
 
   /**

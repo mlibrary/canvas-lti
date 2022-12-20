@@ -57,8 +57,6 @@ class ContextualController implements ContainerInjectionInterface {
    * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
    *   Thrown when the request contains no ids.
    *
-   * @internal
-   *
    * @see contextual_preprocess()
    */
   public function render(Request $request) {

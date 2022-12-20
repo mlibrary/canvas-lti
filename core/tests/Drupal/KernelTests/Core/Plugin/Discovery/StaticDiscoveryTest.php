@@ -11,9 +11,6 @@ use Drupal\Component\Plugin\Discovery\StaticDiscovery;
  */
 class StaticDiscoveryTest extends DiscoveryTestBase {
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     $this->expectedDefinitions = [

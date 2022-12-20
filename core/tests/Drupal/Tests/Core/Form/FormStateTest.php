@@ -441,9 +441,7 @@ class PrepareCallbackTestForm implements FormInterface {
     return 'test_form';
   }
 
-  public function buildForm(array $form, FormStateInterface $form_state) {
-    return [];
-  }
+  public function buildForm(array $form, FormStateInterface $form_state) {}
 
   public function validateForm(array &$form, FormStateInterface $form_state) {}
 

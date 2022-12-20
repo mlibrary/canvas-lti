@@ -38,9 +38,6 @@ class SearchKeywordsConditionsTest extends BrowserTestBase {
    */
   protected $searchingUser;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

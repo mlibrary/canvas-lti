@@ -30,11 +30,4 @@ class StringNormalizer extends NormalizerBase implements DenormalizerInterface {
     return str_replace('NOT', 'super', $data);
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function hasCacheableSupportsMethod(): bool {
-    return TRUE;
-  }
-
 }

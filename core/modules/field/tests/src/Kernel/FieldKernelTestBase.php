@@ -45,11 +45,6 @@ abstract class FieldKernelTestBase extends KernelTestBase {
   protected $fieldTestData;
 
   /**
-   * @var string
-   */
-  protected $entityId;
-
-  /**
    * Set the default field storage backend for fields created during tests.
    */
   protected function setUp() {
@@ -169,7 +164,7 @@ abstract class FieldKernelTestBase extends KernelTestBase {
    * @param $cardinality
    *   Number of values to generate.
    *
-   * @return array
+   * @return
    *   An array of random values, in the format expected for field values.
    */
   protected function _generateTestFieldValues($cardinality) {

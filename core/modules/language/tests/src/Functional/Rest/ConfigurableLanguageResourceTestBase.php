@@ -4,10 +4,10 @@ namespace Drupal\Tests\language\Functional\Rest;
 
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Url;
-use Drupal\Tests\rest\Functional\EntityResource\ConfigEntityResourceTestBase;
+use Drupal\Tests\rest\Functional\EntityResource\EntityResourceTestBase;
 use Drupal\language\Entity\ConfigurableLanguage;
 
-abstract class ConfigurableLanguageResourceTestBase extends ConfigEntityResourceTestBase {
+abstract class ConfigurableLanguageResourceTestBase extends EntityResourceTestBase {
 
   /**
    * {@inheritdoc}
@@ -73,7 +73,6 @@ abstract class ConfigurableLanguageResourceTestBase extends ConfigEntityResource
    */
   protected function getNormalizedPostEntity() {
     // @todo Update in https://www.drupal.org/node/2300677.
-    return [];
   }
 
   /**

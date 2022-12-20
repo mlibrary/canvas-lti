@@ -6,7 +6,6 @@ use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\TypedData\DataDefinition;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Plugin implementation of the 'telephone' field type.
@@ -23,11 +22,6 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
 class TelephoneItem extends FieldItemBase {
 
   /**
-   * The maximum length for a telephone value.
-   */
-  const MAX_LENGTH = 256;
-
-  /**
    * {@inheritdoc}
    */
   public static function schema(FieldStorageDefinitionInterface $field_definition) {
@@ -35,7 +29,7 @@ class TelephoneItem extends FieldItemBase {
       'columns' => [
         'value' => [
           'type' => 'varchar',
-          'length' => self::MAX_LENGTH,
+          'length' => 256,
         ],
       ],
     ];
@@ -46,7 +40,7 @@ class TelephoneItem extends FieldItemBase {
    */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
     $properties['value'] = DataDefinition::create('string')
-      ->setLabel(new TranslatableMarkup('Telephone number'))
+      ->setLabel(t('Telephone number'))
       ->setRequired(TRUE);
 
     return $properties;
@@ -67,11 +61,12 @@ class TelephoneItem extends FieldItemBase {
     $constraint_manager = \Drupal::typedDataManager()->getValidationConstraintManager();
     $constraints = parent::getConstraints();
 
+    $max_length = 256;
     $constraints[] = $constraint_manager->create('ComplexData', [
       'value' => [
         'Length' => [
-          'max' => self::MAX_LENGTH,
-          'maxMessage' => $this->t('%name: the telephone number may not be longer than @max characters.', ['%name' => $this->getFieldDefinition()->getLabel(), '@max' => self::MAX_LENGTH]),
+          'max' => $max_length,
+          'maxMessage' => t('%name: the telephone number may not be longer than @max characters.', ['%name' => $this->getFieldDefinition()->getLabel(), '@max' => $max_length]),
         ],
       ],
     ]);

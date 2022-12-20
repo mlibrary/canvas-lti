@@ -36,22 +36,22 @@ class BlockAdminThemeTest extends BrowserTestBase {
 
     // Ensure that access to block admin page is denied when theme is not
     // installed.
-    $this->drupalGet('admin/structure/block/list/olivero');
+    $this->drupalGet('admin/structure/block/list/bartik');
     $this->assertSession()->statusCodeEquals(403);
 
     // Install admin theme and confirm that tab is accessible.
-    \Drupal::service('theme_installer')->install(['olivero']);
-    $edit['admin_theme'] = 'olivero';
+    \Drupal::service('theme_installer')->install(['bartik']);
+    $edit['admin_theme'] = 'bartik';
     $this->drupalGet('admin/appearance');
     $this->submitForm($edit, 'Save configuration');
-    $this->drupalGet('admin/structure/block/list/olivero');
+    $this->drupalGet('admin/structure/block/list/bartik');
     $this->assertSession()->statusCodeEquals(200);
   }
 
   /**
-   * Ensure contextual links are disabled in Claro theme.
+   * Ensure contextual links are disabled in Seven theme.
    */
-  public function testClaroAdminTheme() {
+  public function testSevenAdminTheme() {
     // Create administrative user.
     $admin_user = $this->drupalCreateUser([
       'access administration pages',
@@ -62,14 +62,14 @@ class BlockAdminThemeTest extends BrowserTestBase {
     $this->drupalLogin($admin_user);
 
     // Install admin theme and confirm that tab is accessible.
-    \Drupal::service('theme_installer')->install(['claro']);
-    $edit['admin_theme'] = 'claro';
+    \Drupal::service('theme_installer')->install(['seven']);
+    $edit['admin_theme'] = 'seven';
     $this->drupalGet('admin/appearance');
     $this->submitForm($edit, 'Save configuration');
 
     // Define our block settings.
     $settings = [
-      'theme' => 'claro',
+      'theme' => 'seven',
       'region' => 'header',
     ];
 

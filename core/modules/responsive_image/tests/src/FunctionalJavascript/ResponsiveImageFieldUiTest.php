@@ -32,13 +32,6 @@ class ResponsiveImageFieldUiTest extends WebDriverTestBase {
   ];
 
   /**
-   * The content type id.
-   *
-   * @var string
-   */
-  protected $type;
-
-  /**
    * {@inheritdoc}
    */
   protected function setUp(): void {

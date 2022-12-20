@@ -21,11 +21,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class TestAccessBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
-   * The state service.
-   */
-  protected $state;
-
-  /**
    * Tests the test access block.
    *
    *

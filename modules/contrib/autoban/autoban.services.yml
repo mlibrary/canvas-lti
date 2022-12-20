@@ -1,3 +1,0 @@
-services:
-  autoban:
-    class: Drupal\autoban\Controller\AutobanController

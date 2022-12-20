@@ -9,7 +9,6 @@ use Drupal\migrate_drupal\Tests\StubTestTrait;
  * Test stub creation for aggregator feeds and items.
  *
  * @group aggregator
- * @group legacy
  */
 class MigrateAggregatorStubTest extends MigrateDrupalTestBase {
 

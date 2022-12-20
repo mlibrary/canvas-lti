@@ -201,13 +201,9 @@ function base_path() {
  * @param $data
  *   (optional) The default data parameter for the JavaScript asset array.
  *
- * @deprecated in drupal:9.4.0 and is removed from drupal:10.0.0. No direct
- *   replacement is provided.
- *
- * @see https://www.drupal.org/node/3197679
+ * @see hook_js_alter()
  */
 function drupal_js_defaults($data = NULL) {
-  @trigger_error('drupal_js_defaults() is deprecated in drupal:9.4.0 and is removed from drupal:10.0.0. No direct replacement is provided. See https://www.drupal.org/node/3197679', E_USER_DEPRECATED);
   return [
     'type' => 'file',
     'group' => JS_DEFAULT,
@@ -383,7 +379,7 @@ function drupal_attach_tabledrag(&$element, array $options) {
  * @param $element
  *   The element to be rendered.
  *
- * @return \Drupal\Component\Render\MarkupInterface|null
+ * @return
  *   The rendered element.
  *
  * @deprecated in drupal:9.3.0 and is removed from drupal:10.0.0. Use
@@ -429,7 +425,7 @@ function render(&$element) {
  * @param $element
  *   The element to be hidden.
  *
- * @return array
+ * @return
  *   The element.
  *
  * @see \Drupal\Core\Render\RendererInterface
@@ -459,7 +455,7 @@ function hide(&$element) {
  * @param $element
  *   The element to be shown.
  *
- * @return array
+ * @return
  *   The element.
  *
  * @see \Drupal\Core\Render\RendererInterface
@@ -534,7 +530,7 @@ function show(&$element) {
  *   (optional) The Drupal Kernel. It is the caller's responsibility to rebuild
  *   the container if this is passed in. Sometimes drupal_flush_all_caches is
  *   used as a batch operation so $kernel will be an array, in this instance it
- *   will be treated as if it is NULL.
+ *   will be treated as if it it NULL.
  */
 function drupal_flush_all_caches($kernel = NULL) {
   // This is executed based on old/previously known information if $kernel is
@@ -543,7 +539,7 @@ function drupal_flush_all_caches($kernel = NULL) {
   $module_handler = \Drupal::moduleHandler();
   // Flush all persistent caches.
   $module_handler->invokeAll('cache_flush');
-  foreach (Cache::getBins() as $cache_backend) {
+  foreach (Cache::getBins() as $service_id => $cache_backend) {
     $cache_backend->deleteAll();
   }
 
@@ -558,9 +554,7 @@ function drupal_flush_all_caches($kernel = NULL) {
   // Wipe the Twig PHP Storage cache.
   \Drupal::service('twig')->invalidate();
 
-  // Rebuild profile, profile, theme_engine and theme data.
-  \Drupal::service('extension.list.profile')->reset();
-  \Drupal::service('extension.list.theme_engine')->reset();
+  // Rebuild theme data that is stored in state.
   \Drupal::service('theme_handler')->refreshInfo();
   // In case the active theme gets requested later in the same request we need
   // to reset the theme manager.
@@ -603,7 +597,7 @@ function drupal_flush_all_caches($kernel = NULL) {
  */
 function _drupal_flush_css_js() {
   // The timestamp is converted to base 36 in order to make it more compact.
-  Drupal::state()->set('system.css_js_query_string', base_convert(\Drupal::time()->getRequestTime(), 10, 36));
+  Drupal::state()->set('system.css_js_query_string', base_convert(REQUEST_TIME, 10, 36));
 }
 
 /**
@@ -664,7 +658,7 @@ function drupal_get_updaters() {
 /**
  * Assembles the Drupal FileTransfer registry.
  *
- * @return array
+ * @return
  *   The Drupal FileTransfer class registry.
  *
  * @see \Drupal\Core\FileTransfer\FileTransfer

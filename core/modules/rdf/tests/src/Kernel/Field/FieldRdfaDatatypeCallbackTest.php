@@ -8,7 +8,6 @@ use Drupal\entity_test\Entity\EntityTest;
  * Tests the RDFa output of a text field formatter with a datatype callback.
  *
  * @group rdf
- * @group legacy
  */
 class FieldRdfaDatatypeCallbackTest extends FieldRdfaTestBase {
 
@@ -22,9 +21,6 @@ class FieldRdfaDatatypeCallbackTest extends FieldRdfaTestBase {
    */
   protected static $modules = ['text', 'filter', 'rdf_test'];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

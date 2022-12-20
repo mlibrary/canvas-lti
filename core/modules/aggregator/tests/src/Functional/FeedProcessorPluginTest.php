@@ -9,7 +9,6 @@ use Drupal\aggregator\Entity\Item;
  * Tests the processor plugins functionality and discoverability.
  *
  * @group aggregator
- * @group legacy
  *
  * @see \Drupal\aggregator_test\Plugin\aggregator\processor\TestProcessor.
  */

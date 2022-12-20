@@ -9,8 +9,7 @@ use Drupal\KernelTests\KernelTestBase;
 /**
  * Tests the aggregator_title formatter.
  *
- * @group aggregator
- * @group legacy
+ * @group field
  */
 class AggregatorTitleTest extends KernelTestBase {
 
@@ -63,7 +62,7 @@ class AggregatorTitleTest extends KernelTestBase {
       'title' => 'test title',
       'fid' => $aggregator_feed->id(),
       'link' => 'http://www.example.com',
-    ]);
+      ]);
     $aggregator_item->save();
 
     // Verify aggregator feed title with and without links.

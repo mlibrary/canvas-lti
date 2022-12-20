@@ -32,9 +32,11 @@ class UrlTest extends BrowserTestBase {
   protected $node2;
 
   /**
-   * {@inheritdoc}
+   * Modules to install.
+   *
+   * @var string[]
    */
-  protected static $modules = ['node', 'token', 'block'];
+  public static $modules = ['node', 'token', 'block'];
 
   /**
    * {@inheritdoc}
@@ -44,7 +46,7 @@ class UrlTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     $node_type = NodeType::create(['type' => 'article', 'name' => 'Article']);

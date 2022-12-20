@@ -25,11 +25,6 @@ class LanguageLocaleListTest extends BrowserTestBase {
   protected $defaultTheme = 'stark';
 
   /**
-   * @var \Drupal\locale\StringStorageInterface
-   */
-  protected $storage;
-
-  /**
    * {@inheritdoc}
    */
   protected function setUp(): void {
@@ -55,7 +50,7 @@ class LanguageLocaleListTest extends BrowserTestBase {
     ];
     $this->drupalGet('admin/config/regional/language/add');
     $this->submitForm($edit, 'Add language');
-    $this->assertSession()->statusMessageContains('The language French has been created and can now be used', 'status');
+    $this->assertSession()->pageTextContains('The language French has been created and can now be used');
     $this->assertSession()->addressEquals(Url::fromRoute('entity.configurable_language.collection'));
     $this->rebuildContainer();
 

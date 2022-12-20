@@ -21,7 +21,7 @@ class HighPriorityThemeNegotiator implements ThemeNegotiatorInterface {
    * {@inheritdoc}
    */
   public function determineActiveTheme(RouteMatchInterface $route_match) {
-    return 'starterkit_theme';
+    return 'classy';
   }
 
 }

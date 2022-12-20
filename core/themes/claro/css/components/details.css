@@ -44,18 +44,6 @@
   border-radius: 2px;
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-  /*
-   * The following width and min-width values ensure that the <details> element
-   * does not shift widths when opening, in the event that a parent table
-   * element constrains the width. This can happen when toggling the
-   * "lazy-load" option within an image field.
-   */
-}
-
-td .claro-details {
-  width: min-content;
-  min-width: 100%;
 }
 
 .claro-details--accordion-item,
@@ -211,7 +199,7 @@ td .claro-details {
 
 /* stylelint-disable-next-line unit-allowed-list */
 
-@media not all and (-webkit-min-device-pixel-ratio: 0), not all and (min-resolution: 0.001dpcm) {
+@media not all and (min-resolution: 0.001dpcm) {
   @supports (-webkit-appearance: none) {
     .claro-details__summary::before {
       transition: none;
@@ -277,7 +265,7 @@ td .claro-details {
 [open] .claro-details__summary--accordion,
 [open] .claro-details__summary--accordion-item,
 [open] .claro-details__summary--vertical-tabs-item {
-  color: #003ecc;
+  color: #003cc5;
 }
 
 .claro-details__summary:hover::before,
@@ -319,8 +307,8 @@ td .claro-details {
 }
 
 .claro-details__summary:hover {
-  color: #003ecc;
-  background-color: #f5f8ff;
+  color: #003cc5;
+  background-color: #f0f5fd;
 }
 
 /**
@@ -339,7 +327,7 @@ td .claro-details {
 [open] > .claro-details__summary--vertical-tabs-item:not(:focus):not(:active)::after,
 .collapse-processed[open] > .claro-details__summary--vertical-tabs-item .details-title:not(:focus)::after {
   opacity: 1;
-  border: 3px solid #003ecc;
+  border: 3px solid #003cc5;
   border-width: 0 0 0 3px; /* LTR */
   box-shadow: none;
 }
@@ -365,7 +353,7 @@ td .claro-details {
 
 /* stylelint-disable-next-line unit-allowed-list */
 
-@media not all and (-webkit-min-device-pixel-ratio: 0), not all and (min-resolution: 0.001dpcm) {
+@media not all and (min-resolution: 0.001dpcm) {
   @supports (-webkit-appearance: none) {
     .claro-details__summary::after {
       transition: none;
@@ -374,7 +362,7 @@ td .claro-details {
 }
 
 .claro-details[open] > .claro-details__summary:focus {
-  color: #003ecc;
+  color: #003cc5;
 }
 
 /**

@@ -165,8 +165,13 @@ class LoggerChannel implements LoggerChannelInterface {
    *   An array of sorted loggers by priority.
    */
   protected function sortLoggers() {
+    $sorted = [];
     krsort($this->loggers);
-    return array_merge([], ...$this->loggers);
+
+    foreach ($this->loggers as $loggers) {
+      $sorted = array_merge($sorted, $loggers);
+    }
+    return $sorted;
   }
 
 }

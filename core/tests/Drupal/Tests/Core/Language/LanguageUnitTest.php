@@ -63,7 +63,7 @@ class LanguageUnitTest extends UnitTestCase {
     $container->expects($this->any())
       ->method('get')
       ->with('language.default')
-      ->willReturn($language_default);
+      ->will($this->returnValue($language_default));
     \Drupal::setContainer($container);
 
     $language = new Language(['id' => $this->randomMachineName(2)]);

@@ -14,8 +14,8 @@ class PhpBackendTest extends GenericCacheBackendUnitTestBase {
   /**
    * Creates a new instance of MemoryBackend.
    *
-   * @return \Drupal\Core\Cache\CacheBackendInterface
-   *   A new PhpBackend object.
+   * @return
+   *   A new MemoryBackend object.
    */
   protected function createCacheBackend($bin) {
     $backend = new PhpBackend($bin, \Drupal::service('cache_tags.invalidator.checksum'));

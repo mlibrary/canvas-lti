@@ -25,14 +25,16 @@ class TokenUserTest extends TokenTestBase {
   protected $account = NULL;
 
   /**
-   * {@inheritdoc}
+   * Modules to enable.
+   *
+   * @var array
    */
-  protected static $modules = ['token_user_picture'];
+  public static $modules = ['token_user_picture'];
 
   /**
    * {@inheritdoc}
    */
-  public function setUp(): void {
+  public function setUp() {
     parent::setUp();
 
     $this->account = $this->drupalCreateUser([
@@ -60,8 +62,7 @@ class TokenUserTest extends TokenTestBase {
     // Add a user picture to the account.
     $image = current($this->getTestFiles('image'));
     $edit = ['files[user_picture_0]' => \Drupal::service('file_system')->realpath($image->uri)];
-    $this->drupalGet('user/' . $this->account->id() . '/edit');
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm('user/' . $this->account->id() . '/edit', $edit, 'Save');
 
     $storage = \Drupal::entityTypeManager()->getStorage('user');
 
@@ -123,7 +124,7 @@ class TokenUserTest extends TokenTestBase {
    */
   public function testUserAccountSettings() {
     $this->drupalGet('admin/config/people/accounts');
-    $this->assertSession()->pageTextContains('The list of available tokens that can be used in e-mails is provided below.');
+    $this->assertText('The list of available tokens that can be used in e-mails is provided below.');
     $this->assertSession()->linkExists('Browse available tokens.');
     $this->assertSession()->linkByHrefExists('token/tree');
   }

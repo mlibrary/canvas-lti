@@ -12,9 +12,11 @@ use Drupal\Core\Url;
 class TokenCurrentPageTest extends TokenTestBase {
 
   /**
-   * {@inheritdoc}
+   * Modules to enable.
+   *
+   * @var array
    */
-  protected static $modules = ['node'];
+  public static $modules = ['node'];
 
   function testCurrentPageTokens() {
     // Cache clear is necessary because the frontpage was already cached by an

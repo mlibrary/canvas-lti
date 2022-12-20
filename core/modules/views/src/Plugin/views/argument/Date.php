@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * - invalid input: A string to give to the user for obviously invalid input.
  *                  This is deprecated in favor of argument validators.
  *
- * @see \Drupal\views\ManyToOneHelper
+ * @see \Drupal\views\ManyTonOneHelper
  *
  * @ingroup views_argument_handlers
  *

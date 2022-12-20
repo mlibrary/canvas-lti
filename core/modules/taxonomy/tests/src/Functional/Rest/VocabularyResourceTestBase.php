@@ -3,9 +3,9 @@
 namespace Drupal\Tests\taxonomy\Functional\Rest;
 
 use Drupal\taxonomy\Entity\Vocabulary;
-use Drupal\Tests\rest\Functional\EntityResource\ConfigEntityResourceTestBase;
+use Drupal\Tests\rest\Functional\EntityResource\EntityResourceTestBase;
 
-abstract class VocabularyResourceTestBase extends ConfigEntityResourceTestBase {
+abstract class VocabularyResourceTestBase extends EntityResourceTestBase {
 
   /**
    * {@inheritdoc}
@@ -63,7 +63,6 @@ abstract class VocabularyResourceTestBase extends ConfigEntityResourceTestBase {
    */
   protected function getNormalizedPostEntity() {
     // @todo Update in https://www.drupal.org/node/2300677.
-    return [];
   }
 
   /**

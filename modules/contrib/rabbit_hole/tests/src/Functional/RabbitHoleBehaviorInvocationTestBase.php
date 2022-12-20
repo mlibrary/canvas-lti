@@ -29,7 +29,7 @@ abstract class RabbitHoleBehaviorInvocationTestBase extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->behaviorSettingsManager = $this->container->get('rabbit_hole.behavior_settings_manager');
     $this->drupalLogin($this->drupalCreateUser($this->getViewPermissions()));

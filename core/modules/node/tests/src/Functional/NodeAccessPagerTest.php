@@ -17,13 +17,6 @@ class NodeAccessPagerTest extends BrowserTestBase {
   use CommentTestTrait;
 
   /**
-   * An user.
-   *
-   * @var \Drupal\user\Entity\User
-   */
-  protected $webUser;
-
-  /**
    * Modules to enable.
    *
    * @var array
@@ -35,9 +28,6 @@ class NodeAccessPagerTest extends BrowserTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

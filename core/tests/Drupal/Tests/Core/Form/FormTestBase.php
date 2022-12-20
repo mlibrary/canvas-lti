@@ -217,12 +217,12 @@ abstract class FormTestBase extends UnitTestCase {
     $form = $this->createMock('Drupal\Core\Form\FormInterface');
     $form->expects($this->once())
       ->method('getFormId')
-      ->willReturn($form_id);
+      ->will($this->returnValue($form_id));
 
     if ($expected_form) {
       $form->expects($this->exactly($count))
         ->method('buildForm')
-        ->willReturn($expected_form);
+        ->will($this->returnValue($expected_form));
     }
     return $form;
   }

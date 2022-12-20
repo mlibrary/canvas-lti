@@ -24,9 +24,6 @@ abstract class ModuleTestBase extends BrowserTestBase {
 
   protected $adminUser;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp() {
     parent::setUp();
 

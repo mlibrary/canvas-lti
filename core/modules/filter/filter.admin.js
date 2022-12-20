@@ -4,6 +4,7 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function ($, Drupal) {
   Drupal.behaviors.filterStatus = {
     attach: function attach(context, settings) {
@@ -16,6 +17,7 @@
         $checkbox.on('click.filterUpdate', function () {
           if ($checkbox.is(':checked')) {
             $row.show();
+
             if (filterSettingsTab) {
               filterSettingsTab.tabShow().updateSummary();
             } else {
@@ -23,19 +25,23 @@
             }
           } else {
             $row.hide();
+
             if (filterSettingsTab) {
               filterSettingsTab.tabHide().updateSummary();
             } else {
               $filterSettings.hide();
             }
           }
+
           Drupal.tableDrag['filter-order'].restripeTable();
         });
+
         if (filterSettingsTab) {
           filterSettingsTab.details.drupalSetSummary(function () {
             return $checkbox.is(':checked') ? Drupal.t('Enabled') : Drupal.t('Disabled');
           });
         }
+
         $checkbox.triggerHandler('click.filterUpdate');
       });
     }

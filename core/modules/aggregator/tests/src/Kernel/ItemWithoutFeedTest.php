@@ -9,7 +9,6 @@ use Drupal\KernelTests\KernelTestBase;
  * Tests clean handling of an item with a missing feed ID.
  *
  * @group aggregator
- * @group legacy
  */
 class ItemWithoutFeedTest extends KernelTestBase {
 

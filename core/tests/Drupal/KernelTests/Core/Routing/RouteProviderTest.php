@@ -87,9 +87,6 @@ class RouteProviderTest extends KernelTestBase {
    */
   protected $cacheTagsInvalidator;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     $this->fixtures = new RoutingFixtures();
@@ -114,9 +111,6 @@ class RouteProviderTest extends KernelTestBase {
     }
   }
 
-  /**
-   * {@inheritdoc}
-   */
   protected function tearDown(): void {
     $this->fixtures->dropTables(Database::getConnection());
 

@@ -19,7 +19,7 @@ class UserFieldsAccessChangeTest extends UserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'classy';
 
   /**
    * Views used by this test.
@@ -60,23 +60,26 @@ class UserFieldsAccessChangeTest extends UserTestBase {
    */
   public function testUserNameLink() {
     $test_user = $this->drupalCreateUser();
-    $xpath = "//td/a[.='" . $test_user->getAccountName() . "']/@href[.='" . $test_user->toUrl()->toString() . "']";
+    $xpath = "//td/a[.='" . $test_user->getAccountName() . "'][@class='username']/@href[.='" . $test_user->toUrl()->toString() . "']";
 
     $attributes = [
       'title' => 'View user profile.',
+      'class' => 'username',
     ];
     $link = $test_user->toLink(NULL, 'canonical', ['attributes' => $attributes])->toString();
 
     // No access, so no link.
     $this->drupalGet('test_user_fields_access');
     $this->assertSession()->pageTextContains($test_user->getAccountName());
-    $this->assertSession()->elementNotExists('xpath', $xpath);
+    $result = $this->xpath($xpath);
+    $this->assertCount(0, $result, 'User is not a link');
 
     // Assign sub-admin role to grant extra access.
     $user = $this->drupalCreateUser(['sub-admin']);
     $this->drupalLogin($user);
     $this->drupalGet('test_user_fields_access');
-    $this->assertSession()->elementsCount('xpath', $xpath, 1);
+    $result = $this->xpath($xpath);
+    $this->assertCount(1, $result, 'User is a link');
   }
 
 }

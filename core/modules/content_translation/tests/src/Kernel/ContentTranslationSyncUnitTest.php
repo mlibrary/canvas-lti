@@ -56,9 +56,6 @@ class ContentTranslationSyncUnitTest extends KernelTestBase {
 
   protected static $modules = ['language', 'content_translation'];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

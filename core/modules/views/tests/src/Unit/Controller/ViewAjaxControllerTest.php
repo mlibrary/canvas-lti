@@ -134,7 +134,7 @@ class ViewAjaxControllerTest extends UnitTestCase {
     $this->viewStorage->expects($this->once())
       ->method('load')
       ->with('test_view')
-      ->willReturn(FALSE);
+      ->will($this->returnValue(FALSE));
 
     $this->expectException(NotFoundHttpException::class);
     $this->viewAjaxController->ajaxView($request);
@@ -155,19 +155,19 @@ class ViewAjaxControllerTest extends UnitTestCase {
     $this->viewStorage->expects($this->once())
       ->method('load')
       ->with('test_view')
-      ->willReturn($view);
+      ->will($this->returnValue($view));
 
     $executable = $this->getMockBuilder('Drupal\views\ViewExecutable')
       ->disableOriginalConstructor()
       ->getMock();
     $executable->expects($this->once())
       ->method('access')
-      ->willReturn(FALSE);
+      ->will($this->returnValue(FALSE));
 
     $this->executableFactory->expects($this->once())
       ->method('get')
       ->with($view)
-      ->willReturn($executable);
+      ->will($this->returnValue($executable));
 
     $this->expectException(AccessDeniedHttpException::class);
     $this->viewAjaxController->ajaxView($request);
@@ -336,7 +336,7 @@ class ViewAjaxControllerTest extends UnitTestCase {
     $display_collection->expects($this->any())
       ->method('get')
       ->with('page_1')
-      ->willReturn($display_handler);
+      ->will($this->returnValue($display_handler));
     $executable->displayHandlers = $display_collection;
 
     $response = $this->viewAjaxController->ajaxView($request);
@@ -367,25 +367,25 @@ class ViewAjaxControllerTest extends UnitTestCase {
     $this->viewStorage->expects($this->once())
       ->method('load')
       ->with('test_view')
-      ->willReturn($view);
+      ->will($this->returnValue($view));
 
     $executable = $this->getMockBuilder('Drupal\views\ViewExecutable')
       ->disableOriginalConstructor()
       ->getMock();
     $executable->expects($this->once())
       ->method('access')
-      ->willReturn(TRUE);
+      ->will($this->returnValue(TRUE));
     $executable->expects($this->any())
       ->method('setDisplay')
       ->willReturn(TRUE);
     $executable->expects($this->atMost(1))
       ->method('preview')
-      ->willReturn(['#markup' => 'View result']);
+      ->will($this->returnValue(['#markup' => 'View result']));
 
     $this->executableFactory->expects($this->once())
       ->method('get')
       ->with($view)
-      ->willReturn($executable);
+      ->will($this->returnValue($executable));
 
     $display_handler = $this->getMockBuilder('Drupal\views\Plugin\views\display\DisplayPluginBase')
       ->disableOriginalConstructor()
@@ -403,7 +403,7 @@ class ViewAjaxControllerTest extends UnitTestCase {
     $display_collection->expects($this->any())
       ->method('get')
       ->with('page_1')
-      ->willReturn($display_handler);
+      ->will($this->returnValue($display_handler));
 
     $executable->display_handler = $display_handler;
     $executable->displayHandlers = $display_collection;

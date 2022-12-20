@@ -18,7 +18,6 @@ class LanguageNegotiationUrlTest extends UnitTestCase {
 
   protected $languageManager;
   protected $user;
-  protected $languages;
 
   /**
    * {@inheritdoc}
@@ -29,11 +28,11 @@ class LanguageNegotiationUrlTest extends UnitTestCase {
     $language_de = $this->createMock('\Drupal\Core\Language\LanguageInterface');
     $language_de->expects($this->any())
       ->method('getId')
-      ->willReturn('de');
+      ->will($this->returnValue('de'));
     $language_en = $this->createMock('\Drupal\Core\Language\LanguageInterface');
     $language_en->expects($this->any())
       ->method('getId')
-      ->willReturn('en');
+      ->will($this->returnValue('en'));
     $languages = [
       'de' => $language_de,
       'en' => $language_en,
@@ -45,7 +44,7 @@ class LanguageNegotiationUrlTest extends UnitTestCase {
       ->getMock();
     $language_manager->expects($this->any())
       ->method('getLanguages')
-      ->willReturn($languages);
+      ->will($this->returnValue($languages));
     $this->languageManager = $language_manager;
 
     // Create a user stub.
@@ -69,10 +68,7 @@ class LanguageNegotiationUrlTest extends UnitTestCase {
   public function testPathPrefix($prefix, $prefixes, $expected_langcode) {
     $this->languageManager->expects($this->any())
       ->method('getCurrentLanguage')
-      ->willReturn($this->languages[(in_array($expected_langcode, [
-        'en',
-        'de',
-      ])) ? $expected_langcode : 'en']);
+      ->will($this->returnValue($this->languages[(in_array($expected_langcode, ['en', 'de'])) ? $expected_langcode : 'en']));
 
     $config = $this->getConfigFactoryStub([
       'language.negotiation' => [
@@ -161,7 +157,7 @@ class LanguageNegotiationUrlTest extends UnitTestCase {
   public function testDomain($http_host, $domains, $expected_langcode) {
     $this->languageManager->expects($this->any())
       ->method('getCurrentLanguage')
-      ->willReturn($this->languages['en']);
+      ->will($this->returnValue($this->languages['en']));
 
     $config = $this->getConfigFactoryStub([
       'language.negotiation' => [

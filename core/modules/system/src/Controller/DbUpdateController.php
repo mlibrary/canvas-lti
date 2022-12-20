@@ -268,7 +268,7 @@ class DbUpdateController extends ControllerBase {
 
     $starting_updates = [];
     $incompatible_updates_exist = FALSE;
-    $updates_per_extension = [];
+    $updates_per_module = [];
     foreach (['update', 'post_update'] as $update_type) {
       switch ($update_type) {
         case 'update':
@@ -279,11 +279,11 @@ class DbUpdateController extends ControllerBase {
           $updates = $this->postUpdateRegistry->getPendingUpdateInformation();
           break;
       }
-      foreach ($updates as $extension => $update) {
+      foreach ($updates as $module => $update) {
         if (!isset($update['start'])) {
-          $build['start'][$extension] = [
+          $build['start'][$module] = [
             '#type' => 'item',
-            '#title' => $extension . ($this->moduleHandler->moduleExists($extension) ? ' module' : ' theme'),
+            '#title' => $module . ' module',
             '#markup' => $update['warning'],
             '#prefix' => '<div class="messages messages--warning">',
             '#suffix' => '</div>',
@@ -292,22 +292,22 @@ class DbUpdateController extends ControllerBase {
           continue;
         }
         if (!empty($update['pending'])) {
-          $updates_per_extension += [$extension => []];
-          $updates_per_extension[$extension] = array_merge($updates_per_extension[$extension], $update['pending']);
-          $build['start'][$extension] = [
+          $updates_per_module += [$module => []];
+          $updates_per_module[$module] = array_merge($updates_per_module[$module], $update['pending']);
+          $build['start'][$module] = [
             '#type' => 'hidden',
             '#value' => $update['start'],
           ];
           // Store the previous items in order to merge normal updates and
           // post_update functions together.
-          $build['start'][$extension] = [
+          $build['start'][$module] = [
             '#theme' => 'item_list',
-            '#items' => $updates_per_extension[$extension],
-            '#title' => $extension . ($this->moduleHandler->moduleExists($extension) ? ' module' : ' theme'),
+            '#items' => $updates_per_module[$module],
+            '#title' => $module . ' module',
           ];
 
           if ($update_type === 'update') {
-            $starting_updates[$extension] = $update['start'];
+            $starting_updates[$module] = $update['start'];
           }
         }
         if (isset($update['pending'])) {
@@ -446,9 +446,9 @@ class DbUpdateController extends ControllerBase {
     // Output a list of info messages.
     if (!empty($update_results)) {
       $all_messages = [];
-      foreach ($update_results as $extension => $updates) {
-        if ($extension != '#abort') {
-          $extension_has_message = FALSE;
+      foreach ($update_results as $module => $updates) {
+        if ($module != '#abort') {
+          $module_has_message = FALSE;
           $info_messages = [];
           foreach ($updates as $name => $queries) {
             $messages = [];
@@ -473,7 +473,7 @@ class DbUpdateController extends ControllerBase {
             }
 
             if ($messages) {
-              $extension_has_message = TRUE;
+              $module_has_message = TRUE;
               if (is_numeric($name)) {
                 $title = $this->t('Update #@count', ['@count' => $name]);
               }
@@ -488,15 +488,12 @@ class DbUpdateController extends ControllerBase {
             }
           }
 
-          // If there were any messages then prefix them with the extension name
+          // If there were any messages then prefix them with the module name
           // and add it to the global message list.
-          if ($extension_has_message) {
-            $header = $this->moduleHandler->moduleExists($extension) ?
-              $this->t('@module module', ['@module' => $extension]) :
-              $this->t('@theme theme', ['@theme' => $extension]);
+          if ($module_has_message) {
             $all_messages[] = [
               '#type' => 'container',
-              '#prefix' => '<h3>' . $header . '</h3>',
+              '#prefix' => '<h3>' . $this->t('@module module', ['@module' => $module]) . '</h3>',
               '#children' => $info_messages,
             ];
           }

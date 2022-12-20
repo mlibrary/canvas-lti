@@ -15,8 +15,6 @@ use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-// cspell:ignore rrggbb
-
 /**
  * Defines the GD2 toolkit for image manipulation within Drupal.
  *
@@ -168,12 +166,12 @@ class GDToolkit extends ImageToolkitBase {
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form['image_jpeg_quality'] = [
       '#type' => 'number',
-      '#title' => $this->t('JPEG quality'),
-      '#description' => $this->t('Define the image quality for JPEG manipulations. Ranges from 0 to 100. Higher values mean better image quality but bigger files.'),
+      '#title' => t('JPEG quality'),
+      '#description' => t('Define the image quality for JPEG manipulations. Ranges from 0 to 100. Higher values mean better image quality but bigger files.'),
       '#min' => 0,
       '#max' => 100,
       '#default_value' => $this->configFactory->getEditable('system.image.gd')->get('jpeg_quality', FALSE),
-      '#field_suffix' => $this->t('%'),
+      '#field_suffix' => t('%'),
     ];
     return $form;
   }
@@ -395,14 +393,14 @@ class GDToolkit extends ImageToolkitBase {
 
     $info = gd_info();
     $requirements['version'] = [
-      'title' => $this->t('GD library'),
+      'title' => t('GD library'),
       'value' => $info['GD Version'],
     ];
 
     // Check for filter and rotate support.
     if (!function_exists('imagefilter') || !function_exists('imagerotate')) {
       $requirements['version']['severity'] = REQUIREMENT_WARNING;
-      $requirements['version']['description'] = $this->t('The GD Library for PHP is enabled, but was compiled without support for functions used by the rotate and desaturate effects. It was probably compiled using the official GD libraries from http://www.libgd.org instead of the GD library bundled with PHP. You should recompile PHP --with-gd using the bundled GD library. See <a href="http://php.net/manual/book.image.php">the PHP manual</a>.');
+      $requirements['version']['description'] = t('The GD Library for PHP is enabled, but was compiled without support for functions used by the rotate and desaturate effects. It was probably compiled using the official GD libraries from http://www.libgd.org instead of the GD library bundled with PHP. You should recompile PHP --with-gd using the bundled GD library. See <a href="http://php.net/manual/book.image.php">the PHP manual</a>.');
     }
 
     return $requirements;

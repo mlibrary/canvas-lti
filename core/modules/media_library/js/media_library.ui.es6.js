@@ -83,21 +83,37 @@
           // Override the AJAX success callback to shift focus to the media
           // library content.
           ajaxObject.success = function (response, status) {
-            return Promise.resolve(
-              Drupal.Ajax.prototype.success.call(ajaxObject, response, status),
-            ).then(() => {
-              // Set focus to the first tabbable element in the media library
-              // content.
-              const mediaLibraryContent = document.getElementById(
-                'media-library-content',
-              );
-              if (mediaLibraryContent) {
-                const tabbableContent = tabbable(mediaLibraryContent);
-                if (tabbableContent.length) {
-                  tabbableContent[0].focus();
-                }
+            // Remove the progress element.
+            if (this.progress.element) {
+              $(this.progress.element).remove();
+            }
+            if (this.progress.object) {
+              this.progress.object.stopMonitoring();
+            }
+            $(this.element).prop('disabled', false);
+
+            // Execute the AJAX commands.
+            Object.keys(response || {}).forEach((i) => {
+              if (response[i].command && this.commands[response[i].command]) {
+                this.commands[response[i].command](this, response[i], status);
               }
             });
+
+            // Set focus to the first tabbable element in the media library
+            // content.
+            const mediaLibraryContent = document.getElementById(
+              'media-library-content',
+            );
+            if (mediaLibraryContent) {
+              const tabbableContent = tabbable(mediaLibraryContent);
+              if (tabbableContent.length) {
+                tabbableContent[0].focus();
+              }
+            }
+
+            // Remove any response-specific settings so they don't get used on
+            // the next call by mistake.
+            this.settings = null;
           };
           ajaxObject.execute();
 
@@ -326,24 +342,18 @@
           currentSelection.splice(position, 1);
         }
 
-        const mediaLibraryModalSelection = document.querySelector(
-          '#media-library-modal-selection',
-        );
-
-        if (mediaLibraryModalSelection) {
-          // Set the selection in the hidden form element.
-          mediaLibraryModalSelection.value = currentSelection.join();
-          $(mediaLibraryModalSelection).trigger('change');
-        }
+        // Set the selection in the hidden form element.
+        $form
+          .find('#media-library-modal-selection')
+          .val(currentSelection.join())
+          .trigger('change');
 
         // Set the selection in the media library add form. Since the form is
         // not necessarily loaded within the same context, we can't use the
         // context here.
-        document
-          .querySelectorAll('.js-media-library-add-form-current-selection')
-          .forEach((item) => {
-            item.value = currentSelection.join();
-          });
+        $('.js-media-library-add-form-current-selection').val(
+          currentSelection.join(),
+        );
       });
 
       // The hidden selection form field changes when the selection is updated.

@@ -2,10 +2,10 @@
 
 namespace Drupal\Tests\block_content\Functional\Rest;
 
-use Drupal\Tests\rest\Functional\EntityResource\ConfigEntityResourceTestBase;
+use Drupal\Tests\rest\Functional\EntityResource\EntityResourceTestBase;
 use Drupal\block_content\Entity\BlockContentType;
 
-abstract class BlockContentTypeResourceTestBase extends ConfigEntityResourceTestBase {
+abstract class BlockContentTypeResourceTestBase extends EntityResourceTestBase {
 
   /**
    * {@inheritdoc}
@@ -18,7 +18,7 @@ abstract class BlockContentTypeResourceTestBase extends ConfigEntityResourceTest
   protected static $entityTypeId = 'block_content_type';
 
   /**
-   * @var \Drupal\block_content\BlockContentTypeInterface
+   * @var \Drupal\block_content\Entity\BlockContentTypeInterface
    */
   protected $entity;
 
@@ -66,7 +66,6 @@ abstract class BlockContentTypeResourceTestBase extends ConfigEntityResourceTest
    */
   protected function getNormalizedPostEntity() {
     // @todo Update in https://www.drupal.org/node/2300677.
-    return [];
   }
 
 }

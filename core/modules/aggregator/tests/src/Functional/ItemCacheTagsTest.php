@@ -13,7 +13,6 @@ use Drupal\user\RoleInterface;
  * Tests the Item entity's cache tags.
  *
  * @group aggregator
- * @group legacy
  */
 class ItemCacheTagsTest extends EntityCacheTagsTestBase {
 

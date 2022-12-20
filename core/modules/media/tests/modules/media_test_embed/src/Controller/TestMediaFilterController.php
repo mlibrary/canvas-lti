@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Controller to allow testing of error handling of Media Embed in text editors.
+ * Controller to allow testing of error handling in drupalmedia plugin.js.
  */
 class TestMediaFilterController extends MediaFilterController {
 

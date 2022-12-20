@@ -64,7 +64,7 @@ class ThemeHandlerTest extends UnitTestCase {
     $container->expects($this->any())
       ->method('get')
       ->with('class_loader')
-      ->willReturn($this->createMock(ClassLoader::class));
+      ->will($this->returnValue($this->createMock(ClassLoader::class)));
     \Drupal::setContainer($container);
   }
 
@@ -79,19 +79,19 @@ class ThemeHandlerTest extends UnitTestCase {
       ->willReturnSelf();
     $this->themeList->expects($this->once())
       ->method('getList')
-      ->willReturn([
-        'stark' => new Extension($this->root, 'theme', 'core/themes/stark/stark.info.yml', 'stark.theme'),
-      ]);
+      ->will($this->returnValue([
+        'seven' => new Extension($this->root, 'theme', 'core/themes/seven/seven.info.yml', 'seven.theme'),
+      ]));
 
     $theme_data = $this->themeHandler->rebuildThemeData();
     $this->assertCount(1, $theme_data);
-    $info = $theme_data['stark'];
+    $info = $theme_data['seven'];
 
     // Ensure some basic properties.
     $this->assertInstanceOf('Drupal\Core\Extension\Extension', $info);
-    $this->assertEquals('stark', $info->getName());
-    $this->assertEquals('core/themes/stark/stark.info.yml', $info->getPathname());
-    $this->assertEquals('core/themes/stark/stark.theme', $info->getExtensionPathname());
+    $this->assertEquals('seven', $info->getName());
+    $this->assertEquals('core/themes/seven/seven.info.yml', $info->getPathname());
+    $this->assertEquals('core/themes/seven/seven.theme', $info->getExtensionPathname());
 
   }
 

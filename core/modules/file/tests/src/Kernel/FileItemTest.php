@@ -40,9 +40,6 @@ class FileItemTest extends FieldKernelTestBase {
    */
   protected $directory;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

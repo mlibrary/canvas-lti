@@ -25,9 +25,8 @@ class TwigSandboxPolicy implements SecurityPolicyInterface {
   protected $allowed_methods;
 
   /**
-   * Allowed method prefixes.
-   *
-   * Any method starting with one of these prefixes will be allowed.
+   * An array of allowed method prefixes -- any method starting with one of
+   * these prefixes will be allowed.
    *
    * @var array
    */

@@ -32,11 +32,4 @@ final class ConfigEntityDenormalizer extends EntityDenormalizerBase {
     return $prepared;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function hasCacheableSupportsMethod(): bool {
-    return TRUE;
-  }
-
 }

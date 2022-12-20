@@ -79,13 +79,14 @@
 
           $tr.toggleClass('expanded');
 
-          const $localePrefix = $tr.find('.locale-translation-update__prefix');
-          if ($localePrefix.length) {
-            // Change screen reader text.
-            $localePrefix[0].textContent = $tr.hasClass('expanded')
-              ? Drupal.t('Hide description')
-              : Drupal.t('Show description');
-          }
+          // Change screen reader text.
+          $tr.find('.locale-translation-update__prefix').text(() => {
+            if ($tr.hasClass('expanded')) {
+              return Drupal.t('Hide description');
+            }
+
+            return Drupal.t('Show description');
+          });
         });
         $table.find('.requirements, .links').hide();
       }

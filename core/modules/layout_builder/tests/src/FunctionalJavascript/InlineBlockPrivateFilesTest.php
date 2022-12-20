@@ -4,7 +4,6 @@ namespace Drupal\Tests\layout_builder\FunctionalJavascript;
 
 use Drupal\file\Entity\File;
 use Drupal\file\FileInterface;
-use Drupal\layout_builder\Entity\LayoutBuilderEntityViewDisplay;
 use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
 use Drupal\Tests\file\Functional\FileFieldCreationTrait;
@@ -30,7 +29,7 @@ class InlineBlockPrivateFilesTest extends InlineBlockTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'starterkit_theme';
+  protected $defaultTheme = 'classy';
 
   /**
    * The file system service.
@@ -63,10 +62,21 @@ class InlineBlockPrivateFilesTest extends InlineBlockTestBase {
    */
   public function testPrivateFiles() {
     $assert_session = $this->assertSession();
-    LayoutBuilderEntityViewDisplay::load('node.bundle_with_section_field.default')
-      ->enableLayoutBuilder()
-      ->setOverridable()
-      ->save();
+    $this->drupalLogin($this->drupalCreateUser([
+      'access contextual links',
+      'configure any layout',
+      'administer node display',
+      'administer node fields',
+      'create and edit custom blocks',
+    ]));
+
+    // Enable layout builder and overrides.
+    $this->drupalGet(static::FIELD_UI_PREFIX . '/display/default');
+    $this->submitForm([
+      'layout[enabled]' => TRUE,
+      'layout[allow_custom]' => TRUE,
+    ], 'Save');
+    $this->drupalLogout();
 
     // Log in as user you can only configure layouts and access content.
     $this->drupalLogin($this->drupalCreateUser([
@@ -171,9 +181,9 @@ class InlineBlockPrivateFilesTest extends InlineBlockTestBase {
     $assert_session = $this->assertSession();
     $page = $this->getSession()->getPage();
     $this->clickContextualLink(static::INLINE_BLOCK_LOCATOR, 'Configure');
-    $assert_session->waitForElement('css', "#drupal-off-canvas input[value='Remove']");
     $assert_session->assertWaitOnAjaxRequest();
-    $page->find('css', '#drupal-off-canvas')->pressButton('Remove');
+    $page->pressButton('Remove');
+    $assert_session->assertWaitOnAjaxRequest();
     $this->attachFileToBlockForm($file);
     $page->pressButton('Update');
     $this->assertDialogClosedAndTextVisible($file->label(), static::INLINE_BLOCK_LOCATOR);
@@ -269,7 +279,6 @@ class InlineBlockPrivateFilesTest extends InlineBlockTestBase {
   protected function attachFileToBlockForm(FileInterface $file) {
     $assert_session = $this->assertSession();
     $page = $this->getSession()->getPage();
-    $this->assertSession()->waitForElementVisible('named', ['field', 'files[settings_block_form_field_file_0]']);
     $page->attachFileToField("files[settings_block_form_field_file_0]", $this->fileSystem->realpath($file->getFileUri()));
     $assert_session->assertWaitOnAjaxRequest();
     $this->assertNotEmpty($assert_session->waitForLink($file->label()));

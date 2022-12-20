@@ -34,9 +34,6 @@ class SessionCacheContextTest extends UnitTestCase {
    */
   protected $session;
 
-  /**
-   * {@inheritdoc}
-   */
   public function setUp(): void {
     $this->request = new Request();
 
@@ -57,7 +54,7 @@ class SessionCacheContextTest extends UnitTestCase {
     $session_id = 'aSebeZ52bbM6SvADurQP89SFnEpxY6j8';
     $this->session->expects($this->exactly(2))
       ->method('getId')
-      ->willReturn($session_id);
+      ->will($this->returnValue($session_id));
 
     $context1 = $cache_context->getContext();
     $context2 = $cache_context->getContext();
@@ -72,7 +69,6 @@ class SessionCacheContextTest extends UnitTestCase {
     $this->request->setSession($this->session);
     $cache_context = new SessionCacheContext($this->requestStack);
 
-    // cspell:disable-next-line
     $session1_id = 'pjH_8aSoofyCDQiuVYXJcbfyr-CPtkUY';
     $session2_id = 'aSebeZ52bbM6SvADurQP89SFnEpxY6j8';
     $this->session->expects($this->exactly(2))

@@ -21,6 +21,6 @@ class ValidateD7MigrationStateTest extends MigrateDrupal7TestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['token'];
+  public static $modules = ['token'];
 
 }

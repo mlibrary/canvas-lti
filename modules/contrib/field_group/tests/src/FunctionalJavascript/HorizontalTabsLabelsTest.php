@@ -21,14 +21,14 @@ class HorizontalTabsLabelsTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'starterkit_theme';
+  protected $defaultTheme = 'stark';
 
   /**
    * Modules to enable.
    *
    * @var array
    */
-  protected static $modules = [
+  public static $modules = [
     'block',
     'field_group',
     'node',
@@ -41,8 +41,11 @@ class HorizontalTabsLabelsTest extends WebDriverTestBase {
    * @var string[]
    */
   protected $themeList = [
+    'bartik',
     'claro',
-    'olivero',
+    'classy',
+    'seven',
+    'stable',
     'stable9',
     'stark',
   ];
@@ -80,7 +83,7 @@ class HorizontalTabsLabelsTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp(): void {
+  public function setUp() {
     parent::setUp();
 
     $this->assertSession = $this->assertSession();
@@ -188,11 +191,11 @@ class HorizontalTabsLabelsTest extends WebDriverTestBase {
       $theme_installer = \Drupal::service('theme_installer');
       assert($theme_installer instanceof ThemeInstallerInterface);
       try {
-        $theme_installer->install([$theme_name]);
+        $theme_installer->install([$theme_name], TRUE);
       }
       catch (UnknownExtensionException $ex) {
-        // Themes might be missing, e.g Drupal 10 does not have stable theme.
-        $this->markTestSkipped("The $theme_name theme does not exist in the current test environment.");
+        // Themes might be missing, e.g Drupal 8.x does not have stable9 theme.
+        $this->pass("The $theme_name theme does not exist in the current test environment.");
         return;
       }
       \Drupal::configFactory()
@@ -231,7 +234,7 @@ class HorizontalTabsLabelsTest extends WebDriverTestBase {
     // Create a node.
     $this->page->fillField('title[0][value]', 'Field Group Horizontal Tabs Test Node');
     $this->page->fillField('Test label', 'Test label');
-    $this->assertNotNull($tab2 = $this->page->find('css', '.field-group-tabs-wrapper a[href="#edit-group-tab2"]'));
+    $this->assertNotNull($tab2 = $this->page->find('css', '.js .field-group-tabs-wrapper a[href="#edit-group-tab2"]'));
     $tab2->click();
     $this->assertSession->waitForElementVisible('css', '[name="body[0][value]"]');
     $this->page->fillField('body[0][value]', 'Donec laoreet imperdiet.');
@@ -259,11 +262,11 @@ class HorizontalTabsLabelsTest extends WebDriverTestBase {
    * Asserts the horizontal tabs labels.
    */
   protected function assertHorizontalTabsLabels() {
-    $this->assertSession->waitForElement('css', '.field-group-tabs-wrapper a[href="#edit-group-tab1"]');
-    $this->assertSession->waitForElement('css', '.field-group-tabs-wrapper a[href="#edit-group-tab2"]');
-    $this->assertNotNull($tab1 = $this->page->find('css', '.field-group-tabs-wrapper a[href="#edit-group-tab1"]'));
+    $this->assertSession->waitForElement('css', '.js .field-group-tabs-wrapper a[href="#edit-group-tab1"]');
+    $this->assertSession->waitForElement('css', '.js .field-group-tabs-wrapper a[href="#edit-group-tab2"]');
+    $this->assertNotNull($tab1 = $this->page->find('css', '.js .field-group-tabs-wrapper a[href="#edit-group-tab1"]'));
     $this->assertStringContainsString('Tab1', $tab1->getText());
-    $this->assertNotNull($tab2 = $this->page->find('css', '.field-group-tabs-wrapper a[href="#edit-group-tab2"]'));
+    $this->assertNotNull($tab2 = $this->page->find('css', '.js .field-group-tabs-wrapper a[href="#edit-group-tab2"]'));
     $this->assertStringContainsString('Tab2', $tab2->getText());
   }
 

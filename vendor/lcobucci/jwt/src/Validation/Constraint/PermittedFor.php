@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 namespace Lcobucci\JWT\Validation\Constraint;
 
@@ -9,19 +8,19 @@ use Lcobucci\JWT\Validation\ConstraintViolation;
 
 final class PermittedFor implements Constraint
 {
-    private string $audience;
+    /** @var string  */
+    private $audience;
 
-    public function __construct(string $audience)
+    public function __construct($audience)
     {
         $this->audience = $audience;
     }
 
-    public function assert(Token $token): void
+    public function assert(Token $token)
     {
         if (! $token->isPermittedFor($this->audience)) {
-            throw ConstraintViolation::error(
-                'The token is not allowed to be used by this audience',
-                $this
+            throw new ConstraintViolation(
+                'The token is not allowed to be used by this audience'
             );
         }
     }

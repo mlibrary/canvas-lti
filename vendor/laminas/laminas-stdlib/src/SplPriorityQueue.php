@@ -8,8 +8,10 @@ use Serializable;
 use UnexpectedValueException;
 
 use function array_key_exists;
-use function get_debug_type;
+use function get_class;
+use function gettype;
 use function is_array;
+use function is_object;
 use function serialize;
 use function sprintf;
 use function unserialize;
@@ -127,7 +129,7 @@ class SplPriorityQueue extends \SplPriorityQueue implements Serializable
                 throw new UnexpectedValueException(sprintf(
                     'Cannot deserialize %s instance: corrupt item; expected array, received %s',
                     self::class,
-                    get_debug_type($item)
+                    is_object($item) ? get_class($item) : gettype($item)
                 ));
             }
 

@@ -3,12 +3,12 @@
 namespace Drupal\Tests\comment\Functional\Rest;
 
 use Drupal\comment\Entity\CommentType;
-use Drupal\Tests\rest\Functional\EntityResource\ConfigEntityResourceTestBase;
+use Drupal\Tests\rest\Functional\EntityResource\EntityResourceTestBase;
 
 /**
  * ResourceTestBase for CommentType entity.
  */
-abstract class CommentTypeResourceTestBase extends ConfigEntityResourceTestBase {
+abstract class CommentTypeResourceTestBase extends EntityResourceTestBase {
 
   /**
    * {@inheritdoc}
@@ -72,7 +72,6 @@ abstract class CommentTypeResourceTestBase extends ConfigEntityResourceTestBase 
    */
   protected function getNormalizedPostEntity() {
     // @todo Update in https://www.drupal.org/node/2300677.
-    return [];
   }
 
 }

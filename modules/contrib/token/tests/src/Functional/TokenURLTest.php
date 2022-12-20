@@ -12,14 +12,16 @@ use Drupal\Core\Url;
 class TokenURLTest extends TokenTestBase {
 
   /**
-   * {@inheritdoc}
+   * Modules to enable.
+   *
+   * @var array
    */
-  protected static $modules = ['node'];
+  public static $modules = ['node'];
 
   /**
    * {@inheritdoc}
    */
-  public function setUp(): void {
+  public function setUp() {
     parent::setUp();
     $this->saveAlias('/node/1', '/first-node');
   }

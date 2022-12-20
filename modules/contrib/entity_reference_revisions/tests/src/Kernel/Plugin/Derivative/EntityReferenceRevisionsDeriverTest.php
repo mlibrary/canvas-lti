@@ -17,12 +17,12 @@ class EntityReferenceRevisionsDeriverTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['migrate', 'entity_reference_revisions', 'entity_composite_relationship_test'];
+  public static $modules = ['migrate', 'entity_reference_revisions', 'entity_composite_relationship_test'];
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->installConfig(static::$modules);
   }

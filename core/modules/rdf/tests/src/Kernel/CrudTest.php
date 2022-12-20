@@ -8,7 +8,6 @@ use Drupal\KernelTests\KernelTestBase;
  * Tests the RDF mapping CRUD functions.
  *
  * @group rdf
- * @group legacy
  */
 class CrudTest extends KernelTestBase {
 
@@ -34,9 +33,6 @@ class CrudTest extends KernelTestBase {
    */
   protected $bundle;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     $this->prefix = 'rdf.mapping';

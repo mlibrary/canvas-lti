@@ -8,7 +8,6 @@ use Drupal\Core\Url;
  * Add feed test.
  *
  * @group aggregator
- * @group legacy
  */
 class AddFeedTest extends AggregatorTestBase {
 
@@ -17,9 +16,6 @@ class AddFeedTest extends AggregatorTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

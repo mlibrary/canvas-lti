@@ -28,7 +28,7 @@ class LinkFieldUITest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'classy';
 
   /**
    * A user that can edit content types.

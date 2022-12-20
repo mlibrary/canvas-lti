@@ -56,7 +56,7 @@ class TourTest extends TourTestBasic {
     parent::setUp();
 
     $this->drupalPlaceBlock('local_actions_block', [
-      'theme' => 'claro',
+      'theme' => 'seven',
       'region' => 'content',
     ]);
   }

@@ -1,6 +1,6 @@
 {
   "extends": [
-    "airbnb-base",
+    "airbnb",
     "plugin:prettier/recommended",
     "plugin:yml/recommended"
   ],
@@ -28,6 +28,11 @@
     "CKEditor5": true,
     "tabbable": true
   },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "rules": {
     "prettier/prettier": "error",
     "consistent-return": ["off"],
@@ -47,7 +52,6 @@
       "requireReturn": false
     }],
     "no-unused-vars": ["warn"],
-    "operator-linebreak": ["error", "after", { "overrides": { "?": "ignore", ":": "ignore" } }],
-    "yml/indent": ["error", 2]
+    "operator-linebreak": ["error", "after", { "overrides": { "?": "ignore", ":": "ignore" } }]
   }
 }

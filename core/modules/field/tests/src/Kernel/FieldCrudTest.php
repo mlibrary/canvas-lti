@@ -38,9 +38,6 @@ class FieldCrudTest extends FieldKernelTestBase {
    */
   protected $fieldDefinition;
 
-  /**
-   * {@inheritdoc}
-   */
   public function setUp(): void {
     parent::setUp();
 

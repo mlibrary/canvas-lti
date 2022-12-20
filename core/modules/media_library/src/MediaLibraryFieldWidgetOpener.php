@@ -9,7 +9,6 @@ use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\Field\EntityReferenceFieldItemList;
 
 /**
  * The media library opener for field widgets.
@@ -96,9 +95,7 @@ class MediaLibraryFieldWidgetOpener implements MediaLibraryOpenerInterface {
     $items = $entity->get($field_name);
     $field_definition = $items->getFieldDefinition();
 
-    // Check that the field is an entity reference, or subclass of it, since we
-    // need to check the target_type setting.
-    if (!$items instanceof EntityReferenceFieldItemList) {
+    if ($field_definition->getType() !== 'entity_reference') {
       throw new \LogicException('Expected the media library to be opened by an entity reference field.');
     }
     if ($field_definition->getFieldStorageDefinition()->getSetting('target_type') !== 'media') {

@@ -4,6 +4,7 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function ($, Drupal, Backbone, _) {
   Drupal.ckeditor.KeyboardView = Backbone.View.extend({
     initialize: function initialize() {
@@ -14,9 +15,11 @@
     onPressButton: function onPressButton(event) {
       var upDownKeys = [38, 63232, 40, 63233];
       var leftRightKeys = [37, 63234, 39, 63235];
+
       if (event.keyCode === 13) {
         event.stopPropagation();
       }
+
       if (_.indexOf(_.union(upDownKeys, leftRightKeys), event.keyCode) > -1) {
         var view = this;
         var $target = $(event.currentTarget);
@@ -29,6 +32,7 @@
         var $activeButtons = this.$el.find('.ckeditor-toolbar-active');
         var $originalGroup = $group;
         var dir;
+
         if (containerType === 'source') {
           if (_.indexOf([40, 63233], event.keyCode) > -1) {
             $activeButtons.find('.ckeditor-toolbar-group-buttons').eq(0).prepend($button);
@@ -37,11 +41,13 @@
           if (_.indexOf(leftRightKeys, event.keyCode) > -1) {
             var $siblings = $container.children();
             var index = $siblings.index($button);
+
             if (_.indexOf([37, 63234], event.keyCode) > -1) {
               if (index > 0) {
                 $button.insertBefore($container.children().eq(index - 1));
               } else {
                 $group = $container.parent().prev();
+
                 if ($group.length > 0) {
                   $group.find('.ckeditor-toolbar-group-buttons').append($button);
                 } else {
@@ -58,6 +64,7 @@
           } else if (_.indexOf(upDownKeys, event.keyCode) > -1) {
             dir = _.indexOf([38, 63232], event.keyCode) > -1 ? 'prev' : 'next';
             $row = $container.closest('.ckeditor-row')[dir]();
+
             if (dir === 'prev' && $row.length === 0) {
               if ($button.data('drupal-ckeditor-type') === 'separator') {
                 $button.off().remove();
@@ -76,11 +83,13 @@
             $target = $button.children();
           }
         }
+
         view = this;
         Drupal.ckeditor.registerButtonMove(this, $button, function (result) {
           if (!result && $originalGroup) {
             $originalGroup.find('.ckeditor-buttons').append($button);
           }
+
           $target.trigger('focus');
         });
         event.preventDefault();
@@ -90,6 +99,7 @@
     onPressGroup: function onPressGroup(event) {
       var upDownKeys = [38, 63232, 40, 63233];
       var leftRightKeys = [37, 63234, 39, 63235];
+
       if (event.keyCode === 13) {
         var view = this;
         window.setTimeout(function () {
@@ -98,14 +108,17 @@
         event.preventDefault();
         event.stopPropagation();
       }
+
       if (_.indexOf(_.union(upDownKeys, leftRightKeys), event.keyCode) > -1) {
         var $group = $(event.currentTarget);
         var $container = $group.parent();
         var $siblings = $container.children();
         var index;
         var dir;
+
         if (_.indexOf(leftRightKeys, event.keyCode) > -1) {
           index = $siblings.index($group);
+
           if (_.indexOf([37, 63234], event.keyCode) > -1) {
             if (index > 0) {
               $group.insertBefore($siblings.eq(index - 1));
@@ -124,6 +137,7 @@
           dir = _.indexOf([38, 63232], event.keyCode) > -1 ? 'prev' : 'next';
           $group.closest('.ckeditor-row')[dir]().find('.ckeditor-toolbar-groups').eq(0).prepend($group);
         }
+
         Drupal.ckeditor.registerGroupMove(this, $group);
         $group.trigger('focus');
         event.preventDefault();

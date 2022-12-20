@@ -35,9 +35,6 @@ class FieldImportDeleteUninstallUiTest extends FieldTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

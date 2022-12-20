@@ -4,6 +4,7 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function (Drupal, debounce) {
   var liveElement;
   var announcements = [];
@@ -19,18 +20,22 @@
       }
     }
   };
+
   function announce() {
     var text = [];
     var priority = 'polite';
     var announcement;
     var il = announcements.length;
+
     for (var i = 0; i < il; i++) {
       announcement = announcements.pop();
       text.unshift(announcement.text);
+
       if (announcement.priority === 'assertive') {
         priority = 'assertive';
       }
     }
+
     if (text.length) {
       liveElement.innerHTML = '';
       liveElement.setAttribute('aria-busy', 'true');
@@ -39,6 +44,7 @@
       liveElement.setAttribute('aria-busy', 'false');
     }
   }
+
   Drupal.announce = function (text, priority) {
     announcements.push({
       text: text,

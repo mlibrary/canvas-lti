@@ -4,11 +4,13 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function ($, Drupal, drupalSettings) {
   Drupal.AjaxCommands.prototype.viewsHighlight = function (ajax, response, status) {
     $('.hilited').removeClass('hilited');
     $(response.selector).addClass('hilited');
   };
+
   Drupal.AjaxCommands.prototype.viewsSetForm = function (ajax, response, status) {
     var $form = $('.js-views-ui-dialog form');
     var $submitButtons = $(once('views-ajax-submit', $form.find('input[type=submit].js-form-submit, button.js-form-submit')));
@@ -27,30 +29,34 @@
       ajaxForm.$form = $form;
     });
   };
+
   Drupal.AjaxCommands.prototype.viewsShowButtons = function (ajax, response, status) {
     $('div.views-edit-view div.form-actions').removeClass('js-hide');
+
     if (response.changed) {
       $('div.views-edit-view div.view-changed.messages').removeClass('js-hide');
     }
   };
+
   Drupal.AjaxCommands.prototype.viewsTriggerPreview = function (ajax, response, status) {
     if ($('input#edit-displays-live-preview').is(':checked')) {
       $('#preview-submit').trigger('click');
     }
   };
+
   Drupal.AjaxCommands.prototype.viewsReplaceTitle = function (ajax, response, status) {
     var doc = document;
     var oldTitle = doc.title;
     var escapedSiteName = response.siteName.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
     var re = new RegExp(".+ (.) ".concat(escapedSiteName));
     doc.title = oldTitle.replace(re, "".concat(response.title, " $1 ").concat(response.siteName));
-    document.querySelectorAll('h1.page-title').forEach(function (item) {
-      item.textContent = response.title;
-    });
+    $('h1.page-title').text(response.title);
   };
+
   Drupal.theme.tableDragChangedWarning = function () {
     return [];
   };
+
   Drupal.behaviors.livePreview = {
     attach: function attach(context) {
       $(once('views-ajax', 'input#edit-displays-live-preview', context)).on('click', function () {
@@ -65,10 +71,7 @@
       $(once('views-ajax', '#views-tabset a')).on('click', function () {
         var href = $(this).attr('href');
         var displayId = href.substr(11);
-        var viewsPreviewId = document.querySelector('#views-live-preview #preview-display-id');
-        if (viewsPreviewId) {
-          viewsPreviewId.value = displayId;
-        }
+        $('#views-live-preview #preview-display-id').val(displayId);
       });
     }
   };
@@ -86,21 +89,27 @@
         var elementSettings = baseElementSettings;
         elementSettings.base = $link.attr('id');
         elementSettings.element = link;
+
         if ($link.attr('href')) {
           elementSettings.url = $link.attr('href');
         }
+
         Drupal.ajax(elementSettings);
       });
       once('views-ajax', 'div#views-live-preview a').forEach(function (link) {
         var $link = $(link);
+
         if (!$link.attr('href')) {
           return true;
         }
+
         var elementSettings = baseElementSettings;
         elementSettings.url = $link.attr('href');
+
         if (Drupal.Views.getPath(elementSettings.url).substring(0, 21) !== 'admin/structure/views') {
           return true;
         }
+
         elementSettings.wrapper = 'views-preview-wrapper';
         elementSettings.method = 'replaceWith';
         elementSettings.base = link.id;
@@ -115,9 +124,11 @@
         });
         var elementSettings = baseElementSettings;
         elementSettings.url = $(submit.form).attr('action');
+
         if (Drupal.Views.getPath(elementSettings.url).substring(0, 21) !== 'admin/structure/views') {
           return true;
         }
+
         elementSettings.wrapper = 'views-preview-wrapper';
         elementSettings.method = 'replaceWith';
         elementSettings.event = 'click';

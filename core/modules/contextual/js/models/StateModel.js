@@ -4,6 +4,7 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function (Drupal, Backbone) {
   Drupal.contextual.StateModel = Backbone.Model.extend({
     defaults: {
@@ -16,9 +17,11 @@
     toggleOpen: function toggleOpen() {
       var newIsOpen = !this.get('isOpen');
       this.set('isOpen', newIsOpen);
+
       if (newIsOpen) {
         this.focus();
       }
+
       return this;
     },
     close: function close() {
@@ -39,6 +42,7 @@
       if (!this.get('isOpen')) {
         this.set('hasFocus', false);
       }
+
       return this;
     }
   });

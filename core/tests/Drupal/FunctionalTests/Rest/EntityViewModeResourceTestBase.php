@@ -2,10 +2,10 @@
 
 namespace Drupal\FunctionalTests\Rest;
 
-use Drupal\Tests\rest\Functional\EntityResource\ConfigEntityResourceTestBase;
+use Drupal\Tests\rest\Functional\EntityResource\EntityResourceTestBase;
 use Drupal\Core\Entity\Entity\EntityViewMode;
 
-abstract class EntityViewModeResourceTestBase extends ConfigEntityResourceTestBase {
+abstract class EntityViewModeResourceTestBase extends EntityResourceTestBase {
 
   /**
    * {@inheritdoc}
@@ -69,7 +69,6 @@ abstract class EntityViewModeResourceTestBase extends ConfigEntityResourceTestBa
    */
   protected function getNormalizedPostEntity() {
     // @todo Update in https://www.drupal.org/node/2300677.
-    return [];
   }
 
 }

@@ -146,7 +146,7 @@ class LocalActionManagerTest extends UnitTestCase {
     $this->argumentResolver->expects($this->once())
       ->method('getArguments')
       ->with($this->request, [$local_action, 'getTitle'])
-      ->willReturn(['test']);
+      ->will($this->returnValue(['test']));
 
     $this->localActionManager->getTitle($local_action);
   }
@@ -159,31 +159,31 @@ class LocalActionManagerTest extends UnitTestCase {
   public function testGetActionsForRoute($route_appears, array $plugin_definitions, array $expected_actions) {
     $this->discovery->expects($this->any())
       ->method('getDefinitions')
-      ->willReturn($plugin_definitions);
+      ->will($this->returnValue($plugin_definitions));
     $map = [];
     foreach ($plugin_definitions as $plugin_id => $plugin_definition) {
       $plugin = $this->createMock('Drupal\Core\Menu\LocalActionInterface');
       $plugin->expects($this->any())
         ->method('getRouteName')
-        ->willReturn($plugin_definition['route_name']);
+        ->will($this->returnValue($plugin_definition['route_name']));
       $plugin->expects($this->any())
         ->method('getRouteParameters')
-        ->willReturn($plugin_definition['route_parameters'] ?? []);
+        ->will($this->returnValue($plugin_definition['route_parameters'] ?? []));
       $plugin->expects($this->any())
         ->method('getTitle')
-        ->willReturn($plugin_definition['title']);
+        ->will($this->returnValue($plugin_definition['title']));
       $this->argumentResolver->expects($this->any())
         ->method('getArguments')
         ->with($this->request, [$plugin, 'getTitle'])
-        ->willReturn([]);
+        ->will($this->returnValue([]));
 
       $plugin->expects($this->any())
         ->method('getWeight')
-        ->willReturn($plugin_definition['weight']);
+        ->will($this->returnValue($plugin_definition['weight']));
       $this->argumentResolver->expects($this->any())
         ->method('getArguments')
         ->with($this->request, [$plugin, 'getTitle'])
-        ->willReturn([]);
+        ->will($this->returnValue([]));
       $map[] = [$plugin_id, [], $plugin];
     }
     $this->factory->expects($this->any())

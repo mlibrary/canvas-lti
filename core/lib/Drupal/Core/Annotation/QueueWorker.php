@@ -24,7 +24,7 @@ use Drupal\Component\Annotation\Plugin;
  * Plugin Namespace: Plugin\QueueWorker
  *
  * For a working example, see
- * \Drupal\locale\Plugin\QueueWorker\LocaleTranslation.
+ * \Drupal\aggregator\Plugin\QueueWorker\AggregatorRefresh.
  *
  * @see \Drupal\Core\Queue\QueueWorkerInterface
  * @see \Drupal\Core\Queue\QueueWorkerBase
@@ -52,14 +52,15 @@ class QueueWorker extends Plugin {
   public $title;
 
   /**
-   * An optional associative array of settings for cron.
+   * An associative array containing an optional key.
+   *
+   * This property is optional and it does not need to be declared.
+   *
+   * Available keys:
+   * - time (optional): How much time Drupal cron should spend on calling this
+   *   worker in seconds. Defaults to 15.
    *
    * @var array
-   *   The array has one key, time, which is set to the time Drupal cron should
-   *   spend on calling this worker in seconds. The default is set in
-   *   \Drupal\Core\Queue\QueueWorkerManager::processDefinition().
-   *
-   * @see \Drupal\Core\Queue\QueueWorkerManager::processDefinition()
    */
   public $cron;
 

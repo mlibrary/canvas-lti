@@ -62,7 +62,7 @@ abstract class ChangeUserRoleBase extends ConfigurableActionBase implements Cont
     unset($roles[RoleInterface::AUTHENTICATED_ID]);
     $form['rid'] = [
       '#type' => 'radios',
-      '#title' => $this->t('Role'),
+      '#title' => t('Role'),
       '#options' => $roles,
       '#default_value' => $this->configuration['rid'],
       '#required' => TRUE,

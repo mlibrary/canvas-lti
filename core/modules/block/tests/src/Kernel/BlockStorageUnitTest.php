@@ -30,9 +30,6 @@ class BlockStorageUnitTest extends KernelTestBase {
    */
   protected $controller;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 
@@ -146,7 +143,7 @@ class BlockStorageUnitTest extends KernelTestBase {
    * Tests the installation of default blocks.
    */
   public function testDefaultBlocks() {
-    \Drupal::service('theme_installer')->install(['stark']);
+    \Drupal::service('theme_installer')->install(['classy']);
     $entities = $this->controller->loadMultiple();
     $this->assertEmpty($entities, 'There are no blocks initially.');
 

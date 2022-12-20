@@ -20,7 +20,7 @@ class Dummy implements MailInterface {
    */
   public function format(array $message) {
     // TODO: Implement format() method.
-    \dump([
+    \debug([
       'Subject' => $message['subject'],
       'Body' => $message['body'],
       'Headers' => $message['headers'],
@@ -33,7 +33,7 @@ class Dummy implements MailInterface {
    */
   public function mail(array $message) {
     // TODO: Implement mail() method.
-    \dump([
+    \debug([
       'Subject' => $message['subject'],
       'Body' => $message['body'],
       'Headers' => $message['headers'],

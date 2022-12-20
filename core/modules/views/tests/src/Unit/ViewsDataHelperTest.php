@@ -44,7 +44,7 @@ class ViewsDataHelperTest extends UnitTestCase {
       ->getMock();
     $views_data->expects($this->once())
       ->method('getAll')
-      ->willReturn($this->viewsData());
+      ->will($this->returnValue($this->viewsData()));
 
     $data_helper = new ViewsDataHelper($views_data);
 

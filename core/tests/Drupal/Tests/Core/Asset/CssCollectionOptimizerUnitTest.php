@@ -31,9 +31,6 @@ class CssCollectionOptimizerUnitTest extends UnitTestCase {
    */
   protected $optimizer;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     $mock_grouper = $this->createMock(AssetCollectionGrouperInterface::class);

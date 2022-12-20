@@ -4,17 +4,20 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function ($, Drupal, drupalSettings) {
   Drupal.behaviors.contentTranslationDependentOptions = {
     attach: function attach(context) {
       var $context = $(context);
       var options = drupalSettings.contentTranslationDependentOptions;
       var $fields;
+
       function fieldsChangeHandler($fields, dependentColumns) {
         return function (e) {
           Drupal.behaviors.contentTranslationDependentOptions.check($fields, dependentColumns, $(e.target));
         };
       }
+
       if (options && options.dependent_selectors) {
         Object.keys(options.dependent_selectors).forEach(function (field) {
           $fields = $context.find("input[name^=\"".concat(field, "\"]"));
@@ -27,14 +30,18 @@
     check: function check($fields, dependentColumns, $changed) {
       var $element = $changed;
       var column;
+
       function filterFieldsList(index, field) {
-        return field.value === column;
+        return $(field).val() === column;
       }
+
       Object.keys(dependentColumns || {}).forEach(function (index) {
         column = dependentColumns[index];
+
         if (!$changed) {
           $element = $fields.filter(filterFieldsList);
         }
+
         if ($element.is("input[value=\"".concat(column, "\"]:checked"))) {
           $fields.prop('checked', true).not($element).prop('disabled', true);
         } else {
@@ -48,6 +55,7 @@
       once('translation-entity-admin-hide', $(context).find('table .bundle-settings .translatable :input')).forEach(function (input) {
         var $input = $(input);
         var $bundleSettings = $input.closest('.bundle-settings');
+
         if (!$input.is(':checked')) {
           $bundleSettings.nextUntil('.bundle-settings').hide();
         } else {
@@ -59,6 +67,7 @@
         var $bundleSettings = $target.closest('.bundle-settings');
         var $settings = $bundleSettings.nextUntil('.bundle-settings');
         var $fieldSettings = $settings.filter('.field-settings');
+
         if ($target.is(':checked')) {
           $bundleSettings.find('.operations :input[name$="[language_alterable]"]').prop('checked', true);
           $fieldSettings.find('.translatable :input').prop('checked', true);
@@ -70,6 +79,7 @@
         var $target = $(e.target);
         var $fieldSettings = $target.closest('.field-settings');
         var $columnSettings = $fieldSettings.nextUntil('.field-settings, .bundle-settings');
+
         if ($target.is(':checked')) {
           $columnSettings.show();
         } else {

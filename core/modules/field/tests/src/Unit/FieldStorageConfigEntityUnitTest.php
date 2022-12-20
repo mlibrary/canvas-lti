@@ -73,14 +73,14 @@ class FieldStorageConfigEntityUnitTest extends UnitTestCase {
     $fieldStorageConfigentityType = $this->createMock('\Drupal\Core\Config\Entity\ConfigEntityTypeInterface');
     $fieldStorageConfigentityType->expects($this->any())
       ->method('getProvider')
-      ->willReturn('field');
+      ->will($this->returnValue('field'));
 
     // Create a mock entity type to attach the field to.
     $attached_entity_type_id = $this->randomMachineName();
     $attached_entity_type = $this->createMock('\Drupal\Core\Entity\EntityTypeInterface');
     $attached_entity_type->expects($this->any())
       ->method('getProvider')
-      ->willReturn('entity_provider_module');
+      ->will($this->returnValue('entity_provider_module'));
 
     // Get definition is called three times. Twice in
     // ConfigEntityBase::addDependency() to get the provider of the field config

@@ -53,7 +53,7 @@ class ImageStyleTest extends UnitTestCase {
     $effectManager->expects($this->any())
       ->method('createInstance')
       ->with($image_effect_id)
-      ->willReturn($image_effect);
+      ->will($this->returnValue($image_effect));
     $default_stubs = ['getImageEffectPluginManager', 'fileDefaultScheme'];
     $image_style = $this->getMockBuilder('\Drupal\image\Entity\ImageStyle')
       ->setConstructorArgs([
@@ -65,7 +65,7 @@ class ImageStyleTest extends UnitTestCase {
 
     $image_style->expects($this->any())
       ->method('getImageEffectPluginManager')
-      ->willReturn($effectManager);
+      ->will($this->returnValue($effectManager));
     $image_style->expects($this->any())
       ->method('fileDefaultScheme')
       ->willReturnCallback([$this, 'fileDefaultScheme']);
@@ -78,16 +78,16 @@ class ImageStyleTest extends UnitTestCase {
    */
   protected function setUp(): void {
     $this->entityTypeId = $this->randomMachineName();
-    $provider = $this->randomMachineName();
+    $this->provider = $this->randomMachineName();
     $this->entityType = $this->createMock('\Drupal\Core\Entity\EntityTypeInterface');
     $this->entityType->expects($this->any())
       ->method('getProvider')
-      ->willReturn($provider);
+      ->will($this->returnValue($this->provider));
     $this->entityTypeManager = $this->createMock('\Drupal\Core\Entity\EntityTypeManagerInterface');
     $this->entityTypeManager->expects($this->any())
       ->method('getDefinition')
       ->with($this->entityTypeId)
-      ->willReturn($this->entityType);
+      ->will($this->returnValue($this->entityType));
   }
 
   /**
@@ -101,7 +101,7 @@ class ImageStyleTest extends UnitTestCase {
       ->getMock();
     $image_effect->expects($this->any())
       ->method('getDerivativeExtension')
-      ->willReturn('png');
+      ->will($this->returnValue('png'));
 
     $image_style = $this->getImageStyleMock($image_effect_id, $image_effect);
 
@@ -124,7 +124,7 @@ class ImageStyleTest extends UnitTestCase {
       ->getMock();
     $image_effect->expects($this->any())
       ->method('getDerivativeExtension')
-      ->willReturn('png');
+      ->will($this->returnValue('png'));
 
     $image_style = $this->getImageStyleMock($image_effect_id, $image_effect);
     $this->assertEquals($image_style->buildUri('public://test.jpeg'), 'public://styles/' . $image_style->id() . '/public/test.jpeg.png');
@@ -157,15 +157,15 @@ class ImageStyleTest extends UnitTestCase {
       ->getMock();
     $image_effect->expects($this->any())
       ->method('getDerivativeExtension')
-      ->willReturn('png');
+      ->will($this->returnValue('png'));
 
     $image_style = $this->getImageStyleMock($image_effect_id, $image_effect, ['getPrivateKey', 'getHashSalt']);
     $image_style->expects($this->any())
       ->method('getPrivateKey')
-      ->willReturn($private_key);
+      ->will($this->returnValue($private_key));
     $image_style->expects($this->any())
       ->method('getHashSalt')
-      ->willReturn($hash_salt);
+      ->will($this->returnValue($hash_salt));
 
     // Assert the extension has been added to the URI before creating the token.
     $this->assertEquals($image_style->getPathToken('public://test.jpeg.png'), $image_style->getPathToken('public://test.jpeg'));
@@ -184,10 +184,10 @@ class ImageStyleTest extends UnitTestCase {
     $image_style = $this->getImageStyleMock($image_effect_id, $image_effect, ['getPrivateKey', 'getHashSalt']);
     $image_style->expects($this->any())
       ->method('getPrivateKey')
-      ->willReturn($private_key);
+      ->will($this->returnValue($private_key));
     $image_style->expects($this->any())
       ->method('getHashSalt')
-      ->willReturn($hash_salt);
+      ->will($this->returnValue($hash_salt));
     // Assert no extension has been added to the uri before creating the token.
     $this->assertNotEquals($image_style->getPathToken('public://test.jpeg.png'), $image_style->getPathToken('public://test.jpeg'));
     $this->assertNotEquals(substr(Crypt::hmacBase64($image_style->id() . ':' . 'public://test.jpeg.png', $private_key . $hash_salt), 0, 8), $image_style->getPathToken('public://test.jpeg'));

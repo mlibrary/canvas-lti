@@ -4,8 +4,10 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function () {
   if (typeof window.CustomEvent === 'function') return false;
+
   function CustomEvent(event, params) {
     params = params || {
       bubbles: false,
@@ -16,5 +18,6 @@
     evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
     return evt;
   }
+
   window.CustomEvent = CustomEvent;
 })();

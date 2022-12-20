@@ -151,7 +151,7 @@ interface ViewsPluginInterface extends PluginInspectionInterface, DerivativeInsp
   /**
    * Validate that the plugin is correct and can be saved.
    *
-   * @return array|null
+   * @return
    *   An array of error strings to tell the user what is wrong with this
    *   plugin.
    */

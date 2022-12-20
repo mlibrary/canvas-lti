@@ -9,8 +9,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Replaces all services with a lazy flag.
- *
- * @see lazy_services
  */
 class ProxyServicesPass implements CompilerPassInterface {
 

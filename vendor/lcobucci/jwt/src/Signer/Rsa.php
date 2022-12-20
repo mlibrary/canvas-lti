@@ -1,35 +1,24 @@
 <?php
-declare(strict_types=1);
+/**
+ * This file is part of Lcobucci\JWT, a simple library to handle JWT and JWS
+ *
+ * @license http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
+ */
 
 namespace Lcobucci\JWT\Signer;
 
 use const OPENSSL_KEYTYPE_RSA;
 
+/**
+ * Base class for RSASSA-PKCS1 signers
+ *
+ * @author Luís Otávio Cobucci Oblonczyk <lcobucci@gmail.com>
+ * @since 2.1.0
+ */
 abstract class Rsa extends OpenSSL
 {
-    private const MINIMUM_KEY_LENGTH = 2048;
-
-    final public function sign(string $payload, Key $key): string
+    final public function getKeyType()
     {
-        return $this->createSignature($key->contents(), $key->passphrase(), $payload);
-    }
-
-    final public function verify(string $expected, string $payload, Key $key): bool
-    {
-        return $this->verifySignature($expected, $payload, $key->contents());
-    }
-
-    final protected function guardAgainstIncompatibleKey(int $type, int $lengthInBits): void
-    {
-        if ($type !== OPENSSL_KEYTYPE_RSA) {
-            throw InvalidKeyProvided::incompatibleKeyType(
-                self::KEY_TYPE_MAP[OPENSSL_KEYTYPE_RSA],
-                self::KEY_TYPE_MAP[$type],
-            );
-        }
-
-        if ($lengthInBits < self::MINIMUM_KEY_LENGTH) {
-            throw InvalidKeyProvided::tooShort(self::MINIMUM_KEY_LENGTH, $lengthInBits);
-        }
+        return OPENSSL_KEYTYPE_RSA;
     }
 }

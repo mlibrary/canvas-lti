@@ -30,9 +30,6 @@ class NodeAccessMenuLinkTest extends NodeTestBase {
    */
   protected $contentAdminUser;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

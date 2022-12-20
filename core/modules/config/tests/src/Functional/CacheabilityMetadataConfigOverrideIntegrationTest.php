@@ -25,7 +25,7 @@ class CacheabilityMetadataConfigOverrideIntegrationTest extends BrowserTestBase 
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'classy';
 
   /**
    * {@inheritdoc}

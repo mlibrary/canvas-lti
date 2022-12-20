@@ -55,7 +55,7 @@
         const $pages = $(context).find(
           'textarea[name="visibility[request_path][pages]"]',
         );
-        if (!$pages.length || !$pages[0].value) {
+        if (!$pages.val()) {
           return Drupal.t('Not restricted');
         }
 
@@ -157,13 +157,13 @@
           .find(`.region-${region}-message`)
           .nextUntil('.region-title')
           .find('select.block-weight')
-          .each(function () {
+          .val(
             // Increment the weight before assigning it to prevent using the
             // absolute minimum available weight. This way we always have an
             // unused upper and lower bound, which makes manually setting the
             // weights easier for users who prefer to do it that way.
-            this.value = ++weight;
-          });
+            () => ++weight,
+          );
       }
 
       const table = $('#blocks');
@@ -211,7 +211,7 @@
           weightField
             .removeClass(`block-weight-${oldRegionName}`)
             .addClass(`block-weight-${regionName}`);
-          regionField[0].value = regionName;
+          regionField.val(regionName);
         }
 
         updateBlockWeights(table, regionName);

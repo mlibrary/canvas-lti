@@ -3,7 +3,6 @@
 namespace Drupal\Tests\layout_builder\FunctionalJavascript;
 
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
-use Drupal\layout_builder\Entity\LayoutBuilderEntityViewDisplay;
 
 /**
  * Test the multi-width layout plugins.
@@ -13,8 +12,12 @@ use Drupal\layout_builder\Entity\LayoutBuilderEntityViewDisplay;
 class TestMultiWidthLayoutsTest extends WebDriverTestBase {
 
   /**
-   * {@inheritdoc}
+   * Path prefix for the field UI for the test bundle.
+   *
+   * @var string
    */
+  const FIELD_UI_PREFIX = 'admin/structure/types/manage/bundle_with_section_field';
+
   protected static $modules = [
     'layout_builder',
     'block',
@@ -33,16 +36,11 @@ class TestMultiWidthLayoutsTest extends WebDriverTestBase {
     parent::setUp();
 
     $this->createContentType(['type' => 'bundle_with_section_field']);
-    LayoutBuilderEntityViewDisplay::load('node.bundle_with_section_field.default')
-      ->enableLayoutBuilder()
-      ->setOverridable()
-      ->save();
 
-    $this->createNode([
-      'type' => 'bundle_with_section_field',
-    ]);
     $this->drupalLogin($this->drupalCreateUser([
       'configure any layout',
+      'administer node display',
+      'administer node fields',
     ]));
   }
 
@@ -53,7 +51,13 @@ class TestMultiWidthLayoutsTest extends WebDriverTestBase {
     $assert_session = $this->assertSession();
     $page = $this->getSession()->getPage();
 
-    $this->drupalGet('node/1/layout');
+    // Enable layout builder.
+    $this->drupalGet(static::FIELD_UI_PREFIX . '/display/default');
+    $this->submitForm(['layout[enabled]' => TRUE], 'Save');
+
+    $this->clickLink('Manage layout');
+    $assert_session->addressEquals(static::FIELD_UI_PREFIX . '/display/default/layout');
+
     $width_options = [
       [
         'label' => 'Two column',

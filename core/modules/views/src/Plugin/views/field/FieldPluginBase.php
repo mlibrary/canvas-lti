@@ -14,7 +14,6 @@ use Drupal\views\Render\ViewsRenderPipelineMarkup;
 use Drupal\views\ResultRow;
 use Drupal\views\ViewExecutable;
 use Twig\Environment;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * @defgroup views_field_handlers Views field handler plugins
@@ -590,7 +589,7 @@ abstract class FieldPluginBase extends HandlerBase implements FieldHandlerInterf
 
     $form['element_class_enable'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Add HTML class'),
+      '#title' => $this->t('Create a CSS class'),
       '#states' => [
         'visible' => [
           ':input[name="options[element_type_enable]"]' => ['checked' => TRUE],
@@ -634,7 +633,7 @@ abstract class FieldPluginBase extends HandlerBase implements FieldHandlerInterf
     ];
     $form['element_label_class_enable'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Add HTML class'),
+      '#title' => $this->t('Create a CSS class'),
       '#states' => [
         'visible' => [
           ':input[name="options[element_label_type_enable]"]' => ['checked' => TRUE],
@@ -679,7 +678,7 @@ abstract class FieldPluginBase extends HandlerBase implements FieldHandlerInterf
 
     $form['element_wrapper_class_enable'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Add HTML class'),
+      '#title' => $this->t('Create a CSS class'),
       '#states' => [
         'visible' => [
           ':input[name="options[element_wrapper_type_enable]"]' => ['checked' => TRUE],
@@ -877,8 +876,8 @@ abstract class FieldPluginBase extends HandlerBase implements FieldHandlerInterf
 
       // Setup the tokens for fields.
       $previous = $this->getPreviousFieldLabels();
-      $optgroup_arguments = (string) $this->t('Arguments');
-      $optgroup_fields = (string) $this->t('Fields');
+      $optgroup_arguments = (string) t('Arguments');
+      $optgroup_fields = (string) t('Fields');
       foreach ($previous as $id => $label) {
         $options[$optgroup_fields]["{{ $id }}"] = substr(strrchr($label, ":"), 2);
       }
@@ -1686,7 +1685,7 @@ abstract class FieldPluginBase extends HandlerBase implements FieldHandlerInterf
    * @param $parent_keys
    *   An array of parent keys. This will represent the array depth.
    *
-   * @return array
+   * @return
    *   An array of available tokens, with nested keys representative of the array structure.
    */
   protected function getTokenValuesRecursive(array $array, array $parent_keys = []) {
@@ -1820,7 +1819,7 @@ abstract class FieldPluginBase extends HandlerBase implements FieldHandlerInterf
       $value = rtrim(preg_replace('/(?:<(?!.+>)|&(?!.+;)).*$/us', '', $value));
 
       if (!empty($alter['ellipsis'])) {
-        $value .= new TranslatableMarkup('…');
+        $value .= t('…');
       }
     }
     if (!empty($alter['html'])) {

@@ -32,6 +32,7 @@ class ParagraphsCollapsedSummaryTest extends KernelTestBase {
     'user',
     'system',
     'field',
+    'entity_reference',
     'entity_reference_revisions',
     'paragraphs_test',
     'file',

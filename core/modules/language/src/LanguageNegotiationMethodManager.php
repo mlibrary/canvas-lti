@@ -12,11 +12,6 @@ use Drupal\Core\Plugin\DefaultPluginManager;
 class LanguageNegotiationMethodManager extends DefaultPluginManager {
 
   /**
-   * The cache key prefix.
-   */
-  protected $cacheKeyPrefix;
-
-  /**
    * Constructs a new LanguageNegotiationMethodManager object.
    *
    * @param \Traversable $namespaces

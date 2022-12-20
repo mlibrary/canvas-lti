@@ -4,7 +4,6 @@ namespace Drupal\field_group\Element;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element\RenderElement;
-use Drupal\Core\Template\Attribute;
 
 /**
  * Provides a render element for a html element.
@@ -52,19 +51,11 @@ class HtmlElement extends RenderElement {
       $element['#attached']['library'][] = 'field_group/core';
 
       // Add the required classes for the js.
-      $classes = [
-        'field-group-html-element',
-        'fieldgroup-collapsible',
-        'effect-' . $element['#effect'],
-      ];
+      $element['#attributes']['class'][] = 'field-group-html-element';
+      $element['#attributes']['class'][] = 'fieldgroup-collapsible';
+      $element['#attributes']['class'][] = 'effect-' . $element['#effect'];
       if (!empty($element['#speed'])) {
-        $classes[] = 'speed-' . $element['#speed'];
-      }
-      if ($element['#attributes'] instanceof Attribute) {
-        $element['#attributes']->addClass($classes);
-      }
-      else {
-        $element['#attributes']['classes'] = array_merge($element['#attributes']['classes'], $classes);
+        $element['#attributes']['class'][] = 'speed-' . $element['#speed'];
       }
 
       // Add jquery ui effects library for the blind effect.

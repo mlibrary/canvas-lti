@@ -68,11 +68,11 @@ class FieldStorageConfigAccessControlHandlerTest extends UnitTestCase {
     $this->anon
       ->expects($this->any())
       ->method('hasPermission')
-      ->willReturn(FALSE);
+      ->will($this->returnValue(FALSE));
     $this->anon
       ->expects($this->any())
       ->method('id')
-      ->willReturn(0);
+      ->will($this->returnValue(0));
 
     $this->member = $this->createMock(AccountInterface::class);
     $this->member
@@ -84,23 +84,23 @@ class FieldStorageConfigAccessControlHandlerTest extends UnitTestCase {
     $this->member
       ->expects($this->any())
       ->method('id')
-      ->willReturn(2);
+      ->will($this->returnValue(2));
 
     $storageType = $this->createMock(ConfigEntityTypeInterface::class);
     $storageType
       ->expects($this->any())
       ->method('getProvider')
-      ->willReturn('field');
+      ->will($this->returnValue('field'));
     $storageType
       ->expects($this->any())
       ->method('getConfigPrefix')
-      ->willReturn('field.storage');
+      ->will($this->returnValue('field.storage'));
 
     $entityType = $this->createMock(ConfigEntityTypeInterface::class);
     $entityType
       ->expects($this->any())
       ->method('getProvider')
-      ->willReturn('node');
+      ->will($this->returnValue('node'));
     $entityType
       ->expects($this->any())
       ->method('getConfigPrefix')
@@ -109,8 +109,12 @@ class FieldStorageConfigAccessControlHandlerTest extends UnitTestCase {
     $this->moduleHandler = $this->createMock(ModuleHandlerInterface::class);
     $this->moduleHandler
       ->expects($this->any())
+      ->method('getImplementations')
+      ->will($this->returnValue([]));
+    $this->moduleHandler
+      ->expects($this->any())
       ->method('invokeAll')
-      ->willReturn([]);
+      ->will($this->returnValue([]));
 
     $storage_access_control_handler = new FieldStorageConfigAccessControlHandler($storageType);
     $storage_access_control_handler->setModuleHandler($this->moduleHandler);

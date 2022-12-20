@@ -27,9 +27,6 @@ class CachedStorageTest extends ConfigStorageTestBase {
    */
   protected $fileStorage;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     // Create a directory.

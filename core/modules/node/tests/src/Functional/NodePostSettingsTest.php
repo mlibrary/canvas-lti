@@ -13,11 +13,8 @@ class NodePostSettingsTest extends NodeTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'classy';
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 
@@ -49,7 +46,7 @@ class NodePostSettingsTest extends NodeTestBase {
 
     // Check that the post information is displayed.
     $node = $this->drupalGetNodeByTitle($edit['title[0][value]']);
-    $this->assertSession()->pageTextContainsOnce('Submitted by');
+    $this->assertSession()->elementsCount('xpath', '//div[contains(@class, "node__submitted")]', 1);
     $node->delete();
 
     // Set "Basic page" content type to display post information.
@@ -66,7 +63,7 @@ class NodePostSettingsTest extends NodeTestBase {
     $this->submitForm($edit, 'Save');
 
     // Check that the post information is not displayed.
-    $this->assertSession()->pageTextNotContains('Submitted by');
+    $this->assertSession()->elementNotExists('xpath', '//div[contains(@class, "node__submitted")]');
   }
 
 }

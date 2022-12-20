@@ -8,7 +8,6 @@ use Drupal\Tests\BrowserTestBase;
  * Tests Quick Edit can be installed with Minimal.
  *
  * @group quickedit
- * @group legacy
  */
 class QuickEditMinimalTest extends BrowserTestBase {
 

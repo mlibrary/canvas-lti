@@ -19,11 +19,13 @@ class HelpPageTest extends TokenTestBase {
   protected $account;
 
   /**
-   * {@inheritdoc}
+   * Modules to enable.
+   *
+   * @var array
    */
-  protected static $modules = ['help'];
+  public static $modules = ['help'];
 
-  public function setUp(): void {
+  public function setUp() {
     parent::setUp();
 
     $this->account = $this->drupalCreateUser(['access administration pages']);
@@ -35,7 +37,7 @@ class HelpPageTest extends TokenTestBase {
    */
   public function testHelpPageTree() {
     $this->drupalGet('admin/help/token');
-    $this->assertSession()->pageTextContains('The list of the currently available tokens on this site are shown below.');
+    $this->assertText('The list of the currently available tokens on this site are shown below.');
 
     $this->assertTokenGroup('Current date');
     $this->assertTokenGroup('Site information');

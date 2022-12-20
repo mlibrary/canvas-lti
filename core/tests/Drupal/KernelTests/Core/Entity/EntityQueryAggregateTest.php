@@ -34,9 +34,6 @@ class EntityQueryAggregateTest extends EntityKernelTestBase {
    */
   protected $queryResult;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

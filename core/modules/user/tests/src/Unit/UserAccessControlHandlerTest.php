@@ -77,11 +77,11 @@ class UserAccessControlHandlerTest extends UnitTestCase {
     $this->viewer
       ->expects($this->any())
       ->method('hasPermission')
-      ->willReturn(FALSE);
+      ->will($this->returnValue(FALSE));
     $this->viewer
       ->expects($this->any())
       ->method('id')
-      ->willReturn(1);
+      ->will($this->returnValue(1));
 
     $this->owner = $this->createMock('\Drupal\Core\Session\AccountInterface');
     $this->owner
@@ -95,13 +95,13 @@ class UserAccessControlHandlerTest extends UnitTestCase {
     $this->owner
       ->expects($this->any())
       ->method('id')
-      ->willReturn(2);
+      ->will($this->returnValue(2));
 
     $this->admin = $this->createMock('\Drupal\Core\Session\AccountInterface');
     $this->admin
       ->expects($this->any())
       ->method('hasPermission')
-      ->willReturn(TRUE);
+      ->will($this->returnValue(TRUE));
 
     $this->emailViewer = $this->createMock('\Drupal\Core\Session\AccountInterface');
     $this->emailViewer
@@ -113,12 +113,15 @@ class UserAccessControlHandlerTest extends UnitTestCase {
     $this->emailViewer
       ->expects($this->any())
       ->method('id')
-      ->willReturn(3);
+      ->will($this->returnValue(3));
 
     $entity_type = $this->createMock('Drupal\Core\Entity\EntityTypeInterface');
 
     $this->accessControlHandler = new UserAccessControlHandler($entity_type);
     $module_handler = $this->createMock('Drupal\Core\Extension\ModuleHandlerInterface');
+    $module_handler->expects($this->any())
+      ->method('getImplementations')
+      ->will($this->returnValue([]));
     $this->accessControlHandler->setModuleHandler($module_handler);
 
     $this->items = $this->getMockBuilder('Drupal\Core\Field\FieldItemList')
@@ -127,7 +130,7 @@ class UserAccessControlHandlerTest extends UnitTestCase {
     $this->items
       ->expects($this->any())
       ->method('defaultAccess')
-      ->willReturn(AccessResult::allowed());
+      ->will($this->returnValue(AccessResult::allowed()));
   }
 
   /**
@@ -139,12 +142,12 @@ class UserAccessControlHandlerTest extends UnitTestCase {
     $field_definition = $this->createMock('Drupal\Core\Field\FieldDefinitionInterface');
     $field_definition->expects($this->any())
       ->method('getName')
-      ->willReturn($field);
+      ->will($this->returnValue($field));
 
     $this->items
       ->expects($this->any())
       ->method('getEntity')
-      ->willReturn($this->{$target});
+      ->will($this->returnValue($this->{$target}));
 
     foreach (['view' => $view, 'edit' => $edit] as $operation => $result) {
       $result_text = !isset($result) ? 'null' : ($result ? 'true' : 'false');

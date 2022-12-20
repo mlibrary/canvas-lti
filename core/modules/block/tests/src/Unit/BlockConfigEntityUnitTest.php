@@ -66,13 +66,13 @@ class BlockConfigEntityUnitTest extends UnitTestCase {
     $this->entityType = $this->createMock('\Drupal\Core\Entity\EntityTypeInterface');
     $this->entityType->expects($this->any())
       ->method('getProvider')
-      ->willReturn('block');
+      ->will($this->returnValue('block'));
 
     $this->entityTypeManager = $this->createMock(EntityTypeManagerInterface::class);
     $this->entityTypeManager->expects($this->any())
       ->method('getDefinition')
       ->with($this->entityTypeId)
-      ->willReturn($this->entityType);
+      ->will($this->returnValue($this->entityType));
 
     $this->uuid = $this->createMock('\Drupal\Component\Uuid\UuidInterface');
 
@@ -111,13 +111,13 @@ class BlockConfigEntityUnitTest extends UnitTestCase {
     $plugin_collection->expects($this->atLeastOnce())
       ->method('get')
       ->with($instance_id)
-      ->willReturn($instance);
+      ->will($this->returnValue($instance));
     $plugin_collection->addInstanceId($instance_id);
 
     // Return the mocked plugin collection.
     $entity->expects($this->once())
       ->method('getPluginCollections')
-      ->willReturn([$plugin_collection]);
+      ->will($this->returnValue([$plugin_collection]));
 
     $dependencies = $entity->calculateDependencies()->getDependencies();
     $this->assertContains('test', $dependencies['module']);

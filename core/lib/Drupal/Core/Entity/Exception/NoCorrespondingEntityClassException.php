@@ -7,7 +7,7 @@ namespace Drupal\Core\Entity\Exception;
  *
  * This might occur by calling a static method on an abstract class.
  *
- * @see \Drupal\Core\Entity\EntityTypeRepositoryInterface::getEntityTypeFromClass()
+ * @see \Drupal\Core\Entity\Entity::getEntityTypeFromStaticClass()
  */
 class NoCorrespondingEntityClassException extends \Exception {
 

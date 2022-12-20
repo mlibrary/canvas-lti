@@ -55,9 +55,6 @@ abstract class EntityKernelTestBase extends KernelTestBase {
    */
   protected $state;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp() {
     parent::setUp();
 

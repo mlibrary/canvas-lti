@@ -26,18 +26,15 @@
       let $rows;
 
       function filterViewList(e) {
-        const query = e.target.value.toLowerCase();
+        const query = $(e.target).val().toLowerCase();
 
         function showViewRow(index, row) {
-          const sources = row.querySelectorAll(
+          const $row = $(row);
+          const $sources = $row.find(
             '[data-drupal-selector="views-table-filter-text-source"]',
           );
-          let sourcesConcat = '';
-          sources.forEach((item) => {
-            sourcesConcat += item.textContent;
-          });
-          const textMatch = sourcesConcat.toLowerCase().indexOf(query) !== -1;
-          $(row).closest('tr').toggle(textMatch);
+          const textMatch = $sources.text().toLowerCase().indexOf(query) !== -1;
+          $row.closest('tr').toggle(textMatch);
         }
 
         // Filter if the length of the query is at least 2 characters.

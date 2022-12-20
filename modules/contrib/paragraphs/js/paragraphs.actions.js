@@ -3,7 +3,7 @@
  * Paragraphs actions JS code for paragraphs actions button.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -17,7 +17,7 @@
    */
   Drupal.behaviors.paragraphsActions = {
     attach: function (context, settings) {
-      var $actionsElement = $(once('paragraphs-dropdown', '.paragraphs-dropdown', context));
+      var $actionsElement = $(context).find('.paragraphs-dropdown').once('paragraphs-dropdown');
       // Attach event handlers to toggle button.
       $actionsElement.each(function () {
         var $this = $(this);
@@ -40,4 +40,4 @@
     }
   };
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

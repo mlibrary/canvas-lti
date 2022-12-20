@@ -4,6 +4,7 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 Drupal.errorLog = [];
 window.addEventListener('error', function (e) {
   Drupal.errorLog.push(e);

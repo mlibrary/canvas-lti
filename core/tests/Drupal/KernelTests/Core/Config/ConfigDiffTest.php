@@ -137,7 +137,7 @@ class ConfigDiffTest extends KernelTestBase {
   }
 
   /**
-   * Helper method to test that an edit is found in the diff of two storages.
+   * Helper method to test that an edit is found in a diff'd YAML file.
    *
    * @param array $edits
    *   A list of edits.

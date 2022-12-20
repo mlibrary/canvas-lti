@@ -31,7 +31,7 @@ class ModerationActionsTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'classy';
 
   /**
    * {@inheritdoc}
@@ -81,14 +81,16 @@ class ModerationActionsTest extends BrowserTestBase {
 
     if ($warning_appears) {
       if ($action == 'node_publish_action') {
-        $this->assertSession()->statusMessageContains(node_get_type_label($node) . ' content items were skipped as they are under moderation and may not be directly published.', 'warning');
+        $this->assertSession()
+          ->elementContains('css', '.messages--warning', node_get_type_label($node) . ' content items were skipped as they are under moderation and may not be directly published.');
       }
       else {
-        $this->assertSession()->statusMessageContains(node_get_type_label($node) . ' content items were skipped as they are under moderation and may not be directly unpublished.', 'warning');
+        $this->assertSession()
+          ->elementContains('css', '.messages--warning', node_get_type_label($node) . ' content items were skipped as they are under moderation and may not be directly unpublished.');
       }
     }
     else {
-      $this->assertSession()->statusMessageNotExists('warning');
+      $this->assertSession()->elementNotExists('css', '.messages--warning');
     }
 
     // Ensure after the action has run, the node matches the expected status.

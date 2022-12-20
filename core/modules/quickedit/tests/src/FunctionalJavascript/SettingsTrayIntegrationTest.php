@@ -11,7 +11,6 @@ use Drupal\user\Entity\Role;
  * Test Settings Tray and Quick Edit modules integration.
  *
  * @group quickedit
- * @group legacy
  */
 class SettingsTrayIntegrationTest extends SettingsTrayTestBase {
 
@@ -43,16 +42,6 @@ class SettingsTrayIntegrationTest extends SettingsTrayTestBase {
     ]);
     $this->drupalLogin($user);
 
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function getTestThemes() {
-    // Make sure to test with Olivero first to avoid
-    // https://www.drupal.org/project/quickedit/issues/3262273
-    // @todo Remove when that is fixed.
-    return array_merge(['olivero'], array_diff(parent::getTestThemes(), ['olivero']));
   }
 
   /**
@@ -130,7 +119,7 @@ class SettingsTrayIntegrationTest extends SettingsTrayTestBase {
       $this->clickContextualLink($block_selector, "Quick edit");
       $this->waitForOffCanvasToOpen();
       // QuickEdit toolbar should be closed when opening off-canvas dialog.
-      $web_assert->waitForElementRemoved('css', $quick_edit_selector);
+      $web_assert->elementNotExists('css', $quick_edit_selector);
       // Open QuickEdit toolbar via contextual link while in Edit mode.
       $this->clickContextualLink($node_selector, "Quick edit", FALSE);
       $this->waitForOffCanvasToClose();
@@ -169,8 +158,9 @@ class SettingsTrayIntegrationTest extends SettingsTrayTestBase {
   /**
    * Creates a custom block.
    *
-   * @param string $title
-   *   Title of block.
+   * @param bool|string $title
+   *   (optional) Title of block. When no value is given uses a random name.
+   *   Defaults to FALSE.
    * @param string $bundle
    *   (optional) Bundle name. Defaults to 'basic'.
    * @param bool $save
@@ -179,7 +169,8 @@ class SettingsTrayIntegrationTest extends SettingsTrayTestBase {
    * @return \Drupal\block_content\Entity\BlockContent
    *   Created custom block.
    */
-  protected function createBlockContent(string $title, string $bundle = 'basic', bool $save = TRUE): BlockContent {
+  protected function createBlockContent($title = FALSE, $bundle = 'basic', $save = TRUE) {
+    $title = $title ?: $this->randomName();
     $block_content = BlockContent::create([
       'info' => $title,
       'type' => $bundle,

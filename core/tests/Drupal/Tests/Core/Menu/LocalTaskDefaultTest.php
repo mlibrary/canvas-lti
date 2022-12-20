@@ -64,9 +64,6 @@ class LocalTaskDefaultTest extends UnitTestCase {
    */
   protected $routeProvider;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 
@@ -94,7 +91,7 @@ class LocalTaskDefaultTest extends UnitTestCase {
     $this->routeProvider->expects($this->once())
       ->method('getRouteByName')
       ->with('test_route')
-      ->willReturn(new Route('/test-route'));
+      ->will($this->returnValue(new Route('/test-route')));
 
     $this->setupLocalTaskDefault();
 
@@ -114,7 +111,7 @@ class LocalTaskDefaultTest extends UnitTestCase {
     $this->routeProvider->expects($this->once())
       ->method('getRouteByName')
       ->with('test_route')
-      ->willReturn(new Route('/test-route/{parameter}'));
+      ->will($this->returnValue(new Route('/test-route/{parameter}')));
 
     $this->setupLocalTaskDefault();
 
@@ -134,7 +131,7 @@ class LocalTaskDefaultTest extends UnitTestCase {
     $this->routeProvider->expects($this->once())
       ->method('getRouteByName')
       ->with('test_route')
-      ->willReturn($route);
+      ->will($this->returnValue($route));
 
     $this->setupLocalTaskDefault();
 
@@ -157,7 +154,7 @@ class LocalTaskDefaultTest extends UnitTestCase {
     $this->routeProvider->expects($this->once())
       ->method('getRouteByName')
       ->with('test_route')
-      ->willReturn($route);
+      ->will($this->returnValue($route));
 
     $this->setupLocalTaskDefault();
 
@@ -179,7 +176,7 @@ class LocalTaskDefaultTest extends UnitTestCase {
     $this->routeProvider->expects($this->once())
       ->method('getRouteByName')
       ->with('test_route')
-      ->willReturn($route);
+      ->will($this->returnValue($route));
 
     $this->setupLocalTaskDefault();
 
@@ -262,7 +259,7 @@ class LocalTaskDefaultTest extends UnitTestCase {
     $this->stringTranslation->expects($this->once())
       ->method('translateString')
       ->with($this->pluginDefinition['title'])
-      ->willReturn('Example translated');
+      ->will($this->returnValue('Example translated'));
 
     $this->setupLocalTaskDefault();
     $this->assertEquals('Example translated', $this->localTaskBase->getTitle());
@@ -277,7 +274,7 @@ class LocalTaskDefaultTest extends UnitTestCase {
     $this->stringTranslation->expects($this->once())
       ->method('translateString')
       ->with($this->pluginDefinition['title'])
-      ->willReturn('Example translated with context');
+      ->will($this->returnValue('Example translated with context'));
 
     $this->setupLocalTaskDefault();
     $this->assertEquals('Example translated with context', $this->localTaskBase->getTitle());
@@ -291,7 +288,7 @@ class LocalTaskDefaultTest extends UnitTestCase {
     $this->stringTranslation->expects($this->once())
       ->method('translateString')
       ->with($this->pluginDefinition['title'])
-      ->willReturn('Example value');
+      ->will($this->returnValue('Example value'));
 
     $this->setupLocalTaskDefault();
     $this->assertEquals('Example value', $this->localTaskBase->getTitle());

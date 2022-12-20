@@ -10,7 +10,6 @@ use Drupal\Tests\migrate\Kernel\MigrateSqlSourceTestBase;
  * @covers \Drupal\color\Plugin\migrate\source\d7\Color
  *
  * @group color
- * @group legacy
  */
 class ColorTest extends MigrateSqlSourceTestBase {
 

@@ -6,7 +6,6 @@ namespace Drupal\Tests\aggregator\Functional;
  * Delete feed test.
  *
  * @group aggregator
- * @group legacy
  */
 class DeleteFeedTest extends AggregatorTestBase {
 

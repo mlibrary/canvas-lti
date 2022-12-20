@@ -12,9 +12,6 @@ use Drupal\Core\Plugin\Discovery\AnnotatedClassDiscovery;
  */
 class CustomAnnotationClassDiscoveryTest extends DiscoveryTestBase {
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

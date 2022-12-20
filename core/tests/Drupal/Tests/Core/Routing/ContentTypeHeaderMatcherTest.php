@@ -111,9 +111,9 @@ class ContentTypeHeaderMatcherTest extends UnitTestCase {
 
     $routes = $this->fixtures->contentRouteCollection();
     $request = Request::create('path/two', 'POST');
-    $request->headers->set('Content-type', 'text/html');
+    $request->headers->set('Content-type', 'application/hal+json');
     $this->expectException(UnsupportedMediaTypeHttpException::class);
-    $this->expectExceptionMessage('No route found that matches "Content-Type: text/html"');
+    $this->expectExceptionMessage('No route found that matches "Content-Type: application/hal+json"');
     $matcher->filter($routes, $request);
   }
 

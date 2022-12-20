@@ -39,7 +39,7 @@ class CollectRoutesTest extends UnitTestCase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $view = $this->getMockBuilder('\Drupal\views\Entity\View')
+    $this->view = $this->getMockBuilder('\Drupal\views\Entity\View')
       ->addMethods(['initHandlers'])
       ->setConstructorArgs([['id' => 'test_view'], 'view'])
       ->getMock();
@@ -52,7 +52,7 @@ class CollectRoutesTest extends UnitTestCase {
       ->method('getTitle')
       ->willReturn('View title');
 
-    $view_executable->storage = $view;
+    $view_executable->storage = $this->view;
     $view_executable->argument = [];
 
     $display_manager = $this->getMockBuilder('\Drupal\views\Plugin\ViewsPluginManager')
@@ -85,7 +85,7 @@ class CollectRoutesTest extends UnitTestCase {
     $container->set('authentication_collector', $authentication_collector);
     $authentication_collector->expects($this->any())
       ->method('getSortedProviders')
-      ->willReturn(['basic_auth' => 'data', 'cookie' => 'data']);
+      ->will($this->returnValue(['basic_auth' => 'data', 'cookie' => 'data']));
 
     $container->setParameter('serializer.format_providers', ['json']);
 
@@ -105,7 +105,7 @@ class CollectRoutesTest extends UnitTestCase {
 
     $display_manager->expects($this->once())
       ->method('getDefinition')
-      ->willReturn(['id' => 'test', 'provider' => 'test']);
+      ->will($this->returnValue(['id' => 'test', 'provider' => 'test']));
 
     $none = $this->getMockBuilder('\Drupal\views\Plugin\views\access\None')
       ->disableOriginalConstructor()
@@ -113,7 +113,7 @@ class CollectRoutesTest extends UnitTestCase {
 
     $access_manager->expects($this->once())
       ->method('createInstance')
-      ->willReturn($none);
+      ->will($this->returnValue($none));
 
     $style_plugin = $this->getMockBuilder('\Drupal\rest\Plugin\views\style\Serializer')
       ->onlyMethods(['getFormats', 'init'])
@@ -122,22 +122,22 @@ class CollectRoutesTest extends UnitTestCase {
 
     $style_plugin->expects($this->once())
       ->method('getFormats')
-      ->willReturn(['json']);
+      ->will($this->returnValue(['json']));
 
     $style_plugin->expects($this->once())
       ->method('init')
       ->with($view_executable)
-      ->willReturn(TRUE);
+      ->will($this->returnValue(TRUE));
 
     $style_manager->expects($this->once())
       ->method('createInstance')
-      ->willReturn($style_plugin);
+      ->will($this->returnValue($style_plugin));
 
     $this->routes = new RouteCollection();
     $this->routes->add('test_1', new Route('/test/1'));
     $this->routes->add('view.test_view.page_1', new Route('/test/2'));
 
-    $view->addDisplay('page', NULL, 'page_1');
+    $this->view->addDisplay('page', NULL, 'page_1');
   }
 
   /**

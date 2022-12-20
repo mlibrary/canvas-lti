@@ -15,7 +15,6 @@ use Drupal\Tests\ckeditor\Traits\CKEditorTestTrait;
  * Tests the integration of CKEditor.
  *
  * @group ckeditor
- * @group legacy
  */
 class CKEditorIntegrationTest extends WebDriverTestBase {
 
@@ -46,14 +45,7 @@ class CKEditorIntegrationTest extends WebDriverTestBase {
   protected static $modules = ['node', 'ckeditor', 'filter', 'ckeditor_test'];
 
   /**
-   * The theme to install as the default for testing.
-   *
-   * @var string
-   *
-   * @todo This test's reliance on classes makes Stark a bad fit as a base theme.
-   *   Change the default theme to Starterkit once it is stable.
-   *
-   * @see https://www.drupal.org/project/drupal/issues/3275827
+   * {@inheritdoc}
    */
   protected function setUp(): void {
     parent::setUp();

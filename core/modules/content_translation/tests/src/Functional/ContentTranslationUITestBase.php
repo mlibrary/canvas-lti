@@ -263,12 +263,12 @@ abstract class ContentTranslationUITestBase extends ContentTranslationTestBase {
       if ($added_langcode == $langcode) {
         // Verify that the retranslate flag is not checked by default.
         $this->assertSession()->fieldValueEquals('content_translation[retranslate]', FALSE);
-        $this->assertSession()->elementNotExists('xpath', '//details[@id="edit-content-translation" and @open="open"]');
+        $this->assertEmpty($this->xpath('//details[@id="edit-content-translation" and @open="open"]'), 'The translation tab should be collapsed by default.');
       }
       else {
         // Verify that the translate flag is checked by default.
         $this->assertSession()->fieldValueEquals('content_translation[outdated]', TRUE);
-        $this->assertSession()->elementExists('xpath', '//details[@id="edit-content-translation" and @open="open"]');
+        $this->assertNotEmpty($this->xpath('//details[@id="edit-content-translation" and @open="open"]'), 'The translation tab is correctly expanded when the translation is outdated.');
         $edit = ['content_translation[outdated]' => FALSE];
         $this->drupalGet($url);
         $this->submitForm($edit, $this->getFormSubmitAction($entity, $added_langcode));
@@ -359,7 +359,7 @@ abstract class ContentTranslationUITestBase extends ContentTranslationTestBase {
     ];
     $this->drupalGet($entity->toUrl('edit-form'));
     $this->submitForm($edit, $this->getFormSubmitAction($entity, $langcode));
-    $this->assertSession()->statusMessageExists('error');
+    $this->assertSession()->elementExists('xpath', '//div[@aria-label="Error message"]//ul');
     $metadata = $this->manager->getTranslationMetadata($entity->getTranslation($langcode));
     $this->assertEquals($values[$langcode]['uid'], $metadata->getAuthor()->id(), 'Translation author correctly kept.');
     $this->assertEquals($values[$langcode]['created'], $metadata->getCreatedTime(), 'Translation date correctly kept.');
@@ -487,7 +487,7 @@ abstract class ContentTranslationUITestBase extends ContentTranslationTestBase {
    * @param string $langcode
    *   The property value.
    *
-   * @return mixed
+   * @return
    *   The property value.
    */
   protected function getValue(EntityInterface $translation, $property, $langcode) {

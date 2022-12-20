@@ -49,9 +49,6 @@ class ConfigEntityQueryTest extends KernelTestBase {
    */
   protected $entities;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

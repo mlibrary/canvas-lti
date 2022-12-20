@@ -4,11 +4,13 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function ($, Drupal) {
   function DetailsSummarizedContent(node) {
     this.$node = $(node);
     this.setupSummary();
   }
+
   $.extend(DetailsSummarizedContent, {
     instances: []
   });
@@ -30,9 +32,11 @@
     }
   };
   Drupal.DetailsSummarizedContent = DetailsSummarizedContent;
+
   Drupal.theme.detailsSummarizedContentWrapper = function () {
     return "<span class=\"summary\"></span>";
   };
+
   Drupal.theme.detailsSummarizedContentText = function (text) {
     return text ? " (".concat(text, ")") : '';
   };

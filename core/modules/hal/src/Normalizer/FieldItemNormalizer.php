@@ -125,11 +125,4 @@ class FieldItemNormalizer extends NormalizerBase {
     return $entity_translation->get($field_name)->appendItem();
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function hasCacheableSupportsMethod(): bool {
-    return TRUE;
-  }
-
 }

@@ -11,7 +11,6 @@ use Drupal\node\Entity\NodeType;
  * Tests that translated nodes are correctly (de-)normalized.
  *
  * @group hal
- * @group legacy
  */
 class EntityTranslationNormalizeTest extends NormalizerTestBase {
 

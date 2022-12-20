@@ -8,7 +8,6 @@ use Drupal\entity_test\Entity\EntityTest;
  * Tests RDFa output by email field formatters.
  *
  * @group rdf
- * @group legacy
  */
 class EmailFieldRdfaTest extends FieldRdfaTestBase {
 
@@ -22,9 +21,6 @@ class EmailFieldRdfaTest extends FieldRdfaTestBase {
    */
   protected static $modules = ['text'];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

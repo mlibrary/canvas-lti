@@ -4,7 +4,6 @@ namespace Drupal\Tests\language\Functional;
 
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\system\Functional\Menu\AssertBreadcrumbTrait;
 
 /**
  * Tests breadcrumbs functionality.
@@ -12,8 +11,6 @@ use Drupal\Tests\system\Functional\Menu\AssertBreadcrumbTrait;
  * @group Menu
  */
 class LanguageBreadcrumbTest extends BrowserTestBase {
-
-  use AssertBreadcrumbTrait;
 
   /**
    * Modules to enable.
@@ -25,7 +22,7 @@ class LanguageBreadcrumbTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'classy';
 
   /**
    * {@inheritdoc}
@@ -41,33 +38,51 @@ class LanguageBreadcrumbTest extends BrowserTestBase {
    * Tests breadcrumbs with URL prefixes.
    */
   public function testBreadCrumbs() {
+    // Prepare common base breadcrumb elements.
+    $home = ['' => 'Home'];
+    $admin = $home + ['admin' => 'Administration'];
+
+    $page = $this->getSession()->getPage();
+
     // /user/login is the default frontpage which only works for an anonymous
     // user. Access the frontpage in different languages, ensure that no
     // breadcrumb is displayed.
-    $this->assertBreadcrumb('user/login', []);
-    $this->assertBreadcrumb('de/user/login', []);
-    $this->assertBreadcrumb('gsw-berne/user/login', []);
+    $this->drupalGet('user/login');
+    $breadcrumbs = $page->find('css', '.block-system-breadcrumb-block');
+    $this->assertNull($breadcrumbs);
+
+    $this->drupalGet('de/user/login');
+    $breadcrumbs = $page->find('css', '.block-system-breadcrumb-block');
+    $this->assertNull($breadcrumbs);
+
+    $this->drupalGet('gsw-berne/user/login');
+    $breadcrumbs = $page->find('css', '.block-system-breadcrumb-block');
+    $this->assertNull($breadcrumbs);
 
     $admin_user = $this->drupalCreateUser(['access administration pages']);
     $this->drupalLogin($admin_user);
 
     // Use administration routes to assert that breadcrumb is displayed
     // correctly on pages other than the frontpage.
-    $this->assertBreadcrumb('admin', [
-      '' => 'Home',
-    ]);
-    $this->assertBreadcrumb('de/admin', [
-      'de' => 'Home',
-    ]);
+    $this->drupalGet('admin');
+    $breadcrumbs = $page->find('css', '.block-system-breadcrumb-block');
+    $this->assertEquals(1, substr_count($breadcrumbs->getText(), 'Home'));
+    $this->assertEquals(0, substr_count($breadcrumbs->getText(), 'Administration'));
 
-    $this->assertBreadcrumb('admin/structure', [
-      '' => 'Home',
-      'admin' => 'Administration',
-    ]);
-    $this->assertBreadcrumb('de/admin/structure', [
-      'de' => 'Home',
-      'de/admin' => 'Administration',
-    ]);
+    $this->drupalGet('de/admin');
+    $breadcrumbs = $page->find('css', '.block-system-breadcrumb-block');
+    $this->assertEquals(1, substr_count($breadcrumbs->getText(), 'Home'));
+    $this->assertEquals(0, substr_count($breadcrumbs->getText(), 'Administration'));
+
+    $this->drupalGet('admin/structure', $admin);
+    $breadcrumbs = $page->find('css', '.block-system-breadcrumb-block');
+    $this->assertEquals(1, substr_count($breadcrumbs->getText(), 'Home'));
+    $this->assertEquals(1, substr_count($breadcrumbs->getText(), 'Administration'));
+
+    $this->drupalGet('de/admin/structure', $admin);
+    $breadcrumbs = $page->find('css', '.block-system-breadcrumb-block');
+    $this->assertEquals(1, substr_count($breadcrumbs->getText(), 'Home'));
+    $this->assertEquals(1, substr_count($breadcrumbs->getText(), 'Administration'));
   }
 
 }

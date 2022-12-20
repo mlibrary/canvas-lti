@@ -161,7 +161,6 @@ class OverviewTerms extends FormBase {
     $term_deltas = [];
     $tree = $this->storageController->loadTree($taxonomy_vocabulary->id(), 0, NULL, TRUE);
     $tree_index = 0;
-    $complete_tree = NULL;
     do {
       // In case this tree is completely empty.
       if (empty($tree[$tree_index])) {
@@ -231,7 +230,7 @@ class OverviewTerms extends FormBase {
     // error. Ensure the form is rebuilt in the same order as the user
     // submitted.
     $user_input = $form_state->getUserInput();
-    if (!empty($user_input['terms'])) {
+    if (!empty($user_input)) {
       // Get the POST order.
       $order = array_flip(array_keys($user_input['terms']));
       // Update our form with the new order.

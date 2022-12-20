@@ -10,7 +10,6 @@ use Drupal\Tests\rdf\Traits\RdfParsingTrait;
  * Tests the RDFa markup of Taxonomy terms.
  *
  * @group rdf
- * @group legacy
  */
 class TaxonomyAttributesTest extends TaxonomyTestBase {
 
@@ -42,9 +41,6 @@ class TaxonomyAttributesTest extends TaxonomyTestBase {
    */
   protected $vocabulary;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

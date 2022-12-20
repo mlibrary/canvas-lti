@@ -30,9 +30,6 @@ class TestItemTest extends FieldKernelTestBase {
    */
   protected $fieldName = 'field_test';
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

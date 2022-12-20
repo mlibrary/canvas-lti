@@ -6,7 +6,8 @@ use Drupal\language\LanguageNegotiationMethodBase;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Determines the language to be assigned to URLs when none is detected.
+ * Class that determines the language to be assigned to URLs when none is
+ * detected.
  *
  * The language negotiation process has a fallback chain that ends with the
  * default language negotiation method. Each built-in language type has a

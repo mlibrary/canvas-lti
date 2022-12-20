@@ -2,7 +2,7 @@
 
 namespace Drupal\database_statement_monitoring_test\pgsql;
 
-use Drupal\pgsql\Driver\Database\pgsql\Connection as BaseConnection;
+use Drupal\Core\Database\Driver\pgsql\Connection as BaseConnection;
 use Drupal\database_statement_monitoring_test\LoggedStatementsTrait;
 
 /**

@@ -13,7 +13,6 @@ use Drupal\Core\Language\LanguageInterface;
  * @coversDefaultClass \Drupal\quickedit\Access\QuickEditEntityFieldAccessCheck
  * @group Access
  * @group quickedit
- * @group legacy
  */
 class QuickEditEntityFieldAccessCheckTest extends UnitTestCase {
 
@@ -83,11 +82,11 @@ class QuickEditEntityFieldAccessCheckTest extends UnitTestCase {
     $entity_with_field->expects($this->any())
       ->method('get')
       ->with($field_name)
-      ->willReturn($field_storage);
+      ->will($this->returnValue($field_storage));
     $entity_with_field->expects($this->once())
       ->method('hasTranslation')
       ->with(LanguageInterface::LANGCODE_NOT_SPECIFIED)
-      ->willReturn(TRUE);
+      ->will($this->returnValue(TRUE));
 
     $account = $this->createMock('Drupal\Core\Session\AccountInterface');
     $access = $this->editAccessCheck->access($entity_with_field, $field_name, LanguageInterface::LANGCODE_NOT_SPECIFIED, $account);

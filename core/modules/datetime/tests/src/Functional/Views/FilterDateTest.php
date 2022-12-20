@@ -29,7 +29,7 @@ class FilterDateTest extends ViewTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'classy';
 
   /**
    * Nodes to test.
@@ -188,7 +188,7 @@ class FilterDateTest extends ViewTestBase {
    */
   protected function assertIds(array $expected_ids = []): void {
     // First verify the count.
-    $elements = $this->cssSelect('.views-row .field-content');
+    $elements = $this->cssSelect('.view-content span.field-content');
     $this->assertCount(count($expected_ids), $elements);
 
     $actual_ids = [];

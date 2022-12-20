@@ -3,13 +3,9 @@
 namespace Drupal\Tests\views_ui\FunctionalJavascript;
 
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
-use Drupal\language\Entity\ConfigurableLanguage;
-use Drupal\locale\SourceString;
 use Drupal\views\Entity\View;
 use Drupal\views\Tests\ViewTestData;
 use Drupal\Tests\node\Traits\NodeCreationTrait;
-
-// cSpell:ignore Blokk hozzáadása
 
 /**
  * Tests the display UI.
@@ -27,8 +23,6 @@ class DisplayTest extends WebDriverTestBase {
     'block',
     'contextual',
     'node',
-    'language',
-    'locale',
     'views',
     'views_ui',
     'views_test_config',
@@ -156,53 +150,28 @@ class DisplayTest extends WebDriverTestBase {
   }
 
   /**
-   * Test if 'add' translations are filtered from multilingual display options.
+   * Confirms that form_alter is triggered after ajax rebuilds.
    */
-  public function testAddDisplayBlockTranslation() {
+  public function testAjaxRebuild() {
+    \Drupal::service('theme_installer')->install(['views_test_classy_subtheme']);
 
-    // Set up an additional language (Hungarian).
-    $langcode = 'hu';
-    ConfigurableLanguage::createFromLangcode($langcode)->save();
-    $config = $this->config('language.negotiation');
-    $config->set('url.prefixes', [$langcode => $langcode])->save();
-    \Drupal::service('kernel')->rebuildContainer();
-    \Drupal::languageManager()->reset();
+    $this->config('system.theme')
+      ->set('default', 'views_test_classy_subtheme')
+      ->save();
 
-    // Add Hungarian translations.
-    $this->addTranslation($langcode, 'Block', 'Blokk');
-    $this->addTranslation($langcode, 'Add @display', '@display hozzáadása');
-
-    $this->drupalGet('hu/admin/structure/views/view/test_display');
     $page = $this->getSession()->getPage();
+    $assert_session = $this->assertSession();
 
-    $page->find('css', '#views-display-menu-tabs .add')->click();
-
-    // Wait for the animation to complete.
-    $this->assertSession()->assertWaitOnAjaxRequest();
-
-    // Look for the input element, always in second spot.
-    $elements = $page->findAll('css', '.add ul input');
-    $this->assertEquals('Blokk', $elements[1]->getAttribute('value'));
-  }
-
-  /**
-   * Helper function for adding interface text translations.
-   */
-  private function addTranslation($langcode, $source_string, $translation_string) {
-    $storage = \Drupal::service('locale.storage');
-    $string = $storage->findString(['source' => $source_string]);
-    if (is_null($string)) {
-      $string = new SourceString();
-      $string
-        ->setString($source_string)
-        ->setStorage($storage)
-        ->save();
-    }
-    $storage->createTranslation([
-      'lid' => $string->getId(),
-      'language' => $langcode,
-      'translation' => $translation_string,
-    ])->save();
+    $this->drupalGet('admin/structure/views/view/content');
+    $assert_session->pageTextContains('This is text added to the display tabs at the top');
+    $assert_session->pageTextContains('This is text added to the display edit form');
+    $page->clickLink('Content: Title (Title)');
+    $assert_session->waitForElementVisible('css', '.views-ui-dialog');
+    $page->fillField('Label', 'New Title');
+    $page->find('css', '.ui-dialog-buttonset button:contains("Apply")')->press();
+    $assert_session->waitForElementRemoved('css', '.views-ui-dialog');
+    $assert_session->pageTextContains('This is text added to the display tabs at the top');
+    $assert_session->pageTextContains('This is text added to the display edit form');
   }
 
 }

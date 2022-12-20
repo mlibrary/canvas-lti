@@ -42,25 +42,16 @@ class FieldTest extends KernelTestBase {
   protected $vocabulary;
 
   /**
-   * {@inheritdoc}
+   * Modules to enable.
+   *
+   * @var array
    */
-  protected static $modules = [
-    'node',
-    'text',
-    'field',
-    'filter',
-    'contact',
-    'options',
-    'taxonomy',
-    'language',
-    'datetime',
-    'datetime_range',
-  ];
+  public static $modules = ['node', 'text', 'field', 'filter', 'contact', 'options', 'taxonomy', 'language', 'datetime', 'datetime_range'];
 
   /**
    * {@inheritdoc}
    */
-  public function setUp(): void {
+  public function setUp() {
     parent::setUp();
 
     $this->installEntitySchema('user');

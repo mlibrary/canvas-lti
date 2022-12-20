@@ -132,11 +132,6 @@ abstract class QueryBase implements QueryInterface {
   protected $namespaces = [];
 
   /**
-   * Defines how the conditions on the query need to match.
-   */
-  protected $conjunction;
-
-  /**
    * Constructs this object.
    *
    * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type

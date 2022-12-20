@@ -21,9 +21,6 @@ class ComplexDataConstraintValidatorTest extends KernelTestBase {
    */
   protected $typedData;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     $this->typedData = $this->container->get('typed_data_manager');

@@ -31,13 +31,13 @@ class DbLogViewsTest extends DbLogTest {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'classy';
 
   /**
    * {@inheritdoc}
    */
   protected function getLogsEntriesTable() {
-    return $this->xpath('.//div[contains(@class, "views-element-container")]//table/tbody/tr');
+    return $this->xpath('.//table[contains(@class, "views-view-table")]/tbody/tr');
   }
 
   /**

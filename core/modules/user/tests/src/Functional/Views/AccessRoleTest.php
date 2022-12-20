@@ -31,13 +31,6 @@ class AccessRoleTest extends AccessTestBase {
   protected $defaultTheme = 'stark';
 
   /**
-   * {@inheritdoc}
-   */
-  protected function setUp($import_test_views = TRUE, $modules = ['user_test_views']): void {
-    parent::setUp($import_test_views, $modules);
-  }
-
-  /**
    * Tests role access plugin.
    */
   public function testAccessRole() {

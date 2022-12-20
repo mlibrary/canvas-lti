@@ -76,11 +76,11 @@ use Drupal\Core\Session\AccountInterface;
  * }
  *
  * class MyLanguageNegotiationUrl extends LanguageNegotiationUrl {
- *   public function getLangcode(Request $request = NULL) {
+ *   public function getCurrentLanguage(Request $request = NULL) {
  *     if ($request) {
  *       // Use the original URL language negotiation method to get a valid
  *       // language code.
- *       $langcode = parent::getLangcode($request);
+ *       $langcode = parent::getCurrentLanguage($request);
  *
  *       // If we are on an administrative path, override with the default
  *       language.

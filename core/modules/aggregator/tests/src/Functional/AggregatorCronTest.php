@@ -8,7 +8,6 @@ use Drupal\Tests\Traits\Core\CronRunTrait;
  * Update feeds on cron.
  *
  * @group aggregator
- * @group legacy
  */
 class AggregatorCronTest extends AggregatorTestBase {
 

@@ -28,9 +28,6 @@ class NodeBodyFieldStorageTest extends KernelTestBase {
     'filter',
   ];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     $this->installSchema('system', 'sequences');

@@ -35,9 +35,6 @@ class ChainResponsePolicyTest extends UnitTestCase {
    */
   protected $response;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     $this->policy = new ChainResponsePolicy();
     $this->response = new Response();
@@ -64,7 +61,7 @@ class ChainResponsePolicyTest extends UnitTestCase {
     $rule->expects($this->once())
       ->method('check')
       ->with($this->response, $this->request)
-      ->willReturn(NULL);
+      ->will($this->returnValue(NULL));
 
     $this->policy->addPolicy($rule);
 
@@ -83,7 +80,7 @@ class ChainResponsePolicyTest extends UnitTestCase {
     $rule->expects($this->once())
       ->method('check')
       ->with($this->response, $this->request)
-      ->willReturn($return_value);
+      ->will($this->returnValue($return_value));
 
     $this->policy->addPolicy($rule);
 
@@ -122,7 +119,7 @@ class ChainResponsePolicyTest extends UnitTestCase {
     $deny_rule->expects($this->once())
       ->method('check')
       ->with($this->response, $this->request)
-      ->willReturn(ResponsePolicyInterface::DENY);
+      ->will($this->returnValue(ResponsePolicyInterface::DENY));
     $this->policy->addPolicy($deny_rule);
 
     $ignored_rule = $this->createMock('Drupal\Core\PageCache\ResponsePolicyInterface');

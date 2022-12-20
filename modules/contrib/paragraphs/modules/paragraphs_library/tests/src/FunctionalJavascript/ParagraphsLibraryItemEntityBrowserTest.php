@@ -18,7 +18,8 @@ class ParagraphsLibraryItemEntityBrowserTest extends EntityBrowserWebDriverTestB
   /**
    * {@inheritdoc}
    */
-  protected static $modules = [
+  public static $modules = [
+    'ctools',
     'views',
     'block',
     'node',

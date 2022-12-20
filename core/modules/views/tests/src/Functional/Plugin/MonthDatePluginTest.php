@@ -48,8 +48,8 @@ class MonthDatePluginTest extends ViewTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp($import_test_views = TRUE, $modules = ['views_test_config']): void {
-    parent::setUp($import_test_views, $modules);
+  public function setUp($import_test_views = TRUE): void {
+    parent::setUp($import_test_views);
     $utc = new \DateTimeZone('UTC');
     $format = 'Y-m-d h:i:s';
     $this->node1 = $this->drupalCreateNode([

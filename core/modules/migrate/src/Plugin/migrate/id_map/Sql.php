@@ -14,7 +14,6 @@ use Drupal\migrate\Event\MigrateIdMapMessageEvent;
 use Drupal\migrate\MigrateException;
 use Drupal\migrate\MigrateMessageInterface;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
-use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use Drupal\migrate\Row;
 use Drupal\migrate\Event\MigrateEvents;
 use Drupal\migrate\Event\MigrateMapSaveEvent;
@@ -145,13 +144,6 @@ class Sql extends PluginBase implements MigrateIdMapInterface, ContainerFactoryP
   protected $currentKey = [];
 
   /**
-   * The migration plugin manager.
-   *
-   * @var \Drupal\migrate\Plugin\MigrationPluginManagerInterface
-   */
-  protected $migrationPluginManager;
-
-  /**
    * Constructs an SQL object.
    *
    * Sets up the tables and builds the maps,
@@ -166,10 +158,8 @@ class Sql extends PluginBase implements MigrateIdMapInterface, ContainerFactoryP
    *   The migration to do.
    * @param \Symfony\Contracts\EventDispatcher\EventDispatcherInterface $event_dispatcher
    *   The event dispatcher.
-   * @param \Drupal\migrate\Plugin\MigrationPluginManagerInterface $migration_plugin_manager
-   *   The migration plugin manager.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration, EventDispatcherInterface $event_dispatcher, MigrationPluginManagerInterface $migration_plugin_manager = NULL) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration, EventDispatcherInterface $event_dispatcher) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->migration = $migration;
     $this->eventDispatcher = $event_dispatcher;
@@ -186,12 +176,6 @@ class Sql extends PluginBase implements MigrateIdMapInterface, ContainerFactoryP
     $this->mapTableName = mb_substr($this->mapTableName, 0, 63 - $prefix_length);
     $this->messageTableName = 'migrate_message_' . mb_strtolower($machine_name);
     $this->messageTableName = mb_substr($this->messageTableName, 0, 63 - $prefix_length);
-
-    if (!$migration_plugin_manager) {
-      @trigger_error('Calling Sql::__construct() without the $migration_manager argument is deprecated in drupal:9.5.0 and the $migration_manager argument will be required in drupal:11.0.0. See https://www.drupal.org/node/3277306', E_USER_DEPRECATED);
-      $migration_plugin_manager = \Drupal::service('plugin.manager.migration');
-    }
-    $this->migrationPluginManager = $migration_plugin_manager;
   }
 
   /**
@@ -203,8 +187,7 @@ class Sql extends PluginBase implements MigrateIdMapInterface, ContainerFactoryP
       $plugin_id,
       $plugin_definition,
       $migration,
-      $container->get('event_dispatcher'),
-      $container->get('plugin.manager.migration')
+      $container->get('event_dispatcher')
     );
   }
 
@@ -695,7 +678,7 @@ class Sql extends PluginBase implements MigrateIdMapInterface, ContainerFactoryP
       $fields['destid' . ++$count] = $dest_id;
     }
     if ($count && $count != count($this->destinationIdFields())) {
-      $this->message->display($this->t('Could not save to map table due to missing destination id values'), 'error');
+      $this->message->display(t('Could not save to map table due to missing destination id values'), 'error');
       return;
     }
     if ($this->migration->getTrackLastImported()) {
@@ -1013,17 +996,13 @@ class Sql extends PluginBase implements MigrateIdMapInterface, ContainerFactoryP
   /**
    * Returns the migration plugin manager.
    *
+   * @todo Inject as a dependency in https://www.drupal.org/node/2919158.
+   *
    * @return \Drupal\migrate\Plugin\MigrationPluginManagerInterface
    *   The migration plugin manager.
-   *
-   * @deprecated in drupal:9.5.0 and is removed from drupal:11.0.0. Use
-   *   $this->migrationPluginManager instead.
-   *
-   * @see https://www.drupal.org/node/3277306
    */
   protected function getMigrationPluginManager() {
-    @trigger_error('deprecated in drupal:9.5.0 and is removed from drupal:11.0.0. Use $this->migrationPluginManager instead. See https://www.drupal.org/node/3277306', E_USER_DEPRECATED);
-    return $this->migrationPluginManager;
+    return \Drupal::service('plugin.manager.migration');
   }
 
   /**
@@ -1044,12 +1023,13 @@ class Sql extends PluginBase implements MigrateIdMapInterface, ContainerFactoryP
     // If there's a bundle, it means we have a derived migration and we need to
     // find all the mapping tables from the related derived migrations.
     if ($base_id = substr($this->migration->id(), 0, strpos($this->migration->id(), $this::DERIVATIVE_SEPARATOR))) {
-      $migrations = $this->migrationPluginManager->getDefinitions();
+      $migration_manager = $this->getMigrationPluginManager();
+      $migrations = $migration_manager->getDefinitions();
       foreach ($migrations as $migration_id => $migration) {
         if ($migration['id'] === $base_id) {
           // Get this derived migration's mapping table and add it to the list
           // of mapping tables to look in for the highest ID.
-          $stub = $this->migrationPluginManager->createInstance($migration_id);
+          $stub = $migration_manager->createInstance($migration_id);
           $map_tables[$migration_id] = $stub->getIdMap()->mapTableName();
         }
       }

@@ -17,14 +17,16 @@ class TaxonomyTest extends KernelTestBase {
   protected $vocab;
 
   /**
-   * {@inheritdoc}
+   * Modules to enable.
+   *
+   * @var array
    */
-  protected static $modules = ['taxonomy', 'text', 'language'];
+  public static $modules = ['taxonomy', 'text', 'language'];
 
   /**
    * {@inheritdoc}
    */
-  public function setUp(): void {
+  public function setUp() {
     parent::setUp();
 
     $this->installEntitySchema('taxonomy_term');

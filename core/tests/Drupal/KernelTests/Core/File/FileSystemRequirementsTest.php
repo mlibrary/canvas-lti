@@ -45,7 +45,7 @@ class FileSystemRequirementsTest extends KernelTestBase {
    *   An array of system requirements.
    */
   protected function checkSystemRequirements() {
-    $this->container->get('module_handler')->loadInclude('system', 'install');
+    module_load_install('system');
     return system_requirements('runtime');
   }
 

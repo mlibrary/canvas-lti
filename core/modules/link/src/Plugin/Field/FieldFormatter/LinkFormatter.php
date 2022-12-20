@@ -94,21 +94,21 @@ class LinkFormatter extends FormatterBase {
 
     $elements['trim_length'] = [
       '#type' => 'number',
-      '#title' => $this->t('Trim link text length'),
-      '#field_suffix' => $this->t('characters'),
+      '#title' => t('Trim link text length'),
+      '#field_suffix' => t('characters'),
       '#default_value' => $this->getSetting('trim_length'),
       '#min' => 1,
-      '#description' => $this->t('Leave blank to allow unlimited link text lengths.'),
+      '#description' => t('Leave blank to allow unlimited link text lengths.'),
     ];
     $elements['url_only'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('URL only'),
+      '#title' => t('URL only'),
       '#default_value' => $this->getSetting('url_only'),
       '#access' => $this->getPluginId() == 'link',
     ];
     $elements['url_plain'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Show URL as plain text'),
+      '#title' => t('Show URL as plain text'),
       '#default_value' => $this->getSetting('url_plain'),
       '#access' => $this->getPluginId() == 'link',
       '#states' => [
@@ -119,13 +119,13 @@ class LinkFormatter extends FormatterBase {
     ];
     $elements['rel'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Add rel="nofollow" to links'),
+      '#title' => t('Add rel="nofollow" to links'),
       '#return_value' => 'nofollow',
       '#default_value' => $this->getSetting('rel'),
     ];
     $elements['target'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Open link in new window'),
+      '#title' => t('Open link in new window'),
       '#return_value' => '_blank',
       '#default_value' => $this->getSetting('target'),
     ];
@@ -142,24 +142,24 @@ class LinkFormatter extends FormatterBase {
     $settings = $this->getSettings();
 
     if (!empty($settings['trim_length'])) {
-      $summary[] = $this->t('Link text trimmed to @limit characters', ['@limit' => $settings['trim_length']]);
+      $summary[] = t('Link text trimmed to @limit characters', ['@limit' => $settings['trim_length']]);
     }
     else {
-      $summary[] = $this->t('Link text not trimmed');
+      $summary[] = t('Link text not trimmed');
     }
     if ($this->getPluginId() == 'link' && !empty($settings['url_only'])) {
       if (!empty($settings['url_plain'])) {
-        $summary[] = $this->t('Show URL only as plain-text');
+        $summary[] = t('Show URL only as plain-text');
       }
       else {
-        $summary[] = $this->t('Show URL only');
+        $summary[] = t('Show URL only');
       }
     }
     if (!empty($settings['rel'])) {
-      $summary[] = $this->t('Add rel="@rel"', ['@rel' => $settings['rel']]);
+      $summary[] = t('Add rel="@rel"', ['@rel' => $settings['rel']]);
     }
     if (!empty($settings['target'])) {
-      $summary[] = $this->t('Open link in new window');
+      $summary[] = t('Open link in new window');
     }
 
     return $summary;

@@ -16,7 +16,6 @@ class LayoutBuilderSectionStorageTest extends BrowserTestBase {
    */
   protected static $modules = [
     'layout_builder',
-    'field_ui',
     'node',
     'layout_builder_test',
   ];

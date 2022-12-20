@@ -17,7 +17,7 @@ class MediaSourceAudioVideoTest extends MediaSourceTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'classy';
 
   /**
    * Check the Audio source functionality.

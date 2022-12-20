@@ -11,8 +11,6 @@ use Drupal\Component\Annotation\Plugin\Discovery\AnnotatedClassDiscovery as Comp
 class AnnotatedClassDiscovery extends ComponentAnnotatedClassDiscovery {
 
   /**
-   * The directory suffix.
-   *
    * A suffix to append to each PSR-4 directory associated with a base
    * namespace, to form the directories where plugins are found.
    *
@@ -21,8 +19,6 @@ class AnnotatedClassDiscovery extends ComponentAnnotatedClassDiscovery {
   protected $directorySuffix = '';
 
   /**
-   * The namespace suffix.
-   *
    * A suffix to append to each base namespace, to obtain the namespaces where
    * plugins are found.
    *

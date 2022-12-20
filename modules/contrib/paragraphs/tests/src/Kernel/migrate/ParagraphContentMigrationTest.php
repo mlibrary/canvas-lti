@@ -36,7 +36,8 @@ class ParagraphContentMigrationTest extends ParagraphsMigrationTestBase {
     'text',
     'user',
     'content_translation',
-    'language'
+    'language',
+    'migrate_drupal_multilingual',
   ];
 
   /**

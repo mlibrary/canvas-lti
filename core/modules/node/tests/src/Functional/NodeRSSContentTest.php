@@ -27,9 +27,6 @@ class NodeRSSContentTest extends NodeTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

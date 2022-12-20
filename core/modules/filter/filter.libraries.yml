@@ -17,7 +17,7 @@ drupal.filter.filter_html.admin:
     - core/jquery
     - core/once
     - core/jquery.once.bc
-    - core/drupal.array.includes
+    - core/underscore
 
 drupal.filter:
   version: VERSION

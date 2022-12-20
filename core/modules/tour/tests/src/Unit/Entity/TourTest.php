@@ -34,7 +34,7 @@ class TourTest extends UnitTestCase {
 
     $tour->expects($this->any())
       ->method('getRoutes')
-      ->willReturn($routes);
+      ->will($this->returnValue($routes));
 
     $this->assertSame($result, $tour->hasMatchingRoute($route_name, $route_params));
 

@@ -11,7 +11,6 @@ use Drupal\Tests\BrowserTestBase;
  * Tests Quick Edit module integration endpoints.
  *
  * @group quickedit
- * @group legacy
  */
 class EditorIntegrationLoadingTest extends BrowserTestBase {
 
@@ -25,7 +24,7 @@ class EditorIntegrationLoadingTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'starterkit_theme';
+  protected $defaultTheme = 'classy';
 
   /**
    * The basic permissions necessary to view content and use in-place editing.
@@ -34,9 +33,6 @@ class EditorIntegrationLoadingTest extends BrowserTestBase {
    */
   protected static $basicPermissions = ['access content', 'create article content', 'use text format filtered_html', 'access contextual links'];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 
@@ -97,7 +93,7 @@ class EditorIntegrationLoadingTest extends BrowserTestBase {
 
       // Retrieving the untransformed text should result in a 403 response and
       // return a different error message depending of the missing permission.
-      $response = $client->post($this->buildUrl('quickedit/node/1/body/en/full'), [
+      $response = $client->post($this->buildUrl('editor/node/1/body/en/full'), [
         'query' => http_build_query([MainContentViewSubscriber::WRAPPER_FORMAT => 'drupal_ajax']),
         'cookies' => $this->getSessionCookies(),
         'headers' => [
@@ -131,7 +127,7 @@ class EditorIntegrationLoadingTest extends BrowserTestBase {
     // Ensure the text is transformed.
     $this->assertSession()->responseContains('<p>Do you also love Drupal?</p><figure role="group" class="caption caption-img"><img src="druplicon.png" /><figcaption>Druplicon</figcaption></figure>');
     $client = $this->getHttpClient();
-    $response = $client->post($this->buildUrl('quickedit/node/1/body/en/full'), [
+    $response = $client->post($this->buildUrl('editor/node/1/body/en/full'), [
       'query' => http_build_query([MainContentViewSubscriber::WRAPPER_FORMAT => 'drupal_ajax']),
       'cookies' => $this->getSessionCookies(),
       'headers' => [

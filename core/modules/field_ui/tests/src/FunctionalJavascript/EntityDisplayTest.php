@@ -20,7 +20,7 @@ class EntityDisplayTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'classy';
 
   /**
    * {@inheritdoc}
@@ -74,7 +74,7 @@ class EntityDisplayTest extends WebDriverTestBase {
    */
   public function testEntityView() {
     $this->drupalGet('entity_test/1');
-    $this->assertSession()->pageTextNotContains('The field test text value');
+    $this->assertSession()->elementNotExists('css', '.field--name-field-test-text');
 
     $this->drupalGet('entity_test/structure/entity_test/display');
     $this->assertSession()->elementExists('css', '.region-content-message.region-empty');
@@ -91,7 +91,7 @@ class EntityDisplayTest extends WebDriverTestBase {
     $this->assertTrue($this->assertSession()->optionExists('fields[field_test_text][region]', 'content')->isSelected());
 
     $this->drupalGet('entity_test/1');
-    $this->assertSession()->pageTextContains('The field test text value');
+    $this->assertSession()->elementExists('css', '.field--name-field-test-text');
   }
 
   /**

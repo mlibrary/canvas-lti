@@ -150,7 +150,6 @@ use Drupal\Core\Plugin\PluginBase;
  *
  * Extensions of this class can be used to create more interesting joins.
  */
-#[\AllowDynamicProperties]
 class JoinPluginBase extends PluginBase implements JoinPluginInterface {
 
   /**
@@ -259,7 +258,6 @@ class JoinPluginBase extends PluginBase implements JoinPluginInterface {
     $configuration += [
       'type' => 'LEFT',
       'extra_operator' => 'AND',
-      'operator' => '=',
     ];
     $this->configuration = $configuration;
 
@@ -312,7 +310,7 @@ class JoinPluginBase extends PluginBase implements JoinPluginInterface {
       $left_table = NULL;
     }
 
-    $condition = "$left_field " . $this->configuration['operator'] . " $table[alias].$this->field";
+    $condition = "$left_field = $table[alias].$this->field";
     $arguments = [];
 
     // Tack on the extra.

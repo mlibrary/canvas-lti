@@ -3,12 +3,12 @@
 namespace Drupal\Tests\image\Functional\Rest;
 
 use Drupal\image\Entity\ImageStyle;
-use Drupal\Tests\rest\Functional\EntityResource\ConfigEntityResourceTestBase;
+use Drupal\Tests\rest\Functional\EntityResource\EntityResourceTestBase;
 
 /**
  * ResourceTestBase for ImageStyle entity.
  */
-abstract class ImageStyleResourceTestBase extends ConfigEntityResourceTestBase {
+abstract class ImageStyleResourceTestBase extends EntityResourceTestBase {
 
   /**
    * {@inheritdoc}
@@ -99,7 +99,6 @@ abstract class ImageStyleResourceTestBase extends ConfigEntityResourceTestBase {
    */
   protected function getNormalizedPostEntity() {
     // @todo Update in https://www.drupal.org/node/2300677.
-    return [];
   }
 
   /**

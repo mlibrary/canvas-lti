@@ -74,8 +74,15 @@ class RegisterSerializationClassesCompilerPass implements CompilerPassInterface 
    *   to low priority.
    */
   protected function sort($services) {
+    $sorted = [];
     krsort($services);
-    return array_merge([], ...$services);
+
+    // Flatten the array.
+    foreach ($services as $a) {
+      $sorted = array_merge($sorted, $a);
+    }
+
+    return $sorted;
   }
 
 }

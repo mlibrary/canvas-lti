@@ -41,13 +41,13 @@ class FieldEntityTest extends ViewTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp($import_test_views = TRUE, $modules = ['views_test_config']): void {
-    parent::setUp(FALSE, $modules);
+  protected function setUp($import_test_views = TRUE): void {
+    parent::setUp(FALSE);
 
     $this->drupalCreateContentType(['type' => 'page']);
     $this->addDefaultCommentField('node', 'page');
 
-    ViewTestData::createTestViews(static::class, $modules);
+    ViewTestData::createTestViews(static::class, ['views_test_config']);
   }
 
   /**

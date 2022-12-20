@@ -4,6 +4,7 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function ($, Drupal, drupalSettings) {
   function handleDialogResize(e) {
     var $modal = $(e.currentTarget);
@@ -11,6 +12,7 @@
     var $scroll = $modal.find('[data-drupal-views-scroll]');
     var offset = 0;
     var modalHeight;
+
     if ($scroll.length) {
       $modal.closest('.views-ui-dialog').addClass('views-ui-dialog-scroll');
       $scroll.css({
@@ -27,6 +29,7 @@
       $scroll.css('overflow', 'auto');
     }
   }
+
   Drupal.behaviors.viewsModalContent = {
     attach: function attach(context) {
       $(once('viewsDialog', 'body')).on('dialogContentResize.viewsDialog', '.ui-dialog-content', handleDialogResize);

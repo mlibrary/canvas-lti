@@ -17,7 +17,6 @@ class LayoutBuilderToolbarTest extends WebDriverTestBase {
   protected static $modules = [
     'block',
     'node',
-    'field_ui',
     'layout_builder',
     'node',
     'toolbar',
@@ -26,7 +25,7 @@ class LayoutBuilderToolbarTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'starterkit_theme';
+  protected $defaultTheme = 'classy';
 
   /**
    * {@inheritdoc}

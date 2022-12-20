@@ -23,7 +23,6 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Stores UI related temporary settings.
  */
-#[\AllowDynamicProperties]
 class ViewUI implements ViewEntityInterface {
 
   /**
@@ -122,9 +121,8 @@ class ViewUI implements ViewEntityInterface {
   ];
 
   /**
-   * Whether the config is being synced through the import process.
-   *
-   * This is the case with create, update or delete.
+   * Whether the config is being created, updated or deleted through the
+   * import process.
    *
    * @var bool
    */
@@ -136,11 +134,6 @@ class ViewUI implements ViewEntityInterface {
    * @var bool
    */
   private $isUninstalling = FALSE;
-
-  /**
-   * The entity type.
-   */
-  protected $entityType;
 
   /**
    * Constructs a View UI object.
@@ -543,6 +536,7 @@ class ViewUI implements ViewEntityInterface {
     $errors = $executable->validate();
     $executable->destroy();
     if (empty($errors)) {
+      $this->ajax = TRUE;
       $executable->live_preview = TRUE;
 
       // AJAX happens via HTTP POST but everything expects exposed data to
@@ -679,9 +673,9 @@ class ViewUI implements ViewEntityInterface {
                 [
                   'data' => [
                     '#prefix' => '<pre>',
-                    'queries' => $queries,
-                    '#suffix' => '</pre>',
-                  ],
+                     'queries' => $queries,
+                     '#suffix' => '</pre>',
+                    ],
                 ],
               ];
             }
@@ -836,7 +830,7 @@ class ViewUI implements ViewEntityInterface {
   /**
    * Get the user's current progress through the form stack.
    *
-   * @return array|bool
+   * @return
    *   FALSE if the user is not currently in a multiple-form stack. Otherwise,
    *   an associative array with the following keys:
    *   - current: The number of the current form on the stack.

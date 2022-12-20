@@ -23,7 +23,7 @@ use Drupal\Core\StreamWrapper\StreamWrapperManager;
  * @param $uri
  *   The URI of the file.
  *
- * @return string[]|int
+ * @return
  *   If the user does not have permission to access the file, return -1. If the
  *   user has permission, return an array with the appropriate headers. If the
  *   file is not controlled by the current module, the return value should be

@@ -29,13 +29,6 @@ class EntityResolverManager {
   protected $classResolver;
 
   /**
-   * The list of all entity types.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeInterface[]
-   */
-  protected $entityTypes;
-
-  /**
    * Constructs a new EntityRouteAlterSubscriber.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager

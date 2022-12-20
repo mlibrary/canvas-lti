@@ -247,7 +247,7 @@ interface DisplayPluginInterface {
   /**
    * Determines if an option is set to use the default or current display.
    *
-   * @return bool
+   * @return
    *   TRUE for the default display.
    */
   public function isDefaulted($option);
@@ -516,7 +516,7 @@ interface DisplayPluginInterface {
   /**
    * Make sure the display and all associated handlers are valid.
    *
-   * @return array
+   * @return
    *   Empty array if the display is valid; an array of error strings if it is
    *   not.
    */

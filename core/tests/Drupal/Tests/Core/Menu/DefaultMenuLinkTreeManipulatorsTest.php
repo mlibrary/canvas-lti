@@ -50,13 +50,6 @@ class DefaultMenuLinkTreeManipulatorsTest extends UnitTestCase {
   protected $defaultMenuTreeManipulators;
 
   /**
-   * Mock cache context manager.
-   *
-   * @var \Drupal\Core\Cache\Context\CacheContextsManager|\Prophecy\Prophecy\ObjectProphecy
-   */
-  protected $cacheContextManager;
-
-  /**
    * The original menu tree build in mockTree().
    *
    * @var \Drupal\Core\Menu\MenuLinkTreeElement[]
@@ -84,9 +77,12 @@ class DefaultMenuLinkTreeManipulatorsTest extends UnitTestCase {
 
     $this->defaultMenuTreeManipulators = new DefaultMenuLinkTreeManipulators($this->accessManager, $this->currentUser, $this->entityTypeManager);
 
-    $this->cacheContextManager = $this->prophesize(CacheContextsManager::class);
+    $cache_contexts_manager = $this->prophesize(CacheContextsManager::class);
+    $cache_contexts_manager->assertValidTokens()->willReturn(TRUE);
+    $cache_contexts_manager->reveal();
+
     $container = new Container();
-    $container->set('cache_contexts_manager', $this->cacheContextManager->reveal());
+    $container->set('cache_contexts_manager', $cache_contexts_manager);
     \Drupal::setContainer($container);
   }
 
@@ -167,7 +163,6 @@ class DefaultMenuLinkTreeManipulatorsTest extends UnitTestCase {
     // performed. 9 routes, but 1 is external, 2 already have their 'access'
     // property set, and 1 is a child if an inaccessible menu link, so only 5
     // calls will be made.
-    $this->cacheContextManager->assertValidTokens(['user.permissions'])->shouldBeCalled()->willReturn(TRUE);
     $this->accessManager->expects($this->exactly(5))
       ->method('checkNamedRoute')
       ->willReturnMap([
@@ -192,7 +187,6 @@ class DefaultMenuLinkTreeManipulatorsTest extends UnitTestCase {
 
     $this->mockTree();
     $this->originalTree[5]->subtree[7]->access = AccessResult::neutral();
-    $this->cacheContextManager->assertValidTokens(['user'])->shouldBeCalled()->willReturn(TRUE);
     $this->originalTree[8]->access = AccessResult::allowed()->cachePerUser();
 
     // Since \Drupal\Core\Menu\DefaultMenuLinkTreeManipulators::checkAccess()
@@ -256,7 +250,6 @@ class DefaultMenuLinkTreeManipulatorsTest extends UnitTestCase {
       ->willReturn(TRUE);
 
     $this->mockTree();
-    $this->cacheContextManager->assertValidTokens(['user.permissions'])->shouldBeCalled()->willReturn(TRUE);
     $this->defaultMenuTreeManipulators->checkAccess($this->originalTree);
 
     $expected_access_result = AccessResult::allowed()->cachePerPermissions();
@@ -331,8 +324,6 @@ class DefaultMenuLinkTreeManipulatorsTest extends UnitTestCase {
       ->with('node')
       ->willReturn($storage);
 
-    $this->cacheContextManager->assertValidTokens(['user.permissions'])->shouldBeCalled()->willReturn(TRUE);
-    $this->cacheContextManager->assertValidTokens(['user.permissions', 'user.node_grants:view'])->shouldBeCalled()->willReturn(TRUE);
     $node_access_result = AccessResult::allowed()->cachePerPermissions()->addCacheContexts(['user.node_grants:view']);
 
     $tree = $this->defaultMenuTreeManipulators->checkNodeAccess($tree);

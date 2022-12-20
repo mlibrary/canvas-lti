@@ -4,6 +4,7 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function ($, _ref, _ref2) {
   var behaviors = _ref.behaviors;
   var testMessages = _ref2.testMessages;
@@ -33,6 +34,7 @@
         var area = $target.closest('[data-drupal-messages-area]').attr('data-drupal-messages-area') || 'default';
         var message = messageObjects[area].zone;
         var action = $target.attr('data-action');
+
         if (action === 'add') {
           messageObjects[area].indexes[type].push(message.add("This is a message of the type, ".concat(type, ". You be the judge of its importance."), {
             type: type

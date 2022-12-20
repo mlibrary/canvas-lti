@@ -6,7 +6,6 @@ namespace Drupal\Tests\aggregator\Functional;
  * Update feed test.
  *
  * @group aggregator
- * @group legacy
  */
 class UpdateFeedTest extends AggregatorTestBase {
 

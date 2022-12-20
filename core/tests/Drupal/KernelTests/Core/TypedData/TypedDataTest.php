@@ -40,9 +40,6 @@ class TypedDataTest extends KernelTestBase {
    */
   protected static $modules = ['system', 'field', 'file', 'user'];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

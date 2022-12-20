@@ -164,11 +164,4 @@ class HttpExceptionNormalizer extends NormalizerBase {
     return empty($sections[$status_code]) ? NULL : $url . $sections[$status_code];
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function hasCacheableSupportsMethod(): bool {
-    return TRUE;
-  }
-
 }

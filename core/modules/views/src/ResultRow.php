@@ -5,7 +5,6 @@ namespace Drupal\views;
 /**
  * A class representing a view result row.
  */
-#[\AllowDynamicProperties]
 class ResultRow {
 
   /**

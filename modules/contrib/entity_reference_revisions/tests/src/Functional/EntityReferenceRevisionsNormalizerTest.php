@@ -10,7 +10,6 @@ use Drupal\Tests\field_ui\Traits\FieldUiTestTrait;
  * Tests the entity_reference_revisions configuration.
  *
  * @group entity_reference_revisions
- * @requires module hal
  */
 class EntityReferenceRevisionsNormalizerTest extends BrowserTestBase {
 
@@ -21,7 +20,7 @@ class EntityReferenceRevisionsNormalizerTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = array(
+  public static $modules = array(
     'node',
     'field',
     'entity_reference_revisions',
@@ -40,7 +39,7 @@ class EntityReferenceRevisionsNormalizerTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     // Create paragraphs and article content types.
     $this->drupalCreateContentType(array('type' => 'entity_revisions', 'name' => 'Entity revisions'));
@@ -53,16 +52,10 @@ class EntityReferenceRevisionsNormalizerTest extends BrowserTestBase {
    * Tests the entity reference revisions configuration.
    */
   public function testEntityReferenceRevisions() {
-
-    if (version_compare(\Drupal::VERSION, '10', '>=')) {
-      $this->markTestSkipped('HAL support has been moved to hal module');
-    }
-
     $admin_user = $this->drupalCreateUser(array(
       'administer site configuration',
       'administer nodes',
       'create article content',
-      'create entity_revisions content',
       'administer content types',
       'administer node fields',
       'administer node display',
@@ -72,7 +65,7 @@ class EntityReferenceRevisionsNormalizerTest extends BrowserTestBase {
     $this->drupalLogin($admin_user);
     // Create entity reference revisions field.
     static::fieldUIAddNewField('admin/structure/types/manage/entity_revisions', 'entity_reference_revisions', 'Entity reference revisions', 'entity_reference_revisions', array('settings[target_type]' => 'node', 'cardinality' => '-1'), array('settings[handler_settings][target_bundles][article]' => TRUE));
-    $this->assertSession()->pageTextContains('Saved Entity reference revisions configuration.');
+    $this->assertText('Saved Entity reference revisions configuration.');
 
     // Create an article.
     $title = $this->randomMachineName();
@@ -82,8 +75,8 @@ class EntityReferenceRevisionsNormalizerTest extends BrowserTestBase {
     );
     $this->drupalGet('node/add/article');
     $this->submitForm($edit, 'Save');
-    $this->assertSession()->pageTextContains($title);
-    $this->assertSession()->pageTextContains('Revision 1');
+    $this->assertText($title);
+    $this->assertText('Revision 1');
     $node = $this->drupalGetNodeByTitle($title);
 
     // Create entity revisions content that includes the above article.
@@ -94,12 +87,12 @@ class EntityReferenceRevisionsNormalizerTest extends BrowserTestBase {
     );
     $this->drupalGet('node/add/entity_revisions');
     $this->submitForm($edit, 'Save');
-    $this->assertSession()->pageTextContains('Entity revisions Entity reference revision content has been created.');
+    $this->assertText('Entity revisions Entity reference revision content has been created.');
     $err_node = $this->drupalGetNodeByTitle($err_title);
 
-    $this->assertSession()->pageTextContains($err_title);
-    $this->assertSession()->pageTextContains($title);
-    $this->assertSession()->pageTextContains('Revision 1');
+    $this->assertText($err_title);
+    $this->assertText($title);
+    $this->assertText('Revision 1');
 
     // Create 2nd revision of the article.
     $edit = array(
@@ -112,9 +105,9 @@ class EntityReferenceRevisionsNormalizerTest extends BrowserTestBase {
     $normalized = $serializer->normalize($err_node, 'hal_json');
     $request = \Drupal::request();
     $link_domain = $request->getSchemeAndHttpHost() . $request->getBasePath();
-    $this->assertEquals($err_node->field_entity_reference_revisions->target_revision_id, $normalized['_embedded'][$link_domain . '/rest/relation/node/entity_revisions/field_entity_reference_revisions'][0]['target_revision_id']);
+    $this->assertEqual($err_node->field_entity_reference_revisions->target_revision_id, $normalized['_embedded'][$link_domain . '/rest/relation/node/entity_revisions/field_entity_reference_revisions'][0]['target_revision_id']);
     $new_err_node = $serializer->denormalize($normalized, Node::class, 'hal_json');
-    $this->assertEquals($err_node->field_entity_reference_revisions->target_revision_id, $new_err_node->field_entity_reference_revisions->target_revision_id);
+    $this->assertEqual($err_node->field_entity_reference_revisions->target_revision_id, $new_err_node->field_entity_reference_revisions->target_revision_id);
   }
 
 }

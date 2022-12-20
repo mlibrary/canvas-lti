@@ -71,8 +71,13 @@ class RouteProcessorManager implements OutboundRouteProcessorInterface {
    * Sorts the processors according to priority.
    */
   protected function sortProcessors() {
+    $sorted = [];
     krsort($this->outboundProcessors);
-    return array_merge([], ...$this->outboundProcessors);
+
+    foreach ($this->outboundProcessors as $processors) {
+      $sorted = array_merge($sorted, $processors);
+    }
+    return $sorted;
   }
 
 }

@@ -35,9 +35,6 @@ class PathProcessorTest extends UnitTestCase {
    */
   protected $languageManager;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
 
     // Set up some languages to be used by the language-based path processor.
@@ -61,13 +58,13 @@ class PathProcessorTest extends UnitTestCase {
       ->getMock();
     $language_manager->expects($this->any())
       ->method('getCurrentLanguage')
-      ->willReturn($languages['en']);
+      ->will($this->returnValue($languages['en']));
     $language_manager->expects($this->any())
       ->method('getLanguages')
-      ->willReturn($this->languages);
+      ->will($this->returnValue($this->languages));
     $language_manager->expects($this->any())
       ->method('getLanguageTypes')
-      ->willReturn([LanguageInterface::TYPE_INTERFACE]);
+      ->will($this->returnValue([LanguageInterface::TYPE_INTERFACE]));
 
     $this->languageManager = $language_manager;
   }
@@ -116,18 +113,18 @@ class PathProcessorTest extends UnitTestCase {
       ->getMock();
     $negotiator->expects($this->any())
       ->method('getNegotiationMethods')
-      ->willReturn([
+      ->will($this->returnValue([
         LanguageNegotiationUrl::METHOD_ID => [
           'class' => 'Drupal\language\Plugin\LanguageNegotiation\LanguageNegotiationUrl',
           'weight' => 9,
         ],
-      ]);
+      ]));
     $method = new LanguageNegotiationUrl();
     $method->setConfig($config_factory_stub);
     $method->setLanguageManager($this->languageManager);
     $negotiator->expects($this->any())
       ->method('getNegotiationMethodInstance')
-      ->willReturn($method);
+      ->will($this->returnValue($method));
 
     // Create a user stub.
     $current_user = $this->getMockBuilder('Drupal\Core\Session\AccountInterface')

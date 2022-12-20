@@ -6,9 +6,8 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\Context\ContextDefinition;
 
 /**
- * Basic argument handler for arguments that are numeric.
- *
- * Incorporates break_phrase.
+ * Basic argument handler for arguments that are numeric. Incorporates
+ * break_phrase.
  *
  * @ingroup views_argument_handlers
  *

@@ -15,6 +15,7 @@ class IdConflictTest extends MigrateUpgradeExecuteTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
+    'aggregator',
     'book',
     'config_translation',
     'content_translation',
@@ -23,6 +24,8 @@ class IdConflictTest extends MigrateUpgradeExecuteTestBase {
     'migrate_drupal_ui',
     'statistics',
     'telephone',
+    // Required for translation migrations.
+    'migrate_drupal_multilingual',
   ];
 
   /**
@@ -44,28 +47,24 @@ class IdConflictTest extends MigrateUpgradeExecuteTestBase {
    * {@inheritdoc}
    */
   protected function getEntityCounts() {
-    return [];
   }
 
   /**
    * {@inheritdoc}
    */
   protected function getEntityCountsIncremental() {
-    return [];
   }
 
   /**
    * {@inheritdoc}
    */
   protected function getAvailablePaths() {
-    return [];
   }
 
   /**
    * {@inheritdoc}
    */
   protected function getMissingPaths() {
-    return [];
   }
 
   /**

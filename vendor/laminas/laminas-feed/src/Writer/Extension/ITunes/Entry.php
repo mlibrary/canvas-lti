@@ -13,6 +13,7 @@ use function array_key_exists;
 use function count;
 use function ctype_alpha;
 use function ctype_digit;
+use function get_class;
 use function gettype;
 use function implode;
 use function in_array;
@@ -325,7 +326,7 @@ class Entry
         if (! is_numeric($number) || is_float($number)) {
             throw new Writer\Exception\InvalidArgumentException(sprintf(
                 'invalid parameter: "number" may only be an integer; received %s',
-                is_object($number) ? $number::class : gettype($number)
+                is_object($number) ? get_class($number) : gettype($number)
             ));
         }
 
@@ -348,7 +349,7 @@ class Entry
             throw new Writer\Exception\InvalidArgumentException(sprintf(
                 'invalid parameter: "episodeType" MUST be one of the strings [%s]; received %s',
                 implode(', ', $validTypes),
-                is_object($type) ? $type::class : var_export($type, true)
+                is_object($type) ? get_class($type) : var_export($type, true)
             ));
         }
 
@@ -369,7 +370,7 @@ class Entry
         if (! is_bool($status)) {
             throw new Writer\Exception\InvalidArgumentException(sprintf(
                 'invalid parameter: "isClosedCaptioned" MUST be a boolean; received %s',
-                is_object($status) ? $status::class : var_export($status, true)
+                is_object($status) ? get_class($status) : var_export($status, true)
             ));
         }
 
@@ -394,7 +395,7 @@ class Entry
         if (! is_numeric($number) || is_float($number)) {
             throw new Writer\Exception\InvalidArgumentException(sprintf(
                 'invalid parameter: "season" may only be an integer; received %s',
-                is_object($number) ? $number::class : gettype($number)
+                is_object($number) ? get_class($number) : gettype($number)
             ));
         }
 

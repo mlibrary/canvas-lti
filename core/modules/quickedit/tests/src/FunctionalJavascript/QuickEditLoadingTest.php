@@ -19,7 +19,6 @@ use Drupal\Tests\TestFileCreationTrait;
  * in-place editors.
  *
  * @group quickedit
- * @group legacy
  */
 class QuickEditLoadingTest extends WebDriverTestBase {
 
@@ -45,7 +44,7 @@ class QuickEditLoadingTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'starterkit_theme';
+  protected $defaultTheme = 'classy';
 
   /**
    * A user with permissions to create and edit articles.
@@ -377,7 +376,7 @@ class QuickEditLoadingTest extends WebDriverTestBase {
     $page->attachFileToField('files[field_image_0]', $image_path);
     $alt_field = $assert->waitForField('field_image[0][alt]');
     $this->assertNotEmpty($alt_field);
-    $this->submitForm(['field_image[0][alt]' => 'The quick fox'], 'Save');
+    $this->submitForm(['field_image[0][alt]' => 'Vivamus aliquet elit'], 'Save');
 
     // The image field form should load normally.
     // Wait "Quick edit" button for node.

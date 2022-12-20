@@ -7,7 +7,8 @@ use Drupal\views\ResultRow;
 use Drupal\views\ViewExecutable;
 
 /**
- * Handler to run a field through check_markup, using a companion format field.
+ * A handler to run a field through check_markup, using a companion
+ * format field.
  *
  * - format: (REQUIRED) Either a string format id to use for this field or an
  *           array('field' => {$field}) where $field is the field in this table

@@ -2,9 +2,9 @@ name: 'Test theme libraries-extend'
 type: theme
 description: 'Test Theme with libraries-extend'
 version: VERSION
-base theme: starterkit_theme
+base theme: classy
 libraries-extend:
-  starterkit_theme/book-navigation:
+  classy/book-navigation:
     - test_theme_libraries_extend/extend_one
     - test_theme_libraries_extend/extend_two
   core/drupal.dialog:

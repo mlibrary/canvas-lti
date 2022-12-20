@@ -52,7 +52,7 @@ class DevelLayoutInfoTest extends DevelBrowserTestBase {
     $this->assertNotNull($table);
 
     // Ensures that the expected table headers are found.
-    /** @var \Behat\Mink\Element\NodeElement[] $headers */
+    /* @var $headers \Behat\Mink\Element\NodeElement[] */
     $headers = $table->findAll('css', 'thead th');
     $this->assertEquals(6, count($headers));
 

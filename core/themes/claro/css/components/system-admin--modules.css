@@ -21,9 +21,6 @@
 
 .modules-table-filter .form-item__description {
   position: absolute !important;
-}
-
-.modules-table-filter .form-item__description {
   overflow: hidden;
   clip: rect(1px, 1px, 1px, 1px);
   width: 1px;
@@ -178,7 +175,7 @@ td.module-list__description {
 
 .claro-details .tableresponsive-toggle:hover {
   color: #0036b1;
-  background-color: #f5f8ff;
+  background-color: #f0f5fd;
 }
 
 .claro-details .tableresponsive-toggle:hover::before {
@@ -190,8 +187,4 @@ td.module-list__description {
   text-decoration: none;
   color: #55565b;
   font-weight: bold;
-}
-
-.claro-details .admin-missing {
-  color: #dc2323;
 }

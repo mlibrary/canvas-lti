@@ -4,18 +4,12 @@ namespace Drupal\Component\Bridge;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Laminas\Feed\Reader\ExtensionManagerInterface as ReaderManagerInterface;
 use Laminas\Feed\Writer\ExtensionManagerInterface as WriterManagerInterface;
 
-@trigger_error(__NAMESPACE__ . '\ZfExtensionManagerSfContainer is deprecated in drupal:9.4.0 and is removed from drupal:10.0.0. The class has moved to \Drupal\aggregator\ZfExtensionManagerSfContainer. See https://www.drupal.org/node/3258656', E_USER_DEPRECATED);
-
 /**
  * Defines a bridge between the Laminas service manager to Symfony container.
- *
- * @deprecated in drupal:9.4.0 and is removed from drupal:10.0.0. The class has
- *   moved to \Drupal\aggregator\ZfExtensionManagerSfContainer.
- *
- * @see https://www.drupal.org/node/3258656
  */
 class ZfExtensionManagerSfContainer implements ReaderManagerInterface, WriterManagerInterface, ContainerAwareInterface {
 
@@ -75,20 +69,25 @@ class ZfExtensionManagerSfContainer implements ReaderManagerInterface, WriterMan
    * {@inheritdoc}
    */
   public function get($extension) {
-    if ($this->standalone && $this->standalone->has($extension)) {
-      return $this->standalone->get($extension);
+    try {
+      return $this->container->get($this->prefix . $this->canonicalizeName($extension));
     }
-    return $this->container->get($this->prefix . $this->canonicalizeName($extension));
+    catch (ServiceNotFoundException $e) {
+      if ($this->standalone && $this->standalone->has($extension)) {
+        return $this->standalone->get($extension);
+      }
+      throw $e;
+    }
   }
 
   /**
    * {@inheritdoc}
    */
   public function has($extension) {
-    if ($this->standalone && $this->standalone->has($extension)) {
+    if ($this->container->has($this->prefix . $this->canonicalizeName($extension))) {
       return TRUE;
     }
-    return $this->container->has($this->prefix . $this->canonicalizeName($extension));
+    return $this->standalone && $this->standalone->has($extension);
   }
 
   /**

@@ -37,7 +37,7 @@ class TextfieldWidget extends StringTextfieldWidget {
    * {@inheritdoc}
    */
   public function errorElement(array $element, ConstraintViolationInterface $violation, array $form, FormStateInterface $form_state) {
-    if (isset($element['format']['#access']) && !$element['format']['#access'] && preg_match('/^[0-9]*\.format$/', $violation->getPropertyPath())) {
+    if ($violation->arrayPropertyPath == ['format'] && isset($element['format']['#access']) && !$element['format']['#access']) {
       // Ignore validation errors for formats that may not be changed,
       // such as when existing formats become invalid.
       // See \Drupal\filter\Element\TextFormat::processFormat().

@@ -87,8 +87,8 @@ class WorkspacePublisher implements WorkspacePublisherInterface {
       throw new WorkspaceConflictException();
     }
 
+    $transaction = $this->database->startTransaction();
     try {
-      $transaction = $this->database->startTransaction();
       // @todo Handle the publishing of a workspace with a batch operation in
       //   https://www.drupal.org/node/2958752.
       $this->workspaceManager->executeOutsideWorkspace(function () {
@@ -118,9 +118,7 @@ class WorkspacePublisher implements WorkspacePublisherInterface {
       });
     }
     catch (\Exception $e) {
-      if (isset($transaction)) {
-        $transaction->rollBack();
-      }
+      $transaction->rollBack();
       watchdog_exception('workspaces', $e);
       throw $e;
     }

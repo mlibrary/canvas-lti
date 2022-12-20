@@ -24,9 +24,9 @@ class TableFormatter extends DescriptionAwareFileFormatterBase {
     $elements = [];
 
     if ($files = $this->getEntitiesToView($items, $langcode)) {
-      $header = [$this->t('Attachment'), $this->t('Size')];
+      $header = [t('Attachment'), t('Size')];
       $rows = [];
-      foreach ($files as $file) {
+      foreach ($files as $delta => $file) {
         $item = $file->_referringItem;
         $rows[] = [
           [

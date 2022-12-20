@@ -72,7 +72,10 @@ class AuthenticationCollector implements AuthenticationCollectorInterface {
       krsort($this->providerOrders);
 
       // Merge nested providers from $this->providers into $this->sortedProviders.
-      $this->sortedProviders = array_merge([], ...$this->providerOrders);
+      $this->sortedProviders = [];
+      foreach ($this->providerOrders as $providers) {
+        $this->sortedProviders = array_merge($this->sortedProviders, $providers);
+      }
     }
 
     return $this->sortedProviders;

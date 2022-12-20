@@ -42,18 +42,18 @@ class DecimalFormatter extends NumericFormatterBase {
 
     $elements['decimal_separator'] = [
       '#type' => 'select',
-      '#title' => $this->t('Decimal marker'),
-      '#options' => ['.' => $this->t('Decimal point'), ',' => $this->t('Comma')],
+      '#title' => t('Decimal marker'),
+      '#options' => ['.' => t('Decimal point'), ',' => t('Comma')],
       '#default_value' => $this->getSetting('decimal_separator'),
       '#weight' => 5,
     ];
     $elements['scale'] = [
       '#type' => 'number',
-      '#title' => $this->t('Scale', [], ['context' => 'decimal places']),
+      '#title' => t('Scale', [], ['context' => 'decimal places']),
       '#min' => 0,
       '#max' => 10,
       '#default_value' => $this->getSetting('scale'),
-      '#description' => $this->t('The number of digits to the right of the decimal.'),
+      '#description' => t('The number of digits to the right of the decimal.'),
       '#weight' => 6,
     ];
 

@@ -11,7 +11,6 @@ use Drupal\comment\Entity\Comment;
  * Tests rdf_comment_storage_load.
  *
  * @group rdf
- * @group legacy
  */
 class RdfCommentStorageLoadTest extends EntityKernelTestBase {
 

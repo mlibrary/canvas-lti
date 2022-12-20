@@ -3,7 +3,6 @@
 namespace Drupal\media\Plugin\media\Source;
 
 use Drupal\Component\Plugin\Derivative\DeriverBase;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
  * Derives media source plugin definitions for supported oEmbed providers.
@@ -14,8 +13,6 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
  */
 class OEmbedDeriver extends DeriverBase {
 
-  use StringTranslationTrait;
-
   /**
    * {@inheritdoc}
    */
@@ -23,8 +20,8 @@ class OEmbedDeriver extends DeriverBase {
     $this->derivatives = [
       'video' => [
         'id' => 'video',
-        'label' => $this->t('Remote video'),
-        'description' => $this->t('Use remote video URL for reusable media.'),
+        'label' => t('Remote video'),
+        'description' => t('Use remote video URL for reusable media.'),
         'providers' => ['YouTube', 'Vimeo'],
         'default_thumbnail_filename' => 'video.png',
       ] + $base_plugin_definition,

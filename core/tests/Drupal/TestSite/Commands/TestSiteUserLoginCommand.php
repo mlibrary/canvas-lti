@@ -22,7 +22,7 @@ class TestSiteUserLoginCommand extends Command {
   /**
    * The class loader to use for installation and initialization of setup.
    *
-   * @var \Composer\Autoload\ClassLoader
+   * @var \Symfony\Component\Classloader\Classloader
    */
   protected $classLoader;
 

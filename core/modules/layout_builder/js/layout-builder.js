@@ -4,23 +4,28 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function ($, Drupal, Sortable) {
   var ajax = Drupal.ajax,
-    behaviors = Drupal.behaviors,
-    debounce = Drupal.debounce,
-    announce = Drupal.announce,
-    formatPlural = Drupal.formatPlural;
+      behaviors = Drupal.behaviors,
+      debounce = Drupal.debounce,
+      announce = Drupal.announce,
+      formatPlural = Drupal.formatPlural;
   var layoutBuilderBlocksFiltered = false;
   behaviors.layoutBuilderBlockFilter = {
     attach: function attach(context) {
       var $categories = $('.js-layout-builder-categories', context);
       var $filterLinks = $categories.find('.js-layout-builder-block-link');
+
       var filterBlockList = function filterBlockList(e) {
-        var query = e.target.value.toLowerCase();
+        var query = $(e.target).val().toLowerCase();
+
         var toggleBlockEntry = function toggleBlockEntry(index, link) {
-          var textMatch = link.textContent.toLowerCase().indexOf(query) !== -1;
-          $(link).toggle(textMatch);
+          var $link = $(link);
+          var textMatch = $link.text().toLowerCase().indexOf(query) !== -1;
+          $link.toggle(textMatch);
         };
+
         if (query.length >= 2) {
           $categories.find('.js-layout-builder-category:not([open])').attr('remember-closed', '');
           $categories.find('.js-layout-builder-category').attr('open', '');
@@ -36,13 +41,16 @@
           announce(Drupal.t('All available blocks are listed.'));
         }
       };
+
       $(once('block-filter-text', 'input.js-layout-builder-filter', context)).on('keyup', debounce(filterBlockList, 200));
     }
   };
+
   Drupal.layoutBuilderBlockUpdate = function (item, from, to) {
     var $item = $(item);
     var $from = $(from);
     var itemRegion = $item.closest('.js-layout-builder-region');
+
     if (to === itemRegion[0]) {
       var deltaTo = $item.closest('[data-layout-delta]').data('layout-delta');
       var deltaFrom = $from ? $from.closest('[data-layout-delta]').data('layout-delta') : deltaTo;
@@ -53,6 +61,7 @@
       }).execute();
     }
   };
+
   behaviors.layoutBuilderBlockDrag = {
     attach: function attach(context) {
       var regionSelector = '.js-layout-builder-region';
@@ -87,28 +96,35 @@
     if (Drupal.offCanvas.isOffCanvas($element)) {
       $('.is-layout-builder-highlighted').removeClass('is-layout-builder-highlighted');
       var id = $element.find('[data-layout-builder-target-highlight-id]').attr('data-layout-builder-target-highlight-id');
+
       if (id) {
         $("[data-layout-builder-highlight-id=\"".concat(id, "\"]")).addClass('is-layout-builder-highlighted');
       }
+
       $('#layout-builder').removeClass('layout-builder--move-blocks-active');
       var layoutBuilderWrapperValue = $element.find('[data-add-layout-builder-wrapper]').attr('data-add-layout-builder-wrapper');
+
       if (layoutBuilderWrapperValue) {
         $('#layout-builder').addClass(layoutBuilderWrapperValue);
       }
     }
   });
+
   if (document.querySelector('[data-off-canvas-main-canvas]')) {
     var mainCanvas = document.querySelector('[data-off-canvas-main-canvas]');
     mainCanvas.addEventListener('transitionend', function () {
       var $target = $('.is-layout-builder-highlighted');
+
       if ($target.length > 0) {
         var targetTop = $target.offset().top;
         var targetBottom = targetTop + $target.outerHeight();
         var viewportTop = $(window).scrollTop();
         var viewportBottom = viewportTop + $(window).height();
+
         if (targetBottom < viewportTop || targetTop > viewportBottom) {
           var viewportMiddle = (viewportBottom + viewportTop) / 2;
           var scrollAmount = targetTop - viewportMiddle;
+
           if ('scrollBehavior' in document.documentElement.style) {
             window.scrollBy({
               top: scrollAmount,
@@ -122,6 +138,7 @@
       }
     });
   }
+
   $(window).on('dialog:afterclose', function (event, dialog, $element) {
     if (Drupal.offCanvas.isOffCanvas($element)) {
       $('.is-layout-builder-highlighted').removeClass('is-layout-builder-highlighted');
@@ -134,6 +151,7 @@
       var $layoutBuilderContentPreview = $('#layout-builder-content-preview');
       var contentPreviewId = $layoutBuilderContentPreview.data('content-preview-id');
       var isContentPreview = JSON.parse(localStorage.getItem(contentPreviewId)) !== false;
+
       var disableContentPreview = function disableContentPreview() {
         $layoutBuilder.addClass('layout-builder--content-preview-disabled');
         $('[data-layout-content-preview-placeholder-label]', context).each(function (i, element) {
@@ -144,6 +162,7 @@
           $element.prepend(contentPreviewPlaceholderLabel);
         });
       };
+
       var enableContentPreview = function enableContentPreview() {
         $layoutBuilder.removeClass('layout-builder--content-preview-disabled');
         $('.js-layout-builder-content-preview-placeholder-label').remove();
@@ -151,9 +170,11 @@
           $(element).children().show();
         });
       };
+
       $('#layout-builder-content-preview', context).on('change', function (event) {
         var isChecked = $(event.currentTarget).is(':checked');
         localStorage.setItem(contentPreviewId, JSON.stringify(isChecked));
+
         if (isChecked) {
           enableContentPreview();
           announce(Drupal.t('Block previews are visible. Block labels are hidden.'));
@@ -162,12 +183,14 @@
           announce(Drupal.t('Block previews are hidden. Block labels are visible.'));
         }
       });
+
       if (!isContentPreview) {
         $layoutBuilderContentPreview.attr('checked', false);
         disableContentPreview();
       }
     }
   };
+
   Drupal.theme.layoutBuilderPrependContentPreviewPlaceholderLabel = function (contentPreviewPlaceholderText) {
     var contentPreviewPlaceholderLabel = document.createElement('div');
     contentPreviewPlaceholderLabel.className = 'layout-builder-block__content-preview-placeholder-label js-layout-builder-content-preview-placeholder-label';

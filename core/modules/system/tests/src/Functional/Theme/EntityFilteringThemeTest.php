@@ -6,7 +6,6 @@ use Drupal\comment\Tests\CommentTestTrait;
 use Drupal\Core\Extension\ExtensionDiscovery;
 use Drupal\comment\CommentInterface;
 use Drupal\comment\Plugin\Field\FieldType\CommentItemInterface;
-use Drupal\Core\Extension\ExtensionLifecycle;
 use Drupal\node\NodeInterface;
 use Drupal\comment\Entity\Comment;
 use Drupal\taxonomy\Entity\Term;
@@ -47,7 +46,7 @@ class EntityFilteringThemeTest extends BrowserTestBase {
   /**
    * A test user.
    *
-   * @var \Drupal\user\Entity\User
+   * @var \Drupal\user\User
    */
   protected $user;
 
@@ -55,7 +54,7 @@ class EntityFilteringThemeTest extends BrowserTestBase {
   /**
    * A test node.
    *
-   * @var \Drupal\node\Entity\Node
+   * @var \Drupal\node\Node
    */
   protected $node;
 
@@ -63,7 +62,7 @@ class EntityFilteringThemeTest extends BrowserTestBase {
   /**
    * A test taxonomy term.
    *
-   * @var \Drupal\taxonomy\Entity\Term
+   * @var \Drupal\taxonomy\Term
    */
   protected $term;
 
@@ -71,7 +70,7 @@ class EntityFilteringThemeTest extends BrowserTestBase {
   /**
    * A test comment.
    *
-   * @var \Drupal\comment\Entity\Comment
+   * @var \Drupal\comment\Comment
    */
   protected $comment;
 
@@ -82,24 +81,12 @@ class EntityFilteringThemeTest extends BrowserTestBase {
    */
   protected $xssLabel = "string with <em>HTML</em> and <script>alert('JS');</script>";
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 
     // Install all available non-testing themes.
     $listing = new ExtensionDiscovery(\Drupal::root());
     $this->themes = $listing->scan('theme', FALSE);
-    /** @var \Drupal\Core\Extension\ThemeHandlerInterface $theme_handler */
-    $theme_data = \Drupal::service('theme_handler')->rebuildThemeData();
-    foreach (array_keys($this->themes) as $theme) {
-      // Skip obsolete and deprecated themes.
-      $info = $theme_data[$theme]->info;
-      if ($info[ExtensionLifecycle::LIFECYCLE_IDENTIFIER] === ExtensionLifecycle::OBSOLETE || $info[ExtensionLifecycle::LIFECYCLE_IDENTIFIER] === ExtensionLifecycle::DEPRECATED) {
-        unset($this->themes[$theme]);
-      }
-    }
     \Drupal::service('theme_installer')->install(array_keys($this->themes));
 
     // Create a test user.

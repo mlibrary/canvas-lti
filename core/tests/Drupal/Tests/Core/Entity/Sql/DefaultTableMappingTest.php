@@ -462,10 +462,10 @@ class DefaultTableMappingTest extends UnitTestCase {
     $definition = $this->setUpDefinition($field_name, []);
     $definition->expects($this->any())
       ->method('getTargetEntityTypeId')
-      ->willReturn($entity_type_id);
+      ->will($this->returnValue($entity_type_id));
     $definition->expects($this->any())
       ->method('getUniqueStorageIdentifier')
-      ->willReturn($entity_type_id . '-' . $field_name);
+      ->will($this->returnValue($entity_type_id . '-' . $field_name));
 
     $this->entityType
       ->expects($this->any())
@@ -594,10 +594,10 @@ class DefaultTableMappingTest extends UnitTestCase {
       ->willReturn($base_field);
     $definition->expects($this->any())
       ->method('getName')
-      ->willReturn($name);
+      ->will($this->returnValue($name));
     $definition->expects($this->any())
       ->method('getColumns')
-      ->willReturn(array_fill_keys($column_names, []));
+      ->will($this->returnValue(array_fill_keys($column_names, [])));
     return $definition;
   }
 

@@ -24,7 +24,7 @@ class DummyAjaxFormatter extends FormatterBase {
    */
   public function settingsSummary() {
     $summary = [];
-    $summary[] = $this->t('Renders nothing');
+    $summary[] = t('Renders nothing');
     return $summary;
   }
 

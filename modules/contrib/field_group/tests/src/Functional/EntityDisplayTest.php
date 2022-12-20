@@ -18,12 +18,12 @@ class EntityDisplayTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = [
+  public static $modules = [
     'node',
     'field_test',
     'field_ui',
     'field_group',
-    'field_group_test',
+    'field_group_test'
   ];
 
   /**
@@ -43,12 +43,12 @@ class EntityDisplayTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'starterkit_theme';
+  protected $defaultTheme = 'classy';
 
   /**
    * {@inheritdoc}
    */
-  public function setUp(): void {
+  public function setUp() {
     parent::setUp();
 
     // Create test user.
@@ -64,10 +64,7 @@ class EntityDisplayTest extends BrowserTestBase {
 
     // Create content type, with underscores.
     $type_name = strtolower($this->randomMachineName(8)) . '_test';
-    $type = $this->drupalCreateContentType([
-      'name' => $type_name,
-      'type' => $type_name,
-    ]);
+    $type = $this->drupalCreateContentType(['name' => $type_name, 'type' => $type_name]);
     $this->type = $type->id();
     /** @var \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display */
     $display = \Drupal::entityTypeManager()
@@ -156,8 +153,7 @@ class EntityDisplayTest extends BrowserTestBase {
     ];
     $group = $this->createGroup('node', $this->type, 'view', 'default', $data);
 
-    // $groups =
-    // field_group_info_groups('node', 'article', 'view', 'default', TRUE);.
+    // $groups = field_group_info_groups('node', 'article', 'view', 'default', TRUE);.
     $this->drupalGet('node/' . $this->node->id());
 
     // Test group ids and classes.

@@ -52,9 +52,6 @@ class ContentTranslationSyncImageTest extends ContentTranslationTestBase {
     'field_ui',
   ];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     $this->files = $this->drupalGetTestFiles('image');
@@ -126,7 +123,7 @@ class ContentTranslationSyncImageTest extends ContentTranslationTestBase {
     ];
     $this->drupalGet('admin/config/regional/content-language');
     $this->submitForm($edit, 'Save configuration');
-    $this->assertSession()->statusMessageNotExists('error');
+    $this->assertSession()->elementNotExists('xpath', '//div[contains(@class, "messages--error")]');
     $this->assertSession()->checkboxChecked('edit-settings-entity-test-mul-entity-test-mul-columns-field-test-et-ui-image-alt');
     $this->assertSession()->checkboxChecked('edit-settings-entity-test-mul-entity-test-mul-columns-field-test-et-ui-image-title');
     $this->drupalLogin($this->translator);

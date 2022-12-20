@@ -39,8 +39,8 @@ class BlockContentFieldFilterTest extends BlockContentTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp($import_test_views = TRUE, $modules = ['block_content_test_views']): void {
-    parent::setUp($import_test_views, $modules);
+  public function setUp($import_test_views = TRUE): void {
+    parent::setUp($import_test_views);
 
     // Add two new languages.
     ConfigurableLanguage::createFromLangcode('fr')->save();

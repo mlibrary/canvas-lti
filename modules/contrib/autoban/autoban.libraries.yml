@@ -1,8 +1,0 @@
-form:
-  js:
-    js/form.js: {preprocess: false}
-  css:
-    theme:
-      css/form.css: {preprocess: false}
-  dependencies:
-    - core/jquery

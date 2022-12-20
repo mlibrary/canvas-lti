@@ -6,8 +6,6 @@ use Drupal\Tests\BrowserTestBase;
 use Drush\TestTraits\DrushTestTrait;
 
 /**
- * Test class for the Devel drush commands.
- *
  * Note: Drush must be installed. Add it to your require-dev in composer.json.
  */
 

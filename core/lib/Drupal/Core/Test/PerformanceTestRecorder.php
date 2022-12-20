@@ -16,8 +16,10 @@ class PerformanceTestRecorder implements EventSubscriberInterface {
 
   /**
    * The state service for persistent storage if necessary.
+   *
+   * @var \Drupal\Core\State\StateInterface
    */
-  protected $state;
+  protected $service;
 
   /**
    * @var array

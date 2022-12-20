@@ -2,6 +2,8 @@
 
 namespace Drupal\Tests\node\Functional;
 
+use Drupal\Component\Utility\Html;
+
 /**
  * Tests the node/{node} page.
  *
@@ -13,7 +15,7 @@ class NodeViewTest extends NodeTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'classy';
 
   /**
    * Tests the html head links.
@@ -35,8 +37,16 @@ class NodeViewTest extends NodeTestBase {
    */
   public function testLinkHeader() {
     $node = $this->drupalCreateNode();
+
+    $expected = [
+      '<' . Html::escape($node->toUrl('canonical')->setAbsolute()->toString()) . '>; rel="canonical"',
+      '<' . Html::escape($node->toUrl('canonical', ['alias' => TRUE])->setAbsolute()->toString()) . '>; rel="shortlink"',
+    ];
+
     $this->drupalGet($node->toUrl());
-    $this->assertArrayNotHasKey('Link', $this->getSession()->getResponseHeaders());
+
+    $links = $this->getSession()->getResponseHeaders()['Link'];
+    $this->assertEquals($expected, $links);
   }
 
   /**
@@ -50,7 +60,7 @@ class NodeViewTest extends NodeTestBase {
     $node = $this->drupalCreateNode(['title' => $title]);
     $this->drupalGet($node->toUrl());
     // Verify that the passed title was returned.
-    $this->assertSession()->elementTextEquals('xpath', '//h1/span', $title);
+    $this->assertSession()->elementTextEquals('xpath', '//span[contains(@class, "field--name-title")]', $title);
   }
 
 }

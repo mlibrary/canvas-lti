@@ -69,7 +69,7 @@ class ImportStorageTransformerTest extends KernelTestBase {
     $lock->expects($this->exactly(2))
       ->method('acquire')
       ->with(ImportStorageTransformer::LOCK_NAME)
-      ->willReturn(FALSE);
+      ->will($this->returnValue(FALSE));
     $lock->expects($this->once())
       ->method('wait')
       ->with(ImportStorageTransformer::LOCK_NAME);
@@ -100,7 +100,7 @@ class ImportStorageTransformerTest extends KernelTestBase {
     $lock->expects($this->once())
       ->method('lockMayBeAvailable')
       ->with(ConfigImporter::LOCK_NAME)
-      ->willReturn(FALSE);
+      ->will($this->returnValue(FALSE));
 
     // The import transformer under test.
     $transformer = new ImportStorageTransformer(

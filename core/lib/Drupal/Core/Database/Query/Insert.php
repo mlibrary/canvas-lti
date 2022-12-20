@@ -31,8 +31,6 @@ class Insert extends Query implements \Countable {
    *   Array of database options.
    */
   public function __construct($connection, $table, array $options = []) {
-    // @todo Remove $options['return'] in Drupal 11.
-    // @see https://www.drupal.org/project/drupal/issues/3256524
     if (!isset($options['return'])) {
       $options['return'] = Database::RETURN_INSERT_ID;
     }
@@ -57,7 +55,7 @@ class Insert extends Query implements \Countable {
   /**
    * Executes the insert query.
    *
-   * @return int|null|string
+   * @return
    *   The last insert ID of the query, if one exists. If the query was given
    *   multiple sets of values to insert, the return value is undefined. If no
    *   fields are specified, this method will do nothing and return NULL. That
@@ -79,24 +77,21 @@ class Insert extends Query implements \Countable {
     }
 
     $last_insert_id = 0;
-    $stmt = $this->connection->prepareStatement((string) $this, $this->queryOptions);
+
+    // Each insert happens in its own query in the degenerate case. However,
+    // we wrap it in a transaction so that it is atomic where possible. On many
+    // databases, such as SQLite, this is also a notable performance boost.
+    $transaction = $this->connection->startTransaction();
+
     try {
-      // Per https://en.wikipedia.org/wiki/Insert_%28SQL%29#Multirow_inserts,
-      // not all databases implement SQL-92's standard syntax for multi-row
-      // inserts. Therefore, in the degenerate case, execute a separate query
-      // for each row, all within a single transaction for atomicity and
-      // performance.
-      $transaction = $this->connection->startTransaction();
+      $sql = (string) $this;
       foreach ($this->insertValues as $insert_values) {
-        $stmt->execute($insert_values, $this->queryOptions);
-        $last_insert_id = $this->connection->lastInsertId();
+        $last_insert_id = $this->connection->query($sql, $insert_values, $this->queryOptions);
       }
     }
     catch (\Exception $e) {
-      if (isset($transaction)) {
-        // One of the INSERTs failed, rollback the whole batch.
-        $transaction->rollBack();
-      }
+      // One of the INSERTs failed, rollback the whole batch.
+      $transaction->rollBack();
       // Rethrow the exception for the calling code.
       throw $e;
     }

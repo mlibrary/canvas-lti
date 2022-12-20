@@ -16,11 +16,6 @@ class Config extends ConfigOverlay implements GlobalOptionDefaultValuesInterface
     const DECORATED = 'options.decorated';
 
     /**
-     * @var array
-     */
-    protected $defaults;
-
-    /**
      * Create a new configuration object, and initialize it with
      * the provided nested array containing configuration data.
      */

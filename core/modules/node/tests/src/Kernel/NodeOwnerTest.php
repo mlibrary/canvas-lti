@@ -22,9 +22,6 @@ class NodeOwnerTest extends EntityKernelTestBase {
    */
   protected static $modules = ['node', 'language'];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

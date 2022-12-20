@@ -27,9 +27,12 @@ class NodeClassicTest extends MigrateUpgradeExecuteTestBase {
     'config_translation',
     'migrate_drupal_ui',
     'telephone',
+    'aggregator',
     'book',
     'forum',
     'statistics',
+    // Required for translation migrations.
+    'migrate_drupal_multilingual',
   ];
 
   /**
@@ -51,28 +54,24 @@ class NodeClassicTest extends MigrateUpgradeExecuteTestBase {
    * {@inheritdoc}
    */
   protected function getEntityCounts() {
-    return [];
   }
 
   /**
    * {@inheritdoc}
    */
   protected function getEntityCountsIncremental() {
-    return [];
   }
 
   /**
    * {@inheritdoc}
    */
   protected function getAvailablePaths() {
-    return [];
   }
 
   /**
    * {@inheritdoc}
    */
   protected function getMissingPaths() {
-    return [];
   }
 
   /**

@@ -6,7 +6,6 @@ use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\TypedData\DataDefinition;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Defines the 'decimal' field type.
@@ -37,7 +36,7 @@ class DecimalItem extends NumericItemBase {
    */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
     $properties['value'] = DataDefinition::create('string')
-      ->setLabel(new TranslatableMarkup('Decimal value'))
+      ->setLabel(t('Decimal value'))
       ->setRequired(TRUE);
 
     return $properties;
@@ -67,21 +66,21 @@ class DecimalItem extends NumericItemBase {
 
     $element['precision'] = [
       '#type' => 'number',
-      '#title' => $this->t('Precision'),
+      '#title' => t('Precision'),
       '#min' => 10,
       '#max' => 32,
       '#default_value' => $settings['precision'],
-      '#description' => $this->t('The total number of digits to store in the database, including those to the right of the decimal.'),
+      '#description' => t('The total number of digits to store in the database, including those to the right of the decimal.'),
       '#disabled' => $has_data,
     ];
 
     $element['scale'] = [
       '#type' => 'number',
-      '#title' => $this->t('Scale', [], ['context' => 'decimal places']),
+      '#title' => t('Scale', [], ['context' => 'decimal places']),
       '#min' => 0,
       '#max' => 10,
       '#default_value' => $settings['scale'],
-      '#description' => $this->t('The number of digits to the right of the decimal.'),
+      '#description' => t('The number of digits to the right of the decimal.'),
       '#disabled' => $has_data,
     ];
 

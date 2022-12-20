@@ -59,9 +59,6 @@ class SaveUploadTest extends FileManagedTestBase {
    */
   protected $imageExtension;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     $account = $this->drupalCreateUser(['access site reports']);
@@ -466,9 +463,9 @@ class SaveUploadTest extends FileManagedTestBase {
     // extensions.
     $extensions = 'foo ' . $this->imageExtension;
     $edit = [
-      'files[file_test_upload]' => \Drupal::service('file_system')->realpath($this->image->getFileUri()),
-      'extensions' => $extensions,
-    ];
+        'files[file_test_upload]' => \Drupal::service('file_system')->realpath($this->image->getFileUri()),
+        'extensions' => $extensions,
+      ];
 
     $this->drupalGet('file-test/upload');
     $this->submitForm($edit, 'Submit');
@@ -508,9 +505,9 @@ class SaveUploadTest extends FileManagedTestBase {
 
     $extensions = 'php ' . $this->imageExtension;
     $edit = [
-      'files[file_test_upload]' => \Drupal::service('file_system')->realpath($this->image->getFileUri()),
-      'extensions' => $extensions,
-    ];
+        'files[file_test_upload]' => \Drupal::service('file_system')->realpath($this->image->getFileUri()),
+        'extensions' => $extensions,
+      ];
 
     $this->drupalGet('file-test/upload');
     $this->submitForm($edit, 'Submit');
@@ -730,28 +727,6 @@ class SaveUploadTest extends FileManagedTestBase {
     $this->assertStringContainsString((string) $error_text, $content);
     $this->assertStringContainsString('Epic upload FAIL!', $content);
     $this->assertFileDoesNotExist('temporary://' . $filename);
-  }
-
-  /**
-   * Tests the file_save_upload() function when the field is required.
-   */
-  public function testRequired() {
-    // Reset the hook counters to get rid of the 'load' we just called.
-    file_test_reset();
-
-    // Confirm the field is required.
-    $this->drupalGet('file-test/upload_required');
-    $this->submitForm([], 'Submit');
-    $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->responseContains('field is required');
-
-    // Confirm that uploading another file works.
-    $image = current($this->drupalGetTestFiles('image'));
-    $edit = ['files[file_test_upload]' => \Drupal::service('file_system')->realpath($image->uri)];
-    $this->drupalGet('file-test/upload_required');
-    $this->submitForm($edit, 'Submit');
-    $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->responseContains('You WIN!');
   }
 
 }

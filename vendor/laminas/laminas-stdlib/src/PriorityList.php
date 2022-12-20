@@ -16,11 +16,6 @@ use function next;
 use function reset;
 use function uasort;
 
-/**
- * @template TKey of string
- * @template TValue of mixed
- * @template-implements Iterator<TKey, TValue>
- */
 class PriorityList implements Iterator, Countable
 {
     public const EXTR_DATA     = 0x00000001;
@@ -30,14 +25,14 @@ class PriorityList implements Iterator, Countable
     /**
      * Internal list of all items.
      *
-     * @var array<TKey, array{data: TValue, priority: int, serial: positive-int|0}>
+     * @var array[]
      */
     protected $items = [];
 
     /**
      * Serial assigned to items to preserve LIFO.
      *
-     * @var positive-int|0
+     * @var int
      */
     protected $serial = 0;
 
@@ -69,12 +64,12 @@ class PriorityList implements Iterator, Countable
     /**
      * Insert a new item.
      *
-     * @param TKey   $name
-     * @param TValue $value
-     * @param int    $priority
+     * @param  string  $name
+     * @param  mixed   $value
+     * @param  int     $priority
      * @return void
      */
-    public function insert($name, mixed $value, $priority = 0)
+    public function insert($name, $value, $priority = 0)
     {
         if (! isset($this->items[$name])) {
             $this->count++;
@@ -90,7 +85,7 @@ class PriorityList implements Iterator, Countable
     }
 
     /**
-     * @param TKey   $name
+     * @param string $name
      * @param int    $priority
      * @return $this
      * @throws Exception
@@ -110,7 +105,7 @@ class PriorityList implements Iterator, Countable
     /**
      * Remove a item.
      *
-     * @param  TKey $name
+     * @param  string $name
      * @return void
      */
     public function remove($name)
@@ -138,8 +133,8 @@ class PriorityList implements Iterator, Countable
     /**
      * Get a item.
      *
-     * @param  TKey $name
-     * @return TValue|null
+     * @param  string $name
+     * @return mixed
      */
     public function get($name)
     {
@@ -167,6 +162,7 @@ class PriorityList implements Iterator, Countable
      * Compare the priority of two items.
      *
      * @param  array $item1,
+     * @param  array $item2
      * @return int
      */
     protected function compare(array $item1, array $item2)

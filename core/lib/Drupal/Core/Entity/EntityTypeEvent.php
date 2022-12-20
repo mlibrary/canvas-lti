@@ -2,12 +2,12 @@
 
 namespace Drupal\Core\Entity;
 
-use Drupal\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
  * Defines a base class for all entity type events.
  */
-class EntityTypeEvent extends Event {
+class EntityTypeEvent extends GenericEvent {
 
   /**
    * The entity type.

@@ -22,9 +22,6 @@ class VendorHardeningPluginTest extends TestCase {
   use PhpUnitWarnings;
   use PhpUnitCompatibilityTrait;
 
-  /**
-   * {@inheritdoc}
-   */
   public function setUp(): void {
     parent::setUp();
     vfsStream::setup('vendor', NULL, [

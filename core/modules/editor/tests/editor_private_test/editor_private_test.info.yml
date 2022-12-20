@@ -5,4 +5,4 @@ package: Testing
 version: VERSION
 dependencies:
   - drupal:filter
-  - drupal:editor_test
+  - drupal:ckeditor

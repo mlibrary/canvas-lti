@@ -4,6 +4,7 @@ namespace Drupal\Tests\Core\Database;
 
 use Composer\Autoload\ClassLoader;
 use Drupal\Core\Database\Database;
+use Drupal\Core\Site\Settings;
 use Drupal\Tests\UnitTestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -56,8 +57,10 @@ class DatabaseTest extends UnitTestCase {
    * @covers ::findDriverAutoloadDirectory
    * @dataProvider providerFindDriverAutoloadDirectory
    */
-  public function testFindDriverAutoloadDirectory($expected, $namespace, $include_test_drivers) {
-    $this->assertSame($expected, Database::findDriverAutoloadDirectory($namespace, $this->root, $include_test_drivers));
+  public function testFindDriverAutoloadDirectory($expected, $namespace) {
+    new Settings(['extension_discovery_scan_tests' => TRUE]);
+    // The only module that provides a driver in core is a test module.
+    $this->assertSame($expected, Database::findDriverAutoloadDirectory($namespace, $this->root));
   }
 
   /**
@@ -67,9 +70,9 @@ class DatabaseTest extends UnitTestCase {
    */
   public function providerFindDriverAutoloadDirectory() {
     return [
-      'core mysql' => ['core/modules/mysql/src/Driver/Database/mysql/', 'Drupal\mysql\Driver\Database\mysql', FALSE],
-      'D8 custom fake' => [FALSE, 'Drupal\Driver\Database\corefake', TRUE],
-      'module mysql' => ['core/modules/system/tests/modules/driver_test/src/Driver/Database/DrivertestMysql/', 'Drupal\driver_test\Driver\Database\DrivertestMysql', TRUE],
+      'core mysql' => [FALSE, 'Drupal\Core\Database\Driver\mysql'],
+      'D8 custom fake' => [FALSE, 'Drupal\Driver\Database\corefake'],
+      'module mysql' => ['core/modules/system/tests/modules/driver_test/src/Driver/Database/DrivertestMysql/', 'Drupal\driver_test\Driver\Database\DrivertestMysql'],
     ];
   }
 
@@ -78,9 +81,10 @@ class DatabaseTest extends UnitTestCase {
    * @dataProvider providerFindDriverAutoloadDirectoryException
    */
   public function testFindDriverAutoloadDirectoryException($expected_message, $namespace, $include_tests) {
+    new Settings(['extension_discovery_scan_tests' => $include_tests]);
     $this->expectException(\RuntimeException::class);
     $this->expectExceptionMessage($expected_message);
-    Database::findDriverAutoloadDirectory($namespace, $this->root, $include_tests);
+    Database::findDriverAutoloadDirectory($namespace, $this->root);
   }
 
   /**

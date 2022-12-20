@@ -27,7 +27,7 @@ class EntityReferenceRevisionsCompositeTranslatableFieldTest extends EntityKerne
    *
    * @var array
    */
-  protected static $modules = array(
+  public static $modules = array(
     'node',
     'field',
     'entity_reference_revisions',
@@ -54,7 +54,7 @@ class EntityReferenceRevisionsCompositeTranslatableFieldTest extends EntityKerne
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     ConfigurableLanguage::createFromLangcode('de')->save();
@@ -344,7 +344,6 @@ class EntityReferenceRevisionsCompositeTranslatableFieldTest extends EntityKerne
       ->condition($id_field, $entity_id)
       ->allRevisions()
       ->count()
-      ->accessCheck(TRUE)
       ->execute();
     $this->assertEquals($expected, $revision_count);
   }

@@ -4,6 +4,7 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function ($, Drupal, _) {
   Drupal.quickedit.editors.form = Drupal.quickedit.EditorView.extend({
     $formContainer: null,
@@ -11,30 +12,41 @@
     stateChange: function stateChange(fieldModel, state) {
       var from = fieldModel.previous('state');
       var to = state;
+
       switch (to) {
         case 'inactive':
           break;
+
         case 'candidate':
           if (from !== 'inactive') {
             this.removeForm();
           }
+
           break;
+
         case 'highlighted':
           break;
+
         case 'activating':
           if (from !== 'invalid') {
             this.loadForm();
           }
+
           break;
+
         case 'active':
           break;
+
         case 'changed':
           break;
+
         case 'saving':
           this.save();
           break;
+
         case 'saved':
           break;
+
         case 'invalid':
           this.showValidationErrors();
           break;
@@ -57,6 +69,7 @@
       }));
       this.$formContainer = $formContainer;
       $formContainer.find('.quickedit-form').addClass('quickedit-editable quickedit-highlighted quickedit-editing').attr('role', 'dialog');
+
       if (this.$el.css('display') === 'inline') {
         $formContainer.prependTo(this.$el.offsetParent());
         var pos = this.$el.position();
@@ -64,6 +77,7 @@
       } else {
         $formContainer.insertBefore(this.$el);
       }
+
       var formOptions = {
         fieldID: fieldModel.get('fieldID'),
         $el: this.$el,
@@ -77,6 +91,7 @@
         });
         $formContainer.on('formUpdated.quickedit', function (event) {
           var state = fieldModel.get('state');
+
           if (state === 'invalid') {
             fieldModel.set('state', 'activating');
           } else {
@@ -94,6 +109,7 @@
       if (this.$formContainer === null) {
         return;
       }
+
       delete this.formSaveAjax;
       Drupal.detachBehaviors(this.$formContainer.get(0), null, 'unload');
       this.$formContainer.off('change.quickedit', ':input').off('keypress.quickedit', 'input').remove();
@@ -108,28 +124,34 @@
         nocssjs: false,
         other_view_modes: fieldModel.findOtherViewModes()
       }, $submit);
+
       function cleanUpAjax() {
         Drupal.quickedit.util.form.unajaxifySaving(formSaveAjax);
         formSaveAjax = null;
       }
+
       formSaveAjax.commands.quickeditFieldFormSaved = function (ajax, response, status) {
         cleanUpAjax();
         fieldModel.set('state', 'saved');
         fieldModel.set('htmlForOtherViewModes', response.other_view_modes);
+
         _.defer(function () {
           fieldModel.set('html', response.data);
         });
       };
+
       formSaveAjax.commands.quickeditFieldFormValidationErrors = function (ajax, response, status) {
         editorModel.set('validationErrors', response.data);
         fieldModel.set('state', 'invalid');
       };
+
       formSaveAjax.commands.quickeditFieldForm = function (ajax, response, status) {
         Drupal.AjaxCommands.prototype.insert(ajax, {
           data: response.data,
           selector: "#".concat($formContainer.attr('id'), " form")
         });
       };
+
       $submit.trigger('click.quickedit');
     },
     showValidationErrors: function showValidationErrors() {

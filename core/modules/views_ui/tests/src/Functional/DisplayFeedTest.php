@@ -15,14 +15,14 @@ class DisplayFeedTest extends UITestBase {
    *
    * @var array
    */
-  public static $testViews = ['test_display_feed'];
+  public static $testViews = ['test_display_feed', 'test_style_opml'];
 
   /**
    * Modules to enable.
    *
    * @var array
    */
-  protected static $modules = ['views_ui'];
+  protected static $modules = ['views_ui', 'aggregator'];
 
   /**
    * {@inheritdoc}
@@ -33,7 +33,7 @@ class DisplayFeedTest extends UITestBase {
    * Tests feed display admin UI.
    */
   public function testFeedUI() {
-    // Test the RSS feed.
+    // Test both RSS and OPML feeds.
     foreach (self::$testViews as $view_name) {
       $this->checkFeedViewUi($view_name);
     }

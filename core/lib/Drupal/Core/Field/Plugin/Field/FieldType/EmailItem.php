@@ -8,7 +8,6 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Render\Element\Email;
 use Drupal\Core\TypedData\DataDefinition;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Defines the 'email' field type.
@@ -28,7 +27,7 @@ class EmailItem extends FieldItemBase {
    */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
     $properties['value'] = DataDefinition::create('email')
-      ->setLabel(new TranslatableMarkup('Email'))
+      ->setLabel(t('Email'))
       ->setRequired(TRUE);
 
     return $properties;
@@ -59,10 +58,7 @@ class EmailItem extends FieldItemBase {
       'value' => [
         'Length' => [
           'max' => Email::EMAIL_MAX_LENGTH,
-          'maxMessage' => $this->t('%name: the email address can not be longer than @max characters.', [
-            '%name' => $this->getFieldDefinition()->getLabel(),
-            '@max' => Email::EMAIL_MAX_LENGTH,
-          ]),
+          'maxMessage' => t('%name: the email address can not be longer than @max characters.', ['%name' => $this->getFieldDefinition()->getLabel(), '@max' => Email::EMAIL_MAX_LENGTH]),
         ],
       ],
     ]);

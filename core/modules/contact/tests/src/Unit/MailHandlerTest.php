@@ -86,11 +86,11 @@ class MailHandlerTest extends UnitTestCase {
 
     $this->languageManager->expects($this->any())
       ->method('getDefaultLanguage')
-      ->willReturn($language);
+      ->will($this->returnValue($language));
 
     $this->languageManager->expects($this->any())
       ->method('getCurrentLanguage')
-      ->willReturn($language);
+      ->will($this->returnValue($language));
   }
 
   /**

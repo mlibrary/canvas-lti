@@ -14,7 +14,7 @@ use Drupal\node\Entity\NodeType;
  *
  * @group jsonapi
  */
-class FieldConfigTest extends ConfigEntityResourceTestBase {
+class FieldConfigTest extends ResourceTestBase {
 
   /**
    * {@inheritdoc}
@@ -133,7 +133,6 @@ class FieldConfigTest extends ConfigEntityResourceTestBase {
    */
   protected function getPostDocument() {
     // @todo Update in https://www.drupal.org/node/2300677.
-    return [];
   }
 
   /**

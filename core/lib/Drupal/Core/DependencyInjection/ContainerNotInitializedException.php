@@ -3,7 +3,8 @@
 namespace Drupal\Core\DependencyInjection;
 
 /**
- * Exception, thrown when a method is called on a non-initialized container.
+ * Exception thrown when a method is called that requires a container, but the
+ * container is not initialized yet.
  *
  * @see \Drupal
  */

@@ -22,7 +22,7 @@ class ContainerDerivativeDiscoveryDecoratorTest extends UnitTestCase {
     $example_container->expects($this->once())
       ->method('get')
       ->with($this->equalTo('example_service'))
-      ->willReturn($example_service);
+      ->will($this->returnValue($example_service));
 
     \Drupal::setContainer($example_container);
 
@@ -39,7 +39,7 @@ class ContainerDerivativeDiscoveryDecoratorTest extends UnitTestCase {
     $discovery_main = $this->createMock('Drupal\Component\Plugin\Discovery\DiscoveryInterface');
     $discovery_main->expects($this->any())
       ->method('getDefinitions')
-      ->willReturn($definitions);
+      ->will($this->returnValue($definitions));
 
     $discovery = new ContainerDerivativeDiscoveryDecorator($discovery_main);
     $definitions = $discovery->getDefinitions();

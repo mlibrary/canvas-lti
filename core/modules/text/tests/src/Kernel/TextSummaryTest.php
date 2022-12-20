@@ -30,9 +30,6 @@ class TextSummaryTest extends KernelTestBase {
     'entity_test',
   ];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

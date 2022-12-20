@@ -184,11 +184,4 @@ class EntityReferenceItemNormalizer extends FieldItemNormalizer implements UuidR
     }
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function hasCacheableSupportsMethod(): bool {
-    return TRUE;
-  }
-
 }

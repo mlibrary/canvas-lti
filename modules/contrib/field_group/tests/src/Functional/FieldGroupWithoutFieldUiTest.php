@@ -15,7 +15,7 @@ class FieldGroupWithoutFieldUiTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['field_group', 'block'];
+  public static $modules = ['field_group', 'block'];
 
   /**
    * {@inheritdoc}

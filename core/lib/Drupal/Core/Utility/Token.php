@@ -4,7 +4,6 @@ namespace Drupal\Core\Utility;
 
 use Drupal\Component\Render\HtmlEscapedText;
 use Drupal\Component\Render\MarkupInterface;
-use Drupal\Component\Render\PlainTextOutput;
 use Drupal\Core\Cache\CacheableDependencyInterface;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
@@ -135,10 +134,12 @@ class Token {
   }
 
   /**
-   * Replaces all tokens in given markup with appropriate values.
+   * Replaces all tokens in a given string with appropriate values.
    *
-   * @param string $markup
-   *   An HTML string containing replaceable tokens.
+   * @param string $text
+   *   An HTML string containing replaceable tokens. The caller is responsible
+   *   for calling \Drupal\Component\Utility\Html::escape() in case the $text
+   *   was plain text.
    * @param array $data
    *   (optional) An array of keyed objects. For simple replacement scenarios
    *   'node', 'user', and others are common keys, with an accompanying node or
@@ -174,58 +175,14 @@ class Token {
    *
    * @return string
    *   The token result is the entered HTML text with tokens replaced. The
-   *   caller is responsible for choosing the right sanitization, for example
-   *   the result can be put into #markup, in which case it would be sanitized
-   *   by Xss::filterAdmin().
-   *
-   *   The return value must be treated as unsafe even if the input was safe
-   *   markup. This is necessary because an attacker could craft an input
-   *   string and token value that, although each safe individually, would be
-   *   unsafe when combined by token replacement.
-   *
-   * @see static::replacePlain()
+   *   caller is responsible for choosing the right escaping / sanitization. If
+   *   the result is intended to be used as plain text, using
+   *   PlainTextOutput::renderFromHtml() is recommended. If the result is just
+   *   printed as part of a template relying on Twig autoescaping is possible,
+   *   otherwise for example the result can be put into #markup, in which case
+   *   it would be sanitized by Xss::filterAdmin().
    */
-  public function replace($markup, array $data = [], array $options = [], BubbleableMetadata $bubbleable_metadata = NULL) {
-    return $this->doReplace(TRUE, (string) $markup, $data, $options, $bubbleable_metadata);
-  }
-
-  /**
-   * Replaces all tokens in a given plain text string with appropriate values.
-   *
-   * @param string $plain
-   *   Plain text string.
-   * @param array $data
-   *   (optional) An array of keyed objects. See replace().
-   * @param array $options
-   *   (optional) A keyed array of options. See replace().
-   * @param \Drupal\Core\Render\BubbleableMetadata|null $bubbleable_metadata
-   *   (optional) Target for adding metadata. See replace().
-   *
-   * @return string
-   *   The entered plain text with tokens replaced.
-   */
-  public function replacePlain(string $plain, array $data = [], array $options = [], BubbleableMetadata $bubbleable_metadata = NULL): string {
-    return $this->doReplace(FALSE, $plain, $data, $options, $bubbleable_metadata);
-  }
-
-  /**
-   * Replaces all tokens in a given string with appropriate values.
-   *
-   * @param bool $markup
-   *   TRUE to convert token values to markup, FALSE to convert to plain text.
-   * @param string $text
-   *   A string containing replaceable tokens.
-   * @param array $data
-   *   An array of keyed objects. See replace().
-   * @param array $options
-   *   A keyed array of options. See replace().
-   * @param \Drupal\Core\Render\BubbleableMetadata|null $bubbleable_metadata
-   *   (optional) Target for adding metadata. See replace().
-   *
-   * @return string
-   *   The token result is the entered string with tokens replaced.
-   */
-  protected function doReplace(bool $markup, string $text, array $data, array $options, BubbleableMetadata $bubbleable_metadata = NULL): string {
+  public function replace($text, array $data = [], array $options = [], BubbleableMetadata $bubbleable_metadata = NULL) {
     $text_tokens = $this->scan($text);
     if (empty($text_tokens)) {
       return $text;
@@ -242,19 +199,9 @@ class Token {
       }
     }
 
-    // Each token value is markup if it implements MarkupInterface otherwise it
-    // is plain text. Convert them, but only if needed. It can cause corruption
-    // to render a string that's already plain text or to escape a string
-    // that's already markup.
+    // Escape the tokens, unless they are explicitly markup.
     foreach ($replacements as $token => $value) {
-      if ($markup) {
-        // Escape plain text tokens.
-        $replacements[$token] = $value instanceof MarkupInterface ? $value : new HtmlEscapedText($value);
-      }
-      else {
-        // Render markup tokens to plain text.
-        $replacements[$token] = $value instanceof MarkupInterface ? PlainTextOutput::renderFromHtml($value) : $value;
-      }
+      $replacements[$token] = $value instanceof MarkupInterface ? $value : new HtmlEscapedText($value);
     }
 
     // Optionally alter the list of replacement values.

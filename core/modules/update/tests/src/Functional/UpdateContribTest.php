@@ -41,9 +41,6 @@ class UpdateContribTest extends UpdateTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     $admin_user = $this->drupalCreateUser(['administer site configuration']);
@@ -421,7 +418,7 @@ class UpdateContribTest extends UpdateTestBase {
    * Tests updates with a hidden base theme.
    */
   public function testUpdateHiddenBaseTheme() {
-    \Drupal::moduleHandler()->loadInclude('update', 'inc', 'update.compare');
+    module_load_include('compare.inc', 'update');
 
     // Install the subtheme.
     \Drupal::service('theme_installer')->install(['update_test_subtheme']);
@@ -879,18 +876,25 @@ class UpdateContribTest extends UpdateTestBase {
     $this->assertStringContainsString("Requires Drupal core: $expected_range", $compatibility_details->getText());
     $details_summary_element = $compatibility_details->find('css', 'summary');
     if ($is_compatible) {
+      $download_version = str_replace('.', '-', $version);
       // If an update is compatible with the installed version of Drupal core,
-      // the details element should be closed by default.
+      // it should have a download link and the details element should be closed
+      // by default.
       $this->assertFalse($compatibility_details->hasAttribute('open'));
       $this->assertSame('Compatible', $details_summary_element->getText());
+      $this->assertEquals(
+        "http://example.com/{$this->updateProject}-$download_version.tar.gz",
+        $update_element->findLink('Download')->getAttribute('href')
+      );
     }
     else {
       // If an update is not compatible with the installed version of Drupal
-      // core, the details element should be open by default.
+      // core, it should not have a download link and the details element should
+      // be open by default.
       $this->assertTrue($compatibility_details->hasAttribute('open'));
       $this->assertSame('Not compatible', $details_summary_element->getText());
+      $this->assertFalse($update_element->hasLink('Download'));
     }
-    $this->assertFalse($update_element->hasLink('Download'));
   }
 
 }

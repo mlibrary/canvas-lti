@@ -8,7 +8,6 @@ use Drupal\KernelTests\KernelTestBase;
  * Tests RDFa attribute generation from RDF mapping.
  *
  * @group rdf
- * @group legacy
  */
 class RdfaAttributesTest extends KernelTestBase {
 

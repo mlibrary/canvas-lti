@@ -45,7 +45,7 @@ class DistributionProfileTranslationTest extends InstallerTestBase {
         'name' => 'My Distribution',
         'langcode' => $this->langcode,
         'install' => [
-          'theme' => 'claro',
+          'theme' => 'bartik',
         ],
       ],
     ];
@@ -84,7 +84,8 @@ class DistributionProfileTranslationTest extends InstallerTestBase {
     $this->translations['Save and continue'] = 'Save and continue de';
 
     // Check the language direction.
-    $this->assertSession()->elementTextEquals('xpath', '/@dir', 'ltr');
+    $direction = current($this->xpath('/@dir'))->getText();
+    $this->assertEquals('ltr', $direction);
 
     // Verify that the distribution name appears.
     $this->assertSession()->pageTextContains($this->info['distribution']['name']);

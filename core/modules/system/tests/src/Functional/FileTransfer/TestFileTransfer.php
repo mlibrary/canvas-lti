@@ -45,9 +45,8 @@ class TestFileTransfer extends FileTransfer {
   }
 
   public function connect() {
-    $connection = new MockTestConnection();
-    $connection->connectionString = 'test://' . urlencode($this->username) . ':' . urlencode($this->password) . "@$this->host:$this->port/";
-    $this->connection = $connection;
+    $this->connection = new MockTestConnection();
+    $this->connection->connectionString = 'test://' . urlencode($this->username) . ':' . urlencode($this->password) . "@$this->host:$this->port/";
   }
 
   public function copyFileJailed($source, $destination) {

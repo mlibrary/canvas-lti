@@ -28,7 +28,7 @@ class EntityReferenceTaxonomyTermRssFormatter extends EntityReferenceFormatterBa
     $parent_entity = $items->getEntity();
     $elements = [];
 
-    foreach ($this->getEntitiesToView($items, $langcode) as $entity) {
+    foreach ($this->getEntitiesToView($items, $langcode) as $delta => $entity) {
       $parent_entity->rss_elements[] = [
         'key' => 'category',
         'value' => $entity->label(),

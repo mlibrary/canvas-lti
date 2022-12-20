@@ -8,4 +8,4 @@ dependencies:
   - drupal:dblog
 install: []
 themes:
-  - starterkit_theme
+  - classy

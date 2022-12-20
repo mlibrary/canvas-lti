@@ -28,13 +28,10 @@ class CssOptimizerUnitTest extends UnitTestCase {
   /**
    * The file URL generator mock.
    *
-   * @var \Drupal\Core\File\FileUrlGeneratorInterface|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\Core\File\FileUrlGeneratorInterface|\PHPUnit_Framework_MockObject_MockObject
    */
   protected $fileUrlGenerator;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     $this->fileUrlGenerator = $this->createMock(FileUrlGeneratorInterface::class);

@@ -15,14 +15,16 @@ class UnitTest extends KernelTestBase {
   protected $tokenService;
 
   /**
-   * {@inheritdoc}
+   * Modules to enable.
+   *
+   * @var array
    */
-  protected static $modules = ['file', 'node'];
+  public static $modules = ['file', 'node'];
 
   /**
    * {@inheritdoc}
    */
-  public function setUp(): void {
+  public function setUp() {
     parent::setUp();
     $this->tokenService = \Drupal::token();
   }

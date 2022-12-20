@@ -140,7 +140,7 @@ class ChainEntityResolverTest extends UnitTestCase {
       $mock->expects($this->once())
         ->method('resolve')
         ->with($this->testNormalizer, $this->testData, $this->testEntityType)
-        ->willReturn($return);
+        ->will($this->returnValue($return));
     }
     else {
       $mock->expects($this->never())

@@ -22,14 +22,16 @@ class TokenFieldUiTest extends TokenTestBase {
   protected $adminUser;
 
   /**
-   * {@inheritdoc}
+   * Modules to enable.
+   *
+   * @var array
    */
-  protected static $modules = ['field_ui', 'node', 'image'];
+  public static $modules = ['field_ui', 'node', 'image'];
 
   /**
    * {@inheritdoc}
    */
-  public function setUp(): void {
+  public function setUp($modules = []) {
     parent::setUp();
     $this->adminUser = $this->drupalCreateUser(['bypass node access', 'administer content types', 'administer node fields']);
     $this->drupalLogin($this->adminUser);
@@ -106,19 +108,18 @@ class TokenFieldUiTest extends TokenTestBase {
     $this->assertSession()->linkByHrefExists('token/tree');
 
     // Ensure that the default file directory value validates correctly.
-    $this->submitForm([], 'Save settings');
-    $this->assertSession()->pageTextContains('Saved Image configuration.');
+    $this->drupalPostForm(NULL, [], 'Save settings');
+    $this->assertText(t('Saved Image configuration.'));
   }
 
   public function testFieldDescriptionTokens() {
     $edit = [
       'description' => 'The site is called [site:name].',
     ];
-    $this->drupalGet('admin/structure/types/manage/article/fields/node.article.field_body');
-    $this->submitForm($edit, 'Save settings');
+    $this->drupalPostForm('admin/structure/types/manage/article/fields/node.article.field_body', $edit, 'Save settings');
 
     $this->drupalGet('node/add/article');
-    $this->assertSession()->pageTextContains('The site is called Drupal.');
+    $this->assertText('The site is called Drupal.');
   }
 
   /**

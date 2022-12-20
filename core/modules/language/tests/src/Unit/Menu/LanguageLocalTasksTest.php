@@ -11,9 +11,6 @@ use Drupal\Tests\Core\Menu\LocalTaskIntegrationTestBase;
  */
 class LanguageLocalTasksTest extends LocalTaskIntegrationTestBase {
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     $this->directoryList = [
       'language' => 'core/modules/language',

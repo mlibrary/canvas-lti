@@ -39,7 +39,7 @@ class MailsystemTestThemeTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp(): void {
+  public function setUp() {
     parent::setUp();
     $this->config = $this->config('mailsystem.settings');
   }
@@ -61,7 +61,7 @@ class MailsystemTestThemeTest extends BrowserTestBase {
     $mails = $this->getMails();
 
     // Check the configuration and if the correct theme was used in mails.
-    $this->assertEquals('current', $this->config->get('theme'));
+    $this->assertEqual($this->config->get('theme'), 'current');
     $this->assertTrue(strpos($mails[0]['body'], 'Anonymous (not verified)') !== FALSE);
 
     // Install the test theme and set it as the mail theme.

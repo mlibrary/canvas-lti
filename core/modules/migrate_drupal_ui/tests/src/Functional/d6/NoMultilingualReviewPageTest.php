@@ -9,7 +9,8 @@ use Drupal\Tests\migrate_drupal_ui\Functional\NoMultilingualReviewPageTestBase;
 /**
  * Tests migrate upgrade review page for Drupal 6 without translations.
  *
- * Tests with the translation modules disabled.
+ * Tests with the translation modules and migrate_drupal_multilingual module
+ * disabled.
  *
  * @group migrate_drupal_6
  * @group migrate_drupal_ui
@@ -23,11 +24,11 @@ class NoMultilingualReviewPageTest extends NoMultilingualReviewPageTestBase {
     'datetime_range',
     'language',
     'telephone',
+    'aggregator',
     'book',
     'forum',
     'statistics',
     'syslog',
-    // @todo Remove tracker in https://www.drupal.org/project/drupal/issues/3261452
     'tracker',
     'update',
     // Test migrations states.
@@ -55,11 +56,11 @@ class NoMultilingualReviewPageTest extends NoMultilingualReviewPageTestBase {
    */
   protected function getAvailablePaths() {
     return [
+      'Aggregator',
       'Blog',
       'Blog API',
       'Book',
       'Calendar Signup',
-      // @todo Remove Color in https://www.drupal.org/project/drupal/issues/3270899
       'Color',
       'Comment',
       'Contact',
@@ -101,6 +102,7 @@ class NoMultilingualReviewPageTest extends NoMultilingualReviewPageTestBase {
       'Node Reference',
       'Number',
       'OpenID',
+      'Option Widgets',
       'PHP filter',
       'Path',
       'Phone - CCK',
@@ -114,7 +116,6 @@ class NoMultilingualReviewPageTest extends NoMultilingualReviewPageTestBase {
       'Taxonomy',
       'Text',
       'Throttle',
-      // @todo Remove tracker in https://www.drupal.org/project/drupal/issues/3261452
       'Tracker',
       'Trigger',
       'Update status',
@@ -141,7 +142,6 @@ class NoMultilingualReviewPageTest extends NoMultilingualReviewPageTestBase {
    */
   protected function getMissingPaths() {
     return [
-      'Aggregator',
       // Block is set not_finished in migrate_state_not_finished_test.
       'Block',
       'Block translation',
@@ -153,8 +153,6 @@ class NoMultilingualReviewPageTest extends NoMultilingualReviewPageTestBase {
       'Internationalization',
       'Menu translation',
       'migrate_status_active_test',
-      // Option Widgets is set not_finished in migrate_state_not_finished_test.
-      'Option Widgets',
       'Poll aggregate',
       'Profile translation',
       'String translation',

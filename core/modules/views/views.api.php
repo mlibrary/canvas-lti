@@ -661,7 +661,7 @@ function hook_views_query_substitutions(ViewExecutable $view) {
   // Example from views_views_query_substitutions().
   return [
     '***CURRENT_VERSION***' => \Drupal::VERSION,
-    '***CURRENT_TIME***' => \Drupal::time()->getRequestTime(),
+    '***CURRENT_TIME***' => REQUEST_TIME,
     '***LANGUAGE_language_content***' => \Drupal::languageManager()->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)->getId(),
     PluginBase::VIEWS_QUERY_LANGUAGE_SITE_DEFAULT => \Drupal::languageManager()->getDefaultLanguage()->getId(),
   ];

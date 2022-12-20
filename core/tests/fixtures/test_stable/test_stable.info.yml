@@ -1,5 +1,4 @@
 name: Test Stable
 type: theme
-base theme: stable9
-description: A theme to test that stable 9 is set as the default.
+description: A theme to test that stable is set as the default.
 version: VERSION

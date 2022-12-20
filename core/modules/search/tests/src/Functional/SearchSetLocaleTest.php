@@ -28,9 +28,6 @@ class SearchSetLocaleTest extends BrowserTestBase {
    */
   protected $nodeSearchPlugin;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

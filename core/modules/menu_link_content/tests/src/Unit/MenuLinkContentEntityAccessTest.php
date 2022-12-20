@@ -36,7 +36,7 @@ class MenuLinkContentEntityAccessTest extends UnitTestCase {
     $language = $this->createMock(LanguageInterface::class);
     $language->expects($this->any())
       ->method('getId')
-      ->willReturn('de');
+      ->will($this->returnValue('de'));
 
     $entity = $this->createMock(ContentEntityInterface::class);
     $entity->expects($this->any())

@@ -11,7 +11,7 @@ use Drupal\node\Entity\NodeType;
  *
  * @group jsonapi
  */
-class BaseFieldOverrideTest extends ConfigEntityResourceTestBase {
+class BaseFieldOverrideTest extends ResourceTestBase {
 
   /**
    * {@inheritdoc}
@@ -123,7 +123,6 @@ class BaseFieldOverrideTest extends ConfigEntityResourceTestBase {
    */
   protected function getPostDocument() {
     // @todo Update in https://www.drupal.org/node/2300677.
-    return [];
   }
 
   /**

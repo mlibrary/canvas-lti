@@ -26,9 +26,6 @@ class EditorFileUsageTest extends EntityKernelTestBase {
    */
   protected static $modules = ['editor', 'editor_test', 'node', 'file'];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     $this->installEntitySchema('file');

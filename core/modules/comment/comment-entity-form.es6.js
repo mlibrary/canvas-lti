@@ -17,7 +17,8 @@
           Drupal.checkPlain(
             $(context)
               .find('.js-form-item-comment input:checked')
-              .next('label')[0].textContent,
+              .next('label')
+              .text(),
           ),
         );
     },

@@ -44,9 +44,6 @@ class NodeBlockFunctionalTest extends NodeTestBase {
    */
   protected static $modules = ['block', 'views', 'node_block_test'];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

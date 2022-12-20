@@ -15,11 +15,6 @@ use Drupal\user\RoleInterface;
 class WidgetAccessTest extends MediaLibraryTestBase {
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Tests that the widget access works as expected.
    */
   public function testWidgetAccess() {
@@ -85,11 +80,11 @@ class WidgetAccessTest extends MediaLibraryTestBase {
       'view media',
     ]);
     $this->drupalGet('admin/content/media-widget', $url_options);
-    $assert_session->elementExists('css', '.js-media-library-view');
+    $assert_session->elementExists('css', '.view-media-library');
     $this->drupalGet('admin/content/media-widget-table', $url_options);
-    $assert_session->elementExists('css', '.js-media-library-view');
+    $assert_session->elementExists('css', '.view-media-library');
     $this->drupalGet('media-library', $url_options);
-    $assert_session->elementExists('css', '.js-media-library-view');
+    $assert_session->elementExists('css', '.view-media-library');
     // Assert the user does not have access to the media add form if the user
     // does not have the 'create media' permission.
     $assert_session->fieldNotExists('files[upload][]');
@@ -109,7 +104,7 @@ class WidgetAccessTest extends MediaLibraryTestBase {
       'create media',
     ]);
     $this->drupalGet('media-library', $url_options);
-    $assert_session->elementExists('css', '.js-media-library-view');
+    $assert_session->elementExists('css', '.view-media-library');
     $assert_session->fieldExists('Add files');
 
     // Assert the media library can not be accessed if the required state

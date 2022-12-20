@@ -30,15 +30,12 @@
         const $fieldItems = this.$el.find('.quickedit-field');
         const $textElement = $fieldItems.length ? $fieldItems.eq(0) : this.$el;
         this.$textElement = $textElement;
-        editorModel.set(
-          'originalValue',
-          this.$textElement[0].textContent.trim(),
-        );
+        editorModel.set('originalValue', this.$textElement.text().trim());
 
         // Sets the state to 'changed' whenever the value changes.
         let previousText = editorModel.get('originalValue');
         $textElement.on('keyup paste', (event) => {
-          const currentText = $textElement[0].textContent.trim();
+          const currentText = $textElement.text().trim();
           if (previousText !== currentText) {
             previousText = currentText;
             editorModel.set('currentValue', currentText);

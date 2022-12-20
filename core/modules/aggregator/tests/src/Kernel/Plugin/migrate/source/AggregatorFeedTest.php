@@ -9,7 +9,6 @@ use Drupal\Tests\migrate\Kernel\MigrateSqlSourceTestBase;
  *
  * @covers \Drupal\aggregator\Plugin\migrate\source\AggregatorFeed
  * @group aggregator
- * @group legacy
  */
 class AggregatorFeedTest extends MigrateSqlSourceTestBase {
 

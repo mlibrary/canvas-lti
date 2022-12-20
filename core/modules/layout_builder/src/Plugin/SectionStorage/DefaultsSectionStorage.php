@@ -14,6 +14,7 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Plugin\Context\EntityContext;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
+use Drupal\field_ui\FieldUI;
 use Drupal\layout_builder\DefaultsSectionStorageInterface;
 use Drupal\layout_builder\Entity\SampleEntityGeneratorInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -135,21 +136,15 @@ class DefaultsSectionStorage extends SectionStorageBase implements ContainerFact
   protected function getRouteParameters() {
     $display = $this->getDisplay();
     $entity_type = $this->entityTypeManager->getDefinition($display->getTargetEntityTypeId());
-    $bundle_parameter_key = $entity_type->getBundleEntityType() ?: 'bundle';
-    return [
-      $bundle_parameter_key => $display->getTargetBundle(),
-      'view_mode_name' => $display->getMode(),
-    ];
+    $route_parameters = FieldUI::getRouteBundleParameter($entity_type, $display->getTargetBundle());
+    $route_parameters['view_mode_name'] = $display->getMode();
+    return $route_parameters;
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildRoutes(RouteCollection $collection) {
-    if (!\Drupal::moduleHandler()->moduleExists('field_ui')) {
-      return;
-    }
-
     foreach ($this->getEntityTypes() as $entity_type_id => $entity_type) {
       // Try to get the route from the current collection.
       if (!$entity_route = $collection->get($entity_type->get('field_ui_base_route'))) {

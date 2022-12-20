@@ -35,8 +35,8 @@ class ViewsEscapingTest extends ViewTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp($import_test_views = TRUE, $modules = ['views_test_config']): void {
-    parent::setUp(TRUE, $modules);
+  protected function setUp($import_test_views = TRUE): void {
+    parent::setUp(TRUE);
 
     $this->enableViewsTestModule();
   }

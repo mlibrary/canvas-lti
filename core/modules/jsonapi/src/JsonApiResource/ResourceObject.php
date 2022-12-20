@@ -9,8 +9,6 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\RevisionableInterface;
-use Drupal\Core\Language\Language;
-use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\TypedData\TypedDataInternalPropertiesHelper;
 use Drupal\Core\Url;
 use Drupal\jsonapi\JsonApiSpec;
@@ -63,13 +61,6 @@ class ResourceObject implements CacheableDependencyInterface, ResourceIdentifier
   protected $links;
 
   /**
-   * The resource language.
-   *
-   * @var \Drupal\Core\Language\LanguageInterface
-   */
-  protected $language;
-
-  /**
    * ResourceObject constructor.
    *
    * @param \Drupal\Core\Cache\CacheableDependencyInterface $cacheability
@@ -85,10 +76,8 @@ class ResourceObject implements CacheableDependencyInterface, ResourceIdentifier
    *   An array of the resource object's fields, keyed by public field name.
    * @param \Drupal\jsonapi\JsonApiResource\LinkCollection $links
    *   The links for the resource object.
-   * @param \Drupal\Core\Language\LanguageInterface|null $language
-   *   (optional) The resource language.
    */
-  public function __construct(CacheableDependencyInterface $cacheability, ResourceType $resource_type, $id, $revision_id, array $fields, LinkCollection $links, LanguageInterface $language = NULL) {
+  public function __construct(CacheableDependencyInterface $cacheability, ResourceType $resource_type, $id, $revision_id, array $fields, LinkCollection $links) {
     assert(is_null($revision_id) || $resource_type->isVersionable());
     $this->setCacheability($cacheability);
     $this->resourceType = $resource_type;
@@ -96,10 +85,6 @@ class ResourceObject implements CacheableDependencyInterface, ResourceIdentifier
     $this->versionIdentifier = $revision_id ? 'id:' . $revision_id : NULL;
     $this->fields = $fields;
     $this->links = $links->withContext($this);
-
-    // If the specified language empty it falls back the same way as in the entity system
-    // @see \Drupal\Core\Entity\EntityBase::language()
-    $this->language = $language ?: new Language(['id' => LanguageInterface::LANGCODE_NOT_SPECIFIED]);
   }
 
   /**
@@ -124,8 +109,7 @@ class ResourceObject implements CacheableDependencyInterface, ResourceIdentifier
       $entity->uuid(),
       $resource_type->isVersionable() && $entity instanceof RevisionableInterface ? $entity->getRevisionId() : NULL,
       static::extractFieldsFromEntity($resource_type, $entity),
-      static::buildLinksFromEntity($resource_type, $entity, $links ?: new LinkCollection([])),
-      $entity->language()
+      static::buildLinksFromEntity($resource_type, $entity, $links ?: new LinkCollection([]))
     );
   }
 
@@ -167,16 +151,6 @@ class ResourceObject implements CacheableDependencyInterface, ResourceIdentifier
    */
   public function getFields() {
     return $this->fields;
-  }
-
-  /**
-   * Gets the ResourceObject's language.
-   *
-   * @return \Drupal\Core\Language\LanguageInterface
-   *   The resource language.
-   */
-  public function getLanguage(): LanguageInterface {
-    return $this->language;
   }
 
   /**

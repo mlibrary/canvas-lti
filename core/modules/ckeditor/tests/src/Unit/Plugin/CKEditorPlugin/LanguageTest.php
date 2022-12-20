@@ -10,7 +10,6 @@ use Drupal\Tests\UnitTestCase;
  * @coversDefaultClass \Drupal\ckeditor\Plugin\CKEditorPlugin\Language
  *
  * @group ckeditor
- * @group legacy
  */
 class LanguageTest extends UnitTestCase {
 

@@ -25,7 +25,7 @@ class BlockViewBuilderTest extends KernelTestBase {
   /**
    * The block being tested.
    *
-   * @var \Drupal\block\BlockInterface
+   * @var \Drupal\block\Entity\BlockInterface
    */
   protected $block;
 

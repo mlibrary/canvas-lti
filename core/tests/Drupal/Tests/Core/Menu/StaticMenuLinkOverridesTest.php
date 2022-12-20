@@ -121,7 +121,7 @@ class StaticMenuLinkOverridesTest extends UnitTestCase {
     $config_factory = $this->createMock('Drupal\Core\Config\ConfigFactoryInterface');
     $config_factory->expects($this->once())
       ->method('getEditable')
-      ->willReturn($config);
+      ->will($this->returnValue($config));
 
     $static_override = new StaticMenuLinkOverrides($config_factory);
 
@@ -148,7 +148,7 @@ class StaticMenuLinkOverridesTest extends UnitTestCase {
     $config->expects($this->once())
       ->method('get')
       ->with('definitions')
-      ->willReturn($old_definitions);
+      ->will($this->returnValue($old_definitions));
 
     // Only save if the definitions changes.
     $config->expects($old_definitions != $new_definitions ? $this->once() : $this->never())
@@ -161,7 +161,7 @@ class StaticMenuLinkOverridesTest extends UnitTestCase {
     $config_factory = $this->createMock('Drupal\Core\Config\ConfigFactoryInterface');
     $config_factory->expects($this->once())
       ->method('getEditable')
-      ->willReturn($config);
+      ->will($this->returnValue($config));
 
     $static_override = new StaticMenuLinkOverrides($config_factory);
 

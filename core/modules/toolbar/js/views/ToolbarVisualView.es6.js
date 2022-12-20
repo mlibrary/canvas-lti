@@ -56,10 +56,9 @@
           this.updateToolbarHeight,
         );
 
-        // Add the tray orientation toggles, but only if there is a menu.
+        // Add the tray orientation toggles.
         this.$el
           .find('.toolbar-tray .toolbar-lining')
-          .has('.toolbar-menu')
           .append(Drupal.theme('toolbarOrientationToggle'));
 
         // Trigger an activeTab change so that listening scripts can respond on
@@ -288,13 +287,13 @@
         const $orientationToggle = this.$el
           .find('.toolbar-toggle-orientation')
           .toggle(this.model.get('isTrayToggleVisible'));
-        const $orientationToggleButton = $orientationToggle.find('button');
-        $orientationToggleButton[0].value = antiOrientation;
-        $orientationToggleButton
+        $orientationToggle
+          .find('button')
+          .val(antiOrientation)
           .attr('title', this.strings[antiOrientation])
+          .text(this.strings[antiOrientation])
           .removeClass(iconClass)
           .addClass(iconAntiClass);
-        $orientationToggleButton[0].textContent = this.strings[antiOrientation];
 
         // Update data offset attributes for the trays.
         const dir = document.documentElement.dir;

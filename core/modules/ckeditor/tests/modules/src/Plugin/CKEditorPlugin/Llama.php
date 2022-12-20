@@ -4,7 +4,6 @@ namespace Drupal\ckeditor_test\Plugin\CKEditorPlugin;
 
 use Drupal\ckeditor\CKEditorPluginInterface;
 use Drupal\Component\Plugin\PluginBase;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\editor\Entity\Editor;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -28,7 +27,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class Llama extends PluginBase implements CKEditorPluginInterface, ContainerFactoryPluginInterface {
-  use StringTranslationTrait;
 
   /**
    * The module list service.

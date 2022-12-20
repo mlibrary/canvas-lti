@@ -25,9 +25,6 @@ class FilePrivateTest extends FileFieldTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     node_access_test_add_field(NodeType::load('article'));

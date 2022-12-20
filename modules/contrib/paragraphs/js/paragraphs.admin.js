@@ -1,4 +1,4 @@
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -23,9 +23,7 @@
     if ($tabBehavior.hasClass('is-active')) {
       $parWidget.removeClass('content-active').addClass('behavior-active');
       $tabContent.removeClass('is-active');
-      $tabContent.find('a').removeClass('is-active');
       $tabBehavior.addClass('is-active');
-      $tabBehavior.find('a').addClass('is-active');
     }
     else {
       // Activate content tab visually if there is no previously
@@ -33,13 +31,12 @@
       if (!($mainRegion.hasClass('content-active'))
         && !($mainRegion.hasClass('behavior-active'))) {
         $tabContent.addClass('is-active');
-        $tabContent.find('a').addClass('is-active');
         $parWidget.addClass('content-active');
       }
 
-      $parTabs.removeClass('paragraphs-tabs-hide');
+      $parTabs.show();
       if ($parBehavior.length === 0) {
-        $parTabs.addClass('paragraphs-tabs-hide');
+        $parTabs.hide();
       }
     }
   };
@@ -57,9 +54,7 @@
     var $clickedTabParent = $clickedTab.parent();
 
     $parTabs.find('li').removeClass('is-active');
-    $parTabs.find('li').find('a').removeClass('is-active');
     $clickedTabParent.addClass('is-active');
-    $clickedTabParent.find('a').addClass('is-active');
 
     $parWidget.removeClass('behavior-active content-active');
     if ($clickedTabParent.hasClass('paragraphs_content_tab')) {
@@ -136,7 +131,7 @@
       });
 
       // Initialization.
-      $(once('paragraphs-bodytabs', $topLevelParWidgets)).each(function() {
+      $topLevelParWidgets.once('paragraphs-bodytabs').each(function() {
         var $parWidget = $(this);
         var $parTabs = $parWidget.find('.paragraphs-tabs');
 
@@ -190,5 +185,5 @@
       }
     }
   };
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);
 

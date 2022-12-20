@@ -4,6 +4,7 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function (Backbone, Drupal) {
   Drupal.toolbar.ToolbarModel = Backbone.Model.extend({
     defaults: {

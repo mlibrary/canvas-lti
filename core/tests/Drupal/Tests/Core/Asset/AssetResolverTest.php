@@ -86,6 +86,9 @@ class AssetResolverTest extends UnitTestCase {
     $active_theme = $this->getMockBuilder('\Drupal\Core\Theme\ActiveTheme')
       ->disableOriginalConstructor()
       ->getMock();
+    $active_theme->expects($this->any())
+      ->method('getName')
+      ->willReturn('bartik');
     $this->themeManager->expects($this->any())
       ->method('getActiveTheme')
       ->willReturn($active_theme);
@@ -141,7 +144,7 @@ class AssetResolverTest extends UnitTestCase {
         1,
       ],
       'different libraries, same timestamps' => [
-        (new AttachedAssets())->setAlreadyLoadedLibraries([])->setLibraries(['core/drupal'])->setSettings(['currentTime' => $time]),
+        (new AttachedAssets())->setAlreadyLoadedLibraries([])->setLibraries(['core/drupal'])->setSettings(['currenttime' => $time]),
         (new AttachedAssets())->setAlreadyLoadedLibraries([])->setLibraries(['core/drupal', 'core/jquery'])->setSettings(['currentTime' => $time]),
         2,
       ],

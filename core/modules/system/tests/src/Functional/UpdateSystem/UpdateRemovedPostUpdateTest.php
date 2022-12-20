@@ -21,20 +21,6 @@ class UpdateRemovedPostUpdateTest extends BrowserTestBase {
   protected $defaultTheme = 'stark';
 
   /**
-   * An user that can execute updates.
-   *
-   * @var \Drupal\Core\Url
-   */
-  protected $updateUrl;
-
-  /**
-   * An user that can execute updates.
-   *
-   * @var \Drupal\user\Entity\User
-   */
-  protected $updateUser;
-
-  /**
    * {@inheritdoc}
    */
   protected function setUp(): void {

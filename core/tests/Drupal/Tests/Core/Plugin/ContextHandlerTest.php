@@ -16,11 +16,11 @@ use Drupal\Component\Plugin\Exception\ContextException;
 use Drupal\Component\Plugin\Exception\MissingValueContextException;
 use Drupal\Core\Cache\NullBackend;
 use Drupal\Core\DependencyInjection\ClassResolverInterface;
+use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\Core\Plugin\Context\ContextHandler;
 use Drupal\Core\Plugin\ContextAwarePluginInterface;
-use Drupal\Core\Test\TestKernel;
 use Drupal\Core\TypedData\TypedDataManager;
 use Drupal\Core\Validation\ConstraintManager;
 use Drupal\Tests\UnitTestCase;
@@ -63,7 +63,7 @@ class ContextHandlerTest extends UnitTestCase {
       new ConstraintManager($namespaces, $cache_backend, $module_handler->reveal())
     );
 
-    $container = TestKernel::setContainerWithKernel();
+    $container = new ContainerBuilder();
     $container->set('typed_data_manager', $type_data_manager);
     \Drupal::setContainer($container);
   }
@@ -90,7 +90,7 @@ class ContextHandlerTest extends UnitTestCase {
     $context_any = $this->createMock('Drupal\Core\Plugin\Context\ContextInterface');
     $context_any->expects($this->atLeastOnce())
       ->method('getContextDefinition')
-      ->willReturn(new ContextDefinition('any'));
+      ->will($this->returnValue(new ContextDefinition('any')));
 
     $requirement_specific = new ContextDefinition('string');
     $requirement_specific->setConstraints(['Blank' => []]);
@@ -98,18 +98,18 @@ class ContextHandlerTest extends UnitTestCase {
     $context_constraint_mismatch = $this->createMock('Drupal\Core\Plugin\Context\ContextInterface');
     $context_constraint_mismatch->expects($this->atLeastOnce())
       ->method('getContextDefinition')
-      ->willReturn(new ContextDefinition('foo'));
+      ->will($this->returnValue(new ContextDefinition('foo')));
     $context_datatype_mismatch = $this->createMock('Drupal\Core\Plugin\Context\ContextInterface');
     $context_datatype_mismatch->expects($this->atLeastOnce())
       ->method('getContextDefinition')
-      ->willReturn(new ContextDefinition('fuzzy'));
+      ->will($this->returnValue(new ContextDefinition('fuzzy')));
 
     $context_definition_specific = new ContextDefinition('string');
     $context_definition_specific->setConstraints(['Blank' => []]);
     $context_specific = $this->createMock('Drupal\Core\Plugin\Context\ContextInterface');
     $context_specific->expects($this->atLeastOnce())
       ->method('getContextDefinition')
-      ->willReturn($context_definition_specific);
+      ->will($this->returnValue($context_definition_specific));
 
     $data = [];
     $data[] = [[], [], TRUE];
@@ -148,21 +148,21 @@ class ContextHandlerTest extends UnitTestCase {
     $context_any = $this->createMock('Drupal\Core\Plugin\Context\ContextInterface');
     $context_any->expects($this->atLeastOnce())
       ->method('getContextDefinition')
-      ->willReturn(new ContextDefinition('any'));
+      ->will($this->returnValue(new ContextDefinition('any')));
     $context_constraint_mismatch = $this->createMock('Drupal\Core\Plugin\Context\ContextInterface');
     $context_constraint_mismatch->expects($this->atLeastOnce())
       ->method('getContextDefinition')
-      ->willReturn(new ContextDefinition('foo'));
+      ->will($this->returnValue(new ContextDefinition('foo')));
     $context_datatype_mismatch = $this->createMock('Drupal\Core\Plugin\Context\ContextInterface');
     $context_datatype_mismatch->expects($this->atLeastOnce())
       ->method('getContextDefinition')
-      ->willReturn(new ContextDefinition('fuzzy'));
+      ->will($this->returnValue(new ContextDefinition('fuzzy')));
     $context_definition_specific = new ContextDefinition('string');
     $context_definition_specific->setConstraints(['Blank' => []]);
     $context_specific = $this->createMock('Drupal\Core\Plugin\Context\ContextInterface');
     $context_specific->expects($this->atLeastOnce())
       ->method('getContextDefinition')
-      ->willReturn($context_definition_specific);
+      ->will($this->returnValue($context_definition_specific));
 
     $data = [];
     // No context will return no valid contexts.
@@ -191,7 +191,7 @@ class ContextHandlerTest extends UnitTestCase {
       $expected_context_definition = (new ContextDefinition('string'))->setConstraints(['Blank' => []]);
       $context->expects($this->atLeastOnce())
         ->method('getContextDefinition')
-        ->willReturn($expected_context_definition);
+        ->will($this->returnValue($expected_context_definition));
       $contexts = [$context];
     }
     else {
@@ -332,7 +332,7 @@ class ContextHandlerTest extends UnitTestCase {
       ->willReturn([]);
     $plugin->expects($this->once())
       ->method('getContextDefinitions')
-      ->willReturn(['hit' => $context_definition]);
+      ->will($this->returnValue(['hit' => $context_definition]));
     $plugin->expects($this->once())
       ->method('setContext')
       ->with('hit', $context_hit);
@@ -373,7 +373,7 @@ class ContextHandlerTest extends UnitTestCase {
       ->willReturn([]);
     $plugin->expects($this->once())
       ->method('getContextDefinitions')
-      ->willReturn(['hit' => $context_definition]);
+      ->will($this->returnValue(['hit' => $context_definition]));
     $plugin->expects($this->never())
       ->method('setContext');
 
@@ -410,7 +410,7 @@ class ContextHandlerTest extends UnitTestCase {
       ->willReturn(['optional' => 'missing']);
     $plugin->expects($this->once())
       ->method('getContextDefinitions')
-      ->willReturn(['optional' => $context_definition]);
+      ->will($this->returnValue(['optional' => $context_definition]));
     $plugin->expects($this->never())
       ->method('setContext');
 
@@ -448,7 +448,7 @@ class ContextHandlerTest extends UnitTestCase {
       ->willReturn([]);
     $plugin->expects($this->once())
       ->method('getContextDefinitions')
-      ->willReturn(['hit' => $context_definition]);
+      ->will($this->returnValue(['hit' => $context_definition]));
     $plugin->expects($this->never())
       ->method('setContext');
 
@@ -483,7 +483,7 @@ class ContextHandlerTest extends UnitTestCase {
       ->willReturn([]);
     $plugin->expects($this->once())
       ->method('getContextDefinitions')
-      ->willReturn(['hit' => $context_definition]);
+      ->will($this->returnValue(['hit' => $context_definition]));
     $plugin->expects($this->never())
       ->method('setContext');
 
@@ -511,7 +511,7 @@ class ContextHandlerTest extends UnitTestCase {
       ->willReturn([]);
     $plugin->expects($this->once())
       ->method('getContextDefinitions')
-      ->willReturn(['hit' => $context_definition]);
+      ->will($this->returnValue(['hit' => $context_definition]));
     $plugin->expects($this->once())
       ->method('setContext')
       ->with('hit', $context);
@@ -549,7 +549,7 @@ class ContextHandlerTest extends UnitTestCase {
       ->willReturn([]);
     $plugin->expects($this->once())
       ->method('getContextDefinitions')
-      ->willReturn(['hit' => $context_definition]);
+      ->will($this->returnValue(['hit' => $context_definition]));
     $plugin->expects($this->never())
       ->method('setContext');
 

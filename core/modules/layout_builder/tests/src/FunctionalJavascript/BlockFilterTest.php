@@ -4,7 +4,6 @@ namespace Drupal\Tests\layout_builder\FunctionalJavascript;
 
 use Behat\Mink\Element\NodeElement;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
-use Drupal\layout_builder\Entity\LayoutBuilderEntityViewDisplay;
 
 /**
  * Tests the JavaScript functionality of the block add filter.
@@ -34,16 +33,13 @@ class BlockFilterTest extends WebDriverTestBase {
    */
   protected function setUp(): void {
     parent::setUp();
-
-    $this->drupalLogin($this->drupalCreateUser([
+    $user = $this->drupalCreateUser([
       'configure any layout',
-    ]));
+      'administer node display',
+      'administer node fields',
+    ]);
+    $this->drupalLogin($user);
     $this->createContentType(['type' => 'bundle_with_section_field']);
-    LayoutBuilderEntityViewDisplay::load('node.bundle_with_section_field.default')
-      ->enableLayoutBuilder()
-      ->setOverridable()
-      ->save();
-    $this->createNode(['type' => 'bundle_with_section_field']);
   }
 
   /**
@@ -54,8 +50,15 @@ class BlockFilterTest extends WebDriverTestBase {
     $session = $this->getSession();
     $page = $session->getPage();
 
+    // From the manage display page, go to manage the layout.
+    $field_ui_prefix = 'admin/structure/types/manage/bundle_with_section_field';
+    $this->drupalGet("{$field_ui_prefix}/display/default");
+    $this->submitForm(['layout[enabled]' => TRUE], 'Save');
+    $assert_session->linkExists('Manage layout');
+    $this->clickLink('Manage layout');
+    $assert_session->addressEquals("$field_ui_prefix/display/default/layout");
+
     // Open the block listing.
-    $this->drupalGet('node/1/layout');
     $assert_session->linkExists('Add block');
     $this->clickLink('Add block');
     $assert_session->assertWaitOnAjaxRequest();

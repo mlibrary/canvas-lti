@@ -15,6 +15,7 @@ class MigrateBlockContentTranslationTest extends MigrateDrupal6TestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
+    'aggregator',
     'book',
     'block',
     'comment',

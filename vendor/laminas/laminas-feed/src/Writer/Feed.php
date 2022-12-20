@@ -18,13 +18,12 @@ use function ucfirst;
 
 use const SORT_NUMERIC;
 
-/** @template-implements Iterator<int, Entry> */
 class Feed extends AbstractFeed implements Iterator, Countable
 {
     /**
      * Contains all entry objects
      *
-     * @var array<int, Entry>
+     * @var array
      */
     protected $entries = [];
 
@@ -161,7 +160,7 @@ class Feed extends AbstractFeed implements Iterator, Countable
      * Get the number of feed entries.
      * Required by the Iterator interface.
      *
-     * @return positive-int|0
+     * @return int
      */
     #[ReturnTypeWillChange]
     public function count()
@@ -183,7 +182,7 @@ class Feed extends AbstractFeed implements Iterator, Countable
     /**
      * Return the current feed key
      *
-     * @return int
+     * @return mixed
      */
     #[ReturnTypeWillChange]
     public function key()

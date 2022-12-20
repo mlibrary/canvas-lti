@@ -96,7 +96,7 @@ class PermissionsHashGeneratorTest extends UnitTestCase {
       ->getMock();
     $this->account2->expects($this->any())
       ->method('getRoles')
-      ->willReturn($roles_1);
+      ->will($this->returnValue($roles_1));
     $this->account2->expects($this->any())
       ->method('id')
       ->willReturn(2);
@@ -109,7 +109,7 @@ class PermissionsHashGeneratorTest extends UnitTestCase {
       ->getMock();
     $this->account3->expects($this->any())
       ->method('getRoles')
-      ->willReturn($roles_3);
+      ->will($this->returnValue($roles_3));
     $this->account3->expects($this->any())
       ->method('id')
       ->willReturn(3);
@@ -122,7 +122,7 @@ class PermissionsHashGeneratorTest extends UnitTestCase {
       ->getMock();
     $this->account2Updated->expects($this->any())
       ->method('getRoles')
-      ->willReturn($roles_2_updated);
+      ->will($this->returnValue($roles_2_updated));
     $this->account2Updated->expects($this->any())
       ->method('id')
       ->willReturn(2);
@@ -135,7 +135,7 @@ class PermissionsHashGeneratorTest extends UnitTestCase {
       ->getMock();
     $this->privateKey->expects($this->any())
       ->method('get')
-      ->willReturn($random);
+      ->will($this->returnValue($random));
     $this->cache = $this->getMockBuilder('Drupal\Core\Cache\CacheBackendInterface')
       ->disableOriginalConstructor()
       ->getMock();
@@ -178,7 +178,7 @@ class PermissionsHashGeneratorTest extends UnitTestCase {
     $this->staticCache->expects($this->once())
       ->method('get')
       ->with($expected_cid)
-      ->willReturn(FALSE);
+      ->will($this->returnValue(FALSE));
     $this->staticCache->expects($this->once())
       ->method('set')
       ->with($expected_cid, $this->isType('string'));
@@ -186,7 +186,7 @@ class PermissionsHashGeneratorTest extends UnitTestCase {
     $this->cache->expects($this->once())
       ->method('get')
       ->with($expected_cid)
-      ->willReturn($mock_cache);
+      ->will($this->returnValue($mock_cache));
     $this->cache->expects($this->never())
       ->method('set');
 
@@ -206,7 +206,7 @@ class PermissionsHashGeneratorTest extends UnitTestCase {
     $this->staticCache->expects($this->once())
       ->method('get')
       ->with($expected_cid)
-      ->willReturn($mock_cache);
+      ->will($this->returnValue($mock_cache));
     $this->staticCache->expects($this->never())
       ->method('set');
 
@@ -228,7 +228,7 @@ class PermissionsHashGeneratorTest extends UnitTestCase {
     $this->staticCache->expects($this->once())
       ->method('get')
       ->with($expected_cid)
-      ->willReturn(FALSE);
+      ->will($this->returnValue(FALSE));
     $this->staticCache->expects($this->once())
       ->method('set')
       ->with($expected_cid, $this->isType('string'));
@@ -236,7 +236,7 @@ class PermissionsHashGeneratorTest extends UnitTestCase {
     $this->cache->expects($this->once())
       ->method('get')
       ->with($expected_cid)
-      ->willReturn(FALSE);
+      ->will($this->returnValue(FALSE));
     $this->cache->expects($this->once())
       ->method('set')
       ->with($expected_cid, $this->isType('string'));

@@ -33,9 +33,7 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
  * $options = [
  *   1 => ['color' => 'Red', 'shape' => 'Triangle'],
  *   2 => ['color' => 'Green', 'shape' => 'Square'],
- *   // Prevent users from selecting a row by adding a '#disabled' property set
- *   // to TRUE.
- *   3 => ['color' => 'Blue', 'shape' => 'Hexagon', '#disabled' => TRUE],
+ *   3 => ['color' => 'Blue', 'shape' => 'Hexagon'],
  * ];
  *
  * $form['table'] = array(
@@ -182,9 +180,6 @@ class Tableselect extends Table {
             }
           }
         }
-        if (!empty($element['#options'][$key]['#disabled'])) {
-          $row['class'][] = 'disabled';
-        }
         $rows[] = $row;
       }
       // Add an empty header or a "Select all" checkbox to provide room for the
@@ -243,7 +238,6 @@ class Tableselect extends Table {
       foreach ($element['#options'] as $key => $choice) {
         // Do not overwrite manually created children.
         if (!isset($element[$key])) {
-          $disabled = !empty($element['#options'][$key]['#disabled']);
           if ($element['#multiple']) {
             $title = '';
             if (isset($element['#options'][$key]['title']) && is_array($element['#options'][$key]['title'])) {
@@ -260,7 +254,6 @@ class Tableselect extends Table {
               '#return_value' => $key,
               '#default_value' => isset($value[$key]) ? $key : NULL,
               '#attributes' => $element['#attributes'],
-              '#disabled' => $disabled,
               '#ajax' => $element['#ajax'] ?? NULL,
             ];
           }
@@ -276,7 +269,6 @@ class Tableselect extends Table {
               '#attributes' => $element['#attributes'],
               '#parents' => $element['#parents'],
               '#id' => HtmlUtility::getUniqueId('edit-' . implode('-', $parents_for_id)),
-              '#disabled' => $disabled,
               '#ajax' => $element['#ajax'] ?? NULL,
             ];
           }

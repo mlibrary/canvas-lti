@@ -93,33 +93,29 @@ class DateTimeDatelistWidget extends DateTimeWidgetBase {
 
     $element['date_order'] = [
       '#type' => 'select',
-      '#title' => $this->t('Date part order'),
+      '#title' => t('Date part order'),
       '#default_value' => $this->getSetting('date_order'),
-      '#options' => [
-        'MDY' => $this->t('Month/Day/Year'),
-        'DMY' => $this->t('Day/Month/Year'),
-        'YMD' => $this->t('Year/Month/Day'),
-      ],
+      '#options' => ['MDY' => t('Month/Day/Year'), 'DMY' => t('Day/Month/Year'), 'YMD' => t('Year/Month/Day')],
     ];
 
     if ($this->getFieldSetting('datetime_type') == 'datetime') {
       $element['time_type'] = [
         '#type' => 'select',
-        '#title' => $this->t('Time type'),
+        '#title' => t('Time type'),
         '#default_value' => $this->getSetting('time_type'),
-        '#options' => ['24' => $this->t('24 hour time'), '12' => $this->t('12 hour time')],
+        '#options' => ['24' => t('24 hour time'), '12' => t('12 hour time')],
       ];
 
       $element['increment'] = [
         '#type' => 'select',
-        '#title' => $this->t('Time increments'),
+        '#title' => t('Time increments'),
         '#default_value' => $this->getSetting('increment'),
         '#options' => [
-          1 => $this->t('1 minute'),
-          5 => $this->t('5 minute'),
-          10 => $this->t('10 minute'),
-          15 => $this->t('15 minute'),
-          30 => $this->t('30 minute'),
+          1 => t('1 minute'),
+          5 => t('5 minute'),
+          10 => t('10 minute'),
+          15 => t('15 minute'),
+          30 => t('30 minute'),
         ],
       ];
     }
@@ -144,10 +140,10 @@ class DateTimeDatelistWidget extends DateTimeWidgetBase {
   public function settingsSummary() {
     $summary = [];
 
-    $summary[] = $this->t('Date part order: @order', ['@order' => $this->getSetting('date_order')]);
+    $summary[] = t('Date part order: @order', ['@order' => $this->getSetting('date_order')]);
     if ($this->getFieldSetting('datetime_type') == 'datetime') {
-      $summary[] = $this->t('Time type: @time_type', ['@time_type' => $this->getSetting('time_type')]);
-      $summary[] = $this->t('Time increments: @increment', ['@increment' => $this->getSetting('increment')]);
+      $summary[] = t('Time type: @time_type', ['@time_type' => $this->getSetting('time_type')]);
+      $summary[] = t('Time increments: @increment', ['@increment' => $this->getSetting('increment')]);
     }
 
     return $summary;

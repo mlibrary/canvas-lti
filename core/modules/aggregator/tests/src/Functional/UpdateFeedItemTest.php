@@ -10,7 +10,6 @@ use Drupal\aggregator\Entity\Item;
  * Update feed items from a feed.
  *
  * @group aggregator
- * @group legacy
  */
 class UpdateFeedItemTest extends AggregatorTestBase {
 

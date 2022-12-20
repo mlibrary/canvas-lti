@@ -48,9 +48,6 @@ class TitleResolverTest extends UnitTestCase {
    */
   protected $titleResolver;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     $this->controllerResolver = $this->createMock('\Drupal\Core\Controller\ControllerResolverInterface');
     $this->translationManager = $this->createMock('\Drupal\Core\StringTranslation\TranslationInterface');
@@ -136,11 +133,11 @@ class TitleResolverTest extends UnitTestCase {
     $this->controllerResolver->expects($this->once())
       ->method('getControllerFromDefinition')
       ->with('Drupal\Tests\Core\Controller\TitleCallback::example')
-      ->willReturn($callable);
+      ->will($this->returnValue($callable));
     $this->argumentResolver->expects($this->once())
       ->method('getArguments')
       ->with($request, $callable)
-      ->willReturn(['example']);
+      ->will($this->returnValue(['example']));
 
     $this->assertEquals('test example', $this->titleResolver->getTitle($request, $route));
   }

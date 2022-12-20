@@ -16,11 +16,8 @@ abstract class WizardTestBase extends ViewTestBase {
    */
   protected static $modules = ['node', 'views_ui', 'block', 'rest'];
 
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp($import_test_views = TRUE, $modules = []) {
-    parent::setUp($import_test_views, $modules);
+  protected function setUp($import_test_views = TRUE) {
+    parent::setUp($import_test_views);
 
     // Create and log in a user with administer views permission.
     $views_admin = $this->drupalCreateUser([

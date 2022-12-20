@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\jsonapi\Functional;
 
-use Drupal\ckeditor5\Plugin\CKEditor5Plugin\Heading;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
@@ -14,12 +13,12 @@ use Drupal\filter\Entity\FilterFormat;
  *
  * @group jsonapi
  */
-class EditorTest extends ConfigEntityResourceTestBase {
+class EditorTest extends ResourceTestBase {
 
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['filter', 'editor', 'ckeditor5'];
+  protected static $modules = ['filter', 'editor', 'ckeditor'];
 
   /**
    * {@inheritdoc}
@@ -74,7 +73,7 @@ class EditorTest extends ConfigEntityResourceTestBase {
     // Create a "Camelids" editor.
     $camelids = Editor::create([
       'format' => 'llama',
-      'editor' => 'ckeditor5',
+      'editor' => 'ckeditor',
     ]);
     $camelids
       ->setImageUploadSettings([
@@ -121,10 +120,10 @@ class EditorTest extends ConfigEntityResourceTestBase {
               'filter.format.llama',
             ],
             'module' => [
-              'ckeditor5',
+              'ckeditor',
             ],
           ],
-          'editor' => 'ckeditor5',
+          'editor' => 'ckeditor',
           'image_upload' => [
             'status' => FALSE,
             'scheme' => 'public',
@@ -138,10 +137,49 @@ class EditorTest extends ConfigEntityResourceTestBase {
           'langcode' => 'en',
           'settings' => [
             'toolbar' => [
-              'items' => ['heading', 'bold', 'italic'],
+              'rows' => [
+                [
+                  [
+                    'name' => 'Formatting',
+                    'items' => [
+                      'Bold',
+                      'Italic',
+                    ],
+                  ],
+                  [
+                    'name' => 'Links',
+                    'items' => [
+                      'DrupalLink',
+                      'DrupalUnlink',
+                    ],
+                  ],
+                  [
+                    'name' => 'Lists',
+                    'items' => [
+                      'BulletedList',
+                      'NumberedList',
+                    ],
+                  ],
+                  [
+                    'name' => 'Media',
+                    'items' => [
+                      'Blockquote',
+                      'DrupalImage',
+                    ],
+                  ],
+                  [
+                    'name' => 'Tools',
+                    'items' => [
+                      'Source',
+                    ],
+                  ],
+                ],
+              ],
             ],
             'plugins' => [
-              'ckeditor5_heading' => Heading::DEFAULT_CONFIGURATION,
+              'language' => [
+                'language_list' => 'un',
+              ],
             ],
           ],
           'status' => TRUE,
@@ -156,7 +194,6 @@ class EditorTest extends ConfigEntityResourceTestBase {
    */
   protected function getPostDocument() {
     // @todo Update in https://www.drupal.org/node/2300677.
-    return [];
   }
 
   /**
@@ -186,7 +223,7 @@ class EditorTest extends ConfigEntityResourceTestBase {
 
     $entity = Editor::create([
       'format' => 'pachyderm',
-      'editor' => 'ckeditor5',
+      'editor' => 'ckeditor',
     ]);
 
     $entity->setImageUploadSettings([

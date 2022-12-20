@@ -1,8 +1,3 @@
-/**
- * @file
- * Provides the processing logic for fieldsets.
- */
-
 (function ($) {
 
   'use strict';
@@ -13,10 +8,10 @@
   /**
    * This script adds the required and error classes to the fieldset wrapper.
    */
-  Drupal.behaviors.fieldGroupFieldset = {
+  Drupal.behaviors.fieldGroupDFieldset = {
     attach: function (context) {
 
-      $(once('field-group-fieldset', '.field-group-fieldset', context)).each(function () {
+      $(context).find('.field-group-fieldset').once('field-group-fieldset').each(function () {
         var $this = $(this);
 
         if ($this.is('.required-fields') && ($this.find('[required]').length > 0 || $this.find('.form-required').length > 0)) {

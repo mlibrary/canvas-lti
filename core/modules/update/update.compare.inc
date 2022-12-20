@@ -77,7 +77,7 @@ function update_process_project_info(&$projects) {
  * @param array $available
  *   Data about available project releases.
  *
- * @return array
+ * @return
  *   An array of installed projects with current update status information.
  *
  * @see update_get_available()

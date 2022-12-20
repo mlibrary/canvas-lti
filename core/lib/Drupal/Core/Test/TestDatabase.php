@@ -12,8 +12,6 @@ use Drupal\Core\Database\Database;
 class TestDatabase {
 
   /**
-   * The test lock ID.
-   *
    * A random number used to ensure that test fixtures are unique to each test
    * method.
    *

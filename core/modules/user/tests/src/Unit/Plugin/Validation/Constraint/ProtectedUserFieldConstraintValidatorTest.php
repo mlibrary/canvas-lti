@@ -3,7 +3,6 @@
 namespace Drupal\Tests\user\Unit\Plugin\Validation\Constraint;
 
 use Drupal\Tests\UnitTestCase;
-use Drupal\user\Entity\User;
 use Drupal\user\Plugin\Validation\Constraint\ProtectedUserFieldConstraint;
 use Drupal\user\Plugin\Validation\Constraint\ProtectedUserFieldConstraintValidator;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -88,7 +87,7 @@ class ProtectedUserFieldConstraintValidatorTest extends UnitTestCase {
 
     // Case 3: Account flagged to skip protected user should be ignored.
     $field_definition = $this->createMock('Drupal\Core\Field\FieldDefinitionInterface');
-    $account = $this->createMock(User::class);
+    $account = $this->createMock('Drupal\user\UserInterface');
     $account->_skipProtectedUserFieldConstraint = TRUE;
     $items = $this->createMock('Drupal\Core\Field\FieldItemListInterface');
     $items->expects($this->once())

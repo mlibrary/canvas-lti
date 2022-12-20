@@ -61,9 +61,6 @@ class ContentTranslationContextualLinksTest extends BrowserTestBase {
    */
   protected $profile = 'testing';
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     // Set up an additional language.

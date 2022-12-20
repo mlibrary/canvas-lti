@@ -21,11 +21,4 @@ class MarkupNormalizer extends NormalizerBase {
     return (string) $object;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function hasCacheableSupportsMethod(): bool {
-    return TRUE;
-  }
-
 }

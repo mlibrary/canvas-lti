@@ -4,7 +4,6 @@ namespace Drupal\views\Plugin\Derivative;
 
 use Drupal\Core\Plugin\Discovery\ContainerDeriverInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -13,8 +12,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @see \Drupal\views\Plugin\Block\ViewsExposedFilterBlock
  */
 class ViewsExposedFilterBlock implements ContainerDeriverInterface {
-
-  use StringTranslationTrait;
 
   /**
    * List of derivative definitions.
@@ -88,7 +85,7 @@ class ViewsExposedFilterBlock implements ContainerDeriverInterface {
           // Add a block definition for the block.
           if ($display->usesExposedFormInBlock()) {
             $delta = $view->id() . '-' . $display->display['id'];
-            $desc = $this->t('Exposed form: @view-@display_id', ['@view' => $view->id(), '@display_id' => $display->display['id']]);
+            $desc = t('Exposed form: @view-@display_id', ['@view' => $view->id(), '@display_id' => $display->display['id']]);
             $this->derivatives[$delta] = [
               'admin_label' => $desc,
               'config_dependencies' => [

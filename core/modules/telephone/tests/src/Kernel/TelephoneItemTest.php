@@ -23,9 +23,6 @@ class TelephoneItemTest extends FieldKernelTestBase {
    */
   protected static $modules = ['telephone'];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

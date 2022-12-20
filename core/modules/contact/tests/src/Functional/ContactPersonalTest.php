@@ -53,9 +53,6 @@ class ContactPersonalTest extends BrowserTestBase {
    */
   private $contactUser;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

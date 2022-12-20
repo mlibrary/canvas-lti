@@ -3,7 +3,6 @@
 namespace Drupal\plugin_test\Plugin\plugin_test\mock_block;
 
 use Drupal\Component\Plugin\Derivative\DeriverInterface;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
  * Mock implementation of DeriverInterface for the mock layout block plugin.
@@ -11,8 +10,6 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
  * @see \Drupal\plugin_test\Plugin\MockBlockManager
  */
 class MockLayoutBlockDeriver implements DeriverInterface {
-
-  use StringTranslationTrait;
 
   /**
    * {@inheritdoc}
@@ -22,7 +19,6 @@ class MockLayoutBlockDeriver implements DeriverInterface {
     if (isset($derivatives[$derivative_id])) {
       return $derivatives[$derivative_id];
     }
-    return NULL;
   }
 
   /**
@@ -45,7 +41,7 @@ class MockLayoutBlockDeriver implements DeriverInterface {
       // customized one, but in a real implementation, this would be fetched
       // from some \Drupal::config() object.
       'foo' => [
-        'label' => $this->t('Layout Foo'),
+        'label' => t('Layout Foo'),
       ] + $base_plugin_definition,
     ];
 

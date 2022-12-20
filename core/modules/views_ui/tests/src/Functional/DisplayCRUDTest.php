@@ -106,7 +106,8 @@ class DisplayCRUDTest extends UITestBase {
    */
   public function testDefaultDisplay() {
     $this->drupalGet('admin/structure/views/view/test_display');
-    $this->assertSession()->elementsCount('xpath', '//*[@id="views-page-1-display-title"]', 1);
+    $elements = $this->xpath('//*[@id="views-page-1-display-title"]');
+    $this->assertCount(1, $elements, 'The page display is loaded as the default display.');
   }
 
   /**

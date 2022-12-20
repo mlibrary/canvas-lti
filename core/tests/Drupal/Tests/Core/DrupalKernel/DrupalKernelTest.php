@@ -3,8 +3,6 @@
 namespace Drupal\Tests\Core\DrupalKernel;
 
 use Drupal\Core\DrupalKernel;
-use Drupal\Core\Test\TestKernel;
-use Drupal\Tests\Core\DependencyInjection\Fixture\BarClass;
 use Drupal\Tests\UnitTestCase;
 use org\bovigo\vfs\vfsStream;
 use Symfony\Component\HttpFoundation\Request;
@@ -95,7 +93,7 @@ class DrupalKernelTest extends UnitTestCase {
 
     // Tests mismatch.
     $data[] = [
-      'www.black_hat.com',
+      'www.blackhat.com',
       'www.example.com',
       'unspecified host is untrusted',
       FALSE,
@@ -136,16 +134,6 @@ EOD;
     $request->server->set('SCRIPT_NAME', '/index.php');
     $this->assertEquals('sites/example', DrupalKernel::findSitePath($request, TRUE, $vfs_root->url('drupal_root')));
     $this->assertEquals('sites/example', DrupalKernel::findSitePath($request, FALSE, $vfs_root->url('drupal_root')));
-  }
-
-  /**
-   * @covers ::getServiceIdMapping
-   */
-  public function testGetServiceIdMapping() {
-    $service = new BarClass();
-    $container = TestKernel::setContainerWithKernel();
-    $container->set('bar', $service);
-    $this->assertEquals($container->get('kernel')->getServiceIdMapping()[$container->generateServiceIdHash($service)], 'bar');
   }
 
 }

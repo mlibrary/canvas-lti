@@ -36,7 +36,8 @@ class InstallerLanguageDirectionTest extends InstallerTestBase {
     $this->translations['Save and continue'] = 'Save and continue Arabic';
 
     // Verify that language direction is right-to-left.
-    $this->assertSession()->elementTextEquals('xpath', '/@dir', 'rtl');
+    $direction = current($this->xpath('/@dir'))->getText();
+    $this->assertEquals('rtl', $direction);
   }
 
   /**

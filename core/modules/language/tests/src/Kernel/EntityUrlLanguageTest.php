@@ -31,9 +31,6 @@ class EntityUrlLanguageTest extends LanguageTestBase {
    */
   protected $entity;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

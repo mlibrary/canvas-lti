@@ -3,12 +3,12 @@
 namespace Drupal\Tests\node\Functional\Rest;
 
 use Drupal\node\Entity\NodeType;
-use Drupal\Tests\rest\Functional\EntityResource\ConfigEntityResourceTestBase;
+use Drupal\Tests\rest\Functional\EntityResource\EntityResourceTestBase;
 
 /**
  * ResourceTestBase for NodeType entity.
  */
-abstract class NodeTypeResourceTestBase extends ConfigEntityResourceTestBase {
+abstract class NodeTypeResourceTestBase extends EntityResourceTestBase {
 
   /**
    * {@inheritdoc}
@@ -74,7 +74,6 @@ abstract class NodeTypeResourceTestBase extends ConfigEntityResourceTestBase {
    */
   protected function getNormalizedPostEntity() {
     // @todo Update in https://www.drupal.org/node/2300677.
-    return [];
   }
 
   /**

@@ -10,14 +10,16 @@ namespace Drupal\Tests\token\Kernel;
 class DateTest extends KernelTestBase {
 
   /**
-   * {@inheritdoc}
+   * Modules to enable.
+   *
+   * @var array
    */
-  protected static $modules = [];
+  public static $modules = [];
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->installConfig(['system', 'token_module_test']);
   }

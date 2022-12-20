@@ -9,7 +9,6 @@ use Drupal\Tests\media\Kernel\MediaEmbedFilterTestBase;
  *
  * @coversDefaultClass \Drupal\media\Plugin\Filter\MediaEmbed
  * @group quickedit
- * @group legacy
  */
 class MediaEmbedFilterDisabledIntegrationsTest extends MediaEmbedFilterTestBase {
 

@@ -92,7 +92,7 @@ class MailManagerTest extends UnitTestCase {
     $this->discovery = $this->createMock('Drupal\Component\Plugin\Discovery\DiscoveryInterface');
     $this->discovery->expects($this->any())
       ->method('getDefinitions')
-      ->willReturn($this->definitions);
+      ->will($this->returnValue($this->definitions));
   }
 
   /**
@@ -129,7 +129,7 @@ class MailManagerTest extends UnitTestCase {
   public function testGetInstance() {
     $interface = [
       'default' => 'php_mail',
-      'example_testkey' => 'test_mail_collector',
+      'default' => 'test_mail_collector',
     ];
     $this->setUpMailManager($interface);
 

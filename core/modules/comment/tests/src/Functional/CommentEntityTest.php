@@ -41,9 +41,6 @@ class CommentEntityTest extends CommentTestBase {
   protected $vocab;
   protected $commentType;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

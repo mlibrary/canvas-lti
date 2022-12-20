@@ -23,7 +23,9 @@ class FilterTest extends FilterPluginBase {
   }
 
   /**
-   * {@inheritdoc}
+   * Overrides Drupal\views\Plugin\views\row\RowPluginBase::buildOptionsForm().
+   *
+   * @return array
    */
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);

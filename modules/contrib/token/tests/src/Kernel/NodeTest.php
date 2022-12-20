@@ -14,14 +14,16 @@ use Drupal\Core\Url;
 class NodeTest extends KernelTestBase {
 
   /**
-   * {@inheritdoc}
+   * Modules to enable.
+   *
+   * @var array
    */
-  protected static $modules = ['node', 'field', 'text'];
+  public static $modules = ['node', 'field', 'text'];
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     $this->installEntitySchema('user');

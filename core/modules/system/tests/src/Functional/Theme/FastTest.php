@@ -23,16 +23,6 @@ class FastTest extends BrowserTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  /**
-   * User allowed to access use profiles.
-   *
-   * @var \Drupal\user\Entity\User
-   */
-  protected $account;
-
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     $this->account = $this->drupalCreateUser(['access user profiles']);

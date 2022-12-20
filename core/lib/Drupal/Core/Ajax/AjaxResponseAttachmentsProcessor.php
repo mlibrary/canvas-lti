@@ -174,11 +174,11 @@ class AjaxResponseAttachmentsProcessor implements AttachmentsResponseProcessorIn
     }
     if ($js_assets_header) {
       $js_header_render_array = $this->jsCollectionRenderer->render($js_assets_header);
-      $resource_commands[] = new AddJsCommand(array_column($js_header_render_array, '#attributes'), 'head');
+      $resource_commands[] = new PrependCommand('head', $this->renderer->renderPlain($js_header_render_array));
     }
     if ($js_assets_footer) {
       $js_footer_render_array = $this->jsCollectionRenderer->render($js_assets_footer);
-      $resource_commands[] = new AddJsCommand(array_column($js_footer_render_array, '#attributes'));
+      $resource_commands[] = new AppendCommand('body', $this->renderer->renderPlain($js_footer_render_array));
     }
     foreach (array_reverse($resource_commands) as $resource_command) {
       $response->addCommand($resource_command, TRUE);

@@ -4,10 +4,12 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function ($, Drupal) {
   Drupal.quickedit.util = Drupal.quickedit.util || {};
   Drupal.quickedit.util.constants = {};
   Drupal.quickedit.util.constants.transitionEnd = 'transitionEnd.quickedit webkitTransitionEnd.quickedit transitionend.quickedit msTransitionEnd.quickedit oTransitionEnd.quickedit';
+
   Drupal.quickedit.util.buildUrl = function (id, urlFormat) {
     var parts = id.split('/');
     return Drupal.formatString(decodeURIComponent(urlFormat), {
@@ -18,6 +20,7 @@
       '!view_mode': parts[4]
     });
   };
+
   Drupal.quickedit.util.networkErrorModal = function (title, message) {
     var $message = $("<div>".concat(message, "</div>"));
     var networkErrorModal = Drupal.dialog($message.get(0), {
@@ -39,6 +42,7 @@
     });
     networkErrorModal.showModal();
   };
+
   Drupal.quickedit.util.form = {
     load: function load(options, callback) {
       var fieldID = options.fieldID;
@@ -58,10 +62,12 @@
           fieldModel.set('state', 'candidate');
         }
       });
+
       formLoaderAjax.commands.quickeditFieldForm = function (ajax, response, status) {
         callback(response.data, ajax);
         Drupal.ajax.instances[this.instanceIndex] = null;
       };
+
       formLoaderAjax.execute();
     },
     ajaxifySaving: function ajaxifySaving(options, $submit) {
@@ -76,6 +82,7 @@
         },
         success: function success(response, status) {
           var _this = this;
+
           Object.keys(response || {}).forEach(function (i) {
             if (response[i].command && _this.commands[response[i].command]) {
               _this.commands[response[i].command](_this, response[i], status);

@@ -1,5 +1,0 @@
-services:
-  autoban_ban.ban_provider:
-    class: Drupal\autoban_ban\BanProvider
-    tags:
-      - { name: ban_providers }

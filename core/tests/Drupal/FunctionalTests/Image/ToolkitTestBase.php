@@ -52,9 +52,6 @@ abstract class ToolkitTestBase extends BrowserTestBase {
    */
   protected $image;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp() {
     parent::setUp();
 

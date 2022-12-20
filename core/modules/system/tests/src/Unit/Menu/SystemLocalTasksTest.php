@@ -31,17 +31,17 @@ class SystemLocalTasksTest extends LocalTaskIntegrationTestBase {
 
     $this->themeHandler = $this->createMock('Drupal\Core\Extension\ThemeHandlerInterface');
 
-    $theme = new Extension($this->root, 'theme', 'core/themes/olivero', 'olivero.info.yml');
+    $theme = new Extension($this->root, 'theme', 'core/themes/bartik', 'bartik.info.yml');
     $theme->status = 1;
-    $theme->info = ['name' => 'olivero'];
+    $theme->info = ['name' => 'bartik'];
     $this->themeHandler->expects($this->any())
       ->method('listInfo')
-      ->willReturn([
-        'olivero' => $theme,
-      ]);
+      ->will($this->returnValue([
+        'bartik' => $theme,
+      ]));
     $this->themeHandler->expects($this->any())
       ->method('hasUi')
-      ->with('olivero')
+      ->with('bartik')
       ->willReturn(TRUE);
     $this->container->set('theme_handler', $this->themeHandler);
   }
@@ -65,7 +65,7 @@ class SystemLocalTasksTest extends LocalTaskIntegrationTestBase {
         'system.theme_settings_theme',
         [
           ['system.themes_page', 'system.theme_settings'],
-          ['system.theme_settings_global', 'system.theme_settings_theme:olivero'],
+          ['system.theme_settings_global', 'system.theme_settings_theme:bartik'],
         ],
       ],
     ];

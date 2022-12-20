@@ -1,8 +1,3 @@
-/**
- * @file
- * Provides the core logic for fieldgroup.
- */
-
 (function ($) {
 
   'use strict';

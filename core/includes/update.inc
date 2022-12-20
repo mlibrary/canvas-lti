@@ -115,7 +115,7 @@ function _update_fix_missing_schema() {
     // don't, detect and fix the problem.
     if (!isset($versions[$module])) {
       // Ensure the .install file is loaded.
-      $module_handler->loadInclude($module, 'install');
+      module_load_install($module);
       $all_updates = $update_registry->getAvailableUpdates($module);
       // If the schema version of a module hasn't been recorded, we cannot
       // know the actual schema version a module is at, because
@@ -239,7 +239,7 @@ function update_do_one($module, $number, $dependency_map, &$context) {
 
       $variables = Error::decodeException($e);
       unset($variables['backtrace'], $variables['exception'], $variables['severity_level']);
-      $ret['#abort'] = ['success' => FALSE, 'query' => t(Error::DEFAULT_ERROR_MESSAGE, $variables)];
+      $ret['#abort'] = ['success' => FALSE, 'query' => t('%type: @message in %function (line %line of %file).', $variables)];
     }
   }
 
@@ -286,10 +286,8 @@ function update_invoke_post_update($function, &$context) {
     return;
   }
 
-  // Ensure extension post update code is loaded.
-  [$extension, $name] = explode('_post_update_', $function, 2);
-  \Drupal::service('update.post_update_registry')->getUpdateFunctions($extension);
-
+  [$module, $name] = explode('_post_update_', $function, 2);
+  module_load_include('php', $module, $module . '.post_update');
   if (function_exists($function)) {
     try {
       $ret['results']['query'] = $function($context['sandbox']);
@@ -307,10 +305,10 @@ function update_invoke_post_update($function, &$context) {
       watchdog_exception('update', $e);
 
       $variables = Error::decodeException($e);
-      unset($variables['backtrace'], $variables['exception'], $variables['severity_level']);
+      unset($variables['backtrace'], $variables['exception']);
       $ret['#abort'] = [
         'success' => FALSE,
-        'query' => t(Error::DEFAULT_ERROR_MESSAGE, $variables),
+        'query' => t('%type: @message in %function (line %line of %file).', $variables),
       ];
     }
   }
@@ -319,23 +317,23 @@ function update_invoke_post_update($function, &$context) {
     $context['finished'] = $context['sandbox']['#finished'];
     unset($context['sandbox']['#finished']);
   }
-  if (!isset($context['results'][$extension][$name])) {
-    $context['results'][$extension][$name] = [];
+  if (!isset($context['results'][$module][$name])) {
+    $context['results'][$module][$name] = [];
   }
-  $context['results'][$extension][$name] = array_merge($context['results'][$extension][$name], $ret);
+  $context['results'][$module][$name] = array_merge($context['results'][$module][$name], $ret);
 
   if (!empty($ret['#abort'])) {
     // Record this function in the list of updates that were aborted.
     $context['results']['#abort'][] = $function;
   }
 
-  $context['message'] = t('Post updating @extension', ['@extension' => $extension]);
+  $context['message'] = t('Post updating @module', ['@module' => $module]);
 }
 
 /**
  * Returns a list of all the pending database updates.
  *
- * @return array
+ * @return
  *   An associative array keyed by module name which contains all information
  *   about database updates that need to be run, and any updates that are not
  *   going to proceed due to missing requirements. The system module will
@@ -453,7 +451,7 @@ function update_get_update_list() {
  *   and whose values contain the number of the first requested update for that
  *   module.
  *
- * @return array
+ * @return
  *   An array whose keys are the names of all update functions within the
  *   provided modules that would need to be run in order to fulfill the
  *   request, arranged in the order in which the update functions should be
@@ -519,7 +517,7 @@ function update_resolve_dependencies($starting_updates) {
  *   An array whose keys contain the names of modules and whose values contain
  *   the number of the first requested update for that module.
  *
- * @return array
+ * @return
  *   An array containing all the update functions that should be run for each
  *   module, including the provided starting update and all subsequent updates
  *   that are available. The keys of the array contain the module names, and
@@ -577,7 +575,7 @@ function update_get_update_function_list($starting_updates) {
  *   An organized array of update functions, in the format returned by
  *   update_get_update_function_list().
  *
- * @return array
+ * @return
  *   A multidimensional array representing the dependency graph, suitable for
  *   passing in to Drupal\Component\Graph\Graph::searchAndSort(), but with extra
  *   information about each update function also included. Each array key
@@ -645,7 +643,7 @@ function update_build_dependency_graph($update_functions) {
  *   update_get_update_function_list(). This should represent all module
  *   updates that are requested to run at the time this function is called.
  *
- * @return bool
+ * @return
  *   TRUE if the provided module update is not installed or is not in the
  *   provided list of updates to run; FALSE otherwise.
  */
@@ -661,7 +659,7 @@ function update_is_missing($module, $number, $update_functions) {
  * @param $number
  *   The number of the update within that module.
  *
- * @return bool
+ * @return
  *   TRUE if the database schema indicates that the update has already been
  *   performed; FALSE otherwise.
  */
@@ -677,7 +675,7 @@ function update_already_performed($module, $number) {
  * its hook, only that it be installed. This allows the update system to
  * properly perform updates even on modules that are currently disabled.
  *
- * @return array
+ * @return
  *   An array of return values obtained by merging the results of the
  *   hook_update_dependencies() implementations in all installed modules.
  *
@@ -706,7 +704,7 @@ function update_retrieve_dependencies() {
     }
     $function = $module . '_update_dependencies';
     // Ensure install file is loaded.
-    \Drupal::moduleHandler()->loadInclude($module, 'install');
+    module_load_install($module);
     if (function_exists($function)) {
       $updated_dependencies = $function();
       // Each implementation of hook_update_dependencies() returns a

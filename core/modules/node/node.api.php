@@ -63,6 +63,8 @@ use Drupal\Component\Utility\Xss;
  * sure to restore your {node_access} record after node_access_rebuild() is
  * called.
  *
+ * For a detailed example, see node_access_example.module.
+ *
  * @param \Drupal\Core\Session\AccountInterface $account
  *   The account object whose grants are requested.
  * @param string $op
@@ -145,7 +147,7 @@ function hook_node_grants(\Drupal\Core\Session\AccountInterface $account, $op) {
  * @param \Drupal\node\NodeInterface $node
  *   The node that has just been saved.
  *
- * @return array|null
+ * @return
  *   An array of grants as defined above.
  *
  * @see hook_node_access_records_alter()

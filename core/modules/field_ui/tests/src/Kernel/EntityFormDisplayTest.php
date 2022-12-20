@@ -29,9 +29,6 @@ class EntityFormDisplayTest extends KernelTestBase {
     'text',
   ];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     $this->installEntitySchema('entity_test');

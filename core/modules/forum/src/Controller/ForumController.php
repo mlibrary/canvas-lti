@@ -255,6 +255,7 @@ class ForumController extends ControllerBase {
     $vid = $this->config('forum.settings')->get('vocabulary');
     $taxonomy_term = $this->termStorage->create([
       'vid' => $vid,
+      'forum_controller' => 0,
     ]);
     return $this->entityFormBuilder()->getForm($taxonomy_term, 'forum');
   }

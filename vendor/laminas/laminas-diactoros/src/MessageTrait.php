@@ -10,6 +10,7 @@ use Psr\Http\Message\StreamInterface;
 use function array_map;
 use function array_merge;
 use function array_values;
+use function get_class;
 use function gettype;
 use function implode;
 use function is_array;
@@ -360,7 +361,7 @@ trait MessageTrait
         if (! is_string($version)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Unsupported HTTP protocol version; must be a string, received %s',
-                is_object($version) ? $version::class : gettype($version)
+                is_object($version) ? get_class($version) : gettype($version)
             ));
         }
 
@@ -375,9 +376,10 @@ trait MessageTrait
     }
 
     /**
+     * @param mixed $values
      * @return string[]
      */
-    private function filterHeaderValue(mixed $values): array
+    private function filterHeaderValue($values): array
     {
         if (! is_array($values)) {
             $values = [$values];

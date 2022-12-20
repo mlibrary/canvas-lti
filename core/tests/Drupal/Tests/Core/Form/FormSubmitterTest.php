@@ -80,7 +80,7 @@ class FormSubmitterTest extends UnitTestCase {
       ->getMock();
     $response->expects($this->any())
       ->method('prepare')
-      ->willReturn($response);
+      ->will($this->returnValue($response));
 
     $form_state = (new FormState())
       ->setSubmitted()

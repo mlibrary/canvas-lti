@@ -485,7 +485,7 @@ class AjaxCommandsTest extends UnitTestCase {
    * @covers \Drupal\Core\Ajax\UpdateBuildIdCommand
    */
   public function testUpdateBuildIdCommand() {
-    $old = 'ThisStringIsOld';
+    $old = 'ThisStringisOld';
     $new = 'ThisStringIsNew';
     $command = new UpdateBuildIdCommand($old, $new);
     $expected = [

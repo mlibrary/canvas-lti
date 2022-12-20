@@ -8,7 +8,6 @@ use Drupal\file\Entity\File;
  * Tests that file entities can be normalized in HAL.
  *
  * @group hal
- * @group legacy
  */
 class FileNormalizeTest extends NormalizerTestBase {
 

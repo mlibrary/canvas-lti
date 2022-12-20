@@ -47,9 +47,6 @@ abstract class ShortcutTestBase extends BrowserTestBase {
    */
   protected $set;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp() {
     parent::setUp();
 

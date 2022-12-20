@@ -3,6 +3,7 @@
 namespace Drupal\Component\Plugin\Exception;
 
 /**
- * Base class for plugin exceptions.
+ * Generic Plugin exception class to be thrown when no more specific class
+ * is applicable.
  */
 class PluginException extends \Exception implements ExceptionInterface {}

@@ -85,9 +85,7 @@ class ConfigurationFactory
     private function convertKey(?KeyInterface $key = null): Key
     {
         if (null === $key) {
-            return method_exists(InMemory::class, 'empty')
-                ? InMemory::empty()
-                : InMemory::plainText('');
+            return InMemory::plainText('');
         }
 
         return $this->converter->convert($key);

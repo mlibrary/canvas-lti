@@ -9,7 +9,6 @@ use Drupal\quickedit\EditorSelector;
  * Tests in-place field editor selection.
  *
  * @group quickedit
- * @group legacy
  */
 class EditorSelectionTest extends QuickEditTestBase {
 
@@ -27,9 +26,6 @@ class EditorSelectionTest extends QuickEditTestBase {
    */
   protected $editorSelector;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

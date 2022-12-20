@@ -9,7 +9,6 @@ use Drupal\Tests\views\Kernel\Handler\FieldFieldAccessTestBase;
  * Tests base field access in Views for the aggregator_feed entity.
  *
  * @group aggregator
- * @group legacy
  */
 class AggregatorFeedViewsFieldAccessTest extends FieldFieldAccessTestBase {
 

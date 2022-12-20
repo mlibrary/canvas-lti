@@ -221,7 +221,7 @@ class ImageUploadTest extends BrowserTestBase {
       'settings' => [
         'toolbar' => [
           'items' => [
-            'drupalInsertImage',
+            'uploadImage',
           ],
         ],
         'plugins' => [],

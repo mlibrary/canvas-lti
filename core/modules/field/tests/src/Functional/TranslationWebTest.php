@@ -54,9 +54,6 @@ class TranslationWebTest extends FieldTestBase {
    */
   protected $field;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

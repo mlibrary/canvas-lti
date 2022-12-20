@@ -219,7 +219,7 @@ class BlockPageVariantTest extends UnitTestCase {
     }
     $this->blockViewBuilder->expects($this->exactly($visible_block_count))
       ->method('view')
-      ->willReturn([]);
+      ->will($this->returnValue([]));
     $this->blockRepository->expects($this->once())
       ->method('getVisibleBlocksPerRegion')
       ->willReturnCallback(function (&$cacheable_metadata) use ($blocks) {

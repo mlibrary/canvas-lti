@@ -4,6 +4,7 @@ namespace TestSuite;
 
 class LinterTest extends \PHPUnit\Framework\TestCase
 {
+
     /**
      * @var \CssLint\Linter
      */

@@ -101,7 +101,7 @@ class EntityOperationsUnitTest extends UnitTestCase {
       ->getMock();
     $entity->expects($this->any())
       ->method('getEntityTypeId')
-      ->willReturn($entity_type_id);
+      ->will($this->returnValue($entity_type_id));
 
     $operations = [
       'foo' => [
@@ -112,12 +112,12 @@ class EntityOperationsUnitTest extends UnitTestCase {
     $list_builder->expects($this->once())
       ->method('getOperations')
       ->with($entity)
-      ->willReturn($operations);
+      ->will($this->returnValue($operations));
 
     $this->entityTypeManager->expects($this->once())
       ->method('getListBuilder')
       ->with($entity_type_id)
-      ->willReturn($list_builder);
+      ->will($this->returnValue($list_builder));
 
     $this->plugin->options['destination'] = TRUE;
 
@@ -143,7 +143,7 @@ class EntityOperationsUnitTest extends UnitTestCase {
       ->getMock();
     $entity->expects($this->any())
       ->method('getEntityTypeId')
-      ->willReturn($entity_type_id);
+      ->will($this->returnValue($entity_type_id));
 
     $operations = [
       'foo' => [
@@ -154,12 +154,12 @@ class EntityOperationsUnitTest extends UnitTestCase {
     $list_builder->expects($this->once())
       ->method('getOperations')
       ->with($entity)
-      ->willReturn($operations);
+      ->will($this->returnValue($operations));
 
     $this->entityTypeManager->expects($this->once())
       ->method('getListBuilder')
       ->with($entity_type_id)
-      ->willReturn($list_builder);
+      ->will($this->returnValue($list_builder));
 
     $this->plugin->options['destination'] = FALSE;
 

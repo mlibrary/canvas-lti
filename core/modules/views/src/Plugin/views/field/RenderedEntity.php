@@ -161,9 +161,9 @@ class RenderedEntity extends FieldPluginBase implements CacheableDependencyInter
 
     $tags = [];
     foreach ($view_displays as $view_display) {
-      $tags[] = $view_display->getCacheTags();
+      $tags = array_merge($tags, $view_display->getCacheTags());
     }
-    return array_merge([], ...$tags);
+    return $tags;
   }
 
   /**

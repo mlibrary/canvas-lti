@@ -396,6 +396,7 @@ MENU_UI
     // Test menu migration with menu_ui uninstalled.
     $tests[3] = $tests[1];
     unset($tests[3]['modules_to_enable']['menu_ui']);
+    unset($tests[3]['files']['menu_ui']);
     unset($tests[3]['migrations']['menu_ui']);
     $tests[3]['expected_7'] = [
       MigrationState::NOT_FINISHED => [

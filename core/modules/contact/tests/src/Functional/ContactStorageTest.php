@@ -34,7 +34,7 @@ class ContactStorageTest extends ContactSitewideTest {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'classy';
 
   /**
    * Tests configuration options and the site-wide contact form.

@@ -22,9 +22,6 @@ class FilterAPITest extends EntityKernelTestBase {
 
   protected static $modules = ['system', 'filter', 'filter_test', 'user'];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 
@@ -206,7 +203,7 @@ class FilterAPITest extends EntityKernelTestBase {
         'filter_html' => [
           'status' => 1,
           'settings' => [
-            'allowed_html' => '<a> <b class> <c class="*"> <d class="foo bar-* *"> <e *>',
+            'allowed_html' => '<a> <b class> <c class="*"> <d class="foo bar-* *">',
           ],
         ],
       ],
@@ -220,7 +217,6 @@ class FilterAPITest extends EntityKernelTestBase {
           'b' => ['class' => TRUE],
           'c' => ['class' => TRUE],
           'd' => ['class' => ['foo' => TRUE, 'bar-*' => TRUE]],
-          'e' => ['*' => TRUE],
           '*' => ['style' => FALSE, 'on*' => FALSE, 'lang' => TRUE, 'dir' => ['ltr' => TRUE, 'rtl' => TRUE]],
         ],
       ],
@@ -511,30 +507,6 @@ class FilterAPITest extends EntityKernelTestBase {
     $vars = $filter_format->__sleep();
     $this->assertContains('filters', $vars);
     $this->assertNotContains('filterCollection', $vars);
-  }
-
-  /**
-   * Tests deprecated "forbidden tags" functionality.
-   *
-   * @group legacy
-   */
-  public function testForbiddenTagsDeprecated(): void {
-    $this->expectDeprecation('forbidden_tags for FilterInterface::getHTMLRestrictions() is deprecated in drupal:9.4.0 and is removed from drupal:10.0.0');
-    FilterFormat::create([
-      'format' => 'forbidden_tags_deprecation_test',
-      'name' => 'Forbidden tags deprecation test',
-      'filters' => [
-        'filter_test_restrict_tags_and_attributes' => [
-          'status' => TRUE,
-          'settings' => [
-            'restrictions' => [
-              'forbidden_tags' => ['p' => FALSE],
-            ],
-          ],
-        ],
-      ],
-    ])->save();
-    FilterFormat::load('forbidden_tags_deprecation_test')->getHtmlRestrictions();
   }
 
 }

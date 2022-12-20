@@ -25,9 +25,6 @@ class MessageEntityTest extends EntityKernelTestBase {
     'contact_test',
   ];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     $this->installConfig(['contact', 'contact_test']);

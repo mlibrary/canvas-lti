@@ -109,10 +109,10 @@
    *   The text format change event.
    */
   function onTextFormatChange(event) {
-    const select = event.target;
+    const $select = $(event.target);
     const field = event.data.field;
     const activeFormatID = field.getAttribute('data-editor-active-text-format');
-    const newFormatID = select.value;
+    const newFormatID = $select.val();
 
     // Prevent double-attaching if the change event is triggered manually.
     if (newFormatID === activeFormatID) {
@@ -132,7 +132,7 @@
       const message = Drupal.t(
         'Changing the text format to %text_format will permanently remove content that is not allowed in that text format.<br><br>Save your changes before switching the text format to avoid losing data.',
         {
-          '%text_format': $(select).find('option:selected')[0].textContent,
+          '%text_format': $select.find('option:selected').text(),
         },
       );
       const confirmationDialog = Drupal.dialog(`<div>${message}</div>`, {
@@ -156,7 +156,7 @@
               // cannot simply call event.preventDefault() because jQuery's
               // change event is only triggered after the change has already
               // been accepted.
-              select.value = activeFormatID;
+              $select.val(activeFormatID);
               confirmationDialog.close();
             },
           },
@@ -214,7 +214,7 @@
         }
 
         // Store the current active format.
-        const activeFormatID = editor.value;
+        const activeFormatID = $this.val();
         field.setAttribute('data-editor-active-text-format', activeFormatID);
 
         // Directly attach this text editor, if the text format is enabled.
@@ -268,7 +268,7 @@
 
       editors.forEach((editor) => {
         const $this = $(editor);
-        const activeFormatID = editor.value;
+        const activeFormatID = $this.val();
         const field = findFieldForFormatSelector($this);
         if (field && activeFormatID in settings.editor.formats) {
           Drupal.editorDetach(

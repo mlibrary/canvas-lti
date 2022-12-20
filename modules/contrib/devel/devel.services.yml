@@ -13,7 +13,7 @@ services:
 
   devel.route_subscriber:
     class: Drupal\devel\Routing\RouteSubscriber
-    arguments: ['@entity_type.manager', '@router.route_provider']
+    arguments: ['@entity_type.manager']
     tags:
       - { name: event_subscriber }
 

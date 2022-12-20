@@ -4,6 +4,7 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function ($, Backbone, Drupal, settings, document, Shepherd) {
   var queryString = decodeURI(window.location.search);
   Drupal.behaviors.tour = {
@@ -17,9 +18,11 @@
         model.on('change:isActive', function (tourModel, isActive) {
           $(document).trigger(isActive ? 'drupalTourStarted' : 'drupalTourStopped');
         });
+
         if (settings._tour_internal) {
           model.set('tour', settings._tour_internal);
         }
+
         if (/tour=?/i.test(queryString)) {
           model.set('isActive', true);
         }
@@ -54,8 +57,10 @@
     toggleTour: function toggleTour() {
       if (this.model.get('isActive')) {
         this._removeIrrelevantTourItems(this._getTour());
+
         var tourItems = this.model.get('tour');
         var that = this;
+
         if (tourItems.length) {
           settings.tourShepherdConfig.defaultStepOptions.popperOptions.modifiers.push({
             name: 'moveArrowJoyridePosition',
@@ -65,6 +70,7 @@
               var state = _ref.state;
               var arrow = state.elements.arrow;
               var placement = state.placement;
+
               if (arrow && /^top|bottom/.test(placement) && /-start|-end$/.test(placement)) {
                 var horizontalPosition = placement.split('-')[1];
                 var offset = horizontalPosition === 'start' ? 28 : state.elements.popper.clientWidth - 56;
@@ -94,6 +100,7 @@
               show: function show() {
                 var nextButton = shepherdTour.currentStep.el.querySelector('footer button');
                 nextButton.focus();
+
                 if (Drupal.tour.hasOwnProperty('convertToJoyrideMarkup')) {
                   Drupal.tour.convertToJoyrideMarkup(shepherdTour);
                 }
@@ -129,14 +136,17 @@
         if (tips && tourItem.hasOwnProperty('classes') && tourItem.classes.indexOf(tips[1]) === -1) {
           return false;
         }
+
         return !(tourItem.selector && !document.querySelector(tourItem.selector));
       });
+
       if (tourItems.length !== filteredTour.length) {
         filteredTour.forEach(function (filteredTourItem, filteredTourItemId) {
           filteredTour[filteredTourItemId].counter = Drupal.t('!tour_item of !total', {
             '!tour_item': filteredTourItemId + 1,
             '!total': filteredTour.length
           });
+
           if (filteredTourItemId === filteredTour.length - 1) {
             filteredTour[filteredTourItemId].cancelText = Drupal.t('End tour');
           }
@@ -145,6 +155,7 @@
       }
     }
   });
+
   Drupal.tour.nextButton = function (shepherdTour, tourStepConfig) {
     return {
       classes: 'button button--primary',
@@ -152,6 +163,7 @@
       action: tourStepConfig.cancelText ? shepherdTour.cancel : shepherdTour.next
     };
   };
+
   Drupal.theme.tourItemContent = function (tourStepConfig) {
     return "".concat(tourStepConfig.body, "<div class=\"tour-progress\">").concat(tourStepConfig.counter, "</div>");
   };

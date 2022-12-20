@@ -32,6 +32,9 @@
         return;
       }
 
+      const $target = $(target);
+      const $preview = $target.find('em');
+
       /**
        * Event handler that replaces date characters with value.
        *
@@ -39,19 +42,13 @@
        *   The jQuery event triggered.
        */
       function dateFormatHandler(e) {
-        const baseValue = e.target.value || '';
+        const baseValue = $(e.target).val() || '';
         const dateString = baseValue.replace(/\\?(.?)/gi, (key, value) =>
           dateFormats[key] ? dateFormats[key] : value,
         );
 
-        // Set date preview.
-        target.forEach((item) => {
-          item.querySelectorAll('em').forEach((em) => {
-            em.textContent = dateString;
-          });
-        });
-
-        $(target).toggleClass('js-hide', !dateString.length);
+        $preview.text(dateString);
+        $target.toggleClass('js-hide', !dateString.length);
       }
 
       /**

@@ -42,9 +42,6 @@ class HistoryTest extends BrowserTestBase {
    */
   protected $testNode;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

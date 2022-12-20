@@ -366,7 +366,7 @@ class LibraryDiscoveryParser {
 
     // Allow modules to add dynamic library definitions.
     $hook = 'library_info_build';
-    if ($this->moduleHandler->hasImplementations($hook, $extension)) {
+    if ($this->moduleHandler->implementsHook($extension, $hook)) {
       $libraries = NestedArray::mergeDeep($libraries, $this->moduleHandler->invoke($extension, $hook));
     }
 
@@ -544,7 +544,7 @@ class LibraryDiscoveryParser {
         return 2;
       }
       $categories[] = $category;
-      foreach ($files as $options) {
+      foreach ($files as $source => $options) {
         if (!is_array($options)) {
           return 1;
         }

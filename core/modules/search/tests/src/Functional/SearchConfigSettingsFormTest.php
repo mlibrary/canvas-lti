@@ -29,7 +29,7 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'classy';
 
   /**
    * User who can search and administer search.
@@ -45,9 +45,6 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
    */
   protected $searchNode;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 
@@ -80,7 +77,7 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
 
     // Enable the search block.
     $this->drupalPlaceBlock('search_form_block');
-    $this->drupalPlaceBlock('local_tasks_block', ['id' => 'local_tasks']);
+    $this->drupalPlaceBlock('local_tasks_block');
     $this->drupalPlaceBlock('page_title_block');
   }
 
@@ -99,14 +96,14 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
     $this->assertSession()->pageTextContains('Are you sure you want to re-index the site');
     $this->drupalGet('admin/config/search/pages/reindex');
     $this->submitForm([], 'Re-index site');
-    $this->assertSession()->statusMessageContains('All search indexes will be rebuilt', 'status');
+    $this->assertSession()->pageTextContains('All search indexes will be rebuilt');
     $this->drupalGet('admin/config/search/pages');
     $this->assertSession()->pageTextContains('There is 1 item left to index.');
 
     // Test that the form saves with the default values.
     $this->drupalGet('admin/config/search/pages');
     $this->submitForm([], 'Save configuration');
-    $this->assertSession()->statusMessageContains('The configuration options have been saved.', 'status');
+    $this->assertSession()->pageTextContains('The configuration options have been saved.');
 
     // Test that the form does not save with an invalid word length.
     $edit = [
@@ -114,8 +111,7 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
     ];
     $this->drupalGet('admin/config/search/pages');
     $this->submitForm($edit, 'Save configuration');
-    $this->assertSession()->statusMessageNotContains('The configuration options have been saved.');
-    $this->assertSession()->statusMessageContains('Minimum word length to index must be a number.', 'error');
+    $this->assertSession()->pageTextNotContains('The configuration options have been saved.');
 
     // Test logging setting. It should be off by default.
     $text = $this->randomMachineName(5);
@@ -153,7 +149,7 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
     $this->submitForm($edit, 'Save search page');
 
     // Ensure that the modifications took effect.
-    $this->assertSession()->statusMessageContains("The Dummy search type search page has been updated.", 'status');
+    $this->assertSession()->pageTextContains("The Dummy search type search page has been updated.");
     $this->drupalGet('admin/config/search/pages/manage/dummy_search_type');
     $this->assertTrue($this->assertSession()->optionExists('edit-extra-type-settings-boost', 'ii')->isSelected());
   }
@@ -201,7 +197,7 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
       foreach ($plugins as $other) {
         if ($other != $entity_id) {
           $path = 'search/' . $entities[$other]->getPath();
-          $this->assertSession()->elementNotExists('xpath', '//div[@id="block-local-tasks"]//li/a[@data-drupal-link-system-path="' . $path . '"]');
+          $this->assertSession()->elementNotExists('xpath', '//ul[@class="tabs primary"]/li/a[@data-drupal-link-system-path="' . $path . '"]');
         }
       }
 
@@ -242,7 +238,7 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
       foreach ($plugins as $entity_id) {
         $path = 'search/' . $entities[$entity_id]->getPath();
         $label = $entities[$entity_id]->label();
-        $this->assertSession()->elementTextContains('xpath', '//div[@id="block-local-tasks"]//li/a[@data-drupal-link-system-path="' . $path . '"]', $label);
+        $this->assertSession()->elementTextContains('xpath', '//ul[@class="tabs primary"]/li/a[@data-drupal-link-system-path="' . $path . '"]', $label);
       }
     }
   }
@@ -252,7 +248,7 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
    */
   public function testDefaultSearchPageOrdering() {
     $this->drupalGet('search');
-    $elements = $this->xpath('//div[@id="block-local-tasks"]//a');
+    $elements = $this->xpath('//*[contains(@class, :class)]//a', [':class' => 'tabs primary']);
     $this->assertSame(Url::fromRoute('search.view_node_search')->toString(), $elements[0]->getAttribute('href'));
     $this->assertSame(Url::fromRoute('search.view_dummy_search_type')->toString(), $elements[1]->getAttribute('href'));
     $this->assertSame(Url::fromRoute('search.view_user_search')->toString(), $elements[2]->getAttribute('href'));
@@ -284,7 +280,7 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
     $first['path'] = strtolower($this->randomMachineName(8));
     $this->submitForm($first, 'Save');
     $this->assertDefaultSearch($first_id, 'The default page matches the only search page.');
-    $this->assertSession()->statusMessageContains("The {$first['label']} search page has been added.", 'status');
+    $this->assertSession()->pageTextContains("The {$first['label']} search page has been added.");
 
     // Attempt to add a search page with an existing path.
     $edit = [];
@@ -295,7 +291,7 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
     $edit['id'] = strtolower($this->randomMachineName(8));
     $edit['path'] = $first['path'];
     $this->submitForm($edit, 'Save');
-    $this->assertSession()->statusMessageContains('The search page path must be unique.', 'error');
+    $this->assertSession()->pageTextContains('The search page path must be unique.');
 
     // Add a second search page.
     $second = [];
@@ -307,7 +303,7 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
 
     // Ensure both search pages have their tabs displayed.
     $this->drupalGet('search');
-    $elements = $this->xpath('//div[@id="block-local-tasks"]//a');
+    $elements = $this->xpath('//*[contains(@class, :class)]//a', [':class' => 'tabs primary']);
     $this->assertSame(Url::fromRoute('search.view_' . $first_id)->toString(), $elements[0]->getAttribute('href'));
     $this->assertSame(Url::fromRoute('search.view_' . $second_id)->toString(), $elements[1]->getAttribute('href'));
 
@@ -319,7 +315,7 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
     $this->drupalGet('admin/config/search/pages');
     $this->submitForm($edit, 'Save configuration');
     $this->drupalGet('search');
-    $elements = $this->xpath('//div[@id="block-local-tasks"]//a');
+    $elements = $this->xpath('//*[contains(@class, :class)]//a', [':class' => 'tabs primary']);
     $this->assertSame(Url::fromRoute('search.view_' . $second_id)->toString(), $elements[0]->getAttribute('href'));
     $this->assertSame(Url::fromRoute('search.view_' . $first_id)->toString(), $elements[1]->getAttribute('href'));
 
@@ -330,7 +326,7 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
 
     // Change the default search page.
     $this->clickLink('Set as default');
-    $this->assertSession()->statusMessageContains("The default search page is now {$second['label']}. Be sure to check the ordering of your search pages.", 'status');
+    $this->assertSession()->pageTextContains("The default search page is now {$second['label']}. Be sure to check the ordering of your search pages.");
     $this->verifySearchPageOperations($first_id, TRUE, TRUE, TRUE, FALSE);
     $this->verifySearchPageOperations($second_id, TRUE, FALSE, FALSE, FALSE);
 
@@ -351,7 +347,7 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
     $this->clickLink('Delete');
     $this->assertSession()->pageTextContains("Are you sure you want to delete the search page {$first['label']}?");
     $this->submitForm([], 'Delete');
-    $this->assertSession()->statusMessageContains("The search page {$first['label']} has been deleted.", 'status');
+    $this->assertSession()->pageTextContains("The search page {$first['label']} has been deleted.");
     $this->verifySearchPageOperations($first_id, FALSE, FALSE, FALSE, FALSE);
   }
 

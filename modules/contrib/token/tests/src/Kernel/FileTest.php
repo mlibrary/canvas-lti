@@ -11,14 +11,16 @@ use Drupal\file\Entity\File;
 class FileTest extends KernelTestBase {
 
   /**
-   * {@inheritdoc}
+   * Modules to enable.
+   *
+   * @var array
    */
-  protected static $modules = ['file'];
+  public static $modules = ['file'];
 
   /**
    * {@inheritdoc}
    */
-  public function setUp(): void {
+  public function setUp() {
     parent::setUp();
     $this->installEntitySchema('file');
   }

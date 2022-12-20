@@ -33,9 +33,6 @@ class TrackerNodeAccessTest extends BrowserTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     node_access_rebuild();

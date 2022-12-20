@@ -53,7 +53,7 @@ class ClassDiscriminatorMapping
     public function getMappedObjectType($object): ?string
     {
         foreach ($this->typesMapping as $type => $typeClass) {
-            if (is_a($object, $typeClass, true)) {
+            if (is_a($object, $typeClass)) {
                 return $type;
             }
         }

@@ -3,12 +3,12 @@
 namespace Drupal\Tests\responsive_image\Functional\Rest;
 
 use Drupal\responsive_image\Entity\ResponsiveImageStyle;
-use Drupal\Tests\rest\Functional\EntityResource\ConfigEntityResourceTestBase;
+use Drupal\Tests\rest\Functional\EntityResource\EntityResourceTestBase;
 
 /**
  * ResourceTestBase for ResponsiveImageStyle entity.
  */
-abstract class ResponsiveImageStyleResourceTestBase extends ConfigEntityResourceTestBase {
+abstract class ResponsiveImageStyleResourceTestBase extends EntityResourceTestBase {
 
   /**
    * {@inheritdoc}
@@ -117,7 +117,6 @@ abstract class ResponsiveImageStyleResourceTestBase extends ConfigEntityResource
    */
   protected function getNormalizedPostEntity() {
     // @todo Update in https://www.drupal.org/node/2300677.
-    return [];
   }
 
   /**

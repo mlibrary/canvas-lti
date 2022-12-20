@@ -21,7 +21,7 @@ class DialogTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'starterkit_theme';
+  protected $defaultTheme = 'classy';
 
   /**
    * Tests sending non-JS and AJAX requests to open and manipulate modals.
@@ -172,7 +172,8 @@ class DialogTest extends WebDriverTestBase {
     $this->drupalGet('admin/structure/contact/add');
     // Check we get a chunk of the code, we can't test the whole form as form
     // build id and token with be different.
-    $this->assertSession()->elementExists('xpath', "//form[@id='contact-form-add-form']");
+    $contact_form = $this->xpath("//form[@id='contact-form-add-form']");
+    $this->assertNotEmpty($contact_form, 'Non-JS entity form page present.');
 
     // Reset: Return to the dialog links page.
     $this->drupalGet('ajax-test/dialog');

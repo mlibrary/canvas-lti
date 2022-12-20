@@ -23,9 +23,6 @@ class StandardTest extends UnitTestCase {
    */
   protected $format;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
 
     // Mock text format configuration entity object.
@@ -34,7 +31,7 @@ class StandardTest extends UnitTestCase {
       ->getMock();
     $this->format->expects($this->any())
       ->method('getFilterTypes')
-      ->willReturn([FilterInterface::TYPE_HTML_RESTRICTOR]);
+      ->will($this->returnValue([FilterInterface::TYPE_HTML_RESTRICTOR]));
     $restrictions = [
       'allowed' => [
         'p' => TRUE,
@@ -47,7 +44,7 @@ class StandardTest extends UnitTestCase {
     ];
     $this->format->expects($this->any())
       ->method('getHtmlRestrictions')
-      ->willReturn($restrictions);
+      ->will($this->returnValue($restrictions));
   }
 
   /**

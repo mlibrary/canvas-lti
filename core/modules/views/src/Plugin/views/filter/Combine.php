@@ -14,7 +14,7 @@ use Drupal\Core\Form\FormStateInterface;
 class Combine extends StringFilter {
 
   /**
-   * @var \Drupal\views\Plugin\views\query\QueryPluginBase
+   * @var views_plugin_query_default
    */
   public $query;
 
@@ -71,7 +71,7 @@ class Combine extends StringFilter {
       $field = $this->view->field[$id];
       // Always add the table of the selected fields to be sure a table alias exists.
       $field->ensureMyTable();
-      if (!empty($field->tableAlias) && !empty($field->realField)) {
+      if (!empty($field->field_alias) && !empty($field->field_alias)) {
         $fields[] = "$field->tableAlias.$field->realField";
       }
     }

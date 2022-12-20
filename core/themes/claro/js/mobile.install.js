@@ -4,6 +4,7 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function () {
   function findActiveStep(steps) {
     for (var i = 0; i < steps.length; i++) {
@@ -11,13 +12,17 @@
         return i + 1;
       }
     }
+
     if (steps[steps.length - 1].className === 'done') {
       return steps.length;
     }
+
     return 0;
   }
+
   function installStepsSetup() {
     var steps = document.querySelectorAll('.task-list li');
+
     if (steps.length) {
       var header = document.querySelector('header[role="banner"]');
       var stepIndicator = document.createElement('div');
@@ -26,6 +31,7 @@
       header.appendChild(stepIndicator);
     }
   }
+
   if (document.addEventListener) {
     document.addEventListener('DOMContentLoaded', installStepsSetup);
   }

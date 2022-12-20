@@ -24,18 +24,13 @@ class MigrateDblogConfigsTest extends MigrateDrupal6TestBase {
    */
   protected function setUp(): void {
     parent::setUp();
-    // Enable dblog in the source database so that requirements are met.
-    $this->sourceDatabase->update('system')
-      ->condition('name', 'dblog')
-      ->fields(['status' => '1'])
-      ->execute();
     $this->executeMigration('d6_dblog_settings');
   }
 
   /**
    * Tests migration of dblog variables to dblog.settings.yml.
    */
-  public function testDblogSettings() {
+  public function testBookSettings() {
     $config = $this->config('dblog.settings');
     $this->assertSame(10000, $config->get('row_limit'));
     $this->assertConfigSchema(\Drupal::service('config.typed'), 'dblog.settings', $config->get());

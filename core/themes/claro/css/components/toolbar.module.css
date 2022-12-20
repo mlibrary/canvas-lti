@@ -25,7 +25,6 @@
   font-size: small;
   line-height: 1;
 }
-
 @media print {
   #toolbar-administration {
     display: none;
@@ -226,7 +225,6 @@ body.toolbar-tray-open.toolbar-vertical.toolbar-fixed {
   margin-left: 240px; /* LTR */
   margin-left: 15rem; /* LTR */
 }
-
 @media print {
   body.toolbar-tray-open.toolbar-vertical.toolbar-fixed {
     margin-left: 0;
@@ -237,7 +235,6 @@ body.toolbar-tray-open.toolbar-vertical.toolbar-fixed {
   margin-right: 15rem;
   margin-left: auto;
 }
-
 @media print {
   [dir="rtl"] body.toolbar-tray-open.toolbar-vertical.toolbar-fixed {
     margin-right: 0;

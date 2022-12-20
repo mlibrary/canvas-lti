@@ -51,9 +51,6 @@ class ImageThemeFunctionTest extends KernelTestBase {
    */
   protected $imageFactory;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 
@@ -190,7 +187,7 @@ class ImageThemeFunctionTest extends KernelTestBase {
     // Test using alt directly with alt attribute.
     $image_with_alt_property = [
       '#theme' => 'image',
-      '#uri' => '/core/themes/olivero/logo.svg',
+      '#uri' => '/core/themes/bartik/logo.svg',
       '#alt' => 'Regular alt',
       '#title' => 'Test title',
       '#width' => '50%',
@@ -205,7 +202,7 @@ class ImageThemeFunctionTest extends KernelTestBase {
     // Test using alt attribute inside attributes.
     $image_with_alt_attribute_alt_attribute = [
       '#theme' => 'image',
-      '#uri' => '/core/themes/olivero/logo.svg',
+      '#uri' => '/core/themes/bartik/logo.svg',
       '#width' => '50%',
       '#height' => '50%',
       '#attributes' => [
@@ -223,7 +220,7 @@ class ImageThemeFunctionTest extends KernelTestBase {
     // Test using alt attribute as property and inside attributes.
     $image_with_alt_attribute_both = [
       '#theme' => 'image',
-      '#uri' => '/core/themes/olivero/logo.svg',
+      '#uri' => '/core/themes/bartik/logo.svg',
       '#width' => '50%',
       '#height' => '50%',
       '#alt' => 'Kitten sustainable',

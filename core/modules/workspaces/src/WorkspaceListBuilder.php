@@ -121,7 +121,7 @@ class WorkspaceListBuilder extends EntityListBuilder {
           '#url' => $entity->toUrl(),
         ],
       ],
-      'owner' => $entity->getOwner()->getDisplayName(),
+      'owner' => $entity->getOwner()->getDisplayname(),
     ];
     $row['data'] = $row['data'] + parent::buildRow($entity);
 

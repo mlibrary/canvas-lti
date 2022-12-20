@@ -25,24 +25,6 @@ class NestedFormTest extends FieldTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  /**
-   * @var array
-   */
-  protected $fieldStorageSingle;
-
-  /**
-   * @var array
-   */
-  protected $fieldStorageUnlimited;
-
-  /**
-   * @var array
-   */
-  protected $field;
-
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

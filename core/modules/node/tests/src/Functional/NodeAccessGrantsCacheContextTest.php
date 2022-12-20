@@ -35,18 +35,6 @@ class NodeAccessGrantsCacheContextTest extends NodeTestBase {
   protected $noAccessUser;
 
   /**
-   * User without permission to view content.
-   *
-   * @var \Drupal\user\Entity\User
-   */
-  protected $noAccessUser2;
-
-  /**
-   * @var array
-   */
-  protected $userMapping;
-
-  /**
    * {@inheritdoc}
    */
   protected function setUp(): void {

@@ -11,7 +11,6 @@ use Symfony\Component\Serializer\Exception\InvalidArgumentException;
  * Tests the exceptions thrown by FieldNormalizer and FieldItemNormalizer.
  *
  * @group hal
- * @group legacy
  */
 class FieldNormalizerDenormalizeExceptionsTest extends UnitTestCase {
 
@@ -57,7 +56,7 @@ class FieldNormalizerDenormalizeExceptionsTest extends UnitTestCase {
       ->getMock();
     $mock->expects($this->any())
       ->method('getParent')
-      ->willReturn(NULL);
+      ->will($this->returnValue(NULL));
     return [
       [[]],
       [['target_instance' => $mock]],

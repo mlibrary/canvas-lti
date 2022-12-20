@@ -4,19 +4,24 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function ($, Drupal, debounce, once) {
   Drupal.behaviors.blockFilterByText = {
     attach: function attach(context, settings) {
       var $input = $(once('block-filter-text', 'input.block-filter-text'));
       var $table = $($input.attr('data-element'));
       var $filterRows;
+
       function filterBlockList(e) {
-        var query = e.target.value.toLowerCase();
+        var query = $(e.target).val().toLowerCase();
+
         function toggleBlockEntry(index, label) {
-          var $row = $(label).parent().parent();
-          var textMatch = label.textContent.toLowerCase().includes(query);
+          var $label = $(label);
+          var $row = $label.parent().parent();
+          var textMatch = $label.text().toLowerCase().includes(query);
           $row.toggle(textMatch);
         }
+
         if (query.length >= 2) {
           $filterRows.each(toggleBlockEntry);
           Drupal.announce(Drupal.formatPlural($table.find('tr:visible').length - 1, '1 block is available in the modified list.', '@count blocks are available in the modified list.'));
@@ -26,6 +31,7 @@
           });
         }
       }
+
       if ($table.length) {
         $filterRows = $table.find('div.block-filter-text-source');
         $input.on('keyup', debounce(filterBlockList, 200));

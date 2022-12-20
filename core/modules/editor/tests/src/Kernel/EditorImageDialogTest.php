@@ -86,7 +86,7 @@ class EditorImageDialogTest extends EntityKernelTestBase {
   public function testEditorImageDialog() {
     $input = [
       'editor_object' => [
-        'src' => '/sites/default/files/inline-images/some-file.png',
+        'src' => '/sites/default/files/inline-images/somefile.png',
         'alt' => 'fda',
         'width' => '',
         'height' => '',
@@ -102,7 +102,7 @@ class EditorImageDialogTest extends EntityKernelTestBase {
       ],
       '_drupal_ajax' => '1',
       'ajax_page_state' => [
-        'theme' => 'olivero',
+        'theme' => 'bartik',
         'theme_token' => 'some-token',
         'libraries' => '',
       ],

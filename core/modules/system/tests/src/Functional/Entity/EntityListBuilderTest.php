@@ -30,9 +30,10 @@ class EntityListBuilderTest extends BrowserTestBase {
     parent::setUp();
 
     // Create and log in user.
-    $this->drupalLogin($this->drupalCreateUser([
+    $this->webUser = $this->drupalCreateUser([
       'administer entity_test content',
-    ]));
+    ]);
+    $this->drupalLogin($this->webUser);
   }
 
   /**

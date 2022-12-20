@@ -19,11 +19,8 @@ class PathNodeFormTest extends PathTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'classy';
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 
@@ -44,7 +41,7 @@ class PathNodeFormTest extends PathTestBase {
     $this->drupalGet('node/add/page');
 
     // Make sure we have a vertical tab fieldset and 'Path' fields.
-    $assert_session->elementContains('css', '.js-form-type-vertical-tabs #edit-path-0 summary', 'URL alias');
+    $assert_session->elementContains('css', '.form-type-vertical-tabs #edit-path-0 summary', 'URL alias');
     $assert_session->fieldExists('path[0][alias]');
 
     // Disable the 'Path' field for this content type.
@@ -55,7 +52,7 @@ class PathNodeFormTest extends PathTestBase {
     $this->drupalGet('node/add/page');
 
     // See if the whole fieldset is gone now.
-    $assert_session->elementNotExists('css', '.js-form-type-vertical-tabs #edit-path-0');
+    $assert_session->elementNotExists('css', '.form-type-vertical-tabs #edit-path-0');
     $assert_session->fieldNotExists('path[0][alias]');
   }
 

@@ -30,7 +30,7 @@ class SearchAdminThemeTest extends BrowserTestBase {
    *
    * @var string
    */
-  protected $adminTheme = 'claro';
+  protected $adminTheme = 'seven';
 
   /**
    * {@inheritdoc}

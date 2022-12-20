@@ -10,7 +10,7 @@ use Drupal\media\Entity\MediaType;
  *
  * @group jsonapi
  */
-class MediaTypeTest extends ConfigEntityResourceTestBase {
+class MediaTypeTest extends ResourceTestBase {
 
   /**
    * {@inheritdoc}
@@ -110,7 +110,6 @@ class MediaTypeTest extends ConfigEntityResourceTestBase {
    */
   protected function getPostDocument() {
     // @todo Update in https://www.drupal.org/node/2300677.
-    return [];
   }
 
 }

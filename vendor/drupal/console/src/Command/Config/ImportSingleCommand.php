@@ -102,7 +102,8 @@ class ImportSingleCommand extends Command
                     $name = Path::getFilenameWithoutExtension($configFile);
                     $ymlFile = new Parser();
                     $value = $ymlFile->parse(file_get_contents($configFile));
-                    $source_storage->replaceData($name, $value);
+                    $source_storage->delete($name);
+                    $source_storage->write($name, $value);
                     $names[] = $name;
                     continue;
                 }
@@ -132,8 +133,6 @@ class ImportSingleCommand extends Command
 
             return 1;
         }
-
-        return 0;
     }
 
     private function configImport(StorageComparer $storageComparer)

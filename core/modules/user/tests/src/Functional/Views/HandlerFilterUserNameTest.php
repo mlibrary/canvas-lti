@@ -4,6 +4,7 @@ namespace Drupal\Tests\user\Functional\Views;
 
 use Drupal\views\Views;
 use Drupal\Tests\views\Functional\ViewTestBase;
+use Drupal\views\Tests\ViewTestData;
 
 /**
  * Tests the handler of the user: name filter.
@@ -55,11 +56,10 @@ class HandlerFilterUserNameTest extends ViewTestBase {
     'uid' => 'uid',
   ];
 
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp($import_test_views = TRUE, $modules = ['user_test_views']): void {
-    parent::setUp($import_test_views, $modules);
+  protected function setUp($import_test_views = TRUE): void {
+    parent::setUp($import_test_views);
+
+    ViewTestData::createTestViews(static::class, ['user_test_views']);
 
     $this->enableViewsTestModule();
 

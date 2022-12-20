@@ -56,7 +56,7 @@ class EntityResourceValidationTraitTest extends UnitTestCase {
 
     $violations->expects($this->once())
       ->method('filterByFieldAccess')
-      ->willReturn([]);
+      ->will($this->returnValue([]));
 
     $entity->validate()->willReturn($violations);
 

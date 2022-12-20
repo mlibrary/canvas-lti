@@ -38,7 +38,6 @@ Framework managers
 Release managers
 - Nathaniel Catchpole 'catch' https://www.drupal.org/u/catch
 - Jess Myrbo 'xjm' https://www.drupal.org/u/xjm
-- (provisional) Dave Long 'longwave' https://www.drupal.org/u/longwave
 - (provisional) Victoria Spagnolo 'quietone' https://www.drupal.org/u/quietone
 
 Core JavaScript packages
@@ -100,7 +99,6 @@ Block
 
 Block Content
 - Lee Rowlands 'larowlan' https://www.drupal.org/u/larowlan
-- Stephen Mustgrave 'smustgrave' https://www.drupal.org/u/smustgrave
 
 Book
 - Peter Wolanin 'pwolanin' https://www.drupal.org/u/pwolanin
@@ -119,11 +117,6 @@ CKEditor
 - Henrik Danielsson 'TwoD' https://www.drupal.org/u/TwoD
 - Wim Leers 'Wim Leers' https://www.drupal.org/u/wim-leers
 - Marek 'mlewand' Lewandowski https://www.drupal.org/u/mlewand
-
-CKEditor 5
-- Lauri Eskola 'lauriii' https://www.drupal.org/u/lauriii
-- Wim Leers 'Wim Leers' https://www.drupal.org/u/wim-leers
-- Ben Mullins 'bnjmnm' https://www.drupal.org/u/bnjmnm
 
 Claro
 - Cristina Chumillas 'ckrina' https://www.drupal.org/u/ckrina
@@ -169,17 +162,16 @@ Content Translation
 - ?
 
 Contextual
-- Lee Rowlands 'larowlan' https://www.drupal.org/u/larowlan
+- ?
 
 Cron
 - ?
 
 CSS
 - John Albin Wilkins 'JohnAlbin' https://www.drupal.org/u/johnalbin
-- Mike Herchel 'mherchel' https://www.drupal.org/u/mherchel
 
 Database API
-- David Bekker 'daffie' https://www.drupal.org/u/daffie
+- ?
 
   MySQL DB driver
   - David Strauss 'David Strauss' https://www.drupal.org/u/david-strauss
@@ -536,10 +528,6 @@ Decoupled Menus Initiative
 
 Media Initiative
 - Janez Urevc 'slashrsm' https://www.drupal.org/u/slashrsm
-
-Project Browser Initiative
-- Leslie Glynn 'leslieg' https://www.drupal.org/u/leslieg
-- Chris Wells 'chrisfromredfin' https://www.drupal.org/u/chrisfromredfin
 
 
 Core mentoring coordinators

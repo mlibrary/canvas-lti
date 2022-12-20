@@ -3,14 +3,19 @@
 namespace Drupal\Tests\aggregator\Kernel\Migrate\d7;
 
 use Drupal\aggregator\Entity\Item;
+use Drupal\Tests\migrate_drupal\Kernel\d7\MigrateDrupal7TestBase;
 
 /**
  * Tests migration of aggregator items.
  *
- * @group aggregator
- * @group legacy
+ * @group migrate_drupal_7
  */
 class MigrateAggregatorItemTest extends MigrateDrupal7TestBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  protected static $modules = ['aggregator'];
 
   /**
    * {@inheritdoc}

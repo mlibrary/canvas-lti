@@ -32,7 +32,7 @@ class DistributionProfileTest extends InstallerTestBase {
       'distribution' => [
         'name' => 'My Distribution',
         'install' => [
-          'theme' => 'claro',
+          'theme' => 'bartik',
           'finish_url' => '/root-user',
         ],
       ],

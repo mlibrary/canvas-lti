@@ -18,9 +18,6 @@ class ConfigEntityNormalizeTest extends KernelTestBase {
    */
   protected static $modules = ['config_test'];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     $this->installConfig(static::$modules);

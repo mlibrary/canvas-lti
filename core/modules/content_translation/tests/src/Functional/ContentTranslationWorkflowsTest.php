@@ -69,9 +69,6 @@ class ContentTranslationWorkflowsTest extends ContentTranslationTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

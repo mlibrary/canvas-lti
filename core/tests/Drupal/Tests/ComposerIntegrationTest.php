@@ -6,7 +6,7 @@ use Drupal\Composer\Plugin\VendorHardening\Config;
 use Drupal\Core\Composer\Composer;
 use Drupal\Tests\Composer\ComposerIntegrationTrait;
 use Drupal\TestTools\PhpUnitCompatibility\RunnerVersion;
-use Symfony\Component\Finder\Finder;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Tests Composer integration.
@@ -53,9 +53,6 @@ class ComposerIntegrationTest extends UnitTestCase {
    * @dataProvider providerTestComposerJson
    */
   public function testComposerTilde($path) {
-    if (preg_match('#composer/Metapackage/CoreRecommended/composer.json$#', $path)) {
-      $this->markTestSkipped("$path has tilde");
-    }
     $content = json_decode(file_get_contents($path), TRUE);
     $composer_keys = array_intersect(['require', 'require-dev'], array_keys($content));
     if (empty($composer_keys)) {
@@ -82,7 +79,7 @@ class ComposerIntegrationTest extends UnitTestCase {
     $data = [];
     $composer_json_finder = $this->getComposerJsonFinder(realpath(__DIR__ . '/../../../../'));
     foreach ($composer_json_finder->getIterator() as $composer_json) {
-      $data[$composer_json->getPathname()] = [$composer_json->getPathname()];
+      $data[] = [$composer_json->getPathname()];
     }
     return $data;
   }
@@ -90,42 +87,45 @@ class ComposerIntegrationTest extends UnitTestCase {
   /**
    * Tests core's composer.json replace section.
    *
-   * Verify that all core components are also listed in the 'replace' section of
+   * Verify that all core modules are also listed in the 'replace' section of
    * core's composer.json.
    */
-  public function testAllCoreComponentsReplaced(): void {
-    // Assemble a path to core components.
-    $components_path = $this->root . '/core/lib/Drupal/Component';
+  public function testAllModulesReplaced() {
+    // Assemble a path to core modules.
+    $module_path = $this->root . '/core/modules';
 
     // Grab the 'replace' section of the core composer.json file.
-    $json = json_decode(file_get_contents($this->root . '/core/composer.json'), FALSE);
+    $json = json_decode(file_get_contents($this->root . '/core/composer.json'));
     $composer_replace_packages = (array) $json->replace;
 
-    // Get a list of all the composer.json files in the components path.
-    $components_composer_json_files = [];
+    // Get a list of all the files in the module path.
+    $folders = scandir($module_path);
 
-    $composer_json_finder = new Finder();
-    $composer_json_finder->name('composer.json')
-      ->in($components_path)
-      ->ignoreUnreadableDirs();
-
-    foreach ($composer_json_finder->getIterator() as $composer_json) {
-      $components_composer_json_files[$composer_json->getPathname()] = [$composer_json->getPathname()];
+    // Make sure we only deal with directories that aren't . or ..
+    $module_names = [];
+    $discard = ['.', '..'];
+    foreach ($folders as $file_name) {
+      if ((!in_array($file_name, $discard)) && is_dir($module_path . '/' . $file_name)) {
+        // Skip any modules marked as hidden.
+        $info_yml = $module_path . '/' . $file_name . '/' . $file_name . '.info.yml';
+        if (file_exists($info_yml)) {
+          $info = Yaml::parseFile($info_yml);
+          if (!empty($info['hidden'])) {
+            continue;
+          }
+        }
+        $module_names[] = $file_name;
+      }
     }
+    $this->assertNotEmpty($module_names);
 
-    $this->assertNotEmpty($components_composer_json_files);
-    $this->assertCount(count($composer_replace_packages), $components_composer_json_files);
-
-    // Assert that each core components has a corresponding 'replace' in
+    // Assert that each core module has a corresponding 'replace' in
     // composer.json.
-    foreach ($components_composer_json_files as $components_composer_json_file) {
-      $json = json_decode(file_get_contents(reset($components_composer_json_file)), FALSE);
-      $component_name = $json->name;
-
+    foreach ($module_names as $module_name) {
       $this->assertArrayHasKey(
-        $component_name,
+        'drupal/' . $module_name,
         $composer_replace_packages,
-        'Unable to find ' . $component_name . ' in replace list of composer.json'
+        'Unable to find ' . $module_name . ' in replace list of composer.json'
       );
     }
   }

@@ -7,7 +7,7 @@ namespace Drupal\Tests\update\Functional;
  *
  * @group update
  */
-class FileTransferAuthorizeFormTest extends UpdateUploaderTestBase {
+class FileTransferAuthorizeFormTest extends UpdateTestBase {
 
   /**
    * Modules to enable.
@@ -21,9 +21,6 @@ class FileTransferAuthorizeFormTest extends UpdateUploaderTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     $admin_user = $this->drupalCreateUser([

@@ -49,7 +49,7 @@ class ProductBehaviorSettingsFormTest extends RabbitHoleBehaviorSettingsFormTest
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->store = $this->createStore();
   }
@@ -62,7 +62,6 @@ class ProductBehaviorSettingsFormTest extends RabbitHoleBehaviorSettingsFormTest
     $product_type = $storage->create([
       'id' => mb_strtolower($this->randomMachineName()),
       'label' => $this->randomString(),
-      'variationType' => 'default',
     ]);
     $storage->save($product_type);
     $this->bundle = $product_type;

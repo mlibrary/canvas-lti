@@ -80,6 +80,7 @@ class EntityTypeBundleInfoTest extends UnitTestCase {
     parent::setUp();
 
     $this->moduleHandler = $this->prophesize(ModuleHandlerInterface::class);
+    $this->moduleHandler->getImplementations('entity_type_build')->willReturn([]);
     $this->moduleHandler->alter('entity_type', Argument::type('array'))->willReturn(NULL);
 
     $this->cacheBackend = $this->prophesize(CacheBackendInterface::class);
@@ -194,15 +195,11 @@ class EntityTypeBundleInfoTest extends UnitTestCase {
    */
   public function providerTestGetBundleInfo() {
     return [
-      [
-        'apple',
-        [
+      ['apple', [
           'apple' => ['label' => 'Apple'],
         ],
       ],
-      [
-        'banana',
-        [
+      ['banana', [
           'banana' => ['label' => 'Banana'],
         ],
       ],

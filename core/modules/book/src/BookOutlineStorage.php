@@ -133,7 +133,8 @@ class BookOutlineStorage implements BookOutlineStorageInterface {
         'bid' => $link['bid'],
         'pid' => $link['pid'],
         'weight' => $link['weight'],
-      ] + $parents)
+        ] + $parents
+      )
       ->execute();
   }
 

@@ -45,9 +45,6 @@ class NodeAccessFieldTest extends NodeTestBase {
    */
   protected $fieldName;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

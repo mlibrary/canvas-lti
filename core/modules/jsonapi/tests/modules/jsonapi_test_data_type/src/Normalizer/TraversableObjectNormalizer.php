@@ -22,11 +22,4 @@ class TraversableObjectNormalizer extends NormalizerBase {
     return $object->property;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function hasCacheableSupportsMethod(): bool {
-    return TRUE;
-  }
-
 }

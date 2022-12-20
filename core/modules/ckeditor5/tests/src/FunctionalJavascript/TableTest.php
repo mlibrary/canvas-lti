@@ -53,9 +53,6 @@ class TableTest extends CKEditor5TestBase {
    */
   protected $defaultTheme = 'stark';
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 
@@ -169,14 +166,11 @@ class TableTest extends CKEditor5TestBase {
     $caption_button->click();
     $caption = $assert_session->waitForElementVisible('css', 'figure.table > figcaption');
     $this->assertEmpty($caption->getText());
-    $caption->setValue($this->captionText);
+    $this->getSession()->getDriver()->executeScript("document.querySelector('figure.table > figcaption').innerText = '$this->captionText'");
     $this->assertEquals($this->captionText, $caption->getText());
 
     // Update table cell content.
-    $table_cell = $assert_session->waitForElement('css', '.ck-editor__nested-editable .ck-table-bogus-paragraph');
-    $this->assertNotEmpty($table_cell);
-    $table_cell->click();
-    $table_cell->setValue($this->tableCellText);
+    $this->getSession()->getDriver()->executeScript("document.querySelector('.ck-editor__nested-editable .ck-table-bogus-paragraph').innerText = '$this->tableCellText'");
     $table_cell = $page->find('css', 'figure.table > table > tbody > tr > td');
     $this->assertEquals($this->tableCellText, $table_cell->getText());
 

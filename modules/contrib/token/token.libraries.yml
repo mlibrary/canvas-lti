@@ -23,5 +23,3 @@ token:
   dependencies:
     - core/jquery
     - core/drupal
-    - core/once
-    - token/jquery.treeTable

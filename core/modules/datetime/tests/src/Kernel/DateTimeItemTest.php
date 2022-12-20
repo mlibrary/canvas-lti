@@ -40,9 +40,6 @@ class DateTimeItemTest extends FieldKernelTestBase {
    */
   protected static $modules = ['datetime'];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

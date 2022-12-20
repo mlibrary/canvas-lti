@@ -57,9 +57,6 @@ class LocalActionDefaultTest extends UnitTestCase {
    */
   protected $routeProvider;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 
@@ -84,7 +81,7 @@ class LocalActionDefaultTest extends UnitTestCase {
     $this->stringTranslation->expects($this->once())
       ->method('translateString')
       ->with($this->pluginDefinition['title'])
-      ->willReturn('Example translated');
+      ->will($this->returnValue('Example translated'));
 
     $this->setupLocalActionDefault();
     $this->assertEquals('Example translated', $this->localActionDefault->getTitle());
@@ -100,7 +97,7 @@ class LocalActionDefaultTest extends UnitTestCase {
     $this->stringTranslation->expects($this->once())
       ->method('translateString')
       ->with($this->pluginDefinition['title'])
-      ->willReturn('Example translated with context');
+      ->will($this->returnValue('Example translated with context'));
 
     $this->setupLocalActionDefault();
     $this->assertEquals('Example translated with context', $this->localActionDefault->getTitle());
@@ -114,7 +111,7 @@ class LocalActionDefaultTest extends UnitTestCase {
     $this->stringTranslation->expects($this->once())
       ->method('translateString')
       ->with($this->pluginDefinition['title'])
-      ->willReturn('Example value');
+      ->will($this->returnValue('Example value'));
 
     $this->setupLocalActionDefault();
     $request = new Request();

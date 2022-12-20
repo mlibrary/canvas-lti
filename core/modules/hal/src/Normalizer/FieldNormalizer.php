@@ -71,11 +71,4 @@ class FieldNormalizer extends SerializationFieldNormalizer {
     return $normalized_field_items;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function hasCacheableSupportsMethod(): bool {
-    return TRUE;
-  }
-
 }

@@ -33,16 +33,6 @@ class NodeQueryAlterTest extends NodeTestBase {
    */
   protected $noAccessUser;
 
-  /**
-   * User without permission to view content.
-   *
-   * @var \Drupal\user\Entity\User
-   */
-  protected $noAccessUser2;
-
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

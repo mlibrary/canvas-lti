@@ -35,7 +35,7 @@ class LayoutBuilderTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'starterkit_theme';
+  protected $defaultTheme = 'classy';
 
   /**
    * The node to customize with Layout Builder.

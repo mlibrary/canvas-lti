@@ -92,16 +92,16 @@ class ForumBreadcrumbBuilderBaseTest extends UnitTestCase {
     $vocab_storage = $this->createMock('Drupal\Core\Entity\EntityStorageInterface');
     $vocab_storage->expects($this->any())
       ->method('load')
-      ->willReturnMap([
+      ->will($this->returnValueMap([
         ['forums', $prophecy->reveal()],
-      ]);
+      ]));
 
     $entity_type_manager = $this->createMock(EntityTypeManagerInterface::class);
     $entity_type_manager->expects($this->any())
       ->method('getStorage')
-      ->willReturnMap([
+      ->will($this->returnValueMap([
         ['taxonomy_vocabulary', $vocab_storage],
-      ]);
+      ]));
 
     $config_factory = $this->getConfigFactoryStub(
       [

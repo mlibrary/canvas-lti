@@ -356,6 +356,8 @@ class MediaEmbedFilterTest extends MediaEmbedFilterTestBase {
 
   /**
    * Tests that only <drupal-media> tags are processed.
+   *
+   * @see \Drupal\Tests\media\FunctionalJavascript\CKEditorIntegrationTest::testOnlyDrupalMediaTagProcessed()
    */
   public function testOnlyDrupalMediaTagProcessed() {
     $content = $this->createEmbedCode([

@@ -74,11 +74,4 @@ class FileEntityNormalizer extends ContentEntityNormalizer {
     return $entity->createFileUrl(FALSE);
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function hasCacheableSupportsMethod(): bool {
-    return TRUE;
-  }
-
 }

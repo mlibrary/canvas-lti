@@ -57,7 +57,7 @@ class ParamConversionEnhancerTest extends UnitTestCase {
     $this->paramConverterManager->expects($this->once())
       ->method('convert')
       ->with($this->isType('array'))
-      ->willReturn($expected);
+      ->will($this->returnValue($expected));
 
     $result = $this->paramConversionEnhancer->enhance($defaults, new Request());
 

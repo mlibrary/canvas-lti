@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Process\Process;
+use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Drupal\Component\Serialization\Yaml;
@@ -22,7 +22,6 @@ use Drupal\Console\Core\Utils\ConfigurationManager;
 
 class EditCommand extends Command
 {
-
     /**
      * @var ConfigFactory
      */
@@ -41,21 +40,20 @@ class EditCommand extends Command
     /**
      * EditCommand constructor.
      *
-     * @param  ConfigFactory         $configFactory
-     * @param  CachedStorage         $configStorage
-     * @param  ConfigurationManager  $configurationManager
+     * @param ConfigFactory        $configFactory
+     * @param CachedStorage        $configStorage
+     * @param ConfigurationManager $configurationManager
      */
     public function __construct(
         ConfigFactory $configFactory,
         CachedStorage $configStorage,
         ConfigurationManager $configurationManager
     ) {
-        $this->configFactory        = $configFactory;
-        $this->configStorage        = $configStorage;
+        $this->configFactory = $configFactory;
+        $this->configStorage = $configStorage;
         $this->configurationManager = $configurationManager;
         parent::__construct();
     }
-
     /**
      * {@inheritdoc}
      */
@@ -82,42 +80,34 @@ class EditCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $configName         = $input->getArgument('config-name');
-        $editor             = $input->getArgument('editor');
-        $config             = $this->configFactory->getEditable($configName);
-        $configSystem       = $this->configFactory->get('system.file');
+        $configName = $input->getArgument('config-name');
+        $editor = $input->getArgument('editor');
+        $config = $this->configFactory->getEditable($configName);
+        $configSystem = $this->configFactory->get('system.file');
         $temporaryDirectory = $configSystem->get('path.temporary') ?: '/tmp';
-        $configFile         = $temporaryDirectory.'/config-edit/'.$configName
-            .'.yml';
-        $ymlFile            = new Parser();
-        $fileSystem         = new Filesystem();
+        $configFile = $temporaryDirectory.'/config-edit/'.$configName.'.yml';
+        $ymlFile = new Parser();
+        $fileSystem = new Filesystem();
 
         if (!$configName) {
-            $this->getIo()->error(
-                $this->trans('commands.config.edit.messages.no-config')
-            );
+            $this->getIo()->error($this->trans('commands.config.edit.messages.no-config'));
 
             return 1;
         }
 
         try {
             $fileSystem->mkdir($temporaryDirectory);
-            $fileSystem->dumpFile(
-                $configFile,
-                $this->getYamlConfig($configName)
-            );
+            $fileSystem->dumpFile($configFile, $this->getYamlConfig($configName));
         } catch (IOExceptionInterface $e) {
-            $this->getIo()->error(
-                $this->trans('commands.config.edit.messages.no-directory').' '
-                .$e->getPath()
-            );
+            $this->getIo()->error($this->trans('commands.config.edit.messages.no-directory').' '.$e->getPath());
 
             return 1;
         }
         if (!$editor) {
             $editor = $this->getEditor();
         }
-        $process = new Process([$editor, $configFile]);
+        $processBuilder = new ProcessBuilder([$editor, $configFile]);
+        $process = $processBuilder->getProcess();
         $process->setTty('true');
         $process->run();
 
@@ -130,7 +120,6 @@ class EditCommand extends Command
 
         if (!$process->isSuccessful()) {
             $this->getIo()->error($process->getErrorOutput());
-
             return 1;
         }
 
@@ -142,10 +131,8 @@ class EditCommand extends Command
         $configName = $input->getArgument('config-name');
         if (!$configName) {
             $configNames = $this->configFactory->listAll();
-            $configName  = $this->getIo()->choice(
-                $this->trans(
-                    'commands.config.edit.messages.choose-configuration'
-                ),
+            $configName = $this->getIo()->choice(
+                $this->trans('commands.config.edit.messages.choose-configuration'),
                 $configNames
             );
 
@@ -161,7 +148,7 @@ class EditCommand extends Command
     protected function getYamlConfig($config_name)
     {
         if ($this->configStorage->exists($config_name)) {
-            $configuration        = $this->configStorage->read($config_name);
+            $configuration = $this->configStorage->read($config_name);
             $configurationEncoded = Yaml::encode($configuration);
         }
 
@@ -180,13 +167,13 @@ class EditCommand extends Command
             return trim($editor);
         }
 
-        $process = new Process(['bash']);
-        $process->setCommandLine('echo ${EDITOR:-${VISUAL:-nano}}');
+        $processBuilder = new ProcessBuilder(['bash']);
+        $process = $processBuilder->getProcess();
+        $process->setCommandLine('echo ${EDITOR:-${VISUAL:-vi}}');
         $process->run();
         $editor = $process->getOutput();
         $process->stop();
 
         return trim($editor);
     }
-
 }

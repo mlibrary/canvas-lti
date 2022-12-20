@@ -17,11 +17,6 @@ class FieldUiLocalAction extends DeriverBase implements ContainerDeriverInterfac
   use StringTranslationTrait;
 
   /**
-   * The route provider to load routes by name.
-   */
-  protected $routeProvider;
-
-  /**
    * The entity type manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface

@@ -148,11 +148,8 @@ class ViewsForm implements FormInterface, ContainerInjectionInterface {
     }
     $form_state->set(['step_controller', 'views_form_views_form'], 'Drupal\views\Form\ViewsFormMainForm');
 
-    // Views forms without view arguments return the same Base Form ID and
-    // Form ID. Base form ID should only be added when different.
-    if ($this->getBaseFormId() !== $this->getFormId()) {
-      $form_state->addBuildInfo('base_form_id', $this->getBaseFormId());
-    }
+    // Add the base form ID.
+    $form_state->addBuildInfo('base_form_id', $this->getBaseFormId());
 
     $form = [];
 

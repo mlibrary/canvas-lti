@@ -42,9 +42,6 @@ class BreakpointTest extends UnitTestCase {
    */
   protected $stringTranslation;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

@@ -10,7 +10,6 @@ use Drupal\Tests\rdf\Traits\RdfParsingTrait;
  * Tests the RDFa markup of Users.
  *
  * @group rdf
- * @group legacy
  */
 class UserAttributesTest extends BrowserTestBase {
 
@@ -35,9 +34,6 @@ class UserAttributesTest extends BrowserTestBase {
    */
   protected $baseUri;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     rdf_get_mapping('user', 'user')

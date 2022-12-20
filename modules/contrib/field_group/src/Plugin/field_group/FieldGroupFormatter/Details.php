@@ -6,7 +6,7 @@ use Drupal\Component\Utility\Html;
 use Drupal\field_group\FieldGroupFormatterBase;
 
 /**
- * Plugin implementation of the 'details' formatter.
+ * Details element.
  *
  * @FieldGroupFormatter(
  *   id = "details",

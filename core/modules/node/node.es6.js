@@ -17,10 +17,9 @@
       const $context = $(context);
 
       $context.find('.node-form-author').drupalSetSummary((context) => {
-        const nameElement = context.querySelector('.field--name-uid input');
-        const name = nameElement && nameElement.value;
-        const dateElement = context.querySelector('.field--name-created input');
-        const date = dateElement && dateElement.value;
+        const $authorContext = $(context);
+        const name = $authorContext.find('.field--name-uid input').val();
+        const date = $authorContext.find('.field--name-created input').val();
 
         if (name && date) {
           return Drupal.t('By @name on @date', {
@@ -45,7 +44,7 @@
             .find('input:checked')
             .next('label')
             .each(function () {
-              vals.push(Drupal.checkPlain(this.textContent.trim()));
+              vals.push(Drupal.checkPlain($(this).text().trim()));
             });
           return vals.join(', ');
         }

@@ -31,17 +31,15 @@ class IframeOnlyFormatter extends IframeDefaultFormatter {
       if (empty($item->url)) {
         continue;
       }
-      if (!isset($item->title)) {
-        $item->title = '';
-      }
       foreach($field_settings as $field_key => $field_val) {
         if (in_array($field_key, $allow_attributes)) {
           continue;
         }
         $item->{$field_key} = $field_val;
       }
-      // KEEP title-attribute in item->title for Accessibility title-attribute in iframe tag //$item->title = '';
-      // no visible header, but title-attr in item as options
+      if (!(property_exists($item, 'title') && $item->title !== null)) {
+        $item->title = '';
+      }
       $elements[$delta] = self::iframeIframe('', $item->url, $item);
       // Tokens can be dynamic, so its not cacheable.
       if (isset($settings['tokensupport']) && $settings['tokensupport']) {

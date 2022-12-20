@@ -88,7 +88,7 @@ class LocaleConfigManagerTest extends KernelTestBase {
 
     $block = Block::create([
       'id' => 'test_default_config',
-      'theme' => 'stark',
+      'theme' => 'classy',
       'status' => TRUE,
       'region' => 'content',
       'plugin' => 'local_tasks_block',
@@ -105,7 +105,7 @@ class LocaleConfigManagerTest extends KernelTestBase {
 
     // Install the theme after creating the block as installing the theme will
     // install the block provided by the locale_test module.
-    \Drupal::service('theme_installer')->install(['stark']);
+    \Drupal::service('theme_installer')->install(['classy']);
 
     // The test_default_config block provided by the locale_test module will not
     // be installed because a block with the same ID already exists.

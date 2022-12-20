@@ -57,7 +57,7 @@ class RabbitHoleBehaviorSettingsTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->configFactory = $this->container->get('config.factory');
     $this->behaviorSettingsManager = $this->container

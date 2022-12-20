@@ -91,7 +91,7 @@ class UpdateFetcherTest extends UnitTestCase implements LoggerInterface {
     $container->expects($this->any())
       ->method('get')
       ->with('logger.factory')
-      ->willReturn($logger_factory);
+      ->will($this->returnValue($logger_factory));
     \Drupal::setContainer($container);
   }
 

@@ -39,7 +39,7 @@ class ForumTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'starterkit_theme';
+  protected $defaultTheme = 'classy';
 
   /**
    * A user with various administrative privileges.
@@ -202,24 +202,27 @@ class ForumTest extends BrowserTestBase {
     // Verify the topic and post counts on the forum page.
     $this->drupalGet('forum');
 
-    // Find the table row for the forum that has new posts. This cannot be
-    // reliably identified by any CSS selector or its position in the table,
-    // so look for an element with the "New posts" title and traverse up the
-    // document tree until we get to the table row that contains it.
-    $row = $this->assertSession()->elementExists('css', '[title="New posts"]');
-    while ($row && $row->getTagName() !== 'tr') {
-      $row = $row->getParent();
-    }
-    $this->assertNotEmpty($row);
-    $cells = $row->findAll('css', 'td');
-    $this->assertCount(4, $cells);
+    // Verify row for testing forum.
+    $forum_arg = [':forum' => 'forum-list-' . $this->forum['tid']];
 
-    // Topics cell contains number of topics (6), number of unread topics (also
-    // 6), and the forum name.
-    $this->assertEquals('6 6 new posts in forum ' . $this->forum['name'], $cells[1]->getText(), 'Number of topics, number of unread topics, and forum name found.');
+    // Topics cell contains number of topics and number of unread topics.
+    $xpath = $this->assertSession()->buildXPathQuery('//tr[@id=:forum]//td[@class="forum__topics"]', $forum_arg);
+    $topics = $this->xpath($xpath);
+    $topics = trim($topics[0]->getText());
+    // The extracted text contains the number of topics (6) and new posts
+    // (also 6) in this table cell.
+    $this->assertEquals('6 6 new posts in forum ' . $this->forum['name'], $topics, 'Number of topics found.');
+
+    // Verify the number of unread topics.
+    $elements = $this->xpath('//tr[@id=:forum]//td[@class="forum__topics"]//a', $forum_arg);
+    $this->assertStringStartsWith('6 new posts', $elements[0]->getText(), 'Number of unread topics found.');
+    // Verify that the forum name is in the unread topics text.
+    $elements = $this->xpath('//tr[@id=:forum]//em[@class="placeholder"]', $forum_arg);
+    $this->assertStringContainsString($this->forum['name'], $elements[0]->getText(), 'Forum name found in unread topics text.');
 
     // Verify total number of posts in forum.
-    $this->assertEquals('6', $cells[2]->getText(), 'Number of posts found.');
+    $elements = $this->xpath('//tr[@id=:forum]//td[@class="forum__posts"]', $forum_arg);
+    $this->assertEquals('6', $elements[0]->getText(), 'Number of posts found.');
 
     // Test loading multiple forum nodes on the front page.
     $this->drupalLogin($this->drupalCreateUser([
@@ -379,7 +382,8 @@ class ForumTest extends BrowserTestBase {
     $this->drupalGet('admin/structure/taxonomy/manage/tags/add');
     $this->assertSession()->fieldExists('parent[]');
     // Test relations widget exists.
-    $this->assertSession()->elementExists('xpath', "//details[@id='edit-relations']");
+    $relations_widget = $this->xpath("//details[@id='edit-relations']");
+    $this->assertTrue(isset($relations_widget[0]), 'Relations widget element found.');
   }
 
   /**

@@ -5,7 +5,6 @@ namespace Drupal\text\Plugin\Field\FieldType;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\TypedData\DataDefinition;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Plugin implementation of the 'text_with_summary' field type.
@@ -38,11 +37,11 @@ class TextWithSummaryItem extends TextItemBase {
     $properties = parent::propertyDefinitions($field_definition);
 
     $properties['summary'] = DataDefinition::create('string')
-      ->setLabel(new TranslatableMarkup('Summary'));
+      ->setLabel(t('Summary'));
 
     $properties['summary_processed'] = DataDefinition::create('string')
-      ->setLabel(new TranslatableMarkup('Processed summary'))
-      ->setDescription(new TranslatableMarkup('The summary text with the text format applied.'))
+      ->setLabel(t('Processed summary'))
+      ->setDescription(t('The summary text with the text format applied.'))
       ->setComputed(TRUE)
       ->setClass('\Drupal\text\TextProcessed')
       ->setSetting('text source', 'summary');
@@ -92,15 +91,15 @@ class TextWithSummaryItem extends TextItemBase {
 
     $element['display_summary'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Summary input'),
+      '#title' => t('Summary input'),
       '#default_value' => $settings['display_summary'],
-      '#description' => $this->t('This allows authors to input an explicit summary, to be displayed instead of the automatically trimmed text when using the "Summary or trimmed" display type.'),
+      '#description' => t('This allows authors to input an explicit summary, to be displayed instead of the automatically trimmed text when using the "Summary or trimmed" display type.'),
     ];
 
     $element['required_summary'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Require summary'),
-      '#description' => $this->t('The summary will also be visible when marked as required.'),
+      '#title' => t('Require summary'),
+      '#description' => t('The summary will also be visible when marked as required.'),
       '#default_value' => $settings['required_summary'],
     ];
 

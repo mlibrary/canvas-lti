@@ -43,10 +43,9 @@ const DRUPAL_MINIMUM_PHP = \Drupal::MINIMUM_PHP;
  * - An error is shown in the status report that the PHP version is too old.
  *
  * @deprecated in drupal:9.1.0 and is removed from drupal:10.0.0. Use
- *   \Drupal\Core\Utility\PhpRequirements::getMinimumSupportedPhp() instead.
+ *   \Drupal::MINIMUM_SUPPORTED_PHP instead.
  *
  * @see https://www.drupal.org/node/2909361
- * @see https://www.drupal.org/node/3261451
  */
 const DRUPAL_MINIMUM_SUPPORTED_PHP = \Drupal::MINIMUM_SUPPORTED_PHP;
 
@@ -113,7 +112,7 @@ const DRUPAL_EXTENSION_NAME_MAX_LENGTH = 50;
  * @see http://php.net/manual/reserved.variables.server.php
  * @see http://php.net/manual/function.time.php
  *
- * @deprecated in drupal:8.3.0 and is removed from drupal:11.0.0.
+ * @deprecated in drupal:8.3.0 and is removed from drupal:10.0.0.
  *   Use \Drupal::time()->getRequestTime();
  *
  * @see https://www.drupal.org/node/2785211
@@ -318,7 +317,7 @@ function watchdog_exception($type, Exception $exception, $message = NULL, $varia
 
   // Use a default value if $message is not set.
   if (empty($message)) {
-    $message = Error::DEFAULT_ERROR_MESSAGE;
+    $message = '%type: @message in %function (line %line of %file).';
   }
 
   if ($link) {
@@ -441,7 +440,7 @@ function drupal_valid_test_ua($new_prefix = NULL) {
     }
     // The file properties add more entropy not easily accessible to others.
     $key = $private_key . filectime(__FILE__) . fileinode(__FILE__);
-    $time_diff = time() - $time;
+    $time_diff = REQUEST_TIME - $time;
     $test_hmac = Crypt::hmacBase64($check_string, $key);
     // Since we are making a local request a 600 second time window is allowed,
     // and the HMAC must match.

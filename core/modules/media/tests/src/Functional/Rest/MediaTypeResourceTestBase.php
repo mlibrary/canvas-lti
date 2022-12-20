@@ -3,9 +3,9 @@
 namespace Drupal\Tests\media\Functional\Rest;
 
 use Drupal\media\Entity\MediaType;
-use Drupal\Tests\rest\Functional\EntityResource\ConfigEntityResourceTestBase;
+use Drupal\Tests\rest\Functional\EntityResource\EntityResourceTestBase;
 
-abstract class MediaTypeResourceTestBase extends ConfigEntityResourceTestBase {
+abstract class MediaTypeResourceTestBase extends EntityResourceTestBase {
 
   /**
    * {@inheritdoc}
@@ -73,7 +73,6 @@ abstract class MediaTypeResourceTestBase extends ConfigEntityResourceTestBase {
    */
   protected function getNormalizedPostEntity() {
     // @todo Update in https://www.drupal.org/node/2300677.
-    return [];
   }
 
 }

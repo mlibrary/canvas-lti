@@ -7,7 +7,7 @@
  * to automatically adjust their settings based on the editor configuration.
  */
 
-(function ($, Drupal, document) {
+(function ($, _, Drupal, document) {
   /**
    * Editor configuration namespace.
    *
@@ -226,7 +226,7 @@
       ) {
         // If the tag does not exist in the universe, then it definitely can't
         // have this specific property value.
-        if (!universe.hasOwnProperty(tag)) {
+        if (!_.has(universe, tag)) {
           return false;
         }
 
@@ -240,11 +240,8 @@
         }
 
         // The simple case: no wildcard in property value.
-        if (propertyValue.indexOf('*') === -1) {
-          if (
-            universe.hasOwnProperty(tag) &&
-            universe[tag].hasOwnProperty(key)
-          ) {
+        if (_.indexOf(propertyValue, '*') === -1) {
+          if (_.has(universe, tag) && _.has(universe[tag], key)) {
             if (allowing) {
               universe[tag][key] = true;
             }
@@ -256,7 +253,7 @@
 
         let atLeastOneFound = false;
         const regex = key.replace(/\*/g, '[^ ]*');
-        Object.keys(universe[tag]).forEach((key) => {
+        _.each(_.keys(universe[tag]), (key) => {
           if (key.match(regex)) {
             atLeastOneFound = true;
             if (allowing) {
@@ -289,7 +286,7 @@
         allowing,
       ) {
         let atLeastOneFound = false;
-        Object.keys(universe).forEach((tag) => {
+        _.each(_.keys(universe), (tag) => {
           if (
             // eslint-disable-next-line no-use-before-define
             findPropertyValuesOnTag(
@@ -343,7 +340,7 @@
         }
 
         let atLeastOneFound = false;
-        propertyValues.forEach((propertyValue) => {
+        _.each(propertyValues, (propertyValue) => {
           if (
             findPropertyValueOnTag(
               universe,
@@ -370,7 +367,7 @@
        */
       function deleteAllTagsFromUniverseIfAllowed(universe) {
         let atLeastOneDeleted = false;
-        Object.keys(universe).forEach((tag) => {
+        _.each(_.keys(universe), (tag) => {
           // eslint-disable-next-line no-use-before-define
           if (deleteFromUniverseIfAllowed(universe, tag)) {
             atLeastOneDeleted = true;
@@ -397,10 +394,8 @@
           return deleteAllTagsFromUniverseIfAllowed(universe);
         }
         if (
-          universe.hasOwnProperty(tag) &&
-          Object.keys(universe[tag])
-            .filter((key) => key !== 'touchedByAllowedPropertyRule')
-            .every((key) => universe[tag][key])
+          _.has(universe, tag) &&
+          _.every(_.omit(universe[tag], 'touchedByAllowedPropertyRule'))
         ) {
           delete universe[tag];
           return true;
@@ -424,15 +419,12 @@
         const properties = ['attributes', 'styles', 'classes'];
 
         // Check if a tag in the universe is forbidden.
-        const allRequiredTags = Object.keys(universe);
+        const allRequiredTags = _.keys(universe);
         let filterRule;
         for (let i = 0; i < filterStatus.rules.length; i++) {
           filterRule = filterStatus.rules[i];
           if (filterRule.allow === false) {
-            const intersection = filterRule.tags.filter((tag) =>
-              allRequiredTags.includes(tag),
-            );
-            if (intersection.length > 0) {
+            if (_.intersection(allRequiredTags, filterRule.tags).length > 0) {
               return true;
             }
           }
@@ -493,18 +485,18 @@
         let tag;
         for (
           let l = 0;
-          Object.keys(universe).length > 0 && l < filterStatus.rules.length;
+          !_.isEmpty(universe) && l < filterStatus.rules.length;
           l++
         ) {
           filterRule = filterStatus.rules[l];
           if (filterRule.allow === true) {
             for (
               let m = 0;
-              Object.keys(universe).length > 0 && m < filterRule.tags.length;
+              !_.isEmpty(universe) && m < filterRule.tags.length;
               m++
             ) {
               tag = filterRule.tags[m];
-              if (universe.hasOwnProperty(tag)) {
+              if (_.has(universe, tag)) {
                 universe[tag].tag = true;
                 deleteFromUniverseIfAllowed(universe, tag);
               }
@@ -516,7 +508,7 @@
         // For all filter rules…
         for (
           let i = 0;
-          Object.keys(universe).length > 0 && i < filterStatus.rules.length;
+          !_.isEmpty(universe) && i < filterStatus.rules.length;
           i++
         ) {
           filterRule = filterStatus.rules[i];
@@ -528,8 +520,7 @@
             // … for all those tags …
             for (
               let j = 0;
-              Object.keys(universe).length > 0 &&
-              j < filterRule.restrictedTags.tags.length;
+              !_.isEmpty(universe) && j < filterRule.restrictedTags.tags.length;
               j++
             ) {
               tag = filterRule.restrictedTags.tags[j];
@@ -613,19 +604,17 @@
         // values and/or rules for forbidding tag property values. For details:
         // see the comments below.
         // @see generateUniverseFromFeatureRequirements()
-        if (filterStatus.rules.some(({ allow }) => allow)) {
+        if (_.some(_.pluck(filterStatus.rules, 'allow'))) {
           // If the universe is empty, then everything was explicitly allowed
           // and our job is done: this filter allows this feature!
-          if (Object.keys(universe).length === 0) {
+          if (_.isEmpty(universe)) {
             return true;
           }
           // Otherwise, it is still possible that this feature is allowed.
 
           // Every tag must be explicitly allowed if there are filter rules
           // doing tag whitelisting.
-          if (
-            !Object.keys(universe).every((tagName) => universe[tagName].tag)
-          ) {
+          if (!_.every(_.pluck(universe, 'tag'))) {
             return false;
           }
           // Every tag was explicitly allowed, but since the universe is not
@@ -637,18 +626,18 @@
           // matter that the properties: this could never have happened
           // anyway. It's only this late that we can know this for certain.
 
-          const tags = Object.keys(universe);
+          const tags = _.keys(universe);
           // Figure out if there was any rule applying whitelisting tag
           // restrictions to each of the remaining tags.
           for (let i = 0; i < tags.length; i++) {
             const tag = tags[i];
-            if (universe.hasOwnProperty(tag)) {
+            if (_.has(universe, tag)) {
               if (universe[tag].touchedByAllowedPropertyRule === false) {
                 delete universe[tag];
               }
             }
           }
-          return Object.keys(universe).length === 0;
+          return _.isEmpty(universe);
         }
         // Otherwise, if all filter rules were doing blacklisting, then the sole
         // fact that we got to this point indicates that this filter allows for
@@ -1034,4 +1023,4 @@
       });
     },
   };
-})(jQuery, Drupal, document);
+})(jQuery, _, Drupal, document);

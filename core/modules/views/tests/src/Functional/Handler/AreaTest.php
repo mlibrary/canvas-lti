@@ -34,11 +34,8 @@ class AreaTest extends ViewTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp($import_test_views = TRUE, $modules = ['views_test_config']): void {
-    parent::setUp($import_test_views, $modules);
+  protected function setUp($import_test_views = TRUE): void {
+    parent::setUp($import_test_views);
 
     $this->enableViewsTestModule();
   }
@@ -178,7 +175,8 @@ class AreaTest extends ViewTestBase {
     $this->drupalGet('admin/structure/views/nojs/handler/test_example_area/default/empty/test_example');
 
     // Test that the list is token present.
-    $this->assertSession()->elementExists('xpath', '//ul[@class="global-tokens"]');
+    $element = $this->xpath('//ul[@class="global-tokens"]');
+    $this->assertNotEmpty($element, 'Token list found on the options form.');
 
     $empty_handler = &$view->empty['test_example'];
 

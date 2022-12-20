@@ -2,16 +2,15 @@
 
 namespace Drupal\Tests\rdf\Kernel\Migrate\d7;
 
-use Drupal\Tests\migrate_drupal\Kernel\MigrateDrupalTestBase;
 use Drupal\rdf\RdfMappingInterface;
+use Drupal\Tests\migrate_drupal\Kernel\d7\MigrateDrupal7TestBase;
 
 /**
  * Tests RDF mappings migration from Drupal 7 to 8.
  *
  * @group rdf
- * @group legacy
  */
-class MigrateRdfMappingTest extends MigrateDrupalTestBase {
+class MigrateRdfMappingTest extends MigrateDrupal7TestBase {
 
   /**
    * {@inheritdoc}
@@ -30,7 +29,6 @@ class MigrateRdfMappingTest extends MigrateDrupalTestBase {
   protected function setUp(): void {
     parent::setUp();
 
-    $this->loadFixture(__DIR__ . '/../../../../fixtures/drupal7.php');
     $this->installConfig(static::$modules);
 
     $this->executeMigrations([

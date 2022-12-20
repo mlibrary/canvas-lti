@@ -77,13 +77,6 @@ class EntityResourceTest extends JsonapiKernelTestBase {
   protected $node3;
 
   /**
-   * A node with related nodes.
-   *
-   * @var \Drupal\node\Entity\Node
-   */
-  protected $node4;
-
-  /**
    * A fake request.
    *
    * @var \Symfony\Component\HttpFoundation\Request

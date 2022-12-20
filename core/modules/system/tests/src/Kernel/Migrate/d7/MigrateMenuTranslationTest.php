@@ -20,6 +20,8 @@ class MigrateMenuTranslationTest extends MigrateDrupal7TestBase {
     'language',
     'locale',
     'menu_link_content',
+    // Required for translation migrations.
+    'migrate_drupal_multilingual',
   ];
 
   /**

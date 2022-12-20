@@ -137,7 +137,7 @@ class Views {
    * @param array $base
    *   An array of possible base tables.
    *
-   * @return array
+   * @return
    *   A keyed array of in the form of 'base_table' => 'Description'.
    */
   public static function fetchPluginNames($type, $key = NULL, array $base = []) {
@@ -284,12 +284,12 @@ class Views {
    * @param string $filter
    *   Filters the views on status. Can either be 'all' (default), 'enabled' or
    *   'disabled'
-   * @param \Drupal\views\ViewExecutable|string $exclude_view
+   * @param mixed $exclude_view
    *   View or current display to exclude.
    *   Either a:
-   *   - Views executable object
-   *   - views name, for example 'my_view'
-   *   - views name and display ID separated by ':', for example 'my_view:page'
+   *   - views object (containing $exclude_view->storage->name and $exclude_view->current_display)
+   *   - views name as string:  e.g. my_view
+   *   - views name and display id (separated by ':'): e.g. my_view:default
    * @param bool $optgroup
    *   If TRUE, returns an array with optgroups for each view (will be ignored for
    *   $views_only = TRUE). Can be used by select
@@ -298,7 +298,7 @@ class Views {
    *
    * @return array
    *   An associative array for use in select.
-   *   - key: view name and display ID separated by ':', or the view name only.
+   *   - key: view name and display id separated by ':', or the view name only.
    */
   public static function getViewsAsOptions($views_only = FALSE, $filter = 'all', $exclude_view = NULL, $optgroup = FALSE, $sort = FALSE) {
 
@@ -308,7 +308,7 @@ class Views {
       case 'disabled':
       case 'enabled':
         $filter = ucfirst($filter);
-        $views = call_user_func(static::class . "::get{$filter}Views");
+        $views = call_user_func("static::get{$filter}Views");
         break;
 
       default:

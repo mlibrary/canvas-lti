@@ -26,6 +26,11 @@ class SearchPageCacheTagsTest extends BrowserTestBase {
   protected $defaultTheme = 'stark';
 
   /**
+   * {@inheritdoc}
+   */
+  protected $dumpHeaders = TRUE;
+
+  /**
    * A user with permission to search content.
    *
    * @var \Drupal\user\UserInterface

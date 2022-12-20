@@ -20,6 +20,7 @@ class BlockConfigSchemaTest extends KernelTestBase {
    */
   protected static $modules = [
     'block',
+    'aggregator',
     'book',
     'block_content',
     'comment',
@@ -69,7 +70,7 @@ class BlockConfigSchemaTest extends KernelTestBase {
       $id = strtolower($this->randomMachineName());
       $block = Block::create([
         'id' => $id,
-        'theme' => 'stark',
+        'theme' => 'classy',
         'weight' => 00,
         'status' => TRUE,
         'region' => 'content',

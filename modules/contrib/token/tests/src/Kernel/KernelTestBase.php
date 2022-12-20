@@ -13,21 +13,16 @@ abstract class KernelTestBase extends BaseKernelTestBase {
   use TokenTestTrait;
 
   /**
-   * {@inheritdoc}
+   * Modules to enable.
+   *
+   * @var array
    */
-  protected static $modules = [
-    'path',
-    'token',
-    'token_module_test',
-    'system',
-    'user',
-    'path_alias',
-  ];
+  public static $modules = ['path', 'token', 'token_module_test', 'system', 'user', 'path_alias'];
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     $this->installEntitySchema('path_alias');

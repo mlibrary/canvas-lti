@@ -32,11 +32,6 @@ class LocaleConfigTranslationTest extends BrowserTestBase {
   protected $defaultTheme = 'stark';
 
   /**
-   * @var \Drupal\locale\StringStorageInterface
-   */
-  protected $storage;
-
-  /**
    * {@inheritdoc}
    */
   protected function setUp(): void {

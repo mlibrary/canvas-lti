@@ -41,9 +41,6 @@ abstract class EntityLanguageTestBase extends EntityKernelTestBase {
 
   protected static $modules = ['language', 'entity_test'];
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp() {
     parent::setUp();
 
@@ -59,7 +56,7 @@ abstract class EntityLanguageTestBase extends EntityKernelTestBase {
     $this->installConfig(['language']);
 
     // Create the test field.
-    $this->container->get('module_handler')->loadInclude('entity_test', 'install');
+    module_load_install('entity_test');
     entity_test_install();
 
     // Enable translations for the test entity type.

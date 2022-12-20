@@ -6,10 +6,8 @@ use Drupal\Component\Plugin\Derivative\DeriverInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Creates additional plugin definitions.
- *
- * The created definitions are based on an existing definition using service
- * injection.
+ * Provides additional plugin definitions based on an existing definition using
+ * service injection.
  */
 interface ContainerDeriverInterface extends DeriverInterface {
 

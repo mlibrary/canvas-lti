@@ -31,7 +31,6 @@ class TranslateFilterForm extends TranslateFormBase {
       '#type' => 'details',
       '#title' => $this->t('Filter translatable strings'),
       '#open' => TRUE,
-      '#attributes' => ['class' => ['clearfix']],
     ];
     foreach ($filters as $key => $filter) {
       // Special case for 'string' filter.

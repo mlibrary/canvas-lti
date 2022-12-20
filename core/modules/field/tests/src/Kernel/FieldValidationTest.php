@@ -24,9 +24,6 @@ class FieldValidationTest extends FieldKernelTestBase {
    */
   private $entity;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

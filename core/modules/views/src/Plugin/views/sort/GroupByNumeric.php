@@ -14,11 +14,6 @@ use Drupal\views\Views;
 class GroupByNumeric extends SortPluginBase {
 
   /**
-   * The original handler.
-   */
-  protected $handler;
-
-  /**
    * {@inheritdoc}
    */
   public function init(ViewExecutable $view, DisplayPluginBase $display, array &$options = NULL) {

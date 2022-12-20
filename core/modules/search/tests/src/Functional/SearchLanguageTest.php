@@ -31,9 +31,6 @@ class SearchLanguageTest extends BrowserTestBase {
    */
   protected $searchableNodes;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

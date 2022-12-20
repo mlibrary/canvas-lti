@@ -51,8 +51,7 @@ trait NodeCreationTrait {
    *       'type' => 'article',
    *     ));
    *   @endcode
-   *   The following defaults are provided, if the node has the field in
-   *   question:
+   *   The following defaults are provided:
    *   - body: Random string using the default filter format:
    *     @code
    *       $values['body'][0] = array(
@@ -70,38 +69,32 @@ trait NodeCreationTrait {
   protected function createNode(array $values = []) {
     // Populate defaults array.
     $values += [
-      'title' => $this->randomMachineName(8),
-      'type' => 'page',
+      'body'      => [
+        [
+          'value' => $this->randomMachineName(32),
+          'format' => filter_default_format(),
+        ],
+      ],
+      'title'     => $this->randomMachineName(8),
+      'type'      => 'page',
     ];
-
-    // Create node object.
-    $node = Node::create($values);
-
-    // If the node has a field named 'body', we assume it's a body field and
-    // that the filter module is present.
-    if (!array_key_exists('body', $values) && $node->hasField('body')) {
-      $body = [
-        'value' => $this->randomMachineName(32),
-        'format' => filter_default_format(),
-      ];
-      $node->set('body', $body);
-    }
 
     if (!array_key_exists('uid', $values)) {
       $user = User::load(\Drupal::currentUser()->id());
       if ($user) {
-        $uid = $user->id();
+        $values['uid'] = $user->id();
       }
       elseif (method_exists($this, 'setUpCurrentUser')) {
         /** @var \Drupal\user\UserInterface $user */
         $user = $this->setUpCurrentUser();
-        $uid = $user->id();
+        $values['uid'] = $user->id();
       }
       else {
-        $uid = 0;
+        $values['uid'] = 0;
       }
-      $node->set('uid', $uid);
     }
+
+    $node = Node::create($values);
     $node->save();
 
     return $node;

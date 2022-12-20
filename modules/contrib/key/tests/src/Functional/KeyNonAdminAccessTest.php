@@ -18,7 +18,7 @@ class KeyNonAdminAccessTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['key'];
+  public static $modules = ['key'];
 
   /**
    * A non-admin authenticated user.
@@ -35,7 +35,7 @@ class KeyNonAdminAccessTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->createTestKey('key_foo');
     $this->createTestKeyConfigOverride('test_override', 'key_foo');

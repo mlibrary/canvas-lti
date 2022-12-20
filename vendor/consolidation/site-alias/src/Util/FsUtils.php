@@ -2,6 +2,7 @@
 namespace Consolidation\SiteAlias\Util;
 
 use Symfony\Component\Filesystem\Filesystem;
+use Webmozart\PathUtil\Path;
 
 class FsUtils
 {

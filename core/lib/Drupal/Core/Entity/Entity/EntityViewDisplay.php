@@ -12,10 +12,8 @@ use Drupal\Core\Render\Element;
 use Drupal\Core\TypedData\TranslatableInterface as TranslatableDataInterface;
 
 /**
- * Configuration entity.
- *
- * Contains display options for all components of a rendered entity in a given
- * view mode.
+ * Configuration entity that contains display options for all components of a
+ * rendered entity in a given view mode.
  *
  * @ConfigEntityType(
  *   id = "entity_view_display",

@@ -52,7 +52,7 @@ class Debug extends \Twig_Extension {
     return [
       new \Twig_SimpleFunction('devel_dump', [$this, 'dump'], $options),
       new \Twig_SimpleFunction('kpr', [$this, 'dump'], $options),
-      // Preserve familiar kint() function for dumping.
+      //  Preserve familiar kint() function for dumping
       new \Twig_SimpleFunction('kint', [$this, 'kint'], $options),
       new \Twig_SimpleFunction('devel_message', [$this, 'message'], $options),
       new \Twig_SimpleFunction('dpm', [$this, 'message'], $options),
@@ -88,17 +88,11 @@ class Debug extends \Twig_Extension {
 
   /**
    * @param \Twig_Environment $env
-   *   The twig environment instance.
    * @param array $context
-   *   An array of parameters passed to the template.
    * @param array $args
-   *   An array of parameters passed the function.
-   * @param string $plugin_id
-   *   The plugin id. Defaults to null.
+   * @param null $plugin_id
    *
-   * @return string|null
-   *   String representation of the input variables, or null if twig_debug mode
-   *   is tunred off.
+   * @return false|string|null
    */
   private function doDump(\Twig_Environment $env, array $context, array $args = [], $plugin_id = NULL) {
     if (!$env->isDebug()) {

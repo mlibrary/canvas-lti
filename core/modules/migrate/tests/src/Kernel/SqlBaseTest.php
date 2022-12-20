@@ -225,16 +225,12 @@ class TestSqlBase extends SqlBase {
   /**
    * {@inheritdoc}
    */
-  public function getIds() {
-    return [];
-  }
+  public function getIds() {}
 
   /**
    * {@inheritdoc}
    */
-  public function fields() {
-    throw new \RuntimeException(__METHOD__ . " not implemented for " . __CLASS__);
-  }
+  public function fields() {}
 
   /**
    * {@inheritdoc}

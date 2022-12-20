@@ -21,7 +21,7 @@ class Broken extends SelectionPluginBase {
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
     $form['selection_handler'] = [
-      '#markup' => $this->t('The selected selection handler is broken.'),
+      '#markup' => t('The selected selection handler is broken.'),
     ];
     return $form;
   }

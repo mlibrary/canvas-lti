@@ -19,9 +19,6 @@ class EntityFieldDefaultValueTest extends EntityKernelTestBase {
    */
   protected $uuid;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     // Initiate the generator object.

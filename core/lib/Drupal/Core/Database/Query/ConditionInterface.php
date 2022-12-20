@@ -170,7 +170,7 @@ interface ConditionInterface {
   /**
    * Gets a complete list of all values to insert into the prepared statement.
    *
-   * @return array
+   * @return
    *   An associative array of placeholders and values.
    */
   public function arguments();
@@ -192,7 +192,7 @@ interface ConditionInterface {
   /**
    * Check whether a condition has been previously compiled.
    *
-   * @return bool
+   * @return
    *   TRUE if the condition has been previously compiled.
    */
   public function compiled();

@@ -49,9 +49,9 @@ class UnpublishByKeywordNode extends ConfigurableActionBase {
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form['keywords'] = [
-      '#title' => $this->t('Keywords'),
+      '#title' => t('Keywords'),
       '#type' => 'textarea',
-      '#description' => $this->t('The content will be unpublished if it contains any of the phrases above. Use a case-sensitive, comma-separated list of phrases. Example: funny, bungee jumping, "Company, Inc."'),
+      '#description' => t('The content will be unpublished if it contains any of the phrases above. Use a case-sensitive, comma-separated list of phrases. Example: funny, bungee jumping, "Company, Inc."'),
       '#default_value' => Tags::implode($this->configuration['keywords']),
     ];
     return $form;

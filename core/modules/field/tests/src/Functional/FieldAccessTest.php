@@ -38,9 +38,6 @@ class FieldAccessTest extends FieldTestBase {
    */
   protected $testViewFieldValue;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

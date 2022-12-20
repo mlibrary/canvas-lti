@@ -45,13 +45,6 @@ abstract class DateTimeHandlerTestBase extends ViewsKernelTestBase {
   protected $nodes = [];
 
   /**
-   * Column map.
-   *
-   * @var string[]
-   */
-  protected $map;
-
-  /**
    * {@inheritdoc}
    */
   protected function setUp($import_test_views = TRUE) {

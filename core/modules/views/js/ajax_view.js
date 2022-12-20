@@ -4,8 +4,10 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function ($, Drupal, drupalSettings) {
   Drupal.behaviors.ViewsAjaxView = {};
+
   Drupal.behaviors.ViewsAjaxView.attach = function (context, settings) {
     if (settings && settings.views && settings.views.ajaxViews) {
       var ajaxViews = settings.views.ajaxViews;
@@ -14,12 +16,14 @@
       });
     }
   };
+
   Drupal.behaviors.ViewsAjaxView.detach = function (context, settings, trigger) {
     if (trigger === 'unload') {
       if (settings && settings.views && settings.views.ajaxViews) {
         var ajaxViews = settings.views.ajaxViews;
         Object.keys(ajaxViews || {}).forEach(function (i) {
           var selector = ".js-view-dom-id-".concat(ajaxViews[i].view_dom_id);
+
           if ($(selector, context).length) {
             delete Drupal.views.instances[i];
             delete settings.views.ajaxViews[i];
@@ -28,22 +32,29 @@
       }
     }
   };
+
   Drupal.views = {};
   Drupal.views.instances = {};
+
   Drupal.views.ajaxView = function (settings) {
     var selector = ".js-view-dom-id-".concat(settings.view_dom_id);
     this.$view = $(selector);
     var ajaxPath = drupalSettings.views.ajax_path;
+
     if (ajaxPath.constructor.toString().indexOf('Array') !== -1) {
       ajaxPath = ajaxPath[0];
     }
+
     var queryString = window.location.search || '';
+
     if (queryString !== '') {
       queryString = queryString.slice(1).replace(/q=[^&]+&?|&?render=[^&]+/, '');
+
       if (queryString !== '') {
         queryString = (/\?/.test(ajaxPath) ? '&' : '?') + queryString;
       }
     }
+
     this.element_settings = {
       url: ajaxPath + queryString,
       submit: settings,
@@ -65,6 +76,7 @@
     });
     this.refreshViewAjax = Drupal.ajax(selfSettings);
   };
+
   Drupal.views.ajaxView.prototype.attachExposedFormAjax = function () {
     var that = this;
     this.exposedFormAjax = [];
@@ -76,12 +88,15 @@
       that.exposedFormAjax[index] = Drupal.ajax(selfSettings);
     });
   };
+
   Drupal.views.ajaxView.prototype.filterNestedViews = function () {
     return !this.$view.parents('.view').length;
   };
+
   Drupal.views.ajaxView.prototype.attachPagerAjax = function () {
     this.$view.find('ul.js-pager__items > li > a, th.views-field a, .attachment .views-summary a').each($.proxy(this.attachPagerLinkAjax, this));
   };
+
   Drupal.views.ajaxView.prototype.attachPagerLinkAjax = function (id, link) {
     var $link = $(link);
     var viewData = {};
@@ -94,12 +109,15 @@
     });
     this.pagerAjax = Drupal.ajax(selfSettings);
   };
+
   Drupal.AjaxCommands.prototype.viewsScrollTop = function (ajax, response) {
     var offset = $(response.selector).offset();
     var scrollTarget = response.selector;
+
     while ($(scrollTarget).scrollTop() === 0 && $(scrollTarget).parent()) {
       scrollTarget = $(scrollTarget).parent();
     }
+
     if (offset.top - 10 < $(scrollTarget).scrollTop()) {
       $(scrollTarget).animate({
         scrollTop: offset.top - 10

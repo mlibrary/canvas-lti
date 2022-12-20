@@ -4,6 +4,7 @@
 * https://www.drupal.org/node/2815083
 * @preserve
 **/
+
 (function ($, window, Drupal) {
   Drupal.behaviors.insertTest = {
     attach: function attach(context) {

@@ -67,12 +67,12 @@ class CsrfTokenGeneratorTest extends UnitTestCase {
     $key = Crypt::randomBytesBase64();
     $this->privateKey->expects($this->any())
       ->method('get')
-      ->willReturn($key);
+      ->will($this->returnValue($key));
 
     $seed = Crypt::randomBytesBase64();
     $this->sessionMetadata->expects($this->any())
       ->method('getCsrfTokenSeed')
-      ->willReturn($seed);
+      ->will($this->returnValue($seed));
   }
 
   /**
@@ -97,11 +97,11 @@ class CsrfTokenGeneratorTest extends UnitTestCase {
     $key = Crypt::randomBytesBase64();
     $this->privateKey->expects($this->any())
       ->method('get')
-      ->willReturn($key);
+      ->will($this->returnValue($key));
 
     $this->sessionMetadata->expects($this->once())
       ->method('getCsrfTokenSeed')
-      ->willReturn(NULL);
+      ->will($this->returnValue(NULL));
 
     $this->sessionMetadata->expects($this->once())
       ->method('setCsrfTokenSeed')

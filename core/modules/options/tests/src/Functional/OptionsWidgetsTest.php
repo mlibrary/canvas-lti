@@ -54,9 +54,6 @@ class OptionsWidgetsTest extends FieldTestBase {
    */
   protected $float;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
 

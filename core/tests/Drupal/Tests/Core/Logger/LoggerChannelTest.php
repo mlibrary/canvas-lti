@@ -137,14 +137,14 @@ class LoggerChannelTest extends UnitTestCase {
     $account_mock = $this->createMock('Drupal\Core\Session\AccountInterface');
     $account_mock->expects($this->any())
       ->method('id')
-      ->willReturn(1);
+      ->will($this->returnValue(1));
 
     $request_mock = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')
       ->onlyMethods(['getClientIp'])
       ->getMock();
     $request_mock->expects($this->any())
       ->method('getClientIp')
-      ->willReturn('127.0.0.1');
+      ->will($this->returnValue('127.0.0.1'));
     $request_mock->headers = $this->createMock('Symfony\Component\HttpFoundation\ParameterBag');
 
     // No request or account.
