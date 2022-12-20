@@ -30,9 +30,6 @@ use function unserialize;
  * elements from the queue and it also acts like an Iterator without removing
  * the elements. This behaviour can be used in mixed scenarios with high
  * performance boost.
- *
- * @template TValue of mixed
- * @template-implements Iterator<int, TValue>
  */
 class FastPriorityQueue implements Iterator, Countable, Serializable
 {
@@ -40,20 +37,20 @@ class FastPriorityQueue implements Iterator, Countable, Serializable
     public const EXTR_PRIORITY = PhpSplPriorityQueue::EXTR_PRIORITY;
     public const EXTR_BOTH     = PhpSplPriorityQueue::EXTR_BOTH;
 
-    /** @var self::EXTR_* */
+    /** @var integer */
     protected $extractFlag = self::EXTR_DATA;
 
     /**
      * Elements of the queue, divided by priorities
      *
-     * @var array<int, list<TValue>>
+     * @var array
      */
     protected $values = [];
 
     /**
      * Array of priorities
      *
-     * @var array<int, int>
+     * @var array
      */
     protected $priorities = [];
 
@@ -67,28 +64,28 @@ class FastPriorityQueue implements Iterator, Countable, Serializable
     /**
      * Max priority
      *
-     * @var int|null
+     * @var integer|null
      */
     protected $maxPriority;
 
     /**
      * Total number of elements in the queue
      *
-     * @var int
+     * @var integer
      */
     protected $count = 0;
 
     /**
      * Index of the current element in the queue
      *
-     * @var int
+     * @var integer
      */
     protected $index = 0;
 
     /**
      * Sub index of the current element in the same priority level
      *
-     * @var int
+     * @var integer
      */
     protected $subIndex = 0;
 
@@ -115,11 +112,11 @@ class FastPriorityQueue implements Iterator, Countable, Serializable
     /**
      * Insert an element in the queue with a specified priority
      *
-     * @param TValue $value
-     * @param int    $priority
+     * @param mixed $value
+     * @param integer $priority
      * @return void
      */
-    public function insert(mixed $value, $priority)
+    public function insert($value, $priority)
     {
         if (! is_int($priority)) {
             throw new Exception\InvalidArgumentException('The priority must be an integer');
@@ -136,7 +133,7 @@ class FastPriorityQueue implements Iterator, Countable, Serializable
      * Extract an element in the queue according to the priority and the
      * order of insertion
      *
-     * @return TValue|int|array{data: TValue, priority: int}|false
+     * @return mixed
      */
     public function extract()
     {
@@ -158,9 +155,10 @@ class FastPriorityQueue implements Iterator, Countable, Serializable
      * the same item has been added multiple times, it will not remove other
      * instances.
      *
+     * @param  mixed $datum
      * @return bool False if the item was not found, true otherwise.
      */
-    public function remove(mixed $datum)
+    public function remove($datum)
     {
         $currentIndex    = $this->index;
         $currentSubIndex = $this->subIndex;
@@ -213,7 +211,7 @@ class FastPriorityQueue implements Iterator, Countable, Serializable
     /**
      * Get the current element in the queue
      *
-     * @return TValue|int|array{data: TValue|false, priority: int}|false
+     * @return mixed
      */
     #[ReturnTypeWillChange]
     public function current()
@@ -310,7 +308,7 @@ class FastPriorityQueue implements Iterator, Countable, Serializable
      *
      * Array will be priority => data pairs
      *
-     * @return list<TValue|int|array{data: TValue, priority: int}>
+     * @return array
      */
     public function toArray()
     {
@@ -353,21 +351,26 @@ class FastPriorityQueue implements Iterator, Countable, Serializable
     /**
      * Set the extract flag
      *
-     * @param self::EXTR_* $flag
+     * @param integer $flag
      * @return void
      */
     public function setExtractFlags($flag)
     {
-        $this->extractFlag = match ($flag) {
-            self::EXTR_DATA, self::EXTR_PRIORITY, self::EXTR_BOTH => $flag,
-            default => throw new Exception\InvalidArgumentException("The extract flag specified is not valid"),
-        };
+        switch ($flag) {
+            case self::EXTR_DATA:
+            case self::EXTR_PRIORITY:
+            case self::EXTR_BOTH:
+                $this->extractFlag = $flag;
+                break;
+            default:
+                throw new Exception\InvalidArgumentException("The extract flag specified is not valid");
+        }
     }
 
     /**
      * Check if the queue is empty
      *
-     * @return bool
+     * @return boolean
      */
     public function isEmpty()
     {
@@ -377,9 +380,10 @@ class FastPriorityQueue implements Iterator, Countable, Serializable
     /**
      * Does the queue contain the given datum?
      *
+     * @param  mixed $datum
      * @return bool
      */
-    public function contains(mixed $datum)
+    public function contains($datum)
     {
         foreach ($this->values as $values) {
             if (in_array($datum, $values)) {

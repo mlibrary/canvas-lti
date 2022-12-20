@@ -75,7 +75,7 @@ class Uri
      * Useful for chained validations
      *
      * @param  string $uri
-     * @return static
+     * @return self
      */
     public static function factory($uri)
     {

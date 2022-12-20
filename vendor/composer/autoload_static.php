@@ -84,7 +84,9 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
             'Symfony\\Contracts\\Service\\' => 26,
             'Symfony\\Contracts\\HttpClient\\' => 29,
             'Symfony\\Contracts\\EventDispatcher\\' => 34,
+            'Symfony\\Contracts\\Cache\\' => 24,
             'Symfony\\Component\\Yaml\\' => 23,
+            'Symfony\\Component\\VarExporter\\' => 30,
             'Symfony\\Component\\VarDumper\\' => 28,
             'Symfony\\Component\\Validator\\' => 28,
             'Symfony\\Component\\Translation\\' => 30,
@@ -105,9 +107,9 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
             'Symfony\\Component\\CssSelector\\' => 30,
             'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Component\\Config\\' => 25,
+            'Symfony\\Component\\Cache\\' => 24,
             'Symfony\\Cmf\\Component\\Routing\\' => 30,
             'Symfony\\Bridge\\PsrHttpMessage\\' => 30,
-            'StellaMaris\\Clock\\' => 18,
             'Stecman\\Component\\Symfony\\Console\\BashCompletion\\' => 49,
             'SelfUpdate\\' => 11,
         ),
@@ -124,7 +126,6 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
             'Psr\\Http\\Server\\' => 16,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
-            'Psr\\Clock\\' => 10,
             'Psr\\Cache\\' => 10,
             'PhpParser\\' => 10,
             'PHPMailer\\PHPMailer\\' => 20,
@@ -303,9 +304,17 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
         array (
             0 => __DIR__ . '/..' . '/symfony/event-dispatcher-contracts',
         ),
+        'Symfony\\Contracts\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/cache-contracts',
+        ),
         'Symfony\\Component\\Yaml\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/yaml',
+        ),
+        'Symfony\\Component\\VarExporter\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/var-exporter',
         ),
         'Symfony\\Component\\VarDumper\\' => 
         array (
@@ -387,6 +396,10 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
         array (
             0 => __DIR__ . '/..' . '/symfony/config',
         ),
+        'Symfony\\Component\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/cache',
+        ),
         'Symfony\\Cmf\\Component\\Routing\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony-cmf/routing/src',
@@ -394,10 +407,6 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
         'Symfony\\Bridge\\PsrHttpMessage\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/psr-http-message-bridge',
-        ),
-        'StellaMaris\\Clock\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/stella-maris/clock/src',
         ),
         'Stecman\\Component\\Symfony\\Console\\BashCompletion\\' => 
         array (
@@ -440,10 +449,6 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
-        'Psr\\Clock\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/clock/src',
-        ),
         'Psr\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
@@ -474,8 +479,8 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
         ),
         'League\\Uri\\' => 
         array (
-            0 => __DIR__ . '/..' . '/league/uri/src',
-            1 => __DIR__ . '/..' . '/league/uri-interfaces/src',
+            0 => __DIR__ . '/..' . '/league/uri-interfaces/src',
+            1 => __DIR__ . '/..' . '/league/uri/src',
         ),
         'League\\OAuth2\\Server\\' => 
         array (

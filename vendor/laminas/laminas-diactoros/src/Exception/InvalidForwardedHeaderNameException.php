@@ -6,6 +6,7 @@ namespace Laminas\Diactoros\Exception;
 
 use Laminas\Diactoros\ServerRequestFilter\FilterUsingXForwardedHeaders;
 
+use function get_class;
 use function gettype;
 use function is_object;
 use function is_string;
@@ -13,10 +14,11 @@ use function sprintf;
 
 class InvalidForwardedHeaderNameException extends RuntimeException implements ExceptionInterface
 {
-    public static function forHeader(mixed $name): self
+    /** @param mixed $name */
+    public static function forHeader($name): self
     {
         if (! is_string($name)) {
-            $name = sprintf('(value of type %s)', is_object($name) ? $name::class : gettype($name));
+            $name = sprintf('(value of type %s)', is_object($name) ? get_class($name) : gettype($name));
         }
 
         return new self(sprintf(

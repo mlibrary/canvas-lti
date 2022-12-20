@@ -47,6 +47,8 @@ class JsonResponse extends Response
     /** @var mixed */
     private $payload;
 
+    private int $encodingOptions;
+
     /**
      * Create a JSON response with the given data.
      *
@@ -69,9 +71,10 @@ class JsonResponse extends Response
         $data,
         int $status = 200,
         array $headers = [],
-        private int $encodingOptions = self::DEFAULT_JSON_FLAGS
+        int $encodingOptions = self::DEFAULT_JSON_FLAGS
     ) {
         $this->setPayload($data);
+        $this->encodingOptions = $encodingOptions;
 
         $json = $this->jsonEncode($data, $this->encodingOptions);
         $body = $this->createBodyFromJson($json);
@@ -89,7 +92,10 @@ class JsonResponse extends Response
         return $this->payload;
     }
 
-    public function withPayload(mixed $data): JsonResponse
+    /**
+     * @param mixed $data
+     */
+    public function withPayload($data): JsonResponse
     {
         $new = clone $this;
         $new->setPayload($data);
@@ -120,9 +126,10 @@ class JsonResponse extends Response
     /**
      * Encode the provided data to JSON.
      *
+     * @param mixed $data
      * @throws Exception\InvalidArgumentException If unable to encode the $data to JSON.
      */
-    private function jsonEncode(mixed $data, int $encodingOptions): string
+    private function jsonEncode($data, int $encodingOptions): string
     {
         if (is_resource($data)) {
             throw new Exception\InvalidArgumentException('Cannot JSON encode resources');
@@ -144,7 +151,10 @@ class JsonResponse extends Response
         return $json;
     }
 
-    private function setPayload(mixed $data): void
+    /**
+     * @param mixed $data
+     */
+    private function setPayload($data): void
     {
         if (is_object($data)) {
             $data = clone $data;

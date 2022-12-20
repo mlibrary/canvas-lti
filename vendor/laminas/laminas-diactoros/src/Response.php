@@ -7,6 +7,7 @@ namespace Laminas\Diactoros;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
+use function get_class;
 use function gettype;
 use function is_float;
 use function is_numeric;
@@ -177,7 +178,7 @@ class Response implements ResponseInterface
         if (! is_string($reasonPhrase)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Unsupported response reason phrase; must be a string, received %s',
-                is_object($reasonPhrase) ? $reasonPhrase::class : gettype($reasonPhrase)
+                is_object($reasonPhrase) ? get_class($reasonPhrase) : gettype($reasonPhrase)
             ));
         }
 

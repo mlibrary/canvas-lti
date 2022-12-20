@@ -15,7 +15,7 @@ use function substr;
 class StandaloneExtensionManager implements ExtensionManagerInterface
 {
     /** @var array<string, class-string> */
-    private array $extensions = [
+    private $extensions = [
         'Atom\Renderer\Feed'               => Extension\Atom\Renderer\Feed::class,
         'Content\Renderer\Entry'           => Extension\Content\Renderer\Entry::class,
         'DublinCore\Renderer\Entry'        => Extension\DublinCore\Renderer\Entry::class,

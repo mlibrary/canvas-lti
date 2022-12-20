@@ -6,7 +6,7 @@ namespace Laminas\Diactoros;
 
 use function array_key_exists;
 use function is_string;
-use function str_starts_with;
+use function strpos;
 use function strtolower;
 use function strtr;
 use function substr;
@@ -26,7 +26,7 @@ function marshalHeadersFromSapi(array $server): array
             ];
             return isset($contentHeaders[$key]);
         }
-        : static fn(string $key): bool => str_starts_with($key, 'CONTENT_');
+        : static fn(string $key): bool => strpos($key, 'CONTENT_') === 0;
 
     $headers = [];
     foreach ($server as $key => $value) {
@@ -40,7 +40,7 @@ function marshalHeadersFromSapi(array $server): array
 
         // Apache prefixes environment variables with REDIRECT_
         // if they are added by rewrite rules
-        if (str_starts_with($key, 'REDIRECT_')) {
+        if (strpos($key, 'REDIRECT_') === 0) {
             $key = substr($key, 9);
 
             // We will not overwrite existing variables with the
@@ -50,7 +50,7 @@ function marshalHeadersFromSapi(array $server): array
             }
         }
 
-        if (str_starts_with($key, 'HTTP_')) {
+        if (strpos($key, 'HTTP_') === 0) {
             $name           = strtr(strtolower(substr($key, 5)), '_', '-');
             $headers[$name] = $value;
             continue;

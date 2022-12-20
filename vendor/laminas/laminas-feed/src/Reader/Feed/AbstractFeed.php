@@ -20,10 +20,6 @@ use function method_exists;
 use function sprintf;
 use function strpos;
 
-/**
- * @template TItem of Reader\Entry\Rss|Reader\Entry\Atom
- * @template-implements FeedInterface<TItem>
- */
 abstract class AbstractFeed implements FeedInterface
 {
     /**

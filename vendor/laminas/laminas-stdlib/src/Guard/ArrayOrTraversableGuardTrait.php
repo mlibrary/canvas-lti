@@ -8,8 +8,10 @@ use Exception;
 use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Traversable;
 
-use function get_debug_type;
+use function get_class;
+use function gettype;
 use function is_array;
+use function is_object;
 use function sprintf;
 
 /**
@@ -27,7 +29,7 @@ trait ArrayOrTraversableGuardTrait
      * @throws Exception
      */
     protected function guardForArrayOrTraversable(
-        mixed $data,
+        $data,
         $dataName = 'Argument',
         $exceptionClass = InvalidArgumentException::class
     ) {
@@ -35,7 +37,7 @@ trait ArrayOrTraversableGuardTrait
             $message = sprintf(
                 "%s must be an array or Traversable, [%s] given",
                 $dataName,
-                get_debug_type($data)
+                is_object($data) ? get_class($data) : gettype($data)
             );
             throw new $exceptionClass($message);
         }

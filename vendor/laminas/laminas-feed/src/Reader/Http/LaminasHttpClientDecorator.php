@@ -8,6 +8,7 @@ use Laminas\Feed\Reader\Exception;
 use Laminas\Http\Client as LaminasHttpClient;
 use Laminas\Http\Headers;
 
+use function get_class;
 use function gettype;
 use function implode;
 use function is_array;
@@ -18,7 +19,8 @@ use function sprintf;
 
 class LaminasHttpClientDecorator implements HeaderAwareClientInterface
 {
-    private LaminasHttpClient $client;
+    /** @var LaminasHttpClient */
+    private $client;
 
     public function __construct(LaminasHttpClient $client)
     {
@@ -75,7 +77,7 @@ class LaminasHttpClientDecorator implements HeaderAwareClientInterface
                 throw new Exception\InvalidArgumentException(sprintf(
                     'Header values provided to %s::get must be arrays of values; received %s',
                     self::class,
-                    is_object($values) ? $values::class : gettype($values)
+                    is_object($values) ? get_class($values) : gettype($values)
                 ));
             }
 
@@ -85,7 +87,7 @@ class LaminasHttpClientDecorator implements HeaderAwareClientInterface
                         'Individual header values provided to %s::get must be strings or numbers; '
                         . 'received %s for header %s',
                         self::class,
-                        is_object($value) ? $value::class : gettype($value),
+                        is_object($value) ? get_class($value) : gettype($value),
                         $name
                     ));
                 }

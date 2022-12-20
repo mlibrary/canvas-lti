@@ -9,6 +9,7 @@ use Laminas\ServiceManager\Exception\InvalidServiceException;
 use Psr\Container\ContainerInterface;
 
 use function class_exists;
+use function get_class;
 use function gettype;
 use function is_object;
 use function method_exists;
@@ -74,7 +75,7 @@ abstract class AbstractPluginManager extends ServiceManager implements PluginMan
                 '%s expects a ConfigInterface or ContainerInterface instance as the first argument; received %s',
                 self::class,
                 is_object($configInstanceOrParentLocator)
-                    ? $configInstanceOrParentLocator::class
+                    ? get_class($configInstanceOrParentLocator)
                     : gettype($configInstanceOrParentLocator)
             ));
         }
@@ -177,7 +178,7 @@ abstract class AbstractPluginManager extends ServiceManager implements PluginMan
      *
      * @psalm-assert InstanceType $instance
      */
-    public function validate(mixed $instance)
+    public function validate($instance)
     {
         if (method_exists($this, 'validatePlugin')) {
             trigger_error(sprintf(
@@ -196,7 +197,7 @@ abstract class AbstractPluginManager extends ServiceManager implements PluginMan
             'Plugin manager "%s" expected an instance of type "%s", but "%s" was received',
             self::class,
             $this->instanceOf,
-            is_object($instance) ? $instance::class : gettype($instance)
+            is_object($instance) ? get_class($instance) : gettype($instance)
         ));
     }
 

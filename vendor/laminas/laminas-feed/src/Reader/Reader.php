@@ -14,6 +14,7 @@ use Laminas\Stdlib\ErrorHandler;
 use function array_unique;
 use function file_get_contents;
 use function function_exists;
+use function get_class;
 use function gettype;
 use function in_array;
 use function ini_restore;
@@ -129,7 +130,7 @@ class Reader implements ReaderImportInterface
     public static function disableEntityLoader($flag = true)
     {
         if (LIBXML_VERSION < 20900) {
-            return libxml_disable_entity_loader($flag); // phpcs:ignore
+            return libxml_disable_entity_loader($flag);
         }
         return $flag;
     }
@@ -330,7 +331,7 @@ class Reader implements ReaderImportInterface
             throw new Exception\RuntimeException(sprintf(
                 'Did not receive a %s\Http\ResponseInterface from the provided HTTP client; received "%s"',
                 __NAMESPACE__,
-                is_object($response) ? $response::class : gettype($response)
+                is_object($response) ? get_class($response) : gettype($response)
             ));
         }
 
@@ -754,9 +755,7 @@ class Reader implements ReaderImportInterface
      * Utility method to apply array_unique operation to a multidimensional
      * array.
      *
-     * @template TInput of array
-     * @param TInput $array
-     * @return TInput
+     * @return array
      */
     public static function arrayUnique(array $array)
     {

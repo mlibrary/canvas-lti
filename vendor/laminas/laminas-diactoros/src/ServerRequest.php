@@ -35,6 +35,15 @@ class ServerRequest implements ServerRequestInterface
 
     private array $attributes = [];
 
+    private array $cookieParams = [];
+
+    /** @var null|array|object */
+    private $parsedBody;
+
+    private array $queryParams = [];
+
+    private array $serverParams;
+
     private array $uploadedFiles;
 
     /**
@@ -44,22 +53,22 @@ class ServerRequest implements ServerRequestInterface
      * @param null|string $method HTTP method for the request, if any.
      * @param string|resource|StreamInterface $body Message body, if any.
      * @param array $headers Headers for the message, if any.
-     * @param array $cookieParams Cookies for the message, if any.
+     * @param array $cookies Cookies for the message, if any.
      * @param array $queryParams Query params for the message, if any.
      * @param null|array|object $parsedBody The deserialized body parameters, if any.
      * @param string $protocol HTTP protocol version.
      * @throws Exception\InvalidArgumentException For any invalid value.
      */
     public function __construct(
-        private array $serverParams = [],
+        array $serverParams = [],
         array $uploadedFiles = [],
         $uri = null,
         ?string $method = null,
         $body = 'php://input',
         array $headers = [],
-        private array $cookieParams = [],
-        private array $queryParams = [],
-        private $parsedBody = null,
+        array $cookies = [],
+        array $queryParams = [],
+        $parsedBody = null,
         string $protocol = '1.1'
     ) {
         $this->validateUploadedFiles($uploadedFiles);
@@ -69,7 +78,11 @@ class ServerRequest implements ServerRequestInterface
         }
 
         $this->initialize($uri, $method, $body, $headers);
+        $this->serverParams  = $serverParams;
         $this->uploadedFiles = $uploadedFiles;
+        $this->cookieParams  = $cookies;
+        $this->queryParams   = $queryParams;
+        $this->parsedBody    = $parsedBody;
         $this->protocol      = $protocol;
     }
 

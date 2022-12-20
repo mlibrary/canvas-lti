@@ -33,7 +33,7 @@ class Deleted
      * Set the feed character encoding
      *
      * @param  null|string $encoding
-     * @return $this
+     * @return static
      * @throws Exception\InvalidArgumentException
      */
     public function setEncoding($encoding)

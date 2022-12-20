@@ -24,7 +24,7 @@ trait EmptyGuardTrait
      * @throws Exception
      */
     protected function guardAgainstEmpty(
-        mixed $data,
+        $data,
         $dataName = 'Argument',
         $exceptionClass = InvalidArgumentException::class
     ) {
