@@ -16,7 +16,7 @@ use function substr;
 /**
  * Simple lexer for docblock annotations.
  *
- * @template-extends AbstractLexer<DocLexer::T_*, string>
+ * @template-extends AbstractLexer<DocLexer::T_*>
  */
 final class DocLexer extends AbstractLexer
 {
