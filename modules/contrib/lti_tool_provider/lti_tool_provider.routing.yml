@@ -91,3 +91,10 @@ lti_tool_provider.settings:
     _title: 'LTI Settings'
   requirements:
     _permission: 'administer site configuration'
+lti_tool_provider.allow_storage:
+  path: '/allow-storage'
+  defaults:
+    _controller: 'Drupal\lti_tool_provider\Controller\AllowStorage::content'
+    _title: 'Allow Storage'
+  requirements:
+    _access: 'TRUE'

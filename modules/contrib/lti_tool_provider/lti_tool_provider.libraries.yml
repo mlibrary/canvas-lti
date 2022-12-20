@@ -1,0 +1,8 @@
+allow_storage:
+  header: true
+  js:
+    js/allow-storage.js: {}
+allow_storage_full:
+  header: false
+  js:
+    js/allow-storage-full.js: {}

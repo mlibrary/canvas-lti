@@ -37,6 +37,10 @@ class LTIToolProviderV1P3Launch extends ControllerBase {
       $payload = $context->getPayload();
       $custom = $payload->getCustom();
 
+      if ($request->query->has('platform_redirect_url')) {
+        return new RedirectResponse(\Drupal::request()->getBaseUrl().'/allow-storage?platform_redirect_url='.$request->query->get('platform_redirect_url'));
+      }
+
       $event = new LtiToolProviderLaunchEvent($context, $custom['destination'] ?? '/');
       $eventDispatcher->dispatch(LtiToolProviderEvents::LAUNCH, $event);
 
