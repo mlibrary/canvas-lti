@@ -83,7 +83,7 @@
           },
           "drupal/lti_tool_provider": {
             "add a test student user and fix 1.3": "patches/test-student-1.1and1.3-B.patch",
-            "safari itp": "https://www.drupal.org/files/issues/2022-10-21/lti_safari_itp.patch",
+            "safari itp": "https://www.drupal.org/files/issues/2022-12-21/lti_safari_itp-3316822-3.patch",
             "dont use consumer id for entity lookup": "patches/dont-use-consumer_id-for-lookup.patch"
           },
           "oat-sa/lib-lti1p3-core": {

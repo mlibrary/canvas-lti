@@ -6,7 +6,7 @@ Source: patches/test-student-1.1and1.3-B.patch
 
 
 safari itp
-Source: https://www.drupal.org/files/issues/2022-10-21/lti_safari_itp.patch
+Source: https://www.drupal.org/files/issues/2022-12-21/lti_safari_itp-3316822-3.patch
 
 
 dont use consumer id for entity lookup

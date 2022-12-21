@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
         text.innerHTML = '<p style="margin:0; max-width:100%;"><strong>This tool requires session cookies.</strong><br/>You will be asked to redirect to the tool at ' + site + '<br/><em>and then asked again to to allow them on this site</em>.</p>';
         btn.addEventListener('click', function() {
           document.requestStorageAccess().then((e) => {
-            if (document.cookie) {
+            if (document.cookie && document.cookie.split(';').some((item) => item.trim().startsWith('allowstorage='))) {
               alert('This tool will now reload')
               document.body.innerHTML = '<h1>Reloading..</h1>';
               document.body.style.backgroundColor = '#fff';
