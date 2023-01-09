@@ -68,8 +68,8 @@ function custom_uml_mail_send_mail($recipient, $reply_to, $subject, $message, $k
  * Alter destination of outgoing emails if reroute_email is enabled.
  */
 function custom_uml_mail_mail_alter(&$message) {
-  $message['headers']['cc'] = trim($message['headers']['cc'], ',');
-  $message['headers']['bcc'] = trim($message['headers']['bcc'], ',');
+  $message['headers']['cc'] = isset($message['headers']['cc']) ? trim($message['headers']['cc'], ',') : '';
+  $message['headers']['bcc'] = isset($message['headers']['bcc']) ? trim($message['headers']['bcc'], ',') : '';
   if (empty($message['headers']['cc'])) {
     if (!empty($message['params']['cc'])) {
       $message['headers']['cc'] = trim($message['params']['cc'], ',');
