@@ -1,0 +1,22 @@
+services:
+  cookie_samesite_support.session_configuration:
+    class: Drupal\cookie_samesite_support\Session\CookieSameSiteSupportSessionConfiguration
+    decorates: session_configuration
+    public: false
+    arguments:
+      - '@datetime.time'
+      - '%session.storage.options%'
+  cookie_samesite_support.session_manager:
+    class: Drupal\cookie_samesite_support\Session\CookieSameSiteSupportSessionManager
+    decorates: session_manager
+    public: false
+    arguments:
+      - '@request_stack'
+      - '@database'
+      - '@session_manager.metadata_bag'
+      - '@session_configuration'
+      - '@session_handler'
+    tags:
+      - { name: backend_overridable }
+    calls:
+      - [setWriteSafeHandler, ['@session_handler.write_safe']]

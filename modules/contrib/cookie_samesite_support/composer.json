@@ -1,0 +1,28 @@
+{
+  "name": "drupal/cookie_samesite_support",
+  "description": "Adds support for SameSite=None for all the browsers.",
+  "homepage": "https://www.drupal.org/project/cookie_samesite_support",
+  "type": "drupal-module",
+  "authors": [
+    {
+      "name": "Nikunj Kotecha (nikunjkotecha)",
+      "homepage": "https://www.drupal.org/u/nikunjkotecha",
+      "role": "Maintainer"
+    }
+  ],
+  "support": {
+    "issues": "https://drupal.org/project/issues/cookie_samesite_support",
+    "source": "https://cgit.drupalcode.org/cookie_samesite_support"
+  },
+  "license": "GPL-2.0+",
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=7.4.0",
+    "drupal/core": "^9.0 || ^10"
+  },
+  "autoload": {
+    "psr-4": {
+      "Drupal\\cookie_samesite_support\\": "src/"
+    }
+  }
+}

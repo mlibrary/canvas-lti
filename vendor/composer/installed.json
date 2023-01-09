@@ -2911,6 +2911,64 @@
             "install-path": "../drupal/console-extend-plugin"
         },
         {
+            "name": "drupal/cookie_samesite_support",
+            "version": "1.0.0",
+            "version_normalized": "1.0.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/cookie_samesite_support.git",
+                "reference": "1.0.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/cookie_samesite_support-1.0.0.zip",
+                "reference": "1.0.0",
+                "shasum": "c67359c454c0ebcc178d8fa3d6ea24d747f70160"
+            },
+            "require": {
+                "drupal/core": "^9.0 || ^10",
+                "php": ">=7.4.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "1.0.0",
+                    "datestamp": "1659790970",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                },
+                "patches_applied": {
+                    "https://www.drupal.org/node/3319614": "https://www.drupal.org/files/issues/2022-11-08/3319614-php-8.1-compatibility-2.patch"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Drupal\\cookie_samesite_support\\": "src/"
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Nikunj Kotecha (nikunjkotecha)",
+                    "homepage": "https://www.drupal.org/u/nikunjkotecha",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "Adds support for SameSite=None for all the browsers.",
+            "homepage": "https://www.drupal.org/project/cookie_samesite_support",
+            "support": {
+                "source": "https://cgit.drupalcode.org/cookie_samesite_support",
+                "issues": "https://drupal.org/project/issues/cookie_samesite_support"
+            },
+            "install-path": "../../modules/contrib/cookie_samesite_support"
+        },
+        {
             "name": "drupal/core",
             "version": "9.4.9",
             "version_normalized": "9.4.9.0",

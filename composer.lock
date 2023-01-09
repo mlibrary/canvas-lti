@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8b256783c9c9aa8971b84aa4c5620774",
+    "content-hash": "63f4399227be27f0613ada63fea6a1e2",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -2846,6 +2846,58 @@
                 "source": "https://github.com/hechoendrupal/drupal-console-extend-plugin/tree/0.9.5"
             },
             "time": "2020-11-18T00:15:28+00:00"
+        },
+        {
+            "name": "drupal/cookie_samesite_support",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/cookie_samesite_support.git",
+                "reference": "1.0.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/cookie_samesite_support-1.0.0.zip",
+                "reference": "1.0.0",
+                "shasum": "c67359c454c0ebcc178d8fa3d6ea24d747f70160"
+            },
+            "require": {
+                "drupal/core": "^9.0 || ^10",
+                "php": ">=7.4.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "1.0.0",
+                    "datestamp": "1659790970",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Drupal\\cookie_samesite_support\\": "src/"
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Nikunj Kotecha (nikunjkotecha)",
+                    "homepage": "https://www.drupal.org/u/nikunjkotecha",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "Adds support for SameSite=None for all the browsers.",
+            "homepage": "https://www.drupal.org/project/cookie_samesite_support",
+            "support": {
+                "source": "https://cgit.drupalcode.org/cookie_samesite_support",
+                "issues": "https://drupal.org/project/issues/cookie_samesite_support"
+            }
         },
         {
             "name": "drupal/core",

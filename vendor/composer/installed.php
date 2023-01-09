@@ -3,7 +3,7 @@
         'name' => 'drupal/recommended-project',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'f52ca54ecab516c2bb8ec00bff8b6a90394c2cee',
+        'reference' => 'd71dcfb597b8fc0db6886c985af208cd77c1c185',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -380,6 +380,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'drupal/cookie_samesite_support' => array(
+            'pretty_version' => '1.0.0',
+            'version' => '1.0.0.0',
+            'reference' => '1.0.0',
+            'type' => 'drupal-module',
+            'install_path' => __DIR__ . '/../../modules/contrib/cookie_samesite_support',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'drupal/core' => array(
             'pretty_version' => '9.4.9',
             'version' => '9.4.9.0',
@@ -751,7 +760,7 @@
         'drupal/recommended-project' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'f52ca54ecab516c2bb8ec00bff8b6a90394c2cee',
+            'reference' => 'd71dcfb597b8fc0db6886c985af208cd77c1c185',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

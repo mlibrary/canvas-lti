@@ -177,6 +177,7 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
         array (
             'Drush\\Internal\\' => 15,
             'Drush\\' => 6,
+            'Drupal\\cookie_samesite_support\\' => 31,
             'Drupal\\Driver\\' => 14,
             'Drupal\\Core\\' => 12,
             'Drupal\\Console\\Core\\' => 20,
@@ -543,6 +544,10 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
         'Drush\\' => 
         array (
             0 => __DIR__ . '/..' . '/drush/drush/src',
+        ),
+        'Drupal\\cookie_samesite_support\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/modules/contrib/cookie_samesite_support/src',
         ),
         'Drupal\\Driver\\' => 
         array (
