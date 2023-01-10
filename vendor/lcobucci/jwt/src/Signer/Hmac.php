@@ -1,34 +1,46 @@
 <?php
-declare(strict_types=1);
+/**
+ * This file is part of Lcobucci\JWT, a simple library to handle JWT and JWS
+ *
+ * @license http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
+ */
 
 namespace Lcobucci\JWT\Signer;
 
-use Lcobucci\JWT\Signer;
-
-use function hash_equals;
-use function hash_hmac;
-use function strlen;
-
-abstract class Hmac implements Signer
+/**
+ * Base class for hmac signers
+ *
+ * @author Luís Otávio Cobucci Oblonczyk <lcobucci@gmail.com>
+ * @since 0.1.0
+ */
+abstract class Hmac extends BaseSigner
 {
-    final public function sign(string $payload, Key $key): string
+    /**
+     * {@inheritdoc}
+     */
+    public function createHash($payload, Key $key)
     {
-        $actualKeyLength   = 8 * strlen($key->contents());
-        $expectedKeyLength = $this->minimumBitsLengthForKey();
-        if ($actualKeyLength < $expectedKeyLength) {
-            throw InvalidKeyProvided::tooShort($expectedKeyLength, $actualKeyLength);
+        return hash_hmac($this->getAlgorithm(), $payload, $key->getContent(), true);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function doVerify($expected, $payload, Key $key)
+    {
+        if (!is_string($expected)) {
+            return false;
         }
 
-        return hash_hmac($this->algorithm(), $payload, $key->contents(), true);
+        return hash_equals($expected, $this->createHash($payload, $key));
     }
 
-    final public function verify(string $expected, string $payload, Key $key): bool
-    {
-        return hash_equals($expected, $this->sign($payload, $key));
-    }
-
-    abstract public function algorithm(): string;
-
-    /** @return positive-int */
-    abstract public function minimumBitsLengthForKey(): int;
+    /**
+     * Returns the algorithm name
+     *
+     * @internal
+     *
+     * @return string
+     */
+    abstract public function getAlgorithm();
 }

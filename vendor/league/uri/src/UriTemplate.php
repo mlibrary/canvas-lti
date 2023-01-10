@@ -19,7 +19,6 @@ use League\Uri\Exceptions\SyntaxError;
 use League\Uri\Exceptions\TemplateCanNotBeExpanded;
 use League\Uri\UriTemplate\Template;
 use League\Uri\UriTemplate\VariableBag;
-use Stringable;
 
 /**
  * Defines the URI Template syntax and the process for expanding a URI Template into a URI reference.
@@ -34,22 +33,32 @@ use Stringable;
  */
 final class UriTemplate
 {
-    public readonly Template $template;
-    public readonly VariableBag $defaultVariables;
+    /**
+     * @var Template
+     */
+    private $template;
 
     /**
+     * @var VariableBag
+     */
+    private $defaultVariables;
+
+    /**
+     * @param object|string $template a string or an object with the __toString method
+     *
+     * @throws \TypeError               if the template is not a string or an object with the __toString method
      * @throws SyntaxError              if the template syntax is invalid
      * @throws TemplateCanNotBeExpanded if the template variables are invalid
      */
-    public function __construct(Template|Stringable|string $template, VariableBag|array $defaultVariables = [])
+    public function __construct($template, array $defaultVariables = [])
     {
-        $this->template = $template instanceof Template ? $template : Template::createFromString($template);
+        $this->template = Template::createFromString($template);
         $this->defaultVariables = $this->filterVariables($defaultVariables);
     }
 
     public static function __set_state(array $properties): self
     {
-        return new self($properties['template'], $properties['defaultVariables']);
+        return new self($properties['template']->toString(), $properties['defaultVariables']->all());
     }
 
     /**
@@ -57,19 +66,16 @@ final class UriTemplate
      *
      * @param array<string,string|array<string>> $variables
      */
-    private function filterVariables(VariableBag|array $variables): VariableBag
+    private function filterVariables(array $variables): VariableBag
     {
-        return array_reduce(
-            $this->template->variableNames,
-            function (VariableBag $curry, string $name) use ($variables): VariableBag {
-                if (isset($variables[$name])) {
-                    $curry[$name] = $variables[$name];
-                }
+        $output = new VariableBag();
+        foreach ($this->template->variableNames() as $name) {
+            if (isset($variables[$name])) {
+                $output->assign($name, $variables[$name]);
+            }
+        }
 
-                return $curry;
-            },
-            new VariableBag()
-        );
+        return $output;
     }
 
     /**
@@ -77,7 +83,7 @@ final class UriTemplate
      */
     public function getTemplate(): string
     {
-        return $this->template->value;
+        return $this->template->toString();
     }
 
     /**
@@ -87,7 +93,7 @@ final class UriTemplate
      */
     public function getVariableNames(): array
     {
-        return $this->template->variableNames;
+        return $this->template->variableNames();
     }
 
     /**
@@ -111,21 +117,24 @@ final class UriTemplate
      * If present, variables whose name is not part of the current template
      * possible variable names are removed.
      */
-    public function withDefaultVariables(VariableBag|array $defaultDefaultVariables): self
+    public function withDefaultVariables(array $defaultDefaultVariables): self
     {
-        return new self($this->template, $defaultDefaultVariables);
+        $clone = clone $this;
+        $clone->defaultVariables = $this->filterVariables($defaultDefaultVariables);
+
+        return $clone;
     }
 
     /**
      * @throws TemplateCanNotBeExpanded if the variable contains nested array values
      * @throws UriException             if the resulting expansion can not be converted to a UriInterface instance
      */
-    public function expand(VariableBag|array $variables = []): UriInterface
+    public function expand(array $variables = []): UriInterface
     {
-        return Uri::createFromString(
-            $this->template->expand(
-                $this->filterVariables($variables)->replace($this->defaultVariables)
-            )
+        $uriString = $this->template->expand(
+            $this->filterVariables($variables)->replace($this->defaultVariables)
         );
+
+        return Uri::createFromString($uriString);
     }
 }

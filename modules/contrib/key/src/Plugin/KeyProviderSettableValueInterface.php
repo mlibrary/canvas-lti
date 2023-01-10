@@ -28,7 +28,7 @@ interface KeyProviderSettableValueInterface {
    * @param \Drupal\key\KeyInterface $key
    *   The key whose value will be deleted.
    *
-   * @return bool
+   * @return string
    *   TRUE if successful, FALSE if unsuccessful.
    */
   public function deleteKeyValue(KeyInterface $key);
