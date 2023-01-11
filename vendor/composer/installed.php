@@ -3,7 +3,7 @@
         'name' => 'drupal/recommended-project',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '9242040f30cf69ecd66d22f614fcccde5fcaa159',
+        'reference' => '716f20e28dcf4f0a45a24317c5a6efe616d7dcb0',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -631,6 +631,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'drupal/force_users_logout' => array(
+            'pretty_version' => '2.0.1',
+            'version' => '2.0.1.0',
+            'reference' => '2.0.1',
+            'type' => 'drupal-module',
+            'install_path' => __DIR__ . '/../../modules/contrib/force_users_logout',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'drupal/iframe' => array(
             'pretty_version' => '2.16.0',
             'version' => '2.16.0.0',
@@ -760,7 +769,7 @@
         'drupal/recommended-project' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '9242040f30cf69ecd66d22f614fcccde5fcaa159',
+            'reference' => '716f20e28dcf4f0a45a24317c5a6efe616d7dcb0',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

@@ -34,6 +34,7 @@
         "drupal/field_show_all": "1.0.x-dev",
         "drupal/fieldblock": "^2.0@alpha",
         "drupal/fitvids": "^1.1",
+        "drupal/force_users_logout": "^2.0",
         "drupal/iframe": "^2.6",
         "drupal/jquery_ui_button": "^1.1",
         "drupal/layout_builder_component_attributes": "^1.0",
