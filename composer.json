@@ -25,7 +25,7 @@
         "drupal/conditional_fields": "^4.0@alpha",
         "drupal/console": "^1.0.2",
         "drupal/cookie_samesite_support": "^1.0",
-        "drupal/core": "9.4.9",
+        "drupal/core": "^9.4.9",
         "drupal/devel": "^4.0",
         "drupal/disable_messages": "^2.0",
         "drupal/extra_field_description": "^1.6",
