@@ -151,7 +151,7 @@ function _custom_guides($args) {
       $errors[] = 'An error occurred.';
       $errors[] = 'There are '.count($guide_term_uri).' terms with the url '.$url;
       $errors[] = 'There are '.count($guide_term_name).' terms with the name '.$title;
-      $errors[] = 'There are '.count($guide_term_guide_id).' terms with the name '.$guide_id;
+      $errors[] = 'There are '.count($guide_term_guide_id).' terms with the guide id '.$guide_id;
       foreach ($errors as $error) {
         Drush::output()->writeln($error);
       }
@@ -162,8 +162,8 @@ function _custom_guides($args) {
         Drush::output()->writeln($error);
       }
       if (count($guide_term) !== 1) {
-        $errors[] = 'There are '.count($guide_term).' terms with the url '.$url.' and the name '.$title;
-        $errors[] = 'These terms will need to be fixed before they can be updated.';
+        $errors[] = 'There are '.count($guide_term).' terms with the url '.$url.' and the name '.$title.' with guide id '.$guide_id;
+        $errors[] = 'These terms will need to be fixed before they can be updated. (Note: if name and url are the same, the id could need updating)';
         foreach ($errors as $error) {
           Drush::output()->writeln($error);
         }
