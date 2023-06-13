@@ -14,6 +14,17 @@ use Drupal\Core\Entity\EntityInterface;
 use Drush\Drush;
 
 /**
+ * Implements hook_editor_js_settings_alter().
+ */
+function custom_extras_editor_js_settings_alter(array &$settings) {
+  foreach (array_keys($settings['editor']['formats']) as $text_format_id) {
+    if ($text_format_id === 'basic_html') {
+      $settings['editor']['formats'][$text_format_id]['editorSettings']['autoGrow_minHeight'] = '75';
+    }
+  }
+}
+
+/**
  * Implements hook_node_view().
  */
 function custom_extras_node_view(array &$build, NodeInterface $node, EntityViewDisplayInterface $display, $view_mode) {
@@ -33,7 +44,7 @@ function custom_extras_node_view(array &$build, NodeInterface $node, EntityViewD
       $user = \Drupal::currentUser();
       $build['#cache']['max-age'] = 0;
       if ($user->hasPermission('edit any '.$bundle.' content')) {
-        \Drupal::messenger()->addStatus(t('Welcome! Select the Edit tab to add appropriate library tools in order to share course-specific information (specialists, guides, resource links, course reserves, videos) with your students.'), TRUE);
+        \Drupal::messenger()->addStatus(t('Welcome! Select the Edit tab to add appropriate library tools in order to share course-specific information (specialists, guides, resource links, course reserves, videos) with your students. Need help? Contact <a href="mailto:Scholarspace@umich.edu">Scholarspace@umich.edu</a>.'), TRUE);
       }
       else if ($user->hasPermission('view any '.$bundle.' content')) {
         \Drupal::messenger()->addError(t('Your instructor hasn’t added any course-specific library information yet. You can use Ask a Librarian to contact a library specialist.'), TRUE);
