@@ -44,7 +44,7 @@ function custom_extras_node_view(array &$build, NodeInterface $node, EntityViewD
       $user = \Drupal::currentUser();
       $build['#cache']['max-age'] = 0;
       if ($user->hasPermission('edit any '.$bundle.' content')) {
-        \Drupal::messenger()->addStatus(t('Welcome! Select the Edit tab to add appropriate library tools in order to share course-specific information (specialists, guides, resource links, course reserves, videos) with your students. Need help? Contact <a href="mailto:Scholarspace@umich.edu">Scholarspace@umich.edu</a>.'), TRUE);
+        \Drupal::messenger()->addStatus(t('Welcome! Select the Edit tab to add appropriate library tools in order to share course-specific information (specialists, guides, resource links, course reserves, videos) with your students. Need help? Contact <a href="mailto:Scholarspace@umich.edu">Scholarspace@umich.edu</a> or your U-M Library <a href="https://www.lib.umich.edu/research-and-scholarship/help-research/find-specialist" target="_blank">Subject Specialist</a>.'), TRUE);
       }
       else if ($user->hasPermission('view any '.$bundle.' content')) {
         \Drupal::messenger()->addError(t('Your instructor hasn’t added any course-specific library information yet. You can use Ask a Librarian to contact a library specialist.'), TRUE);
@@ -58,7 +58,19 @@ function custom_extras_preprocess_node__class_page(array &$variables) : void {
   $variables['#attached']['library'][] = 'custom_extras/custom_extras';
 }
 
+function custom_extras_local_tasks_alter(&$local_tasks) {
+  unset($local_tasks['user.pass']);
+  unset($local_tasks['user.register']);
+}
+
 function custom_extras_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if (in_array($form_id, ['user_register_form', 'user_pass'])) {
+    foreach ($form as $key => $value) {
+      if (in_array($key, ['#attributes', '#cache', 'name', 'actions', 'administer_users', 'account', 'language', 'timezone', 'user_picture', 'contact'])) {
+        unset($form[$key]);
+      }
+    }
+  }
   if ($form_id == 'media_library_add_form_oembed') {
     unset($form['actions']['save_select']);
     $form['actions']['save_insert']['#button_type'] = 'primary';
