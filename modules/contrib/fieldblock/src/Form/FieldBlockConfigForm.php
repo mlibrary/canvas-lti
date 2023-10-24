@@ -135,8 +135,8 @@ class FieldBlockConfigForm extends ConfigFormBase {
       $form['cleanup'] = [
         '#type' => 'checkboxes',
         '#required' => FALSE,
-        '#title' => t('Clean up remaining field blocks of removed entity types'),
-        '#description' => t('These entity types no longer exist, but one or more of their field blocks still do. Select the entity type(s) of which the field block(s) must be removed.'),
+        '#title' => $this->t('Clean up remaining field blocks of removed entity types'),
+        '#description' => $this->t('These entity types no longer exist, but one or more of their field blocks still do. Select the entity type(s) of which the field block(s) must be removed.'),
         '#default_value' => [],
         '#options' => $cleanup_options,
       ];

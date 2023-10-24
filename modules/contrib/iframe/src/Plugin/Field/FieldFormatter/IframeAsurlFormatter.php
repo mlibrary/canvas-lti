@@ -7,7 +7,7 @@ use Drupal\Core\Link;
 use Drupal\Core\Url;
 
 /**
- * Class IframeAsurlFormatter.
+ * The Class IframeAsurlFormatter.
  *
  * @FieldFormatter(
  *  id = "iframe_asurl",
@@ -27,7 +27,7 @@ class IframeAsurlFormatter extends IframeDefaultFormatter {
       if (empty($item->url)) {
         continue;
       }
-      if (!(property_exists($item, 'title') && $item->title !== null)) {
+      if (!(property_exists($item, 'title') && $item->title !== NULL)) {
         $item->title = '';
       }
       $linktext = empty($item->title) ? $item->url : $item->title;

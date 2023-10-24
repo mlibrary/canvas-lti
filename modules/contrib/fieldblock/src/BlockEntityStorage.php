@@ -3,13 +3,14 @@
 namespace Drupal\fieldblock;
 
 use Drupal\Component\Uuid\UuidInterface;
+use Drupal\Core\Cache\MemoryCache\MemoryCacheInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\Entity\ConfigEntityStorage;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 
 /**
- * Class BlockEntityStorage.
+ * The entity storage for FieldBlocks.
  *
  * @package Drupal\fieldblock
  */
@@ -54,14 +55,16 @@ class BlockEntityStorage extends ConfigEntityStorage {
    *   The language manager.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   The entity type manager.
+   * @param \Drupal\Core\Cache\MemoryCache\MemoryCacheInterface $memory_cache
+   *   The memory cache backend.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, UuidInterface $uuid_service, LanguageManagerInterface $language_manager, EntityTypeManagerInterface $entityTypeManager) {
+  public function __construct(ConfigFactoryInterface $config_factory, UuidInterface $uuid_service, LanguageManagerInterface $language_manager, EntityTypeManagerInterface $entityTypeManager, MemoryCacheInterface $memory_cache) {
     $this->configFactory = $config_factory;
     $this->uuidService = $uuid_service;
     $this->languageManager = $language_manager;
     $this->entityTypeManager = $entityTypeManager;
     $entity_type = $entityTypeManager->getDefinition('block');
-    parent::__construct($entity_type, $config_factory, $uuid_service, $language_manager);
+    parent::__construct($entity_type, $config_factory, $uuid_service, $language_manager, $memory_cache);
   }
 
   /**

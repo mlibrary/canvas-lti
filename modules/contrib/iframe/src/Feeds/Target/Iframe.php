@@ -30,7 +30,7 @@ class Iframe extends FieldTargetBase {
     }
     return $definition;
   }
-  
+
   /**
    * {@inheritdoc}
    */

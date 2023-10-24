@@ -3,9 +3,9 @@
 namespace Drupal\paragraphs_type_help;
 
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\Display\EntityDisplayInterface;
 use Drupal\Core\Entity\EntityChangedInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
-use Drupal\Core\Entity\Display\EntityDisplayInterface;
 
 /**
  * Provides an interface defining a paragraphs type help entity.

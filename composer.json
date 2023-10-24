@@ -33,7 +33,7 @@
         "drupal/field_permissions": "^1.0",
         "drupal/field_show_all": "1.0.x-dev",
         "drupal/fieldblock": "^2.0@alpha",
-        "drupal/fitvids": "^1.1",
+        "drupal/fitvids": "^2.0",
         "drupal/force_users_logout": "^2.0",
         "drupal/iframe": "^2.6",
         "drupal/jquery_ui_button": "^1.1",
@@ -48,6 +48,7 @@
         "drupal/swiftmailer": "^2.0",
         "drupal/term_csv_export_import": "^3.0@alpha",
         "drupal/token": "^1.7",
+        "drupal/upgrade_status": "^4.0",
         "drush/drush": "^10.0"
     },
     "conflict": {

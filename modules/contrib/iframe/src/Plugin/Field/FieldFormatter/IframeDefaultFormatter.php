@@ -9,7 +9,7 @@ use Drupal\Core\Url;
 use Drupal\Core\Template\Attribute;
 
 /**
- * Class IframeDefaultFormatter.
+ * The Class IframeDefaultFormatter.
  *
  * @FieldFormatter(
  *  id = "iframe_default",
@@ -44,14 +44,14 @@ class IframeDefaultFormatter extends FormatterBase {
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = [];
-    // settings from type
+    // Settings from type.
     $settings = $this->getSettings();
-    // field_settings on concrete field
+    // field_settings on concrete field.
     $field_settings = $this->getFieldSettings();
-    //\iframe_debug(3, __METHOD__, $settings);
-    \iframe_debug(3, __METHOD__, $field_settings);
-    \iframe_debug(3, __METHOD__, $items->getValue());
-    $allow_attributes = [ 'url', 'width', 'height', 'title' ];
+    // \iframe_debug(3, __METHOD__, $settings);
+    // \iframe_debug(3, __METHOD__, $field_settings);
+    // \iframe_debug(3, __METHOD__, $items->getValue());
+    $allow_attributes = ['url', 'width', 'height', 'title'];
     foreach ($items as $delta => $item) {
       if (empty($item->url)) {
         continue;
@@ -59,7 +59,7 @@ class IframeDefaultFormatter extends FormatterBase {
       if (!isset($item->title)) {
         $item->title = '';
       }
-      foreach($field_settings as $field_key => $field_val) {
+      foreach ($field_settings as $field_key => $field_val) {
         if (in_array($field_key, $allow_attributes)) {
           continue;
         }
@@ -112,7 +112,7 @@ class IframeDefaultFormatter extends FormatterBase {
     }
 
     $htmlid = 'iframe-' . $itemName . '-' . $itemParentId;
-    if (property_exists($item, 'htmlid') && $item->htmlid !== null && !empty($item->htmlid)) {
+    if (property_exists($item, 'htmlid') && $item->htmlid !== NULL && !empty($item->htmlid)) {
       $htmlid = $item->htmlid;
     }
     $htmlid = preg_replace('#[^A-Za-z0-9\-\_]+#', '-', $htmlid);
@@ -129,9 +129,10 @@ class IframeDefaultFormatter extends FormatterBase {
     if (!empty($options['title']) && strpos($options['title'], '<') !== FALSE) {
       $options['title'] = strip_tags($options['title']);
     }
-    $headerlevel = 3; #default h3
+    // Default h3.
+    $headerlevel = 3;
     if (isset($item->headerlevel) && $item->headerlevel >= 1 && $item->headerlevel <= 6) {
-      $headerlevel = (int)$item->headerlevel;
+      $headerlevel = (int) $item->headerlevel;
     }
 
     // Policy attribute.
@@ -153,8 +154,9 @@ class IframeDefaultFormatter extends FormatterBase {
       // Token Support for field "url" and "title".
       $tokensupport = $item->getTokenSupport();
       $tokencontext = ['user' => \Drupal::currentUser()];
-      if (isset($GLOBALS['node'])) {
-        $tokencontext['node'] = $GLOBALS['node'];
+      $node = \Drupal::routeMatch()->getParameter('node');
+      if ($node instanceof \Drupal\node\NodeInterface) {
+        $tokencontext['node'] = $node;
       }
       if ($tokensupport > 0) {
         $text = \Drupal::token()->replace($text, $tokencontext);
@@ -181,10 +183,12 @@ class IframeDefaultFormatter extends FormatterBase {
         '#headerlevel' => $headerlevel,
       ];
       return $element;
-    } catch (\Exception $excep) {
+    }
+    catch (\Exception $excep) {
       // \iframe_debug(0, __METHOD__, $excep);
       watchdog_exception(__METHOD__, $excep);
       return [];
     }
   }
+
 }

@@ -10,7 +10,7 @@ use Drupal\migrate\Row;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class CckIframe.
+ * The Class CckIframe.
  *
  * @MigrateProcessPlugin(
  *   id = "d7_cck_iframe"
@@ -42,11 +42,15 @@ class CckIframe extends ProcessPluginBase implements ContainerFactoryPluginInter
    * {@inheritdoc}
    */
   public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
-    $attributes = unserialize($value['attributes']);
+    $attributes = unserialize($value['attributes'], [
+      'allowed_classes' => FALSE,
+    ]);
     // Drupal 6 iframe attributes might be double serialized.
     if (!is_array($attributes)) {
       try {
-        $attributes = unserialize($attributes);
+        $attributes = unserialize($attributes, [
+          'allowed_classes' => FALSE,
+        ]);
       }
       catch (Exception $e) {
         // Ignore and set default attributes were
@@ -68,4 +72,5 @@ class CckIframe extends ProcessPluginBase implements ContainerFactoryPluginInter
     $route['tokensupport'] = (int) $value['tokensupport'];
     return $route;
   }
+
 }

@@ -44,7 +44,7 @@ class IframeItem extends FieldItemBase {
    * {@inheritdoc}
    */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
-    // url as 'string' for token support. Validation of url will occur later
+    // Url as 'string' for token support. Validation of url will occur later.
     $properties['url'] = DataDefinition::create('string')
       ->setLabel(t('URL'));
 
@@ -120,14 +120,14 @@ class IframeItem extends FieldItemBase {
         'width' => [
           'description' => 'The iframe width.',
           'type' => 'varchar',
-          'length' => 4,
+          'length' => 7,
           'not null' => FALSE,
           'default' => '600',
         ],
         'height' => [
           'description' => 'The iframe height.',
           'type' => 'varchar',
-          'length' => 4,
+          'length' => 7,
           'not null' => FALSE,
           'default' => '800',
         ],
@@ -263,7 +263,7 @@ class IframeItem extends FieldItemBase {
       '#description' => $this->t('Are tokens allowed for users to use in title or URL field?'),
     ];
     if (!\Drupal::moduleHandler()->moduleExists('token')) {
-      $element['tokensupport']['#description'] .= ' ' . t('Attention: Token module is not currently enabled!');
+      $element['tokensupport']['#description'] .= ' ' . $this->t('Attention: Token module is not currently enabled!');
     }
 
     return $element;

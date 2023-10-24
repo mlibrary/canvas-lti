@@ -24,7 +24,7 @@ class IframeSchemaTest extends EntityKernelTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'iframe',
     'link',
   ];
@@ -57,7 +57,7 @@ class IframeSchemaTest extends EntityKernelTestBase {
       'field_name' => 'field_test',
       'bundle' => 'entity_test',
     ]);
-    $entity_storage = \Drupal::entityTypeManager()->getStorage('entity_test');
+
     $field->setDefaultValue([
       [
         'title' => 'Iframe title',

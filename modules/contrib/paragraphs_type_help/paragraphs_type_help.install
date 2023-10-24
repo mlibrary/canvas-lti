@@ -5,9 +5,9 @@
  * Install for the Paragraphs Type Help module.
  */
 
+use Drupal\Core\Serialization\Yaml;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
-use Drupal\Core\Serialization\Yaml;
 
 /**
  * Add a field to the entity type.

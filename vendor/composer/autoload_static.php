@@ -40,7 +40,9 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
         '2f69d3914119f042cca9e44442d5ce95' => __DIR__ . '/../..' . '/core/includes/bootstrap.inc',
         '6db5533840cb1ae1bc049452845aa88e' => __DIR__ . '/../..' . '/core/includes/guzzle_php81_shim.php',
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
+        '9b38cf48e83f5d8f60375221cd213eee' => __DIR__ . '/..' . '/phpstan/phpstan/bootstrap.php',
         'e39a8b23c42d4e1452234d762b03835a' => __DIR__ . '/..' . '/ramsey/uuid/src/functions.php',
+        'c9d07b32a2e02bc0fc582d4f0c1b56cc' => __DIR__ . '/..' . '/laminas/laminas-servicemanager/src/autoload.php',
         '23c18046f52bef3eea034657bafda50f' => __DIR__ . '/..' . '/symfony/polyfill-php81/bootstrap.php',
         '801c31d8ed748cfa537fa45402288c95' => __DIR__ . '/..' . '/psy/psysh/src/functions.php',
         '952683d815ff0a7bf322b93c0be7e4e4' => __DIR__ . '/..' . '/chi-teck/drupal-code-generator/src/bootstrap.php',
@@ -52,6 +54,10 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
         'p' => 
         array (
             'phpseclib\\' => 10,
+        ),
+        'm' => 
+        array (
+            'mglaman\\PHPStanDrupal\\' => 22,
         ),
         'c' => 
         array (
@@ -95,6 +101,7 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
             'Symfony\\Component\\HttpFoundation\\' => 33,
             'Symfony\\Component\\Finder\\' => 25,
             'Symfony\\Component\\Filesystem\\' => 29,
+            'Symfony\\Component\\ExpressionLanguage\\' => 37,
             'Symfony\\Component\\EventDispatcher\\' => 34,
             'Symfony\\Component\\ErrorHandler\\' => 31,
             'Symfony\\Component\\DomCrawler\\' => 29,
@@ -124,6 +131,7 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
             'Psr\\Clock\\' => 10,
             'Psr\\Cache\\' => 10,
             'PhpParser\\' => 10,
+            'PHPStan\\' => 8,
             'PHPMailer\\PHPMailer\\' => 20,
         ),
         'O' => 
@@ -137,6 +145,7 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
         ),
         'M' => 
         array (
+            'MathieuViossat\\Util\\' => 20,
             'Masterminds\\' => 12,
         ),
         'L' => 
@@ -147,7 +156,9 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
             'League\\Container\\' => 17,
             'Lcobucci\\JWT\\' => 13,
             'Lcobucci\\Clock\\' => 15,
+            'Laminas\\Text\\' => 13,
             'Laminas\\Stdlib\\' => 15,
+            'Laminas\\ServiceManager\\' => 23,
             'Laminas\\Feed\\' => 13,
             'Laminas\\Escaper\\' => 16,
             'Laminas\\Diactoros\\' => 18,
@@ -184,6 +195,7 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
             'DrupalCodeGenerator\\' => 20,
             'Doctrine\\Persistence\\' => 21,
             'Doctrine\\Inflector\\' => 19,
+            'Doctrine\\Deprecations\\' => 22,
             'Doctrine\\Common\\Lexer\\' => 22,
             'Doctrine\\Common\\Inflector\\' => 26,
             'Doctrine\\Common\\Collections\\' => 28,
@@ -222,6 +234,10 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
         'phpseclib\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib',
+        ),
+        'mglaman\\PHPStanDrupal\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mglaman/phpstan-drupal/src',
         ),
         'cweagans\\Composer\\' => 
         array (
@@ -347,6 +363,10 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
         array (
             0 => __DIR__ . '/..' . '/symfony/filesystem',
         ),
+        'Symfony\\Component\\ExpressionLanguage\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/expression-language',
+        ),
         'Symfony\\Component\\EventDispatcher\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/event-dispatcher',
@@ -440,6 +460,10 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
         ),
+        'PHPStan\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpstan/phpstan-deprecation-rules/src',
+        ),
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
@@ -456,14 +480,18 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
         array (
             0 => __DIR__ . '/..' . '/nyholm/psr7/src',
         ),
+        'MathieuViossat\\Util\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mathieuviossat/arraytotexttable/src',
+        ),
         'Masterminds\\' => 
         array (
             0 => __DIR__ . '/..' . '/masterminds/html5/src',
         ),
         'League\\Uri\\' => 
         array (
-            0 => __DIR__ . '/..' . '/league/uri/src',
-            1 => __DIR__ . '/..' . '/league/uri-interfaces/src',
+            0 => __DIR__ . '/..' . '/league/uri',
+            1 => __DIR__ . '/..' . '/league/uri-interfaces',
         ),
         'League\\OAuth2\\Server\\' => 
         array (
@@ -485,9 +513,17 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
         array (
             0 => __DIR__ . '/..' . '/lcobucci/clock/src',
         ),
+        'Laminas\\Text\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laminas/laminas-text/src',
+        ),
         'Laminas\\Stdlib\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-stdlib/src',
+        ),
+        'Laminas\\ServiceManager\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laminas/laminas-servicemanager/src',
         ),
         'Laminas\\Feed\\' => 
         array (
@@ -586,6 +622,10 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
         array (
             0 => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Inflector',
         ),
+        'Doctrine\\Deprecations\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/deprecations/lib/Doctrine/Deprecations',
+        ),
         'Doctrine\\Common\\Lexer\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/lexer/lib/Doctrine/Common/Lexer',
@@ -609,7 +649,7 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
         'Doctrine\\Common\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/common/lib/Doctrine/Common',
-            1 => __DIR__ . '/..' . '/doctrine/event-manager/lib/Doctrine/Common',
+            1 => __DIR__ . '/..' . '/doctrine/event-manager/src',
             2 => __DIR__ . '/..' . '/doctrine/persistence/lib/Doctrine/Common',
             3 => __DIR__ . '/..' . '/doctrine/reflection/lib/Doctrine/Common',
         ),

@@ -2,15 +2,15 @@
 
 namespace Drupal\paragraphs_type_help\Entity;
 
-use Drupal\paragraphs_type_help\ParagraphsTypeHelpInterface;
 use Drupal\Core\Entity\ContentEntityBase;
+use Drupal\Core\Entity\Display\EntityDisplayInterface;
+use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityPublishedTrait;
-use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Entity\Display\EntityDisplayInterface;
-use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\paragraphs_type_help\ParagraphsTypeHelpInterface;
 use Drupal\user\UserInterface;
 
 /**

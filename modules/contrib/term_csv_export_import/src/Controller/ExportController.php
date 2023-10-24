@@ -89,15 +89,9 @@ class ExportController extends ControllerBase {
       $parent_ids = '';
       $to_export = [];
       if (!empty($parents)) {
-        if (count($parents > 1)) {
-          foreach ($parents as $parent) {
-            $parent_names .= $parent->getName() . ';';
-            $parent_ids .= $parent->id() . ';';
-          }
-        }
-        else {
-          $parent_names = $parents[0]->getName();
-          $parent_ids = $parents[0]->id();
+        foreach ($parents as $parent) {
+          $parent_names .= $parent->getName() . ';';
+          $parent_ids .= $parent->id() . ';';
         }
       }
       $to_export = [

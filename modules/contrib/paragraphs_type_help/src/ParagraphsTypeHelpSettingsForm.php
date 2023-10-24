@@ -21,7 +21,6 @@ class ParagraphsTypeHelpSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
-    // @TODO: global admin settings needed?
     return [];
   }
 

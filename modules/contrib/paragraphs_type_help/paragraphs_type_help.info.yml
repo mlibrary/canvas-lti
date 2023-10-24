@@ -10,7 +10,7 @@ dependencies:
   - drupal:options
   - drupal:text
 
-# Information added by Drupal.org packaging script on 2022-12-14
-version: '3.1.0'
+# Information added by Drupal.org packaging script on 2023-09-26
+version: '3.2.0'
 project: 'paragraphs_type_help'
-datestamp: 1671041243
+datestamp: 1695742955

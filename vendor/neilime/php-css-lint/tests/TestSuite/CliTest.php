@@ -4,7 +4,6 @@ namespace TestSuite;
 
 class CliTest extends \PHPUnit\Framework\TestCase
 {
-
     /**
      * @var \CssLint\Cli
      */
@@ -91,6 +90,19 @@ class CliTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(1, $this->cli->run([
             'php-css-lint',
             '--options={ "allowedIndentationChars": ["\t"] }',
+            '.test { display: block; }'
+        ]));
+    }
+
+    public function testRunWithInvalidOptionsFormatShouldReturnAnError()
+    {
+        $this->expectOutputString(
+            "\033[31m/!\ Error: Unable to parse option argument: Syntax error\033[0m" . PHP_EOL .
+                PHP_EOL
+        );
+        $this->assertEquals(1, $this->cli->run([
+            'php-css-lint',
+            '--options={ "allowedIndentationChars":  }',
             '.test { display: block; }'
         ]));
     }

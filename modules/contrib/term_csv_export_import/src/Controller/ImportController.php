@@ -139,15 +139,30 @@ class ImportController {
         $term_existing = Term::load($row['tid']);
       }
       else {
-        $term_existing = taxonomy_term_load_multiple_by_name($row['name'], $this->vocabulary);
-        if (count($term_existing) > 1) {
+        $terms_existing = taxonomy_term_load_multiple_by_name($row['name'], $this->vocabulary);
+
+        // Exclude terms with other parents.
+        foreach ($terms_existing as $delta => $term_existing) {
+          $existing_parents = [];
+          foreach ($term_existing->parent->getValue() as $existing_parent_item) {
+            /** @var Term $existing_parent */
+            if ($existing_parent = Term::load($existing_parent_item['target_id'])) {
+              $existing_parents[] = $existing_parent->getName();
+            }
+          }
+          if (implode(';', $existing_parents) != $row['parent_name']) {
+            unset($terms_existing[$delta]);
+          }
+        }
+
+        if (count($terms_existing) > 1) {
           \Drupal::messenger()->addStatus(
             t('The term @name has multiple matches. Ignoring.', ['@name' => $row['name']])
           );
           continue;
         }
         else {
-          $term_existing = $term_existing[0];
+          $term_existing = reset($terms_existing);
         }
       }
       if ($term_existing && $preserve_tids) {

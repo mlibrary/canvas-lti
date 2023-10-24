@@ -7,7 +7,7 @@ use Drupal\Core\Entity\ContentEntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 
 /**
- * Class FieldBlockController.
+ * The FieldBlock controller.
  *
  * @package Drupal\fieldblock\Controller
  */

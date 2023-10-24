@@ -16,7 +16,7 @@ class NodeViewPermissionsTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['node_view_permissions'];
+  protected static $modules = ['node_view_permissions'];
 
   /**
    * {@inheritdoc}
@@ -26,7 +26,7 @@ class NodeViewPermissionsTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $this->drupalCreateContentType(['type' => 'article']);

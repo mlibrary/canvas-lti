@@ -4,11 +4,9 @@ namespace Drupal\iframe\Plugin\migrate\field;
 
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate_drupal\Plugin\migrate\field\FieldPluginBase;
-use Drupal\migrate_drupal\Annotation\MigrateField;
 
 /**
- * Field migration plugin from D7 to D8.
- * Class IframeField.
+ * The Class IframeField. Field migration plugin from D7 to D8.
  *
  * @MigrateCckField(
  *   id = "iframe",
@@ -46,4 +44,5 @@ class IframeField extends FieldPluginBase {
     ];
     $migration->mergeProcessOfProperty($field_name, $process);
   }
+
 }

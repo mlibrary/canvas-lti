@@ -6,7 +6,7 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Class IframeUrlheightWidget.
+ * The Class IframeUrlheightWidget.
  *
  * @FieldWidget(
  *  id = "iframe_urlheight",

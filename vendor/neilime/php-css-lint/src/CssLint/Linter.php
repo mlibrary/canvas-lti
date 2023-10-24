@@ -4,7 +4,6 @@ namespace CssLint;
 
 class Linter
 {
-
     public const CONTEXT_SELECTOR = 'selector';
     public const CONTEXT_SELECTOR_CONTENT = 'selector content';
     public const CONTEXT_NESTED_SELECTOR_CONTENT = 'nested selector content';
@@ -387,9 +386,15 @@ class Linter
         }
 
         if ($sChar === ':') {
-            // Check if property name exists
             $sPropertyName = trim($this->getContextContent());
 
+            // Ignore CSS variables (names starting with --)
+            if (substr($sPropertyName, 0, 2) === '--') {
+                $this->setContext(self::CONTEXT_PROPERTY_CONTENT);
+                return true;
+            }
+            
+            // Check if property name exists
             if (!$this->getCssLintProperties()->propertyExists($sPropertyName)) {
                 $this->addError('Unknown CSS property "' . $sPropertyName . '"');
             }
@@ -403,7 +408,7 @@ class Linter
             return true;
         }
 
-        if (!preg_match('/[-a-zA-Z]+/', $sChar)) {
+        if (!preg_match('/[-a-zA-Z0-9]+/', $sChar)) {
             $this->addError('Unexpected property name token "' . $sChar . '"');
         }
         return true;

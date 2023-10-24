@@ -62,7 +62,7 @@ $(document).bind('state:visible-fade', function (e) {
       if (typeof $(this).data('conditionalFieldsSavedValue') === 'undefined') {
         $(this).data('conditionalFieldsSavedValue', $(this).val());
       }
-      if (e.effect && e.effect.reset) {
+      if (e.effect) {
         if (e.value) {
           $(this).val(e.effect.value);
         }
@@ -76,38 +76,64 @@ $(document).bind('state:visible-fade', function (e) {
 // On invisible make empty and unrequired.
 .bind('state:visible', function (e) {
   if (e.trigger) {
-    // Save required property.
-    if (typeof $(e.target).data('conditionalFieldsSavedRequired') === 'undefined') {
-      var field = $(e.target).find('input, select, textarea');
-      if (field) {
-        $(e.target).data('conditionalFieldsSavedRequired', $(field).attr('required'));
+    const fields = $(e.target).find('input, select, textarea');
+    fields.each(function () {
+      const $field = $(this);
+      // Save required property.
+      if (typeof $field.data('conditionalFieldsSavedRequired') === 'undefined') {
+        $field.data('conditionalFieldsSavedRequired', $field.attr('required'));
       }
-    }
-    // Go invisible.
-    if (!e.value) {
-      // Remove required property.
-      $(e.target).trigger({type: 'state:required', value: false, trigger: true});
-    }
-    // Go visible.
-    else {
-      // Restore required if necessary.
-      if ($(e.target).data('conditionalFieldsSavedRequired')) {
-        $(e.target).trigger({type: 'state:required', value: true, trigger: true});
+      // Go invisible.
+      if (!e.value) {
+        // Remove required property.
+        $field.trigger({type: 'state:required', value: false, trigger: true});
       }
-    }
+      // Go visible.
+      else {
+        // Restore required if necessary.
+        if ($field.data('conditionalFieldsSavedRequired')) {
+          $field.trigger({type: 'state:required', value: true, trigger: true});
+        }
+      }
+    });
   }
 })
 // Required/Not-Required.
 .bind('state:required', function (e) {
     if (e.trigger) {
-      var fields_supporting_required = $(e.target).find('input, textarea');
-      var labels = $(e.target).find(':not(.form-item--editor-format, .form-type-radio)>label');
+      const fields_supporting_required = $(e.target).find('input, textarea');
+      const legends = $(e.target).find('legend');
+      const legendsspan = $(e.target).find('legend span');
+      const labels = $(e.target).find(':not(.form-item--editor-format, .form-type-radio)>label');
+      const tabs = $('.vertical-tabs');
+      let tab = '';
+      if (tabs.length !== 0) {
+        const detail = $(legends).closest('details');
+        const selector = "a[href='#" + detail.attr('id') + "']";
+        tab = $(selector);
+      }
       if (e.value) {
+        if (legends.length !== 0) {
+          legends.addClass("form-required");
+          legendsspan.addClass("js-form-required form-required");
+          if (tabs.length !== 0) {
+            tab.find('strong').addClass("form-required");
+          }
+        } else {
+          labels.addClass("form-required");
+        }
         fields_supporting_required.filter(`[name *= "[0]"]`).attr('required', 'required');
-        labels.addClass("form-required");
       } else {
+        if (legends.length !== 0) {
+          legends.removeClass("form-required");
+          legendsspan.removeClass("js-form-required form-required");
+          if (tabs.length !== 0) {
+            tab.find('strong').removeClass("form-required");
+          }
+        } else {
+          labels.removeClass("form-required");
+        }
         fields_supporting_required.removeAttr('required');
-        labels.removeClass("form-required");
       }
     }
 })
@@ -135,6 +161,7 @@ Drupal.behaviors.conditionalFields = {
               return;
             }
           }
+          e.effect = effect;
           originalHandler(e);
         }
       }
@@ -144,7 +171,7 @@ Drupal.behaviors.conditionalFields = {
 
 Drupal.behaviors.ckeditorTextareaFix = {
     attach: function (context, settings) {
-        if(CKEDITOR) {
+        if (typeof CKEDITOR !== 'undefined') {
             CKEDITOR.on('instanceReady', function () {
                 $(context).find('.form-textarea-wrapper textarea').each(function () {
                     var $textarea = jQuery(this);

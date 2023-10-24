@@ -62,7 +62,7 @@ class FieldBlock extends BlockBase implements ContainerFactoryPluginInterface {
   protected $routeMatch;
 
   /**
-   * The language manager
+   * The language manager.
    *
    * @var \Drupal\Core\Language\LanguageManagerInterface
    */
@@ -92,6 +92,8 @@ class FieldBlock extends BlockBase implements ContainerFactoryPluginInterface {
    *   The field formatter plugin manager.
    * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
    *   The current route match.
+   * @param \Drupal\Core\Language\LanguageManagerInterface $languageManager
+   *   The language manager.
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entityTypeManager, EntityFieldManagerInterface $entityFieldManager, FormatterPluginManager $formatter_plugin_manager, RouteMatchInterface $route_match, LanguageManagerInterface $languageManager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
@@ -366,11 +368,13 @@ class FieldBlock extends BlockBase implements ContainerFactoryPluginInterface {
   protected function blockAccess(AccountInterface $account) {
     $entity = $this->getEntity();
 
-    if ($entity) {
-      $field = $entity->get($this->configuration['field_name']);
-      return AccessResult::allowedIf(!$field->isEmpty() && $field->access('view', $account));
+    if (!$entity) {
+      return AccessResult::forbidden();
     }
-    return AccessResult::forbidden();
+
+    $field = $entity->get($this->configuration['field_name']);
+    return AccessResult::allowedIf(!$field->isEmpty())
+      ->andIf($field->access('view', $account, TRUE));
   }
 
   /**
@@ -395,11 +399,13 @@ class FieldBlock extends BlockBase implements ContainerFactoryPluginInterface {
   }
 
   /**
-   * Ensure that the field gets correctly translated into the current language
+   * Ensure that the field gets correctly translated into the current language.
    *
    * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   The entity that contains the field.
    *
    * @return \Drupal\Core\Field\FieldItemListInterface
+   *   The field in the current language.
    */
   private function getTranslatedFieldFromEntity(ContentEntityInterface $entity) {
     $language = $this->languageManager->getCurrentLanguage()->getId();
@@ -439,37 +445,43 @@ class FieldBlock extends BlockBase implements ContainerFactoryPluginInterface {
    *
    * @return \Drupal\Core\Entity\ContentEntityInterface|null
    *   The entity to be used when displaying the block.
-   *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   protected function getEntity() {
-    if (!isset($this->fieldBlockEntity)) {
-      $entity_type = $this->getDerivativeId();
-      $entity = NULL;
-      $field_name = $this->configuration['field_name'];
-      $route_name = $this->routeMatch->getRouteName();
-      $is_canonical_route = $route_name === 'entity.' . $entity_type . '.canonical';
-      $is_latest_route = $route_name == 'entity.' . $entity_type . '.latest_version';
+    if (isset($this->fieldBlockEntity)) {
+      return $this->fieldBlockEntity;
+    }
 
-      if ($is_canonical_route || $is_latest_route) {
-        $entity = $this->routeMatch->getParameter($entity_type);
-      }
-      elseif ($entity_type === 'node') {
-        if ($route_name == 'entity.node.revision') {
-          $entity_revision = $this->routeMatch->getParameter('node_revision');
-          $entity = $this->entityTypeManager->getStorage('node')->loadRevision($entity_revision);
-        }
-        elseif ($route_name == 'entity.node.preview' && $this->routeMatch->getParameter('view_mode_id') === 'full') {
-          $entity = $this->routeMatch->getParameter('node_preview');
-        }
-      }
+    $entity_type = $this->getDerivativeId();
+    $field_name = $this->configuration['field_name'];
 
-      if ($entity instanceof ContentEntityInterface && $entity->getEntityTypeId() === $entity_type && $entity->hasField($field_name)) {
-        $this->fieldBlockEntity = $entity;
+    $route = $this->routeMatch->getRouteObject();
+    if (empty($route)) {
+      return NULL;
+    }
+
+    $parameters = $route->getOption('parameters');
+    if (empty($parameters)) {
+      return NULL;
+    }
+
+    // Check if any of the route parameters represents an entity. Use the
+    // first one that is of the right type.
+    foreach ($parameters as $name => $options) {
+      if (isset($options['type']) && strpos($options['type'], 'entity:') === 0) {
+        $entity = $this->routeMatch->getParameter($name);
+
+        if ($entity instanceof ContentEntityInterface
+          && $entity->hasLinkTemplate('canonical')
+          && $entity->getEntityTypeId() === $entity_type
+          && $entity->hasField($field_name)
+        ) {
+          $this->fieldBlockEntity = $entity;
+          return $this->fieldBlockEntity;
+        }
       }
     }
-    return $this->fieldBlockEntity;
+
+    return NULL;
   }
 
 }
