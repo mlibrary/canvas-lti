@@ -5,25 +5,28 @@ namespace Drupal\term_csv_export_import\Controller;
 use Drupal\Core\Database\Database;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
- * Class ImportController.
+ * Import Controller.
  */
 class ImportController {
+
+  use StringTranslationTrait;
 
   /**
    * An array of data.
    *
    * @var array
    */
-  protected  $data = [];
+  protected $data = [];
 
   /**
    * The vocabulary storage.
    *
    * @var \Drupal\taxonomy\Entity\Vocabulary
    */
-  protected  $vocabulary;
+  protected $vocabulary;
 
   /**
    * {@inheritdoc}
@@ -63,7 +66,7 @@ class ImportController {
     $keys = [];
     $may_need_revision = TRUE;
     if (!array_diff($keys_noid, $csvArray[0])) {
-      \Drupal::messenger()->addWarning(t('The header keys were not included in the import.'));
+      \Drupal::messenger()->addWarning($this->t('The header keys were not included in the import.'));
       $keys = $csvArray[0];
       if (isset($keys['revision_id'])) {
         // This is not an export from an earlier version.
@@ -98,7 +101,7 @@ class ImportController {
         }
         else {
           \Drupal::messenger()->addError(
-            t('Line with "@part" could not be parsed. Incorrect number of values: @count.',
+            $this->t('Line with "@part" could not be parsed. Incorrect number of values: @count.',
               [
                 '@part' => implode(',', $csvLine),
                 '@count' => count($csvLine),
@@ -127,8 +130,9 @@ class ImportController {
       'taxonomy_term_values',
     ]);
     $processed = 0;
-    // TODO Inject.
+    // @todo Inject.
     $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
+    $term_entity_manager = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
     foreach ($this->data as $row) {
       // Remove whitespace.
       foreach ($row as $key => $value) {
@@ -139,13 +143,17 @@ class ImportController {
         $term_existing = Term::load($row['tid']);
       }
       else {
-        $terms_existing = taxonomy_term_load_multiple_by_name($row['name'], $this->vocabulary);
+        // $terms_existing = taxonomy_term_load_multiple_by_name($row['name'], $this->vocabulary);
+        $terms_existing = $term_entity_manager->loadByProperties([
+          'name' => $row['name'],
+          'vid' => $this->vocabulary,
+        ]);
 
         // Exclude terms with other parents.
         foreach ($terms_existing as $delta => $term_existing) {
           $existing_parents = [];
           foreach ($term_existing->parent->getValue() as $existing_parent_item) {
-            /** @var Term $existing_parent */
+            /** @var \Drupal\taxonomy\Entity\Term $existing_parent */
             if ($existing_parent = Term::load($existing_parent_item['target_id'])) {
               $existing_parents[] = $existing_parent->getName();
             }
@@ -157,7 +165,7 @@ class ImportController {
 
         if (count($terms_existing) > 1) {
           \Drupal::messenger()->addStatus(
-            t('The term @name has multiple matches. Ignoring.', ['@name' => $row['name']])
+            $this->t('The term @name has multiple matches. Ignoring.', ['@name' => $row['name']])
           );
           continue;
         }
@@ -167,7 +175,7 @@ class ImportController {
       }
       if ($term_existing && $preserve_tids) {
         \Drupal::messenger()->addStatus(
-          t(
+          $this->t(
             'The term with id @id already exists and preserve existing terms is checked. No modification has been made.',
             ['@id' => $row['tid']]
           )
@@ -190,7 +198,7 @@ class ImportController {
           ->condition('taxonomy_term_field_data.tid', $row['tid'], '=');
         $tids1 = $query1->execute()->fetchAll(\PDO::FETCH_OBJ);
         if (!empty($tids) || !empty($tids1)) {
-          \Drupal::messenger()->addError(t('The Term ID already exists.'));
+          \Drupal::messenger()->addError($this->t('The Term ID already exists.'));
           continue;
         }
         $db->insert('taxonomy_term_data')
@@ -246,11 +254,11 @@ class ImportController {
       }
       // Change the vocabulary if requested.
       if ($new_term->bundle() != $this->vocabulary && !$preserve_vocabularies) {
-        // TODO: Make this work.
+        // @todo Make this work.
         // $new_term->vid->setValue($this->vocabulary);.
         /* Currently get an EntityStorageException when field does not exist
         in new vocab. */
-        // TODO: Save the term so fields are set properly when above todo done.
+        // @todo Save the term so fields are set properly when above todo done.
         // $new_term->save();
         // So, we update the db instead.
         $tid = $new_term->id();
@@ -263,7 +271,7 @@ class ImportController {
           ->fields(['vid' => $this->vocabulary])
           ->condition('tid', $tid, '=')
           ->execute();
-        \Drupal::entityTypeManager()->getStorage('taxonomy_term')->resetCache([$tid]);
+        $term_entity_manager->resetCache([$tid]);
         $new_term = Term::load($tid);
       }
       // Set temp parents.
@@ -289,11 +297,14 @@ class ImportController {
       if ($parent_terms == NULL && !empty($row['parent_name'])) {
         $parent_names = explode(';', $row['parent_name']);
         foreach ($parent_names as $parent_name) {
-          $parent_term = taxonomy_term_load_multiple_by_name($parent_name, $this->vocabulary);
+          $parent_term = $term_entity_manager->loadByProperties([
+            'name' => $parent_name,
+            'vid' => $this->vocabulary,
+          ]);
           if (count($parent_term) > 1) {
             unset($parent_term);
             \Drupal::messenger()->addError(
-              t(
+              $this->t(
                 'More than 1 terms are named @name. Cannot distinguish by name. Try using id export/import.',
                 ['@name' => $row['parent_name']]
               )
@@ -321,7 +332,7 @@ class ImportController {
         parse_str($row['fields'], $field_array);
         if (!is_array($field_array)) {
           \Drupal::messenger()->addError(
-            t(
+            $this->t(
               'The field data <em>@data</em> is not formatted correctly. Please use the export function.',
               ['@data' => $row['fields']]
             )
@@ -335,7 +346,7 @@ class ImportController {
             }
             else {
               \Drupal::messenger()->addWarning(
-                t(
+                $this->t(
                   'The field data <em>@data</em> could not be imported. Please add the appropriate fields to the vocabulary you are importing into.',
                   ['@data' => $row['fields']]
                 )
@@ -349,7 +360,7 @@ class ImportController {
       $processed++;
     }
     \Drupal::messenger()->addStatus(
-      t('Imported @count terms.', ['@count' => $processed])
+      $this->t('Imported @count terms.', ['@count' => $processed])
     );
   }
 

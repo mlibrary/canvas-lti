@@ -9,10 +9,10 @@ use Drupal\Core\Form\FormInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\term_csv_export_import\Controller\ImportController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\taxonomy\VocabularyStorageInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
- * Class ImportForm.
+ * Import Form.
  *
  * @package Drupal\term_csv_export_import\Form
  */
@@ -32,20 +32,20 @@ class ImportForm extends FormBase implements FormInterface {
   protected $userInput = [];
 
   /**
-   * The vocabulary storage.
+   * EntityTypeManager variable.
    *
-   * @var \Drupal\taxonomy\VocabularyStorageInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $vocabularyStorage;
+  protected $entityTypeManager;
 
   /**
    * Constructs a new vocabulary form.
    *
-   * @param \Drupal\taxonomy\VocabularyStorageInterface $vocabulary_storage
-   *   The vocabulary storage.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager service.
    */
-  public function __construct(VocabularyStorageInterface $vocabulary_storage) {
-    $this->vocabularyStorage = $vocabulary_storage;
+  public function __construct(EntityTypeManagerInterface $entity_type_manager) {
+    $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
@@ -53,7 +53,7 @@ class ImportForm extends FormBase implements FormInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('entity_type.manager')->getStorage('taxonomy_vocabulary')
+      $container->get('entity_type.manager')
     );
   }
 
@@ -84,7 +84,7 @@ class ImportForm extends FormBase implements FormInterface {
           '#type' => 'checkbox',
           '#title' => $this->t('Preserve existing terms. This will prevent a term id collision if importing from another install.'),
         ];
-        $vocabularies = taxonomy_vocabulary_get_names();
+        $vocabularies = $this->entityTypeManager->getStorage('taxonomy_vocabulary')->getQuery()->execute();
         $vocabularies['create_new'] = 'create_new';
         $form['vocabulary'] = [
           '#type' => 'select',
@@ -199,7 +199,7 @@ class ImportForm extends FormBase implements FormInterface {
    *   TRUE if the vocabulary exists, FALSE otherwise.
    */
   public function exists($vid) {
-    $action = $this->vocabularyStorage->load($vid);
+    $action = $this->entityTypeManager->getStorage('taxonomy_vocabulary')->load($vid);
     return !empty($action);
   }
 

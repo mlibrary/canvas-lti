@@ -2,10 +2,4 @@ name: Extra Field Description
 type: module
 description: Extra description for fields.
 package: Fields
-core: 8.x
-core_version_requirement: ^8 || ^9
-
-# Information added by Drupal.org packaging script on 2021-09-21
-version: '8.x-1.7'
-project: 'extra_field_description'
-datestamp: 1632209730
+core_version_requirement: ^8 || ^9 || ^10

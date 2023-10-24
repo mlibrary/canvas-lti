@@ -6,7 +6,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\taxonomy\TermStorage;
 
 /**
- * Class ExportController.
+ * Export Controller.
  */
 class ExportController extends ControllerBase {
 
@@ -15,7 +15,7 @@ class ExportController extends ControllerBase {
    *
    * @var \Drupal\taxonomy\Entity\Vocabulary
    */
-  protected  $vocabulary;
+  protected $vocabulary;
 
   /**
    * The taxonomy term storage.

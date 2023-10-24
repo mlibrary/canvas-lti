@@ -66,6 +66,7 @@ function _custom_guides($args) {
   //remove guides
   Drush::output()->writeln('Setting guides as inactive...');
   $query = \Drupal::entityQuery('taxonomy_term')
+    ->accessCheck(FALSE)
     ->condition('vid', 'research_guides');
   $guide_terms = $query->execute();
   $currently_active = [];
@@ -98,6 +99,7 @@ function _custom_guides($args) {
       $errors[] = 'An error occurred.';
       $errors[] = 'Title '.$title.' with guide id '.$guide_id.' has url '.$url.' which isnt valid';
       $query = \Drupal::entityQuery('taxonomy_term')
+        ->accessCheck(FALSE)
         ->condition('vid', 'research_guides')
         ->condition('name', $title)
         ->condition('field_entity_id.value', $guide_id);
@@ -130,18 +132,22 @@ function _custom_guides($args) {
 
     //get the term based on guide
     $query = \Drupal::entityQuery('taxonomy_term')
+      ->accessCheck(FALSE)
       ->condition('vid', 'research_guides')
       ->condition('field_url.uri', $url);
     $guide_term_uri = $query->execute();
     $query = \Drupal::entityQuery('taxonomy_term')
+      ->accessCheck(FALSE)
       ->condition('vid', 'research_guides')
       ->condition('name', $title);
     $guide_term_name = $query->execute();
     $query = \Drupal::entityQuery('taxonomy_term')
+      ->accessCheck(FALSE)
       ->condition('vid', 'research_guides')
       ->condition('field_entity_id.value', $guide_id);
     $guide_term_guide_id = $query->execute();
     $query = \Drupal::entityQuery('taxonomy_term')
+      ->accessCheck(FALSE)
       ->condition('vid', 'research_guides')
       ->condition('field_url.uri', $url)
       ->condition('field_entity_id.value', $guide_id)
@@ -231,6 +237,7 @@ function _custom_databases($args) {
   //remove databases
   Drush::output()->writeln('Setting databases as inactive...');
   $query = \Drupal::entityQuery('taxonomy_term')
+    ->accessCheck(FALSE)
     ->condition('vid', 'recommended_databases');
   $database_terms = $query->execute();
   $currently_active = [];
@@ -261,14 +268,17 @@ function _custom_databases($args) {
 
     //get the term based on database
     $query = \Drupal::entityQuery('taxonomy_term')
+      ->accessCheck(FALSE)
       ->condition('vid', 'recommended_databases')
       ->condition('field_url.uri', $url);
     $database_term_uri = $query->execute();
     $query = \Drupal::entityQuery('taxonomy_term')
+      ->accessCheck(FALSE)
       ->condition('vid', 'recommended_databases')
       ->condition('name', $title);
     $database_term_name = $query->execute();
     $query = \Drupal::entityQuery('taxonomy_term')
+      ->accessCheck(FALSE)
       ->condition('vid', 'recommended_databases')
       ->condition('field_url.uri', $url)
       ->condition('name', $title);

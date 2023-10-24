@@ -11,6 +11,23 @@ use Drupal\Core\Field\WidgetInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 
 /**
+ * Implements hook_help().
+ */
+function extra_field_description_help($path, $arg) {
+  switch ($path) {
+    case 'help.page.extra_field_description':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('This module give us opportunity to append extra description to the field.') . '</p>';
+      $output .= '<p>' . t('In almost all themes extra description located below the field.') . '</p>';
+      $output .= '<p>' . t('Sometimes needed to append extra description above the field, see attached example.') . '</p>';
+      $output .= '<p>' . t('Module "Extra field description" is the best solution.') . '</p>';
+      $output .= '<p>' . t('For more information, see the <a href="https://www.drupal.org/project/extra_field_description">Extra Field Description module</a>.') . '</p>';
+      return $output;
+  }
+}
+
+/**
  * Implements hook_field_widget_third_party_settings_form().
  */
 function extra_field_description_field_widget_third_party_settings_form(WidgetInterface $plugin, FieldDefinitionInterface $field_definition, $form_mode, $form, FormStateInterface $form_state) {
@@ -40,9 +57,9 @@ function extra_field_description_field_widget_third_party_settings_form(WidgetIn
 }
 
 /**
- * Implements hook_field_widget_form_alter().
+ * Implements hook_field_widget_single_element_form_alter().
  */
-function extra_field_description_field_widget_form_alter(&$element, FormStateInterface $form_state, $context) {
+function extra_field_description_field_widget_single_element_form_alter(array &$element, FormStateInterface $form_state, array $context) {
   $third_party_settings = $context['widget']->getThirdPartySettings('extra_field_description', 'extra_description');
   if (!empty($third_party_settings)) {
     if (isset($element['value'])) {
