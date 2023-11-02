@@ -4,7 +4,7 @@ namespace Drupal\lti_tool_provider\Event;
 
 use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
 use Drupal\user\UserInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Drupal\Component\EventDispatcher\Event;
 
 class LtiToolProviderAuthenticatedEvent extends Event {
 

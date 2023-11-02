@@ -204,7 +204,7 @@ abstract class LTIToolProviderBase implements AuthenticationProviderInterface {
     $user = User::create();
     $user->setUsername($name);
     $user->setEmail($mail);
-    $user->setPassword(user_password());
+    $user->setPassword(\Drupal::service('password_generator')->generate());
     $user->enforceIsNew();
     $user->activate();
 

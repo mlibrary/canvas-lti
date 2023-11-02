@@ -111,6 +111,7 @@ class LtiToolProviderContentListForm extends FormBase {
       }
 
       $query = $storage->getQuery()
+        ->accessCheck(TRUE)
         ->condition($bundleType, $entityBundle)
         ->condition('status', 1)
         ->tableSort($header)

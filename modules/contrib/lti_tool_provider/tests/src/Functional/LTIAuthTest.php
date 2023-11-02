@@ -88,6 +88,7 @@ class LTIAuthTest extends BrowserTestBase {
     $response = $this->request('POST', $url, ['form_params' => $params]);
 
     $ids = $this->userStorage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('name', 'ltiuser', '=')
       ->condition('mail', 'ltiuser@invalid', '=')
       ->execute();
@@ -209,6 +210,7 @@ class LTIAuthTest extends BrowserTestBase {
 
     //        $userStorage = $this->container->get('entity_type.manager')->getStorage('user');
     $ids = $this->userStorage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('name', 'ltiuser', '=')
       ->condition('mail', 'ltiuser@invalid', '=')
       ->execute();
@@ -268,6 +270,7 @@ class LTIAuthTest extends BrowserTestBase {
 
     //        $userStorage = $this->container->get('entity_type.manager')->getStorage('user');
     $ids = $this->userStorage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('name', 'ltiuser', '=')
       ->condition('mail', 'ltiuser@invalid', '=')
       ->execute();
@@ -318,6 +321,7 @@ class LTIAuthTest extends BrowserTestBase {
 
     //        $userStorage = $this->container->get('entity_type.manager')->getStorage('user');
     $ids = $this->userStorage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('name', 'ltiuser', '=')
       ->condition('mail', 'ltiuser@invalid', '=')
       ->execute();
@@ -368,6 +372,7 @@ class LTIAuthTest extends BrowserTestBase {
 
     //        $userStorage = $this->container->get('entity_type.manager')->getStorage('user');
     $ids = $this->userStorage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('name', 'user@lms.edu', '=')
       ->condition('mail', 'user@lms.edu', '=')
       ->execute();
@@ -402,7 +407,7 @@ class LTIAuthTest extends BrowserTestBase {
     if ($user instanceof User) {
       $user->setUsername($mail);
       $user->setEmail($mail);
-      $user->setPassword(user_password());
+      $user->setPassword(\Drupal::service('password_generator')->generate());
       $user->enforceIsNew();
       $user->activate();
     }
@@ -432,6 +437,7 @@ class LTIAuthTest extends BrowserTestBase {
     $response = $this->request('POST', $url, ['form_params' => $params]);
 
     $ids = $this->userStorage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('name', $mail, '=')
       ->condition('mail', $mail, '=')
       ->execute();

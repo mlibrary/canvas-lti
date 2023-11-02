@@ -3,7 +3,7 @@
 namespace Drupal\lti_tool_provider\Event;
 
 use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Drupal\Component\EventDispatcher\Event;
 
 class LtiToolProviderLaunchEvent extends Event {
 

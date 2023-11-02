@@ -40,6 +40,7 @@ function lti_tool_provider_cron() {
     $nonceStorage = Drupal::entityTypeManager()
       ->getStorage('lti_tool_provider_nonce');
     $ids = $nonceStorage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('timestamp', $expires, '<')
       ->execute();
     $entities = $nonceStorage->loadMultiple($ids);

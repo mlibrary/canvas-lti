@@ -3807,64 +3807,22 @@
         },
         {
             "name": "drupal/lti_tool_provider",
-            "version": "2.0.4",
-            "version_normalized": "2.0.4.0",
+            "version": "dev-custom",
+            "version_normalized": "dev-custom",
             "source": {
                 "type": "git",
-                "url": "https://git.drupalcode.org/project/lti_tool_provider.git",
-                "reference": "2.0.4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/lti_tool_provider-2.0.4.zip",
-                "reference": "2.0.4",
-                "shasum": "50b32fc96bb53a4130dbb3f029c60f42b08dfcaa"
-            },
-            "require": {
-                "drupal/core": "^8 || ^9",
-                "drupal/key": "^1.0.0",
-                "ext-oauth": "*",
-                "oat-sa/lib-lti1p3-core": "^6.0.0",
-                "oat-sa/lib-lti1p3-deep-linking": "^4.0.0",
-                "php": "^7.3 || ^8.0"
+                "url": "https://github.com/mlibrary/lti_tool_provider.git",
+                "reference": "main"
             },
             "type": "drupal-module",
             "extra": {
-                "drupal": {
-                    "version": "2.0.4",
-                    "datestamp": "1628789169",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                },
                 "patches_applied": {
                     "add a test student user and fix 1.3": "patches/test-student-1.1and1.3-B.patch",
                     "safari itp": "https://www.drupal.org/files/issues/2022-12-21/lti_safari_itp-3316822-3.patch",
                     "dont use consumer id for entity lookup": "patches/dont-use-consumer_id-for-lookup.patch"
                 }
             },
-            "installation-source": "dist",
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "jzornig",
-                    "homepage": "https://www.drupal.org/user/446626"
-                },
-                {
-                    "name": "kenianbei",
-                    "homepage": "https://www.drupal.org/user/778980"
-                }
-            ],
-            "description": "The LTI tool provider module provides an LTI authentication provider for Drupal.",
-            "homepage": "https://drupal.org/project/lti_tool_provider",
-            "support": {
-                "source": "https://git.drupalcode.org/project/lti_tool_provider",
-                "issues": "https://drupal.org/project/issues/lti_tool_provider"
-            },
+            "installation-source": "source",
             "install-path": "../../modules/contrib/lti_tool_provider"
         },
         {

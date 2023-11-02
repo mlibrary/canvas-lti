@@ -3,7 +3,7 @@
 namespace Drupal\lti_tool_provider_content\Event;
 
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Drupal\Component\EventDispatcher\Event;
 
 class LtiToolProviderContentResourceEvent extends Event {
 

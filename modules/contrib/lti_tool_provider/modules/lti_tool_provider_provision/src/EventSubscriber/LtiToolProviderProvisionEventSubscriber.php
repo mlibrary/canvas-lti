@@ -163,7 +163,6 @@ class LtiToolProviderProvisionEventSubscriber implements EventSubscriberInterfac
     }
 
     if (!$access) {
-      $event->stopPropagation();
       throw new Exception('Unable to provision entity.');
     }
   }
