@@ -2,10 +2,10 @@
 
 namespace Drupal\rabbit_hole;
 
+use Drupal\Core\Entity\ContentEntityInterface;
+
 /**
  * Interface BehaviourSettingsManagerInterface.
- *
- * @package Drupal\rabbit_hole
  */
 interface BehaviorSettingsManagerInterface {
 
@@ -15,43 +15,74 @@ interface BehaviorSettingsManagerInterface {
    * @param array $settings
    *   The settings for the BehaviorSettings entity.
    * @param string $entity_type_id
-   *   The entity type (e.g. node) as a string.
-   * @param string $entity_id
-   *   The entity ID as a string.
+   *   The entity type id.
+   * @param string|null $bundle
+   *   The bundle name.
+   *
+   * @deprecated in rabbit_hole:2.0.0 and is removed from rabbit_hole:3.0.0. Use
+   *   \Drupal\rabbit_hole\Entity\BehaviorSettings::loadByEntityTypeBundle() and
+   *   \Drupal\rabbit_hole\Entity\BehaviorSettings::save().
+   *
+   * @see https://www.drupal.org/node/3376049
    */
-  public function saveBehaviorSettings(array $settings, $entity_type_id, $entity_id = NULL);
+  public function saveBehaviorSettings(array $settings, string $entity_type_id, ?string $bundle): void;
 
   /**
-   * Load behaviour settings for an entity or bundle, or load the defaults.
+   * Get behavior settings for the given entity type and bundle.
    *
-   * Load rabbit hole behaviour settings appropriate to the given config or
-   * default settings if not available.
+   * @param string $entity_type_id
+   *   The entity type ID (e.g. node, user).
+   * @param string $bundle
+   *   The entity bundle name.
    *
-   * @param string $entity_type_label
-   *   The entity type (e.g. node) as a string.
-   * @param string $entity_id
-   *   The entity ID as a string.
+   * @deprecated in rabbit_hole:2.0.0 and is removed from rabbit_hole:3.0.0. Use
+   *   \Drupal\rabbit_hole\Entity\BehaviorSettings::loadByEntityTypeBundle().
    *
-   * @return \Drupal\Core\Config\ImmutableConfig
-   *   The BehaviorSettings Config object.
+   * @see https://www.drupal.org/node/3376049
    */
-  public function loadBehaviorSettingsAsConfig($entity_type_label, $entity_id);
+  public function getBehaviorSettings(string $entity_type_id, string $bundle): array;
 
   /**
-   * Load behaviour settings for an entity or bundle, or return NULL.
+   * An entity's rabbit hole configuration, or the default if it does not exist.
    *
-   * Load editable rabbit hole behaviour settings appropriate to the given
-   * config or NULL if not available.
+   * Return an entity's rabbit hole configuration or, failing that, the default
+   * configuration for the bundle (which itself will call the base default
+   * configuration if necessary).
    *
-   * @param string $entity_type_label
-   *   The entity type (e.g. node) as a string.
-   * @param string $entity_id
-   *   The entity ID as a string.
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   The entity to apply rabbit hole behavior on.
    *
-   * @return \Drupal\Core\Config\ImmutableConfig|null
-   *   The BehaviorSettings Config object or NULL if it does not exist.
+   * @return array
+   *   An array of values from the entity's fields matching the base properties
+   *   added by rabbit hole.
    */
-  public function loadBehaviorSettingsAsEditableConfig($entity_type_label,
-    $entity_id);
+  public function getEntityBehaviorSettings(ContentEntityInterface $entity): array;
+
+  /**
+   * Checks if an entity type is enabled in the Rabbit Hole settings.
+   *
+   * @param string $entity_type_id
+   *   The entity type ID.
+   *
+   * @return bool
+   *   TRUE if an entity type is enabled, FALSE otherwise.
+   */
+  public function entityTypeIsEnabled(string $entity_type_id): bool;
+
+  /**
+   * Enables Rabbit Hole support for an entity type.
+   *
+   * @param string $entity_type_id
+   *   Entity type ID.
+   */
+  public function enableEntityType(string $entity_type_id): void;
+
+  /**
+   * Disables Rabbit Hole support for an entity type.
+   *
+   * @param string $entity_type_id
+   *   Entity type ID.
+   */
+  public function disableEntityType(string $entity_type_id): void;
 
 }

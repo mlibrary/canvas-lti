@@ -73,16 +73,9 @@ class RabbitHoleSubscriber implements EventSubscriberInterface {
    */
   private function processEvent(KernelEvent $event) {
     if ($entity = $this->rabbitHoleBehaviorInvoker->getEntity($event)) {
-      try {
-        $new_response = $this->rabbitHoleBehaviorInvoker->processEntity($entity, $event->getResponse());
-
-        if ($new_response instanceof Response) {
-          $event->setResponse($new_response);
-        }
-      }
-      catch (PluginException $e) {
-        // Do nothing if we got plugin-related exception.
-        // Other exceptions (i.e. AccessDeniedHttpException) should be accepted.
+      $new_response = $this->rabbitHoleBehaviorInvoker->processEntity($entity, $event->getResponse());
+      if ($new_response instanceof Response) {
+        $event->setResponse($new_response);
       }
     }
   }

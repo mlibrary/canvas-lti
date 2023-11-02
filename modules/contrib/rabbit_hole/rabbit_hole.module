@@ -8,6 +8,7 @@
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Entity\EntityFormInterface;
+use Drupal\rabbit_hole\BehaviorSettingsManager;
 
 /**
  * Implements hook_help().
@@ -26,46 +27,54 @@ function rabbit_hole_help($route_name, RouteMatchInterface $route_match) {
 }
 
 /**
- * Handle general aspects of rabbit hole form submission.
- *
- * @param array $form
- *   The form.
- * @param \Drupal\Core\Form\FormStateInterface $form_state
- *   The state of the form.
- */
-function _rabbit_hole_general_form_submit(array $form, FormStateInterface $form_state) {
-  \Drupal::service('rabbit_hole.form_mangler')
-    ->handleFormSubmit($form, $form_state);
-}
-
-/**
  * Implements hook_form_alter().
  */
 function rabbit_hole_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  $affected_types = \Drupal::service('plugin.manager.rabbit_hole_entity_plugin')
-    ->loadSupportedEntityTypes();
-  $affected_bundle_types = \Drupal::service('plugin.manager.rabbit_hole_entity_plugin')
-    ->loadSupportedBundleEntityTypes();
-  $affected_global_forms = \Drupal::service('plugin.manager.rabbit_hole_entity_plugin')
-    ->loadSupportedGlobalForms();
+  $form_mangler = \Drupal::service('rabbit_hole.form_mangler');
+  $entity_type_manager = \Drupal::service('entity_type.manager');
+
+  // Get affected bundle types from enabled entity types.
+  // @todo Remove this code in 3.0.0 - we should keep only custom redirect here.
+  $entity_types = \Drupal::config('rabbit_hole.settings')->get('enabled_entity_types');
+  $affected_bundle_types = array_map(function($entity_type_id) use ($entity_type_manager) {
+    return $entity_type_manager->getStorage($entity_type_id)->getEntityType()->getBundleEntityType();
+  }, $entity_types);
+  $affected_bundle_types = array_filter($affected_bundle_types);
+  $affected_global_forms = in_array('user', $entity_types, TRUE) ? ['user_admin_settings'] : [];
+
   if ($form_state->getFormObject() instanceof EntityFormInterface) {
     $current_type = $form_state->getFormObject()->getEntity()->getEntityTypeId();
     $current_operation = $form_state->getFormObject()->getOperation();
     $disallowed_operations = [
       'delete', 'cancel', 'reset', 'layout_builder', 'replicate',
     ];
-    $administer_permitted = \Drupal::currentUser()->hasPermission('rabbit hole administer ' . $current_type);
 
-    $is_entity_form = in_array($current_type, $affected_types) && $administer_permitted && !in_array($current_operation, $disallowed_operations);
     $is_bundle_form = in_array($current_type, $affected_bundle_types) && !in_array($current_operation, $disallowed_operations);
-    if ($is_entity_form || $is_bundle_form) {
-      \Drupal::service('rabbit_hole.form_mangler')->addRabbitHoleOptionsToEntityForm(
-        $form, $form_state->getFormObject()->getEntity(), $form_state, $form_id);
+    if ($is_bundle_form) {
+      $form_mangler->addRabbitHoleChangeNotice($form);
+    }
+
+    // Custom submit to avoid 403/404 pages after saving an entity.
+    if (\Drupal::service('rabbit_hole.behavior_settings_manager')->entityTypeIsEnabled($current_type)) {
+      $form['#submit'][] = [$form_mangler, 'redirectToEntityEditForm'];
+      if (!empty($form['actions']['submit']['#submit'])) {
+        $form['actions']['submit']['#submit'][] = [$form_mangler, 'redirectToEntityEditForm'];
+      }
     }
   }
-  elseif (array_key_exists($form_id, $affected_global_forms)) {
-    \Drupal::service('rabbit_hole.form_mangler')->addRabbitHoleOptionsToGlobalForm(
-       $form, $affected_global_forms[$form_id], $form_state, $form_id
-    );
+  elseif (in_array($form_id, $affected_global_forms, TRUE)) {
+    $form_mangler->addRabbitHoleChangeNotice($form);
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for \Drupal\field_ui\Form\EntityViewDisplayEditForm.
+ */
+function rabbit_hole_form_entity_view_display_edit_form_alter(&$form, FormStateInterface $form_state) {
+  // Hides the Rabbit Hole field on "Manage Display" page.
+  unset($form['fields'][BehaviorSettingsManager::FIELD_NAME]);
+  $key = array_search(BehaviorSettingsManager::FIELD_NAME, $form['#fields']);
+  if ($key !== FALSE) {
+    unset($form['#fields'][$key]);
   }
 }

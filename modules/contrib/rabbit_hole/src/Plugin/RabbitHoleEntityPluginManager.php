@@ -121,20 +121,4 @@ class RabbitHoleEntityPluginManager extends DefaultPluginManager {
     return $result;
   }
 
-  /**
-   * Load a map of tokens per entity type.
-   *
-   * Used for behavior plugins that use tokens like PageRedirect.
-   *
-   * @return array
-   *   An array of token IDs keyed by entity ID
-   */
-  public function loadEntityTokenMap() {
-    $map = [];
-    foreach ($this->getDefinitions() as $key => $def) {
-      $map += $this->createInstance($key)->getEntityTokenMap();
-    }
-    return $map;
-  }
-
 }

@@ -8,6 +8,7 @@ use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\file\Entity\File;
 use Drupal\media\Entity\Media;
 use Drupal\node\Entity\Node;
+use Drupal\rabbit_hole\Entity\BehaviorSettings;
 use Drupal\Tests\BrowserTestBase;
 
 /**
@@ -31,7 +32,7 @@ class RabbitHolePageRedirectActionTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['rh_node', 'user', 'media', 'token'];
+  public static $modules = ['rabbit_hole', 'media', 'token'];
 
   /**
    * The behavior settings manager.
@@ -46,10 +47,32 @@ class RabbitHolePageRedirectActionTest extends BrowserTestBase {
   protected function setUp(): void {
     parent::setUp();
     $this->behaviorSettingsManager = $this->container->get('rabbit_hole.behavior_settings_manager');
-    $this->behaviorSettingsManager->saveBehaviorSettings([
-      'action' => 'display_page',
-      'allow_override' => TRUE,
-    ], 'node_type', 'article');
+    $this->behaviorSettingsManager->enableEntityType('node');
+
+    BehaviorSettings::loadByEntityTypeBundle('node', 'article')
+      ->setAction('display_page')
+      ->save();
+    \Drupal::service('rabbit_hole.entity_helper')->createRabbitHoleField('node', 'article');
+  }
+
+  /**
+   * Tests redirect action configured on bundle level.
+   */
+  public function testBundleConfiguration() {
+    BehaviorSettings::loadByEntityTypeBundle('node', 'article')
+      ->setAction('page_redirect')
+      ->setConfiguration([
+        'redirect' => '[site:url]',
+        'redirect_code' => 301,
+        'redirect_fallback_action' => 'access_denied',
+      ])
+      ->save();
+
+    // Make sure the action is working if it's configured in bundle settings.
+    $node = $this->createTestNode();
+    $this->drupalGet($node->toUrl());
+    $this->assertSession()->statusCodeEquals(200);
+    $this->assertSession()->addressEquals(Url::fromRoute('<front>'));
   }
 
   /**
@@ -90,10 +113,11 @@ class RabbitHolePageRedirectActionTest extends BrowserTestBase {
    */
   public function testTokenizedUrlRedirect() {
     // Test redirect with default system token.
-    $node = $this->createTestNode('page_redirect');
-    $node->set('rh_redirect', '[site:url]');
-    $node->set('rh_redirect_response', 301);
-    $node->save();
+    $node = $this->createTestNode('page_redirect', [
+      'redirect' => '[site:url]',
+      'redirect_code' => 301,
+      'redirect_fallback_action' => '',
+    ]);
 
     $this->drupalGet($node->toUrl());
     $this->assertSession()->statusCodeEquals(200);
@@ -140,9 +164,14 @@ class RabbitHolePageRedirectActionTest extends BrowserTestBase {
       'field_related_media' => [
         'target_id' => $media->id(),
       ],
-      'rh_action' => 'page_redirect',
-      'rh_redirect' => '[node:field_related_media:entity:field_media_document:entity:url]',
-      'rh_redirect_response' => 301,
+      'rabbit_hole__settings' => [
+        'action' => 'page_redirect',
+        'settings' => [
+          'redirect' => '[node:field_related_media:entity:field_media_document:entity:url]',
+          'redirect_code' => 301,
+          'redirect_fallback_action' => '',
+        ],
+      ],
     ]);
     $node->save();
 
@@ -185,19 +214,27 @@ class RabbitHolePageRedirectActionTest extends BrowserTestBase {
     $content_type = $this->drupalCreateContentType([
       'type' => mb_strtolower($this->randomMachineName()),
     ]);
-    $this->behaviorSettingsManager->saveBehaviorSettings([
-      'action' => 'display_page',
-      'allow_override' => TRUE,
-      'redirect_fallback_action' => 'access_denied',
-    ], 'node_type', $content_type->id());
+    BehaviorSettings::loadByEntityTypeBundle('node', $content_type->id())
+      ->setAction('page_redirect')
+      ->setConfiguration([
+        'redirect_fallback_action' => 'access_denied',
+      ])
+      ->save();
+
+    \Drupal::service('rabbit_hole.entity_helper')->createRabbitHoleField('node', $content_type->id());
 
     // Create a test node with redirect to not-existing field.
     $node1 = $this->drupalCreateNode([
       'type' => $content_type->id(),
       'title' => $this->randomString(),
-      'rh_action' => 'page_redirect',
-      'rh_redirect' => '[node:field_related_media:entity:field_media_document:entity:url]',
-      'rh_redirect_response' => 301,
+      'rabbit_hole__settings' => [
+        'action' => 'page_redirect',
+        'settings' => [
+          'redirect' => '[node:field_related_media:entity:field_media_document:entity:url]',
+          'redirect_code' => 301,
+          'redirect_fallback_action' => '',
+        ],
+      ],
     ]);
 
     $this->drupalGet($node1->toUrl());
@@ -210,10 +247,14 @@ class RabbitHolePageRedirectActionTest extends BrowserTestBase {
     $node2 = $this->drupalCreateNode([
       'type' => $content_type->id(),
       'title' => $this->randomString(),
-      'rh_action' => 'page_redirect',
-      'rh_redirect' => 'invalidscheme:/random',
-      'rh_redirect_response' => 301,
-      'rh_redirect_fallback_action' => 'page_not_found',
+      'rabbit_hole__settings' => [
+        'action' => 'page_redirect',
+        'settings' => [
+          'redirect' => 'invalidscheme:/random',
+          'redirect_code' => 301,
+          'redirect_fallback_action' => 'page_not_found',
+        ],
+      ],
     ]);
     $node2->save();
     $this->drupalGet($node2->toUrl());
@@ -222,13 +263,25 @@ class RabbitHolePageRedirectActionTest extends BrowserTestBase {
   }
 
   /**
+   * Test that redirect destination can be altered.
+   */
+  public function testAlteredRedirectDestination() {
+    $this->assertPageRedirect('/node', '/node');
+    // Install test module with hook implementation and make sure that
+    // destination has changed to front page.
+    \Drupal::service('module_installer')->install(['rabbit_hole_test_hooks']);
+    $this->assertPageRedirect('/node', '/');
+  }
+
+  /**
    * Test URL redirects (destination and redirect code).
    */
   protected function assertPageRedirect($destination_path, $expected_path, $redirect_code = 301) {
-    $entity = $this->createTestNode('page_redirect');
-    $entity->set('rh_redirect', $destination_path);
-    $entity->set('rh_redirect_response', $redirect_code);
-    $entity->save();
+    $settings = [
+      'redirect' => $destination_path,
+      'redirect_code' => $redirect_code,
+    ];
+    $entity = $this->createTestNode('page_redirect', $settings);
 
     $this->drupalGet($entity->toUrl());
     $this->assertSession()->statusCodeEquals(200);
@@ -241,12 +294,15 @@ class RabbitHolePageRedirectActionTest extends BrowserTestBase {
    * @return \Drupal\node\NodeInterface
    *   Test node object.
    */
-  protected function createTestNode($action = NULL) {
+  protected function createTestNode($action = NULL, $settings = []) {
     $values = [
       'type' => 'article',
     ];
     if (isset($action)) {
-      $values['rh_action'] = $action;
+      $values['rabbit_hole__settings'] = [
+        'action' => $action,
+        'settings' => $settings,
+      ];
     }
     return $this->drupalCreateNode($values);
   }

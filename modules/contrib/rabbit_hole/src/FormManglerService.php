@@ -2,20 +2,17 @@
 
 namespace Drupal\rabbit_hole;
 
-use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Entity\EntityTypeBundleInfo;
+use Drupal\Core\Form\SubformState;
+use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\rabbit_hole\Entity\BehaviorSettings;
 use Drupal\rabbit_hole\Plugin\RabbitHoleBehaviorPlugin\DisplayPage;
 use Drupal\rabbit_hole\Plugin\RabbitHoleBehaviorPluginManager;
-use Drupal\rabbit_hole\Plugin\RabbitHoleEntityPluginManager;
-use Drupal\rabbit_hole\Entity\BehaviorSettings;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Component\Utility\UrlHelper;
 
 /**
  * Provides necessary form alterations.
@@ -26,6 +23,8 @@ class FormManglerService {
   use StringTranslationTrait;
 
   const RABBIT_HOLE_USE_DEFAULT = 'bundle_default';
+
+  protected EntityHelper $entityHelper;
 
   /**
    * The entity type manager.
@@ -42,25 +41,11 @@ class FormManglerService {
   private $rhBehaviorPluginManager;
 
   /**
-   * Entity plugin manager.
-   *
-   * @var \Drupal\rabbit_hole\Plugin\RabbitHoleEntityPluginManager|null
-   */
-  private $rhEntityPluginManager;
-
-  /**
    * Rabbit hole behavior invoker.
    *
    * @var \Drupal\rabbit_hole\BehaviorInvokerInterface
    */
   protected $behaviorInvoker;
-
-  /**
-   * Bundles information.
-   *
-   * @var array
-   */
-  protected $allBundleInfo;
 
   /**
    * The behavior settings manager.
@@ -70,336 +55,172 @@ class FormManglerService {
   private $rhBehaviorSettingsManager;
 
   /**
-   * Constructor.
+   * Constructs a new FormManglerService instance.
    */
   public function __construct(
     EntityTypeManagerInterface $etm,
-    EntityTypeBundleInfo $etbi,
     RabbitHoleBehaviorPluginManager $behavior_plugin_manager,
-    RabbitHoleEntityPluginManager $entity_plugin_manager,
     BehaviorSettingsManager $behavior_settings_manager,
     TranslationInterface $translation,
-    BehaviorInvokerInterface $behavior_invoker) {
+    BehaviorInvokerInterface $behavior_invoker,
+    EntityHelper $entityHelper) {
 
     $this->entityTypeManager = $etm;
-    $this->allBundleInfo = $etbi->getAllBundleInfo();
     $this->rhBehaviorPluginManager = $behavior_plugin_manager;
-    $this->rhEntityPluginManager = $entity_plugin_manager;
     $this->rhBehaviorSettingsManager = $behavior_settings_manager;
     $this->stringTranslation = $translation;
     $this->behaviorInvoker = $behavior_invoker;
+    $this->entityHelper = $entityHelper;
   }
 
   /**
-   * Add rabbit hole options to an entity type's global configuration form.
-   *
-   * (E.g. options for all users).
-   *
-   * @param array $attach
-   *   The form that the Rabbit Hole form should be attached to.
-   * @param string $entity_type
-   *   The name of the entity for which this form provides global options.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   Form state object.
-   * @param string $form_id
-   *   Form ID.
+   * Builds Rabbit Hole settings for the entity form.
    */
-  public function addRabbitHoleOptionsToGlobalForm(array &$attach, $entity_type, FormStateInterface $form_state, $form_id) {
-    $entity_type = $this->entityTypeManager->getStorage($entity_type)
-      ->getEntityType();
-
-    $this->addRabbitHoleOptionsToForm($attach, $entity_type->id(), NULL,
-      $form_state, $form_id);
-  }
-
-  /**
-   * Form structure for the Rabbit Hole configuration.
-   *
-   * This should be used by other modules that wish to implement the Rabbit Hole
-   * configurations in any form.
-   *
-   * @param array $attach
-   *   The form that the Rabbit Hole form should be attached to.
-   * @param \Drupal\Core\Entity\EntityInterface $entity
-   *   The entity that we're adding the form to, e.g. a node.  This should be
-   *    defined even in the case of bundles since it is used to determine bundle
-   *    and entity type.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   Form state object.
-   * @param string $form_id
-   *   Form ID.
-   *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   */
-  public function addRabbitHoleOptionsToEntityForm(array &$attach, EntityInterface $entity, FormStateInterface $form_state, $form_id) {
-    $this->addRabbitHoleOptionsToForm($attach, $entity->getEntityType()->id(),
-      $entity, $form_state, $form_id);
-  }
-
-  /**
-   * Common functionality for adding rabbit hole options to forms.
-   *
-   * @param array $attach
-   *   The form that the Rabbit Hole form should be attached to.
-   * @param string $entity_type_id
-   *   The string ID of the entity type for the form, e.g. 'node'.
-   * @param object $entity
-   *   The entity that we're adding the form to, e.g. a node.  This should be
-   *    defined even in the case of bundles since it is used to determine bundle
-   *    and entity type.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   Form state object.
-   * @param string $form_id
-   *   Form ID.
-   *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   */
-  private function addRabbitHoleOptionsToForm(
-    array &$attach,
-    $entity_type_id,
-    $entity,
-    FormStateInterface $form_state,
-    $form_id
-  ) {
-
-    $entity_type = $this->entityTypeManager->getStorage($entity_type_id)
-      ->getEntityType();
-
-    if ($entity === NULL) {
-      $is_bundle_or_entity_type = TRUE;
-    }
-    else {
-      $is_bundle_or_entity_type = $this->isEntityBundle($entity);
-    }
-
-    $bundle_settings = NULL;
-    $bundle = isset($entity) ? $entity->bundle() : $entity_type_id;
-    $action = NULL;
-
-    $entity_plugin = $this->rhEntityPluginManager->createInstanceByEntityType(
-      $is_bundle_or_entity_type && !empty($entity_type->getBundleOf())
-        ? $entity_type->getBundleOf() : $entity_type->id());
-
-    if ($is_bundle_or_entity_type) {
-      if ($entity === NULL) {
-        $bundle_settings = $this->rhBehaviorSettingsManager
-          ->loadBehaviorSettingsAsConfig($entity_type->id());
-      }
-      else {
-        $bundle_settings = $this->rhBehaviorSettingsManager
-          ->loadBehaviorSettingsAsConfig($entity_type->id(), $entity->id());
-      }
-
-      $action = $bundle_settings->get('action');
-    }
-    else {
-      // Attach extra submit for redirect in case of entity form.
-      $submit_location = $entity_plugin->getFormSubmitHandlerAttachLocations($attach, $form_state);
-      $this->attachFormSubmit($attach, $submit_location, [
-        $this, 'redirectToEntityEditForm',
-      ]);
-
-      $bundle_entity_type = $entity_type->getBundleEntityType()
-        ?: $entity_type->id();
-      $bundle_settings = $this->rhBehaviorSettingsManager
-        ->loadBehaviorSettingsAsConfig($bundle_entity_type,
-          $entity->getEntityType()->getBundleEntityType()
-            ? $entity->bundle() : NULL);
-
-      // If the form is about to be attached to an entity,
-      // but the bundle isn't allowed to be overridden, exit.
-      if (!$bundle_settings->get('allow_override')) {
-        return;
-      }
-
-      $action = isset($entity->rh_action->value)
-        ? $entity->rh_action->value
-        : 'bundle_default';
-    }
-
-    // Get information about the entity.
-    // TODO: Should be possible to get this as plural? Look into this.
-    $entity_label = $entity_type->getLabel();
-
-    $bundle_info = isset($this->allBundleInfo[$entity_type->id()])
-      ? $this->allBundleInfo[$entity_type->id()] : NULL;
-
-    // Get the label for the bundle. This won't be set when the user is creating
-    // a new bundle. In that case, fallback to "this bundle".
-    $bundle_label = NULL !== $bundle_info && NULL !== $bundle_info[$bundle]['label']
-      ? $bundle_info[$bundle]['label'] : $this->t('this bundle');
-
-    // Wrap everything in a fieldset.
-    $form['rabbit_hole'] = [
-      '#type' => 'details',
-      '#title' => $this->t('Rabbit Hole settings'),
-      '#collapsed' => FALSE,
-      '#collapsible' => TRUE,
-      '#tree' => FALSE,
-      '#weight' => 10,
-
-      // TODO: Should probably handle group in a plugin - not sure if, e.g.,
-      // files will work in the same way and even if they do later entities
-      // might not.
-      '#group' => $is_bundle_or_entity_type ? 'additional_settings' : 'advanced',
-      '#attributes' => ['class' => ['rabbit-hole-settings-form']],
-    ];
-
-    // Add the invoking module to the internal values.
-    // TODO: This can probably be removed - check.
-    $form['rabbit_hole']['rh_is_bundle'] = [
-      '#type' => 'hidden',
-      '#value' => $is_bundle_or_entity_type,
-    ];
-
-    $form['rabbit_hole']['rh_entity_type'] = [
-      '#type' => 'hidden',
-      '#value' => $entity_type->id(),
-    ];
-
-    // Add override setting if we're editing a bundle.
-    if ($is_bundle_or_entity_type) {
-      $form['rabbit_hole']['rh_override'] = [
-        '#type' => 'checkbox',
-        '#title' => $this->t('Allow these settings to be overridden for individual entities'),
-        '#default_value' => $bundle_settings->get('allow_override'),
-        '#description' => $this->t('If this is checked, users with the %permission permission will be able to override these settings for individual entities.', [
-          '%permission' => $this->t('Administer Rabbit Hole settings for @entity_type', ['@entity_type' => $entity_label]),
-        ]),
-      ];
-    }
-
-    // Add action setting.
-    $action_options = $this->loadBehaviorOptions();
-
-    if (!$is_bundle_or_entity_type) {
-      // Add an option if we are editing an entity. This will allow us to use
-      // the configuration for the bundle.
-      $action_bundle = $bundle_settings->get('action');
-      $action_options = [
-        self::RABBIT_HOLE_USE_DEFAULT => $this->t('Global @bundle behavior (@setting)', [
-          '@bundle' => strtolower($bundle_label),
-          '@setting' => $action_options[$action_bundle],
-        ]),
-      ] + $action_options;
-    }
-
-    $form['rabbit_hole']['rh_action'] = [
-      '#type' => 'radios',
+  public function settingsForm(array &$form, FormStateInterface $form_state, array $settings) {
+    $form['action'] = [
+      '#type' => 'select',
       '#title' => $this->t('Behavior'),
-      '#options' => $action_options,
-      '#default_value' => $action,
-      '#description' => $this->t('What should happen when someone tries to visit an entity page for @bundle?', ['@bundle' => strtolower($bundle_label)]),
+      '#options' => $this->rhBehaviorPluginManager->getBehaviors(),
+      '#default_value' => $settings['action'],
+      '#description' => $this->t('What should happen when someone tries to visit entity canonical page?'),
       '#attributes' => ['class' => ['rabbit-hole-action-setting']],
     ];
 
-    $this->populateExtraBehaviorSections($form, $form_state, $form_id, $entity,
-      $is_bundle_or_entity_type, $bundle_settings);
+    // Apply form modifications from plugins.
+    foreach ($this->rhBehaviorPluginManager->getDefinitions() as $id => $definition) {
+      $plugin = $this->rhBehaviorPluginManager->createInstance($id, $settings['configuration']);
+      $plugin_form = $plugin->buildConfigurationForm([], $form_state);
 
-    // Attach the Rabbit Hole form to the main form, and add a custom validation
-    // callback.
-    $attach += $form;
-
-    // TODO: Optionally provide a form validation handler (can we do this via
-    // plugin?).
-    //
-    // If the implementing module provides a submit function for the bundle
-    // form, we'll add it as a submit function for the attached form. We'll also
-    // make sure that this won't be added for entity forms.
-    //
-    // TODO: This should probably be moved out into plugins based on entity
-    // type.
-    $is_global_form = isset($attach['#form_id'])
-      && $attach['#form_id'] === $entity_plugin->getGlobalConfigFormId();
-
-    if ($is_global_form) {
-      $submit_location = $entity_plugin->getGlobalFormSubmitHandlerAttachLocations($attach, $form_state);
+      if ($plugin_form) {
+        $form[$id] = [
+          '#type' => 'details',
+          '#title' => $this->t('@plugin settings', ['@plugin' => $definition['label']]),
+          '#open' => TRUE,
+          '#tree' => TRUE,
+          '#states' => [
+            'visible' => [
+              ':input[name="' . $this->getInputSelector($form, 'action') . '"]' => ['value' => $id],
+            ],
+          ],
+        ] + $plugin_form;
+      }
     }
-    elseif ($is_bundle_or_entity_type) {
-      $submit_location = $entity_plugin->getBundleFormSubmitHandlerAttachLocations($attach, $form_state);
-    }
-    else {
-      $submit_location = $entity_plugin->getFormSubmitHandlerAttachLocations($attach, $form_state);
-    }
-    $this->attachFormSubmit($attach, $submit_location, '_rabbit_hole_general_form_submit');
+  }
 
-    // TODO: Optionally provide additional form submission handler (can we do
-    // this via plugin?).
-    // Add ability to validate user input before saving the data.
-    $attach['rabbit_hole']['rabbit_hole']['redirect']['rh_redirect']['#element_validate'][] = [
-      'Drupal\rabbit_hole\FormManglerService',
-      'validateFormRedirect',
+  /**
+   * Builds Rabbit Hole settings form for the given entity bundle.
+   */
+  public function bundleSettingsForm(array &$form, FormStateInterface $form_state, string $entity_type_id, string $bundle_name) {
+    $entity_type = $this->entityTypeManager->getStorage($entity_type_id)->getEntityType();
+    $config = BehaviorSettings::loadByEntityTypeBundle($entity_type_id, $bundle_name);
+    $this->settingsForm($form, $form_state, $config->getSettings());
+
+    $form['allow_override'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Allow these settings to be overridden for individual entities'),
+      '#default_value' => $this->entityHelper->hasRabbitHoleField($entity_type->id(), $bundle_name),
+      '#description' => $this->t('If checked, users with the %permission permission will be able to override these settings for individual entities.', [
+        '%permission' => $this->t('Administer Rabbit Hole settings for @entity_type', ['@entity_type' => $entity_type->getLabel()]),
+      ]),
+    ];
+
+    $form['no_bypass'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Disable permissions-based bypassing'),
+      '#default_value' => $config->getNoBypass(),
+      '#description' => $this->t("If checked, users won't be able to bypass configured Rabbit Hole behavior. It will be applied to Administrators and other users with bypass permissions."),
+      '#states' => [
+        'invisible' => [
+          ':input[name="' . $this->getInputSelector($form, 'bypass_message') . '"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+
+    $form['bypass_message'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Display a message when viewing the page'),
+      '#default_value' => $config->getBypassMessage(),
+      '#description' => $this->t("If checked, users who bypassed the Rabbit Hole action, will see a warning message when viewing the page."),
+      '#states' => [
+        'invisible' => [
+          ':input[name="' . $this->getInputSelector($form, 'no_bypass') . '"]' => ['checked' => TRUE],
+        ],
+      ],
     ];
   }
 
   /**
-   * Validate user input before saving it.
-   *
-   * @param array $form
-   *   The form.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   The form state.
+   * Validates bundle settings form.
    */
-  public static function validateFormRedirect(array $form, FormStateInterface &$form_state) {
-    $rh_action = $form_state->getValue('rh_action');
+  public function bundleSettingsFormValidate($form, FormStateInterface $form_state) {
+    $bundles = $form_state->getValue('bundles') ?? [];
 
-    // Validate URL of page redirect.
-    if ($rh_action == 'page_redirect') {
-      $redirect = $form_state->getValue('rh_redirect');
+    foreach ($bundles as $bundle_name => $form_values) {
+      $action = $form_values['action'];
 
-      if (!UrlHelper::isExternal($redirect) && $redirect !== '<front>') {
-        $scheme = parse_url($redirect, PHP_URL_SCHEME);
-
-        // Check if internal URL matches requirements of
-        // \Drupal\Core\Url::fromUserInput.
-        $accepted_internal_characters = [
-          '/',
-          '?',
-          '#',
-          '[',
-        ];
-
-        if ($scheme === NULL && !\in_array(substr($redirect, 0, 1), $accepted_internal_characters)) {
-          $form_state->setErrorByName('rh_redirect', t("Internal path '@string' must begin with a '/', '?', '#', or be a token.", ['@string' => $redirect]));
-        }
+      if (isset($form['bundles'][$bundle_name]['settings'][$action])) {
+        /** @var \Drupal\rabbit_hole\Plugin\RabbitHoleBehaviorPluginInterface $behavior_plugin */
+        $behavior_plugin = $this->rhBehaviorPluginManager->createInstance($action);
+        $subform_state = SubformState::createForSubform($form['bundles'][$bundle_name]['settings'][$action], $form, $form_state);
+        $behavior_plugin->validateConfigurationForm($form['bundles'][$bundle_name]['settings'][$action], $subform_state);
       }
     }
   }
 
   /**
-   * Handle general aspects of rabbit hole form submission.
-   *
-   * (Not specific to node etc.).
-   *
-   * @param array $form
-   *   The form.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   The form state.
+   * Saves bundle settings into the configuration.
    */
-  public function handleFormSubmit(array $form, FormStateInterface $form_state) {
-    if ($form_state->getValue('rh_is_bundle')) {
-      $entity = NULL;
-      if (method_exists($form_state->getFormObject(), 'getEntity')) {
-        $entity = $form_state->getFormObject()->getEntity();
-      }
-      $allow_override = $form_state->getValue('rh_override')
-        ? BehaviorSettings::OVERRIDE_ALLOW
-        : BehaviorSettings::OVERRIDE_DISALLOW;
+  public function bundleSettingsFormSubmit($form, FormStateInterface $form_state) {
+    $entity_type_id = $form_state->get('entity_type_id');
+    $bundles = $form_state->getValue('bundles') ?? [];
 
-      $this->rhBehaviorSettingsManager->saveBehaviorSettings(
-        [
-          'action' => $form_state->getValue('rh_action'),
-          'allow_override' => $allow_override,
-          'redirect' => $form_state->getValue('rh_redirect') ?: '',
-          'redirect_code' => $form_state->getValue('rh_redirect_response') ?: BehaviorSettings::REDIRECT_NOT_APPLICABLE,
-          'redirect_fallback_action' => $form_state->getvalue('rh_redirect_fallback_action') ?: 'access_denied',
-        ],
-        $form_state->getValue('rh_entity_type'),
-        isset($entity) ? $entity->id() : NULL
-      );
+    foreach ($bundles as $bundle_name => $form_values) {
+      $action = $form_values['action'];
+
+      $config = BehaviorSettings::loadByEntityTypeBundle($entity_type_id, $bundle_name);
+      $config->setAction($action)
+        ->setNoBypass($form_values['no_bypass'])
+        ->setBypassMessage($form_values['bypass_message']);
+
+      // Get action settings if it exists in the form.
+      if (isset($form['bundles'][$bundle_name]['settings'][$action])) {
+        /** @var \Drupal\rabbit_hole\Plugin\RabbitHoleBehaviorPluginInterface $behavior_plugin */
+        $behavior_plugin = $this->rhBehaviorPluginManager->createInstance($action);
+        $subform_state = SubformState::createForSubform($form['bundles'][$bundle_name]['settings'][$action], $form, $form_state);
+        $behavior_plugin->submitConfigurationForm($form['bundles'][$bundle_name]['settings'][$action], $subform_state);
+        $config->setConfiguration($behavior_plugin->getConfiguration());
+      }
+      $config->save();
+
+      // Create or remove field from the entity bundle.
+      if (empty($form_values['allow_override'])) {
+        $this->entityHelper->removeRabbitHoleField($entity_type_id, $bundle_name);
+      }
+      else {
+        $this->entityHelper->createRabbitHoleField($entity_type_id, $bundle_name);
+      }
     }
+  }
+
+  /**
+   * Adds a notice about the new settings page.
+   */
+  public function addRabbitHoleChangeNotice(&$element) {
+    $element['rabbit_hole'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Rabbit Hole settings'),
+      '#collapsed' => TRUE,
+      '#collapsible' => TRUE,
+      '#tree' => FALSE,
+      '#weight' => 10,
+      '#group' => 'additional_settings',
+      '#attributes' => ['class' => ['rabbit-hole-settings-form']],
+      'change_notice' => [
+        '#markup' => $this->t('Rabbit Hole settings were moved into a dedicated @settings_page.', [
+          '@settings_page' => Link::fromTextAndUrl('settings page', Url::fromRoute('rabbit_hole.settings'))->toString(),
+        ]),
+      ],
+    ];
   }
 
   /**
@@ -427,79 +248,22 @@ class FormManglerService {
   }
 
   /**
-   * Load an array of behaviour options from plugins.
-   *
-   * Load an array of rabbit hole behavior options from plugins in the format
-   * option id => label.
-   *
-   * @return array
-   *   An array of behavior options
-   */
-  protected function loadBehaviorOptions() {
-    $action_options = [];
-    foreach ($this->rhBehaviorPluginManager->getDefinitions() as $id => $def) {
-      $action_options[$id] = $def['label'];
-    }
-    return $action_options;
-  }
-
-  /**
-   * Add additional fields to the form based on behaviors.
+   * Builds the full input selector based on available parents.
    *
    * @param array $form
-   *   The form array.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   The form state.
-   * @param string $form_id
-   *   The form ID.
-   * @param \Drupal\Core\Entity\EntityInterface|null $entity
-   *   The entity whose settings form we are displaying.
-   * @param bool $entity_is_bundle
-   *   Whether the entity is a bundle.
-   * @param \Drupal\Core\Config\ImmutableConfig|null $bundle_settings
-   *   The settings for this bundle.
+   *   An associative array containing the structure of the form.
+   * @param string $name
+   *   Input name.
+   * @return string
+   *   The full input path.
    */
-  protected function populateExtraBehaviorSections(
-    array &$form,
-    FormStateInterface $form_state,
-    $form_id,
-    EntityInterface $entity = NULL,
-    $entity_is_bundle = FALSE,
-    ImmutableConfig $bundle_settings = NULL
-  ) {
-
-    foreach ($this->rhBehaviorPluginManager->getDefinitions() as $id => $def) {
-      $this->rhBehaviorPluginManager
-        ->createInstance($id)
-        ->settingsForm($form['rabbit_hole'], $form_state, $form_id, $entity,
-          $entity_is_bundle, $bundle_settings);
+  protected function getInputSelector(array $form, string $name): string {
+    $parents = $form['#parents'] ?? [];
+    $selector = $root = array_shift($parents);
+    if ($parents) {
+      $selector = $root . '[' . implode('][', array_merge($parents, [$name])) . ']';
     }
-  }
-
-  /**
-   * Adds extra form submit based on the provided submit locations.
-   */
-  protected function attachFormSubmit(&$form, $submit_location, $submit_handler) {
-    foreach ($submit_location as $location) {
-      $array_ref = &$form;
-      if (\is_array($location)) {
-        foreach ($location as $subkey) {
-          $array_ref = &$array_ref[$subkey];
-        }
-      }
-      else {
-        $array_ref = &$array_ref[$location];
-      }
-      $array_ref[] = $submit_handler;
-    }
-  }
-
-  /**
-   * TODO.
-   */
-  protected function isEntityBundle($entity) {
-    return is_subclass_of($entity,
-      'Drupal\Core\Config\Entity\ConfigEntityBundleBase');
+    return $selector;
   }
 
 }

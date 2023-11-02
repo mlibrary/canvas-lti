@@ -3,8 +3,8 @@
 namespace Drupal\rabbit_hole\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\rabbit_hole\BehaviorSettingsInterface;
-use Drupal\rabbit_hole\Exception\InvalidBehaviorSettingException;
 
 /**
  * Defines the Behavior settings entity.
@@ -17,38 +17,21 @@ use Drupal\rabbit_hole\Exception\InvalidBehaviorSettingException;
  *   admin_permission = "administer site configuration",
  *   entity_keys = {
  *     "id" = "id",
- *     "uuid" = "uuid",
- *     "action" = "action",
- *     "allow_override" = "allow_override",
- *     "redirect" = "redirect",
- *     "redirect_code" = "redirect_code",
- *     "redirect_fallback_action" = "redirect_fallback_action"
+ *     "action" = "action"
  *   },
  *   config_export = {
  *     "id",
- *     "entity_type_id",
- *     "entity_id",
- *     "uuid",
+ *     "targetEntityType",
+ *     "bundle",
  *     "action",
- *     "allow_override",
- *     "redirect",
- *     "redirect_code",
- *     "redirect_fallback_action"
+ *     "no_bypass",
+ *     "bypass_message",
+ *     "configuration"
  *   },
  *   links = {}
  * )
  */
 class BehaviorSettings extends ConfigEntityBase implements BehaviorSettingsInterface {
-  const OVERRIDE_ALLOW = TRUE;
-  const OVERRIDE_DISALLOW = FALSE;
-
-  const REDIRECT_NOT_APPLICABLE = 0;
-  const REDIRECT_MOVED_PERMANENTLY = 301;
-  const REDIRECT_FOUND = 302;
-  const REDIRECT_SEE_OTHER = 303;
-  const REDIRECT_NOT_MODIFIED = 304;
-  const REDIRECT_USE_PROXY = 305;
-  const REDIRECT_TEMPORARY_REDIRECT = 307;
 
   /**
    * The Behavior settings ID.
@@ -65,34 +48,25 @@ class BehaviorSettings extends ConfigEntityBase implements BehaviorSettingsInter
   protected $action;
 
   /**
-   * Whether inherited behaviors can be edited (if this is a bundle).
-   *
-   * @var bool
-   */
-  protected $allow_override;
-
-  /**
-   * The path to use for redirects (if the action is redirect).
-   *
-   * Todo: It may be possible to make this reliant on a plugin instead (i.e.
-   *  the redirect plugin) - if so, we should probably do this.
+   * Entity type to be displayed.
    *
    * @var string
    */
-  protected $redirect;
+  protected $targetEntityType;
 
   /**
-   * The code to use for redirects (if the action is redirect).
+   * Bundle to be displayed.
    *
-   * Todo: It may be possible to make this reliant on a plugin instead (i.e.
-   * the redirect plugin) - if so, we should probably do this.
-   *
-   * @var int
+   * @var string
    */
-  protected $redirect_code;
+  protected $bundle;
 
   /**
    * The entity type id, eg. 'node_type'.
+   *
+   * @deprecated in rabbit_hole:2.0.0 and is removed from rabbit_hole:3.0.0.
+   *   The 'entity_type_id' key can be removed from the configuration.
+   * @see https://www.drupal.org/node/3374669
    *
    * @var string
    */
@@ -101,15 +75,41 @@ class BehaviorSettings extends ConfigEntityBase implements BehaviorSettingsInter
   /**
    * The entity id, eg. 'article'.
    *
+   * @deprecated in rabbit_hole:2.0.0 and is removed from rabbit_hole:3.0.0.
+   *   The 'entity_id' key can be removed from the configuration.
+   * @see https://www.drupal.org/node/3374669
+   *
    * @var string
    */
   protected $entity_id;
+
+  /**
+   * The bypass action.
+   *
+   * @var bool
+   */
+  protected $no_bypass;
+
+  /**
+   * The bypass message.
+   *
+   * @var bool
+   */
+  protected $bypass_message;
+
+  /**
+   * The action-specific configuration.
+   *
+   * @var array
+   */
+  protected array $configuration = [];
 
   /**
    * {@inheritdoc}
    */
   public function setAction($action) {
     $this->action = $action;
+    return $this;
   }
 
   /**
@@ -122,68 +122,115 @@ class BehaviorSettings extends ConfigEntityBase implements BehaviorSettingsInter
   /**
    * {@inheritdoc}
    */
-  public function setAllowOverride($allow_override) {
-    if (!\is_bool($allow_override)) {
-      throw new InvalidBehaviorSettingException('allow_override');
-    }
-    $this->allow_override = $allow_override;
+  public function setNoBypass(bool $no_bypass) {
+    $this->no_bypass = $no_bypass;
+    return $this;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getAllowOverride() {
-    return $this->allow_override;
+  public function getNoBypass(): bool {
+    return $this->no_bypass;
   }
 
   /**
    * {@inheritdoc}
+   */
+  public function setBypassMessage(bool $bypass_message) {
+    $this->bypass_message = $bypass_message;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getBypassMessage(): bool {
+    return $this->bypass_message;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setConfiguration(array $configuration) {
+    $this->configuration = $configuration;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getConfiguration(): array {
+    return $this->configuration;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSettings(): array {
+    $settings = ['action', 'no_bypass', 'bypass_message', 'configuration'];
+    $result = [];
+    foreach ($settings as $property) {
+      $result[$property] = $this->get($property);
+    }
+    return $result;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(array $values = []) {
+    if (!isset($values['targetEntityType']) || !isset($values['bundle'])) {
+      throw new \InvalidArgumentException('Missing required properties for an EntityDisplay entity.');
+    }
+
+    if (!\Drupal::entityTypeManager()->hasDefinition($values['targetEntityType'])) {
+      throw new \InvalidArgumentException(sprintf('Provided entity type "%entity_type" is not available.', $values['targetEntityType']));
+    }
+
+    return parent::create($values);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function preCreate(EntityStorageInterface $storage, array &$values) {
+    // Add default config values.
+    $values += [
+      'id' => static::generateId($values['targetEntityType'], $values['bundle']),
+      'action' => 'display_page',
+      'no_bypass' => FALSE,
+      'bypass_message' => FALSE,
+      'configuration' => [],
+    ];
+    parent::preCreate($storage, $values);
+  }
+
+  /**
+   * Loads Rabbit Hole config entity based on the entity type and bundle.
    *
-   * @todo Possibly this should instead rely on the redirect plugin?
+   * @param string $entity_type_id
+   *   ID of the entity type.
+   * @param string $bundle
+   *   Bundle name.
+   *
+   * @return \Drupal\rabbit_hole\BehaviorSettingsInterface|null
+   *   The Rabbit Hole config entity if one exists.
    */
-  public function setRedirectCode($redirect_code) {
-    if (!\in_array($redirect_code, [
-      self::REDIRECT_NOT_APPLICABLE,
-      self::REDIRECT_MOVED_PERMANENTLY,
-      self::REDIRECT_FOUND,
-      self::REDIRECT_SEE_OTHER,
-      self::REDIRECT_NOT_MODIFIED,
-      self::REDIRECT_USE_PROXY,
-      self::REDIRECT_TEMPORARY_REDIRECT,
-    ]
-      )) {
-      throw new InvalidBehaviorSettingException('redirect_code');
+  public static function loadByEntityTypeBundle(string $entity_type_id, string $bundle): ?BehaviorSettingsInterface {
+    if ($entity_type_id == NULL || $bundle == NULL) {
+      return NULL;
     }
-
-    if ($this->action !== 'redirect'
-      && $redirect_code !== self::REDIRECT_NOT_APPLICABLE) {
-      throw new InvalidBehaviorSettingException('redirect_code');
+    $id = static::generateId($entity_type_id, $bundle);
+    $config = \Drupal::entityTypeManager()->getStorage('behavior_settings')->load($id);
+    if ($config === NULL) {
+      $values = [
+        'targetEntityType' => $entity_type_id,
+        'bundle' => $bundle,
+      ];
+      $config = BehaviorSettings::create($values);
     }
-    $this->redirect_code = $redirect_code;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getRedirectCode() {
-    return $this->redirect_code;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setRedirectPath($redirect) {
-    if ($this->action !== 'redirect' && $redirect != "") {
-      throw new InvalidBehaviorSettingException('redirect');
-    }
-    $this->redirect = $redirect;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getRedirectPath() {
-    return $this->redirect;
+    return $config;
   }
 
   /**
@@ -192,15 +239,21 @@ class BehaviorSettings extends ConfigEntityBase implements BehaviorSettingsInter
   public function calculateDependencies() {
     parent::calculateDependencies();
 
-    if ($this->entity_type_id && $this->entity_id) {
+    if ($this->targetEntityType && $this->bundle) {
       // Create dependency on the bundle.
-      $bundle = \Drupal::entityTypeManager()->getDefinition($this->entity_type_id);
-      $entity_type = \Drupal::entityTypeManager()->getDefinition($bundle->getBundleOf());
-      $bundle_config_dependency = $entity_type->getBundleConfigDependency($this->entity_id);
+      $target_entity_type = $this->entityTypeManager()->getDefinition($this->targetEntityType);
+      $bundle_config_dependency = $target_entity_type->getBundleConfigDependency($this->bundle);
       $this->addDependency($bundle_config_dependency['type'], $bundle_config_dependency['name']);
     }
 
     return $this;
+  }
+
+  /**
+   * Generate config ID based on entity type ID and bundle name.
+   */
+  protected static function generateId(string $entity_type_id, ?string $bundle = NULL): string {
+    return $entity_type_id . (isset($bundle) ? '.' . $bundle : '');
   }
 
 }

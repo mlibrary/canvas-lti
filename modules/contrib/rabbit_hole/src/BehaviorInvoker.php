@@ -2,12 +2,13 @@
 
 namespace Drupal\rabbit_hole;
 
+use Drupal\Component\Plugin\Exception\PluginException;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\rabbit_hole\Plugin\RabbitHoleBehaviorPluginInterface;
 use Drupal\rabbit_hole\Plugin\RabbitHoleBehaviorPluginManager;
-use Drupal\rabbit_hole\Plugin\RabbitHoleEntityPluginManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 
@@ -31,20 +32,6 @@ class BehaviorInvoker implements BehaviorInvokerInterface {
   protected $rhBehaviorPluginManager;
 
   /**
-   * Entity plugin manager.
-   *
-   * @var \Drupal\rabbit_hole\Plugin\RabbitHoleEntityPluginManager
-   */
-  protected $rhEntityPluginManager;
-
-  /**
-   * Entity extender service.
-   *
-   * @var \Drupal\rabbit_hole\EntityExtender
-   */
-  protected $rhEntityExtender;
-
-  /**
    * The current user.
    *
    * @var \Drupal\Core\Session\AccountProxyInterface
@@ -65,10 +52,6 @@ class BehaviorInvoker implements BehaviorInvokerInterface {
    *   Behavior settings manager.
    * @param \Drupal\rabbit_hole\Plugin\RabbitHoleBehaviorPluginManager $plugin_manager_rabbit_hole_behavior_plugin
    *   Behavior plugin manager.
-   * @param \Drupal\rabbit_hole\Plugin\RabbitHoleEntityPluginManager $plugin_manager_rabbit_hole_entity_plugin
-   *   Entity plugin manager.
-   * @param \Drupal\rabbit_hole\EntityExtender $entity_extender
-   *   Entity extender service.
    * @param \Drupal\Core\Session\AccountProxyInterface $current_user
    *   The current user.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
@@ -77,20 +60,12 @@ class BehaviorInvoker implements BehaviorInvokerInterface {
   public function __construct(
     BehaviorSettingsManager $rabbit_hole_behavior_settings_manager,
     RabbitHoleBehaviorPluginManager $plugin_manager_rabbit_hole_behavior_plugin,
-    RabbitHoleEntityPluginManager $plugin_manager_rabbit_hole_entity_plugin,
-    EntityExtender $entity_extender,
     AccountProxyInterface $current_user,
-    ModuleHandlerInterface $module_handler = NULL
+    ModuleHandlerInterface $module_handler
   ) {
     $this->rhBehaviorSettingsManager = $rabbit_hole_behavior_settings_manager;
     $this->rhBehaviorPluginManager = $plugin_manager_rabbit_hole_behavior_plugin;
-    $this->rhEntityPluginManager = $plugin_manager_rabbit_hole_entity_plugin;
-    $this->rhEntityExtender = $entity_extender;
     $this->currentUser = $current_user;
-    if (!$module_handler) {
-      @trigger_error('This module handler workaround is deprecated in rabbit_hole:8.x-1.0 version and will be removed in rabbit_hole:2.x-2.0. The module_handler service must be passed to ' . __NAMESPACE__ . '\BehaviorInvoker::__construct(). See https://www.drupal.org/project/rabbit_hole/issues/3232505', E_USER_DEPRECATED);
-      $module_handler = \Drupal::moduleHandler();
-    }
     $this->moduleHandler = $module_handler;
   }
 
@@ -108,16 +83,10 @@ class BehaviorInvoker implements BehaviorInvokerInterface {
     // Get the route from the request.
     if ($route = $request->get('_route')) {
       // Only continue if the request route is the an entity canonical.
-      if (preg_match('/^entity\.(.+)\.canonical$/', $route)) {
-        // We check for all of our known entity keys that work with rabbit hole
-        // and invoke rabbit hole behavior on the first one we find (which
-        // should also be the only one).
-        $entity_keys = $this->getPossibleEntityTypeKeys();
-        foreach ($entity_keys as $ekey) {
-          $entity = $request->get($ekey);
-          if (isset($entity) && $entity instanceof ContentEntityInterface) {
-            return $entity;
-          }
+      if (preg_match('/^entity\.(.+)\.canonical$/', $route, $matches)) {
+        $entity = $request->get($matches[1]);
+        if ($entity instanceof EntityInterface && $this->rhBehaviorSettingsManager->entityTypeIsEnabled($entity->getEntityTypeId())) {
+          return $entity;
         }
       }
     }
@@ -174,88 +143,50 @@ class BehaviorInvoker implements BehaviorInvokerInterface {
   /**
    * {@inheritdoc}
    */
-  public function getPossibleEntityTypeKeys() {
-    $entity_type_keys = [];
-    foreach ($this->rhEntityPluginManager->getDefinitions() as $def) {
-      $entity_type_keys[] = $def['entityType'];
-    }
-    return $entity_type_keys;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getRabbitHoleValuesForEntity(ContentEntityInterface $entity) {
-    $field_keys = array_keys($this->rhEntityExtender->getGeneralExtraFields());
-    $values = [];
-
-    $config = $this->rhBehaviorSettingsManager->loadBehaviorSettingsAsConfig(
-      $entity->getEntityType()->getBundleEntityType()
-        ?: $entity->getEntityType()->id(),
-      $entity->getEntityType()->getBundleEntityType()
-        ? $entity->bundle()
-        : NULL
-    );
-
-    // We trigger the default bundle action under the following circumstances:
-    $trigger_default_bundle_action =
-    // Bundle settings do not allow override.
-      !$config->get('allow_override')
-    // Entity does not have rh_action field.
-      || !$entity->hasField('rh_action')
-    // Entity has rh_action field but it's null (hasn't been set).
-      || $entity->get('rh_action')->value == NULL
-    // Entity has been explicitly set to use the default bundle action.
-      || $entity->get('rh_action')->value == 'bundle_default';
-
-    if ($trigger_default_bundle_action) {
-      foreach ($field_keys as $field_key) {
-        $config_field_key = substr($field_key, 3);
-        $values[$field_key] = $config->get($config_field_key);
-      }
-    }
-    else {
-      foreach ($field_keys as $field_key) {
-        if ($entity->hasField($field_key)) {
-          $values[$field_key] = $entity->{$field_key}->value;
-        }
-      }
-    }
-    return $values;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getRabbitHoleValuesForEntityType($entity_type_id, $bundle_id = NULL) {
-    $field_keys = array_keys($this->rhEntityExtender->getGeneralExtraFields());
-    $values = [];
-
-    $config = $this->rhBehaviorSettingsManager->loadBehaviorSettingsAsConfig($entity_type_id, $bundle_id);
-    foreach ($field_keys as $field_key) {
-      $config_field_key = substr($field_key, 3);
-      $values[$field_key] = $config->get($config_field_key);
-    }
-    return $values;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function getBehaviorPlugin(ContentEntityInterface $entity) {
-    $values = $this->getRabbitHoleValuesForEntity($entity);
-    $permission = 'rabbit hole bypass ' . $entity->getEntityTypeId();
-    $values['bypass_access'] = $this->currentUser->hasPermission($permission);
+    $values = $this->rhBehaviorSettingsManager->getEntityBehaviorSettings($entity);
+    // Copy values with "rh_" prefixed-names to maintain existing installations.
+    // @todo Remove this code later.
+    foreach ($values as $property => $value) {
+      $prefixed_property = "rh_$property";
+      $values[$prefixed_property] = $value;
+    }
+    // Adding a note that prefixed values are deprecated.
+    $values['deprecation_note'] = 'Prefixed values (rh_action, rh_redirect, etc.) are deprecated and will be removed in next versions. Use properties without "rh_" prefix.';
+
+    // Perform the access check if bypass is not disabled.
+    $values['bypass_access'] = FALSE;
+    if (empty($values['no_bypass'])) {
+      $permission = 'rabbit hole bypass ' . $entity->getEntityTypeId();
+      $values['bypass_access'] = $this->currentUser->hasPermission($permission);
+    }
 
     // Allow altering Rabbit Hole values.
     $this->moduleHandler->alter('rabbit_hole_values', $values, $entity);
 
-    // Do nothing if action is missing or access is bypassed.
-    if (empty($values['rh_action']) || $values['bypass_access']) {
+    try {
+      /** @var \Drupal\rabbit_hole\Plugin\RabbitHoleBehaviorPluginInterface $instance */
+      $instance = $this->rhBehaviorPluginManager->createInstance($values['action'], $values);
+    }
+    catch (PluginException $e) {
+      watchdog_exception('rabbit_hole', $e);
       return NULL;
     }
 
-    return $this->rhBehaviorPluginManager->createInstance($values['rh_action'], $values);
+    // If configured, display a message explaining the Rabbit Hole is enabled.
+    if ($values['bypass_access']) {
+      // @todo Check whether plugin instance is suitable for the message instead
+      // of checking particular ID. It could be some additional method in the
+      // plugin interface.
+      if ($values['bypass_message'] && $instance->getPluginId() !== 'display_page') {
+        $message = t('This page is configured to apply "@action" Rabbit Hole action, but you have permission to see the page.', [
+          '@action' => $instance->getPluginDefinition()['label'],
+        ]);
+        \Drupal::messenger()->addWarning($message);
+      }
+      return NULL;
+    }
+    return $instance;
   }
 
 }

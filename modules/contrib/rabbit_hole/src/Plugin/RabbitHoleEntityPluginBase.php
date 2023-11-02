@@ -2,6 +2,8 @@
 
 namespace Drupal\rabbit_hole\Plugin;
 
+@trigger_error('The ' . __NAMESPACE__ . '\RabbitHoleEntityPluginBase is deprecated in rabbit_hole:2.0.0 and is removed from rabbit_hole:3.0.0. See https://www.drupal.org/node/3359194', E_USER_DEPRECATED);
+
 use Drupal\Component\Plugin\PluginBase;
 use Drupal\Core\Form\FormStateInterface;
 

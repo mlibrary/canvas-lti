@@ -60,7 +60,8 @@ class EntityExtender implements EntityExtenderInterface {
     $fields['rh_action'] = BaseFieldDefinition::create('string')
       ->setName('rh_action')
       ->setLabel($this->t('Rabbit Hole action'))
-      ->setDescription($this->t('Specifies which action that Rabbit Hole should take.'));
+      ->setDescription($this->t('Specifies which action that Rabbit Hole should take.'))
+      ->setTranslatable(TRUE);
     foreach ($this->rhBehaviorPluginManager->getDefinitions() as $id => $def) {
       $this->rhBehaviorPluginManager
         ->createInstance($id)

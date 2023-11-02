@@ -9,20 +9,14 @@ use Drupal\rabbit_hole\Plugin\RabbitHoleEntityPluginBase;
  *
  * @RabbitHoleEntityPlugin(
  *  id = "rh_taxonomy_term",
- *  label = @Translation("Taxonomy Term"),
+ *  label = @Translation("Taxonomy Term (deprecated)"),
  *  entityType = "taxonomy_term"
  * )
+ *
+ * @deprecated in rabbit_hole:2.0.0 and is removed from rabbit_hole:3.0.0. Content entity types are supported by default now.
+ *
+ * @see https://www.drupal.org/node/3359194
  */
 class Taxonomy extends RabbitHoleEntityPluginBase {
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getEntityTokenMap() {
-    return [
-      'taxonomy_term' => 'term',
-      'taxonomy_vocabulary' => 'vocabulary',
-    ];
-  }
 
 }

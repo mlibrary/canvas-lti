@@ -7,7 +7,7 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 
 /**
- * Provides the Rabbit hole behavior plugin plugin manager.
+ * Provides the Rabbit hole behavior plugin manager.
  */
 class RabbitHoleBehaviorPluginManager extends DefaultPluginManager {
 
@@ -27,6 +27,23 @@ class RabbitHoleBehaviorPluginManager extends DefaultPluginManager {
 
     $this->alterInfo('rabbit_hole_rabbit_hole_behavior_plugin_info');
     $this->setCacheBackend($cache_backend, 'rabbit_hole_rabbit_hole_behavior_plugin_plugins');
+  }
+
+  /**
+   * Load an array of behaviour options from plugins.
+   *
+   * Load an array of rabbit hole behavior options from plugins in the format
+   * option id => label.
+   *
+   * @return array
+   *   An array of available behaviors.
+   */
+  public function getBehaviors() {
+    $action_options = [];
+    foreach ($this->getDefinitions() as $id => $def) {
+      $action_options[$id] = $def['label'];
+    }
+    return $action_options;
   }
 
 }

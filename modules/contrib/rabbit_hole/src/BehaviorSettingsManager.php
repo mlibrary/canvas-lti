@@ -3,6 +3,9 @@
 namespace Drupal\rabbit_hole;
 
 use Drupal\Core\Config\ConfigFactory;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\rabbit_hole\Entity\BehaviorSettings;
 
 /**
@@ -11,85 +14,146 @@ use Drupal\rabbit_hole\Entity\BehaviorSettings;
 class BehaviorSettingsManager implements BehaviorSettingsManagerInterface {
 
   /**
-   * Drupal\Core\Config\ConfigFactory definition.
+   * The field name where entity settings are stored.
    *
-   * @var \Drupal\Core\Config\ConfigFactory
+   * @var string
    */
-  protected $configFactory;
+  const FIELD_NAME = 'rabbit_hole__settings';
+
+  protected ConfigFactoryInterface $configFactory;
+  protected EntityTypeManagerInterface $entityTypeManager;
+  protected EntityHelper $entityHelper;
 
   /**
-   * Constructor.
+   * Constructs a new BehaviorSettingsManager instance.
    */
-  public function __construct(ConfigFactory $config_factory) {
+  public function __construct(ConfigFactory $config_factory, EntityTypeManagerInterface $entity_type_manager, EntityHelper $entity_helper) {
     $this->configFactory = $config_factory;
+    $this->entityTypeManager = $entity_type_manager;
+    $this->entityHelper = $entity_helper;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function saveBehaviorSettings(array $settings, $entity_type_id, $entity_id = NULL) {
-    $id = $this->generateBehaviorSettingsFullId($entity_type_id, $entity_id);
+  public function entityTypeIsEnabled(string $entity_type_id): bool {
+    $config = $this->configFactory->get('rabbit_hole.settings');
+    return in_array($entity_type_id, $config->get('enabled_entity_types') ?? [], TRUE);
+  }
 
-    $entity = BehaviorSettings::load($id);
-    if ($entity === NULL) {
-      $entity_array = ['id' => $id];
-      $entity_array += $settings;
-      $entity = BehaviorSettings::create($entity_array);
+  /**
+   * {@inheritdoc}
+   */
+  public function enableEntityType(string $entity_type_id): void {
+    $config = $this->configFactory->getEditable('rabbit_hole.settings');
+    $enabled_entity_types = $config->get('enabled_entity_types');
+
+    if (!in_array($entity_type_id, $enabled_entity_types, TRUE)) {
+      $enabled_entity_types[] = $entity_type_id;
+      $config->set('enabled_entity_types', $enabled_entity_types);
+      $config->save();
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function disableEntityType(string $entity_type_id): void {
+    $config = $this->configFactory->getEditable('rabbit_hole.settings');
+    $enabled_entity_types = $config->get('enabled_entity_types');
+    $config->set('enabled_entity_types', array_diff($enabled_entity_types, [$entity_type_id]));
+    $config->save();
+
+    // Delete all bundle settings for disabled entity type.
+    $bundle_settings = $this->entityTypeManager->getStorage('behavior_settings')->loadByProperties([
+      'targetEntityType' => $entity_type_id,
+    ]);
+
+    foreach ($bundle_settings as $bundle_config) {
+      $bundle_config->delete();
+    }
+
+    // Remove entity fields if they exist.
+    foreach (array_keys($this->entityHelper->getBundleInfo($entity_type_id)) as $bundle_name) {
+      $this->entityHelper->removeRabbitHoleField($entity_type_id, $bundle_name);
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function saveBehaviorSettings(array $settings, $entity_type_id, $bundle = NULL): void {
+    $config = BehaviorSettings::loadByEntityTypeBundle($entity_type_id, $bundle);
+    foreach ($settings as $key => $setting) {
+      $config->set($key, $setting);
+    }
+    $config->save();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getBehaviorSettings(string $entity_type_id, string $bundle): array {
+    // Since this method is deprecated, it should be used only in our update
+    // functions. It prioritises config using the previous format.
+    $entity_type = \Drupal::entityTypeManager()->getDefinition($entity_type_id);
+    $bundle_entity_type = $entity_type->getBundleEntityType();
+
+    $id = ($bundle_entity_type ?? $entity_type_id) . (isset($bundle_entity_type) ? '_' . $bundle : '');
+    $config = BehaviorSettings::load($id);
+    if (empty($config)) {
+      $config = BehaviorSettings::loadByEntityTypeBundle($entity_type_id, $bundle);
+    }
+    if (!empty($config) && !$config->isNew()) {
+      $settings = $config->getSettings();
+      $settings['allow_override'] = $config->get('allow_override');
+      return $settings;
+    }
+
+    // @todo Remove usage of default config in 3.0.
+    // Also, there shouldn't be a need for default configuration in the next
+    // version. If configuration is not available, it should be simply ignored.
+    $default = $this->configFactory->get('rabbit_hole.behavior_settings.default');
+    return !$default->isNew() ? $default->get() : [
+      'action' => 'display_page',
+      'no_bypass' => FALSE,
+      'bypass_message' => FALSE,
+      'configuration' => [],
+    ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getEntityBehaviorSettings(ContentEntityInterface $entity): array {
+    $config = BehaviorSettings::loadByEntityTypeBundle($entity->getEntityTypeId(), $entity->bundle());
+    $values = [
+      'no_bypass' => $config->getNoBypass(),
+      'bypass_message' => $config->getBypassMessage(),
+    ];
+
+    // We trigger the default bundle action under the following circumstances:
+    $trigger_default_bundle_action =
+      // Entity does not have Rabbit Hole field.
+      !$entity->hasField(self::FIELD_NAME)
+      // Entity has the field, but it's null (hasn't been set).
+      || $entity->get(self::FIELD_NAME)->action == NULL
+      // Entity has been explicitly set to use the default bundle action.
+      || $entity->get(self::FIELD_NAME)->action == 'bundle_default';
+
+    if ($trigger_default_bundle_action) {
+      $values['action'] = $config->getAction();
+      // Other properties are stored in "configuration" array.
+      $values = array_merge($values, $config->getConfiguration());
     }
     else {
-      foreach ($settings as $key => $setting) {
-        $entity->set($key, $setting);
+      $rh_field = $entity->get(self::FIELD_NAME);
+      $values['action'] = $rh_field->action;
+      if ($action_settings = $rh_field->settings) {
+        $values = array_merge($values, $action_settings);
       }
     }
-    $entity->set('entity_type_id', $entity_type_id);
-    $entity->set('entity_id', $entity_id);
-    $entity->save();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function loadBehaviorSettingsAsConfig($entity_type_id,
-    $entity_id = NULL) {
-
-    $actual = $this->configFactory->get(
-      'rabbit_hole.behavior_settings.'
-        . $this->generateBehaviorSettingsFullId($entity_type_id, $entity_id));
-    if (!$actual->isNew()) {
-      return $actual;
-    }
-    else {
-      return $this->configFactory
-        ->get('rabbit_hole.behavior_settings.default');
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function loadBehaviorSettingsAsEditableConfig($entity_type_id, $entity_id, $is_bundle = FALSE) {
-
-    $actual = $this->configFactory->getEditable(
-      'rabbit_hole.behavior_settings.'
-        . $this->generateBehaviorSettingsFullId($entity_type_id, $entity_id)
-    );
-    return !$actual->isNew() ? $actual : NULL;
-  }
-
-  /**
-   * Generate a full ID based on entity type label, bundle label and entity id.
-   *
-   * @param string $entity_type_id
-   *   The entity type (e.g. node) as a string.
-   * @param string $entity_id
-   *   The entity ID as a string.
-   *
-   * @return string
-   *   The full id appropriate for a BehaviorSettings config entity.
-   */
-  private function generateBehaviorSettingsFullId($entity_type_id,
-    $entity_id = '') {
-    return $entity_type_id . (isset($entity_id) ? '_' . $entity_id : '');
+    return $values;
   }
 
 }

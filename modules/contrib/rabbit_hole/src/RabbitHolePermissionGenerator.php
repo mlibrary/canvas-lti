@@ -2,12 +2,10 @@
 
 namespace Drupal\rabbit_hole;
 
+use Drupal\Core\Entity\EntityTypeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\rabbit_hole\Plugin\RabbitHoleEntityPluginManager;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\Core\StringTranslation\TranslationInterface;
 
 /**
  * Generates permission for each supported entity type.
@@ -17,30 +15,25 @@ class RabbitHolePermissionGenerator implements ContainerInjectionInterface {
   use StringTranslationTrait;
 
   /**
-   * The entity type manager.
+   * The entity helper.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   * @var \Drupal\rabbit_hole\EntityHelper
    */
-  protected $entityTypeManager;
+  protected EntityHelper $entityHelper;
 
   /**
-   * Entity plugin manager.
+   * The behavior settings manager.
    *
-   * @var \Drupal\rabbit_hole\Plugin\RabbitHoleEntityPluginManager
+   * @var \Drupal\rabbit_hole\BehaviorSettingsManager
    */
-  protected $rhEntityPluginManager;
+  protected $rhBehaviorSettingsManager;
 
   /**
    * Constructor.
    */
-  public function __construct(
-    EntityTypeManagerInterface $etm,
-    RabbitHoleEntityPluginManager $entity_plugin_manager,
-    TranslationInterface $translation) {
-
-    $this->entityTypeManager = $etm;
-    $this->rhEntityPluginManager = $entity_plugin_manager;
-    $this->stringTranslation = $translation;
+  public function __construct(EntityHelper $entity_helper, BehaviorSettingsManagerInterface $behavior_settings_manager) {
+    $this->entityHelper = $entity_helper;
+    $this->rhBehaviorSettingsManager = $behavior_settings_manager;
   }
 
   /**
@@ -48,43 +41,54 @@ class RabbitHolePermissionGenerator implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('entity_type.manager'),
-      $container->get('plugin.manager.rabbit_hole_entity_plugin'),
-      $container->get('string_translation')
+      $container->get('rabbit_hole.entity_helper'),
+      $container->get('rabbit_hole.behavior_settings_manager'),
     );
   }
 
   /**
-   * Return an array of per-entity rabbit hole permissions.
+   * Return an array of per-entity Rabbit Hole permissions.
    *
    * @return array
    *   An array of permissions.
-   *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public function permissions() {
+  public function permissions(): array {
     $permissions = [];
 
-    foreach ($this->rhEntityPluginManager->getDefinitions() as $def) {
-      $entity_type = $this->entityTypeManager
-        ->getStorage($def['entityType'])
-        ->getEntityType();
-      $permissions += [
-        'rabbit hole administer ' . $def['entityType'] => [
-          'title' => $this->t('Administer Rabbit Hole settings for %entity_type', [
-            '%entity_type' => $entity_type->getLabel(),
-          ]),
-        ],
-        'rabbit hole bypass ' . $def['entityType'] => [
-          'title' => $this->t('Bypass Rabbit Hole action for %entity_type', [
-            '%entity_type' => $entity_type->getLabel(),
-          ]),
-        ],
-      ];
+    foreach ($this->entityHelper->getSupportedEntityTypes() as $entity_type) {
+      if ($this->rhBehaviorSettingsManager->entityTypeIsEnabled($entity_type->id())) {
+        $permissions += $this->buildPermissions($entity_type);
+      }
     }
-
     return $permissions;
+  }
+
+  /**
+   * Returns a list of Rabbit Hole permissions for a given entity type.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   The entity type.
+   *
+   * @return array
+   *   An associative array of permission names and descriptions.
+   */
+  protected function buildPermissions(EntityTypeInterface $entity_type): array {
+    $type_id = $entity_type->id();
+    $type_params = ['%entity_type' => $entity_type->getLabel()];
+    $dependencies = [
+      'module' => [$entity_type->getProvider()],
+    ];
+
+    return [
+      "rabbit hole administer $type_id" => [
+        'title' => $this->t('Administer Rabbit Hole settings for %entity_type', $type_params),
+        'dependencies' => $dependencies,
+      ],
+      "rabbit hole bypass $type_id" => [
+        'title' => $this->t('Bypass Rabbit Hole action for %entity_type', $type_params),
+        'dependencies' => $dependencies,
+      ],
+    ];
   }
 
 }

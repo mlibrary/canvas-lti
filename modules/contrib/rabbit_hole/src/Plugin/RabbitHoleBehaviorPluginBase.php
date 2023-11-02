@@ -2,7 +2,6 @@
 
 namespace Drupal\rabbit_hole\Plugin;
 
-use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Component\Plugin\PluginBase;
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Entity\EntityInterface;
@@ -18,36 +17,65 @@ abstract class RabbitHoleBehaviorPluginBase extends PluginBase implements Rabbit
   /**
    * {@inheritdoc}
    */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->setConfiguration($configuration);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function performAction(EntityInterface $entity) {
-    // Perform no action.
   }
 
   /**
    * {@inheritdoc}
    */
-  public function settingsForm(
-    array &$form,
-    FormStateInterface $form_state,
-    $form_id,
-    EntityInterface $entity = NULL,
-    $entity_is_bundle = FALSE,
-    ImmutableConfig $bundle_settings = NULL
-  ) {
-    // Present no settings form.
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+    return [];
   }
 
   /**
    * {@inheritdoc}
    */
-  public function settingsFormHandleSubmit(&$form, &$form_state) {
-    // No extra action to handle submission by default.
+  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
   }
 
   /**
    * {@inheritdoc}
+   */
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function defaultConfiguration() {
+    return [];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getConfiguration() {
+    return $this->configuration;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setConfiguration(array $configuration) {
+    $this->configuration = $configuration + $this->defaultConfiguration();
+  }
+
+  /**
+   * @deprecated in rabbit_hole:2.0.0 and is removed from rabbit_hole:3.0.0.
+   *   There is no need for additional fields, as all configuration is stored in
+   *   a single serialized field.
+   *
+   * @see https://www.drupal.org/node/3359194
    */
   public function alterExtraFields(array &$fields) {
-    // Don't change the fields by default.
   }
 
   /**
@@ -55,23 +83,6 @@ abstract class RabbitHoleBehaviorPluginBase extends PluginBase implements Rabbit
    */
   public function usesResponse() {
     return RabbitHoleBehaviorPluginInterface::USES_RESPONSE_NEVER;
-  }
-
-  /**
-   * Returns configuration object with "Rabbit Hole" bundle settings.
-   *
-   * @param \Drupal\Core\Entity\EntityInterface $entity
-   *   The entity the action is being performed on.
-   *
-   * @return \Drupal\Core\Config\ImmutableConfig
-   *   Configuration object with bundle settings.
-   */
-  protected function getBundleSettings(EntityInterface $entity) {
-    $bundle_entity_type = $entity->getEntityType()->getBundleEntityType();
-    return \Drupal::service('rabbit_hole.behavior_settings_manager')
-      ->loadBehaviorSettingsAsConfig(
-        $bundle_entity_type ?: $entity->getEntityType()->id(),
-        $bundle_entity_type ? $entity->bundle() : NULL);
   }
 
   /**

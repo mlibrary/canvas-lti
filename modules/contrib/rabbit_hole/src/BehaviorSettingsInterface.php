@@ -14,6 +14,8 @@ interface BehaviorSettingsInterface extends ConfigEntityInterface {
    *
    * @param string $action
    *   The action to save.
+   *
+   * @return $this
    */
   public function setAction($action);
 
@@ -26,49 +28,65 @@ interface BehaviorSettingsInterface extends ConfigEntityInterface {
   public function getAction();
 
   /**
-   * Set whether overrides are allowed if this is for a bundle.
+   * Set whether to ignore bypass permissions.
    *
-   * @param int $allow_override
-   *   0 (N/A), 1 (Allow), or 2 (Disallow).
+   * @param bool $no_bypass
+   *   TRUE - ignore, FALSE - do not ignore.
+   *
+   * @return $this
    */
-  public function setAllowOverride($allow_override);
+  public function setNoBypass(bool $no_bypass);
 
   /**
-   * Get whether overrides are allowed if this is for a bundle.
+   * Get whether to ignore bypass permissions.
    *
-   * @return int
-   *   Whether overrides are allowed if this is for a bundle. 0 (N/A), 1
-   *   (Allow), or 2 (Disallow).
+   * @return bool
+   *   TRUE - ignore, FALSE - do not ignore.
    */
-  public function getAllowOverride();
+  public function getNoBypass(): bool;
 
   /**
-   * Set the redirect code if action is redirect.
+   * Set whether to show the bypass message.
    *
-   * @param int $redirect_code
-   *   The redirect code (0 for N/A).
+   * @param bool $bypass_message
+   *   TRUE - show message, FALSE - do not show.
+   *
+   * @return $this
    */
-  public function setRedirectCode($redirect_code);
+  public function setBypassMessage(bool $bypass_message);
 
   /**
-   * Get the redirect code if action is redirect.
+   * Get whether to ignore bypass permissions.
+   *
+   * @return bool
+   *   TRUE - ignore, FALSE - do not ignore.
    */
-  public function getRedirectCode();
+  public function getBypassMessage(): bool;
 
   /**
-   * Set the redirect path if action is redirect.
+   * Set plugin configuration.
    *
-   * @param string $redirect
-   *   The redirect path.
+   * @param array $configuration
+   *   Action-specific configuration.
+   *
+   * @return $this
    */
-  public function setRedirectPath($redirect);
+  public function setConfiguration(array $configuration);
 
   /**
-   * Get the redirect path if action is redirect.
+   * Get plugin configuration.
    *
-   * @return string
-   *   The redirect path.
+   * @return array
+   *   Action-specific configuration.
    */
-  public function getRedirectPath();
+  public function getConfiguration(): array;
+
+  /**
+   * Returns all settings in array format.
+   *
+   * @return array
+   *   Behavior settings.
+   */
+  public function getSettings(): array;
 
 }
