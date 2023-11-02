@@ -77,10 +77,10 @@ abstract class LTIToolProviderBase implements AuthenticationProviderInterface {
       $user = $this->provisionUser($context);
 
       $provisionUserEvent = new LtiToolProviderProvisionUserEvent($context, $user);
-      $this->eventDispatcher->dispatch(LtiToolProviderEvents::PROVISION_USER, $provisionUserEvent);
+      $this->eventDispatcher->dispatch($provisionUserEvent, LtiToolProviderEvents::PROVISION_USER);
 
       $authenticatedEvent = new LtiToolProviderAuthenticatedEvent($provisionUserEvent->getContext(), $provisionUserEvent->getUser());
-      $this->eventDispatcher->dispatch(LtiToolProviderEvents::AUTHENTICATED, $authenticatedEvent);
+      $this->eventDispatcher->dispatch($authenticatedEvent, LtiToolProviderEvents::AUTHENTICATED);
 
       $this->userLoginFinalize($authenticatedEvent->getUser());
 
@@ -209,7 +209,7 @@ abstract class LTIToolProviderBase implements AuthenticationProviderInterface {
     $user->activate();
 
     $createUserEvent = new LtiToolProviderCreateUserEvent($context, $user);
-    $this->eventDispatcher->dispatch(LtiToolProviderEvents::CREATE_USER, $createUserEvent);
+    $this->eventDispatcher->dispatch($createUserEvent, LtiToolProviderEvents::CREATE_USER);
 
     $user = $createUserEvent->getUser();
     $user->save();

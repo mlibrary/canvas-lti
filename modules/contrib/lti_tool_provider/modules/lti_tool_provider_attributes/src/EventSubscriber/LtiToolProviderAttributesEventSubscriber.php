@@ -96,7 +96,7 @@ class LtiToolProviderAttributesEventSubscriber implements EventSubscriberInterfa
 
     try {
       $attributesEvent = new LtiToolProviderAttributesProvisionEvent($context, $user);
-      $this->eventDispatcher->dispatch(LtiToolProviderAttributesEvents::PROVISION, $attributesEvent);
+      $this->eventDispatcher->dispatch($attributesEvent, LtiToolProviderAttributesEvents::PROVISION);
       $attributesEvent->getUser()->save();
     }
     catch (Exception $e) {

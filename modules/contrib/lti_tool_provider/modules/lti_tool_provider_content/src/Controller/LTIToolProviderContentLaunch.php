@@ -54,7 +54,7 @@ class LTIToolProviderContentLaunch extends ControllerBase {
       $destination = $entity->toUrl()->toString();
 
       $event = new LtiToolProviderContentLaunchEvent($context, $destination, $entity);
-      $eventDispatcher->dispatch(LtiToolProviderContentEvents::LAUNCH, $event);
+      $eventDispatcher->dispatch($event, LtiToolProviderContentEvents::LAUNCH);
 
       return new RedirectResponse($event->getDestination());
     }

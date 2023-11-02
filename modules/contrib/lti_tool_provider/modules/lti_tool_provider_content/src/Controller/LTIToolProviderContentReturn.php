@@ -121,7 +121,7 @@ class LTIToolProviderContentReturn extends ControllerBase {
       }
 
       $event = new LtiToolProviderContentResourceEvent($properties, $registration, $return);
-      $eventDispatcher->dispatch(LtiToolProviderContentEvents::RESOURCE, $event);
+      $eventDispatcher->dispatch($event, LtiToolProviderContentEvents::RESOURCE);
 
       $ltiResourceLink = new LtiResourceLink("$entityType-$entityId", $event->getProperties());
       $resourceCollection = new ResourceCollection();
@@ -131,7 +131,7 @@ class LTIToolProviderContentReturn extends ControllerBase {
       $message = $builder->buildDeepLinkingLaunchResponse($resourceCollection, $event->getRegistration(), $event->getReturn());
 
       $event = new LtiToolProviderContentReturnEvent($message);
-      $eventDispatcher->dispatch(LtiToolProviderContentEvents::RETURN, $event);
+      $eventDispatcher->dispatch($event, LtiToolProviderContentEvents::RETURN);
 
       return new Response($event->getMessage()->toHtmlRedirectForm());
     }

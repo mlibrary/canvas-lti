@@ -57,7 +57,7 @@ class LTIToolProviderV1P0Return extends ControllerBase {
       }
 
       $event = new LtiToolProviderReturnEvent($context, $destination);
-      $eventDispatcher->dispatch(LtiToolProviderEvents::RETURN, $event);
+      $eventDispatcher->dispatch($event, LtiToolProviderEvents::RETURN);
 
       $this->userLogout();
 

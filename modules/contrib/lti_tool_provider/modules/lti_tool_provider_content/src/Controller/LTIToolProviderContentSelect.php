@@ -43,7 +43,7 @@ class LTIToolProviderContentSelect extends ControllerBase {
       }
 
       $event = new LtiToolProviderContentSelectEvent($context, '/lti/v1p3/content/list', $deepLinkingSettings->getDeepLinkingReturnUrl());
-      $eventDispatcher->dispatch(LtiToolProviderContentEvents::SELECT, $event);
+      $eventDispatcher->dispatch($event, LtiToolProviderContentEvents::SELECT);
 
       $destination = Url::fromUserInput($event->getDestination(), [
         'query' => [

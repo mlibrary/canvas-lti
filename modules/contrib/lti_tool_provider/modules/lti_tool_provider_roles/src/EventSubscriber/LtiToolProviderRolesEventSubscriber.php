@@ -99,7 +99,7 @@ class LtiToolProviderRolesEventSubscriber implements EventSubscriberInterface {
 
     try {
       $rolesEvent = new LtiToolProviderRolesProvisionEvent($context, $user);
-      $this->eventDispatcher->dispatch(LtiToolProviderRolesEvents::PROVISION, $rolesEvent);
+      $this->eventDispatcher->dispatch($rolesEvent, LtiToolProviderRolesEvents::PROVISION);
       $rolesEvent->getUser()->save();
     }
     catch (Exception $e) {

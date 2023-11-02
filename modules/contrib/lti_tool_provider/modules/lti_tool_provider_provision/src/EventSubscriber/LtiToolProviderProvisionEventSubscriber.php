@@ -96,7 +96,7 @@ class LtiToolProviderProvisionEventSubscriber implements EventSubscriberInterfac
           $entity = $this->provisionService->setEntityDefaults($context, $entity);
 
           $syncProvisionedEntityEvent = new LtiToolProviderProvisionSyncProvisionedEntityEvent($context, $entity);
-          $this->eventDispatcher->dispatch(LtiToolProviderProvisionEvents::SYNC_ENTITY, $syncProvisionedEntityEvent);
+          $this->eventDispatcher->dispatch($syncProvisionedEntityEvent, LtiToolProviderProvisionEvents::SYNC_ENTITY);
 
           $entity = $syncProvisionedEntityEvent->getEntity();
           $entity->save();
@@ -104,7 +104,7 @@ class LtiToolProviderProvisionEventSubscriber implements EventSubscriberInterfac
 
         $url = $entity->toUrl()->toString();
         $redirectEvent = new LtiToolProviderProvisionRedirectEvent($context, $entity, $url);
-        $this->eventDispatcher->dispatch(LtiToolProviderProvisionEvents::REDIRECT, $redirectEvent);
+        $this->eventDispatcher->dispatch($redirectEvent, LtiToolProviderProvisionEvents::REDIRECT);
 
         if ($is_entity_redirect) {
           $event->setDestination($redirectEvent->getDestination());

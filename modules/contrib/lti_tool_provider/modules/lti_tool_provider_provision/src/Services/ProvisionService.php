@@ -114,7 +114,7 @@ class ProvisionService {
         }
 
         $createProvisionEvent = new LtiToolProviderProvisionCreateProvisionEvent($context, $provision);
-        $this->eventDispatcher->dispatch(LtiToolProviderProvisionEvents::CREATE_PROVISION, $createProvisionEvent);
+        $this->eventDispatcher->dispatch($createProvisionEvent, LtiToolProviderProvisionEvents::CREATE_PROVISION);
 
         $provision = $createProvisionEvent->getEntity();
         $provision->save();
@@ -221,7 +221,7 @@ class ProvisionService {
       ->create([$bundleType => $entityBundle]);
 
     $event = new LtiToolProviderProvisionCreateProvisionedEntityEvent($context, $entity);
-    $this->eventDispatcher->dispatch(LtiToolProviderProvisionEvents::CREATE_ENTITY, $event);
+    $this->eventDispatcher->dispatch($event, LtiToolProviderProvisionEvents::CREATE_ENTITY);
 
     return $event->getEntity();
   }

@@ -42,7 +42,7 @@ class LTIToolProviderV1P3Launch extends ControllerBase {
       }
 
       $event = new LtiToolProviderLaunchEvent($context, $custom['destination'] ?? '/');
-      $eventDispatcher->dispatch(LtiToolProviderEvents::LAUNCH, $event);
+      $eventDispatcher->dispatch($event, LtiToolProviderEvents::LAUNCH);
 
       return new RedirectResponse($event->getDestination());
     }
