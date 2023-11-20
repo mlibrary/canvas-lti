@@ -1,0 +1,600 @@
+diff --git a/lti_tool_provider.info.yml b/lti_tool_provider.info.yml
+index ff7cbeb..44273f3 100644
+--- a/lti_tool_provider.info.yml
++++ b/lti_tool_provider.info.yml
+@@ -2,8 +2,7 @@ type: module
+ name: LTI Tool Provider
+ description: An LTI Tool Provider module for LMS/Drupal integration.
+ package: LTI Tool Provider
+-core: 8.x
+-core_version_requirement: ^8 || ^9
++core_version_requirement: ^8 || ^9 || ^10
+ configure: lti_tool_provider.admin
+ dependencies:
+   - drupal:options
+diff --git a/lti_tool_provider.module b/lti_tool_provider.module
+index 866801c..c1f03d3 100644
+--- a/lti_tool_provider.module
++++ b/lti_tool_provider.module
+@@ -40,6 +40,7 @@ function lti_tool_provider_cron() {
+     $nonceStorage = Drupal::entityTypeManager()
+       ->getStorage('lti_tool_provider_nonce');
+     $ids = $nonceStorage->getQuery()
++      ->accessCheck(FALSE)
+       ->condition('timestamp', $expires, '<')
+       ->execute();
+     $entities = $nonceStorage->loadMultiple($ids);
+diff --git a/modules/lti_tool_provider_attributes/lti_tool_provider_attributes.info.yml b/modules/lti_tool_provider_attributes/lti_tool_provider_attributes.info.yml
+index 8555f0a..457a6a8 100644
+--- a/modules/lti_tool_provider_attributes/lti_tool_provider_attributes.info.yml
++++ b/modules/lti_tool_provider_attributes/lti_tool_provider_attributes.info.yml
+@@ -2,8 +2,7 @@ type: module
+ name: LTI Tool Provider Attributes Mapping
+ description: Keeps LTI attributes and Drupal user fields in sync.
+ package: LTI Tool Provider
+-core: 8.x
+-core_version_requirement: ^8 || ^9
++core_version_requirement: ^8 || ^9 || ^10
+ configure: lti_tool_provider.admin.attributes
+ dependencies:
+   - lti_tool_provider
+diff --git a/modules/lti_tool_provider_attributes/src/Event/LtiToolProviderAttributesProvisionEvent.php b/modules/lti_tool_provider_attributes/src/Event/LtiToolProviderAttributesProvisionEvent.php
+index b7ff408..8e60eb3 100644
+--- a/modules/lti_tool_provider_attributes/src/Event/LtiToolProviderAttributesProvisionEvent.php
++++ b/modules/lti_tool_provider_attributes/src/Event/LtiToolProviderAttributesProvisionEvent.php
+@@ -2,7 +2,7 @@
+ 
+ namespace Drupal\lti_tool_provider_attributes\Event;
+ 
+-use Symfony\Component\EventDispatcher\Event;
++use Drupal\Component\EventDispatcher\Event;
+ use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
+ use Drupal\user\UserInterface;
+ 
+diff --git a/modules/lti_tool_provider_attributes/src/EventSubscriber/LtiToolProviderAttributesEventSubscriber.php b/modules/lti_tool_provider_attributes/src/EventSubscriber/LtiToolProviderAttributesEventSubscriber.php
+index 504fc1b..3c1a9f0 100644
+--- a/modules/lti_tool_provider_attributes/src/EventSubscriber/LtiToolProviderAttributesEventSubscriber.php
++++ b/modules/lti_tool_provider_attributes/src/EventSubscriber/LtiToolProviderAttributesEventSubscriber.php
+@@ -96,7 +96,7 @@ class LtiToolProviderAttributesEventSubscriber implements EventSubscriberInterfa
+ 
+     try {
+       $attributesEvent = new LtiToolProviderAttributesProvisionEvent($context, $user);
+-      $this->eventDispatcher->dispatch(LtiToolProviderAttributesEvents::PROVISION, $attributesEvent);
++      $this->eventDispatcher->dispatch($attributesEvent, LtiToolProviderAttributesEvents::PROVISION);
+       $attributesEvent->getUser()->save();
+     }
+     catch (Exception $e) {
+diff --git a/modules/lti_tool_provider_content/lti_tool_provider_content.info.yml b/modules/lti_tool_provider_content/lti_tool_provider_content.info.yml
+index 8e9f13f..c86d4c8 100644
+--- a/modules/lti_tool_provider_content/lti_tool_provider_content.info.yml
++++ b/modules/lti_tool_provider_content/lti_tool_provider_content.info.yml
+@@ -2,8 +2,7 @@ type: module
+ name: LTI Tool Provider Content Selection
+ description: Provides a basic workflow for LTI 1.3 content selection.
+ package: LTI Tool Provider
+-core: 8.x
+-core_version_requirement: ^8 || ^9
++core_version_requirement: ^8 || ^9 || ^10
+ configure: lti_tool_provider.admin.content
+ dependencies:
+   - lti_tool_provider
+diff --git a/modules/lti_tool_provider_content/src/Controller/LTIToolProviderContentLaunch.php b/modules/lti_tool_provider_content/src/Controller/LTIToolProviderContentLaunch.php
+index 083c3f1..ac39314 100644
+--- a/modules/lti_tool_provider_content/src/Controller/LTIToolProviderContentLaunch.php
++++ b/modules/lti_tool_provider_content/src/Controller/LTIToolProviderContentLaunch.php
+@@ -54,7 +54,7 @@ class LTIToolProviderContentLaunch extends ControllerBase {
+       $destination = $entity->toUrl()->toString();
+ 
+       $event = new LtiToolProviderContentLaunchEvent($context, $destination, $entity);
+-      $eventDispatcher->dispatch(LtiToolProviderContentEvents::LAUNCH, $event);
++      $eventDispatcher->dispatch($event, LtiToolProviderContentEvents::LAUNCH);
+ 
+       return new RedirectResponse($event->getDestination());
+     }
+diff --git a/modules/lti_tool_provider_content/src/Controller/LTIToolProviderContentReturn.php b/modules/lti_tool_provider_content/src/Controller/LTIToolProviderContentReturn.php
+index cd0bf70..18f68bd 100644
+--- a/modules/lti_tool_provider_content/src/Controller/LTIToolProviderContentReturn.php
++++ b/modules/lti_tool_provider_content/src/Controller/LTIToolProviderContentReturn.php
+@@ -121,7 +121,7 @@ class LTIToolProviderContentReturn extends ControllerBase {
+       }
+ 
+       $event = new LtiToolProviderContentResourceEvent($properties, $registration, $return);
+-      $eventDispatcher->dispatch(LtiToolProviderContentEvents::RESOURCE, $event);
++      $eventDispatcher->dispatch($event, LtiToolProviderContentEvents::RESOURCE);
+ 
+       $ltiResourceLink = new LtiResourceLink("$entityType-$entityId", $event->getProperties());
+       $resourceCollection = new ResourceCollection();
+@@ -131,7 +131,7 @@ class LTIToolProviderContentReturn extends ControllerBase {
+       $message = $builder->buildDeepLinkingLaunchResponse($resourceCollection, $event->getRegistration(), $event->getReturn());
+ 
+       $event = new LtiToolProviderContentReturnEvent($message);
+-      $eventDispatcher->dispatch(LtiToolProviderContentEvents::RETURN, $event);
++      $eventDispatcher->dispatch($event, LtiToolProviderContentEvents::RETURN);
+ 
+       return new Response($event->getMessage()->toHtmlRedirectForm());
+     }
+diff --git a/modules/lti_tool_provider_content/src/Controller/LTIToolProviderContentSelect.php b/modules/lti_tool_provider_content/src/Controller/LTIToolProviderContentSelect.php
+index e638b35..96f2b9a 100644
+--- a/modules/lti_tool_provider_content/src/Controller/LTIToolProviderContentSelect.php
++++ b/modules/lti_tool_provider_content/src/Controller/LTIToolProviderContentSelect.php
+@@ -43,7 +43,7 @@ class LTIToolProviderContentSelect extends ControllerBase {
+       }
+ 
+       $event = new LtiToolProviderContentSelectEvent($context, '/lti/v1p3/content/list', $deepLinkingSettings->getDeepLinkingReturnUrl());
+-      $eventDispatcher->dispatch(LtiToolProviderContentEvents::SELECT, $event);
++      $eventDispatcher->dispatch($event, LtiToolProviderContentEvents::SELECT);
+ 
+       $destination = Url::fromUserInput($event->getDestination(), [
+         'query' => [
+diff --git a/modules/lti_tool_provider_content/src/Event/LtiToolProviderContentLaunchEvent.php b/modules/lti_tool_provider_content/src/Event/LtiToolProviderContentLaunchEvent.php
+index b11dc52..3110576 100644
+--- a/modules/lti_tool_provider_content/src/Event/LtiToolProviderContentLaunchEvent.php
++++ b/modules/lti_tool_provider_content/src/Event/LtiToolProviderContentLaunchEvent.php
+@@ -4,7 +4,7 @@ namespace Drupal\lti_tool_provider_content\Event;
+ 
+ use Drupal\Core\Entity\EntityInterface;
+ use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
+-use Symfony\Component\EventDispatcher\Event;
++use Drupal\Component\EventDispatcher\Event;
+ 
+ class LtiToolProviderContentLaunchEvent extends Event {
+ 
+diff --git a/modules/lti_tool_provider_content/src/Event/LtiToolProviderContentResourceEvent.php b/modules/lti_tool_provider_content/src/Event/LtiToolProviderContentResourceEvent.php
+index 57ce8b2..08e5262 100644
+--- a/modules/lti_tool_provider_content/src/Event/LtiToolProviderContentResourceEvent.php
++++ b/modules/lti_tool_provider_content/src/Event/LtiToolProviderContentResourceEvent.php
+@@ -3,7 +3,7 @@
+ namespace Drupal\lti_tool_provider_content\Event;
+ 
+ use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
+-use Symfony\Component\EventDispatcher\Event;
++use Drupal\Component\EventDispatcher\Event;
+ 
+ class LtiToolProviderContentResourceEvent extends Event {
+ 
+diff --git a/modules/lti_tool_provider_content/src/Event/LtiToolProviderContentReturnEvent.php b/modules/lti_tool_provider_content/src/Event/LtiToolProviderContentReturnEvent.php
+index 5c6c454..b32ef72 100644
+--- a/modules/lti_tool_provider_content/src/Event/LtiToolProviderContentReturnEvent.php
++++ b/modules/lti_tool_provider_content/src/Event/LtiToolProviderContentReturnEvent.php
+@@ -3,7 +3,7 @@
+ namespace Drupal\lti_tool_provider_content\Event;
+ 
+ use OAT\Library\Lti1p3Core\Message\LtiMessageInterface;
+-use Symfony\Component\EventDispatcher\Event;
++use Drupal\Component\EventDispatcher\Event;
+ 
+ class LtiToolProviderContentReturnEvent extends Event {
+ 
+diff --git a/modules/lti_tool_provider_content/src/Event/LtiToolProviderContentSelectEvent.php b/modules/lti_tool_provider_content/src/Event/LtiToolProviderContentSelectEvent.php
+index 6d920ea..34b379f 100644
+--- a/modules/lti_tool_provider_content/src/Event/LtiToolProviderContentSelectEvent.php
++++ b/modules/lti_tool_provider_content/src/Event/LtiToolProviderContentSelectEvent.php
+@@ -3,7 +3,7 @@
+ namespace Drupal\lti_tool_provider_content\Event;
+ 
+ use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
+-use Symfony\Component\EventDispatcher\Event;
++use Drupal\Component\EventDispatcher\Event;
+ 
+ class LtiToolProviderContentSelectEvent extends Event {
+ 
+diff --git a/modules/lti_tool_provider_content/src/Form/LtiToolProviderContentListForm.php b/modules/lti_tool_provider_content/src/Form/LtiToolProviderContentListForm.php
+index e9575a5..4193396 100644
+--- a/modules/lti_tool_provider_content/src/Form/LtiToolProviderContentListForm.php
++++ b/modules/lti_tool_provider_content/src/Form/LtiToolProviderContentListForm.php
+@@ -111,6 +111,7 @@ class LtiToolProviderContentListForm extends FormBase {
+       }
+ 
+       $query = $storage->getQuery()
++        ->accessCheck(TRUE)
+         ->condition($bundleType, $entityBundle)
+         ->condition('status', 1)
+         ->tableSort($header)
+diff --git a/modules/lti_tool_provider_provision/lti_tool_provider_provision.info.yml b/modules/lti_tool_provider_provision/lti_tool_provider_provision.info.yml
+index ea50328..1198292 100644
+--- a/modules/lti_tool_provider_provision/lti_tool_provider_provision.info.yml
++++ b/modules/lti_tool_provider_provision/lti_tool_provider_provision.info.yml
+@@ -2,8 +2,7 @@ type: module
+ name: LTI Tool Provider Entity Provisioning
+ description: Allows entities to be provisioned based on LTI context.
+ package: LTI Tool Provider
+-core: 8.x
+-core_version_requirement: ^8 || ^9
++core_version_requirement: ^8 || ^9 || ^10
+ configure: lti_tool_provider.admin.provision
+ dependencies:
+   - lti_tool_provider
+diff --git a/modules/lti_tool_provider_provision/src/Event/LtiToolProviderProvisionCreateProvisionEvent.php b/modules/lti_tool_provider_provision/src/Event/LtiToolProviderProvisionCreateProvisionEvent.php
+index f798b64..4fbb5e4 100644
+--- a/modules/lti_tool_provider_provision/src/Event/LtiToolProviderProvisionCreateProvisionEvent.php
++++ b/modules/lti_tool_provider_provision/src/Event/LtiToolProviderProvisionCreateProvisionEvent.php
+@@ -4,7 +4,7 @@ namespace Drupal\lti_tool_provider_provision\Event;
+ 
+ use Drupal\Core\Entity\EntityInterface;
+ use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
+-use Symfony\Component\EventDispatcher\Event;
++use Drupal\Component\EventDispatcher\Event;
+ 
+ /**
+  * Implementation LtiToolProviderProvisionCreateProvisionEvent class.
+diff --git a/modules/lti_tool_provider_provision/src/Event/LtiToolProviderProvisionCreateProvisionedEntityEvent.php b/modules/lti_tool_provider_provision/src/Event/LtiToolProviderProvisionCreateProvisionedEntityEvent.php
+index 6604bd0..dea84c0 100644
+--- a/modules/lti_tool_provider_provision/src/Event/LtiToolProviderProvisionCreateProvisionedEntityEvent.php
++++ b/modules/lti_tool_provider_provision/src/Event/LtiToolProviderProvisionCreateProvisionedEntityEvent.php
+@@ -4,7 +4,7 @@ namespace Drupal\lti_tool_provider_provision\Event;
+ 
+ use Drupal\Core\Entity\EntityInterface;
+ use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
+-use Symfony\Component\EventDispatcher\Event;
++use Drupal\Component\EventDispatcher\Event;
+ 
+ /**
+  * Implementation LtiToolProviderProvisionCreateProvisionedEntityEvent class.
+diff --git a/modules/lti_tool_provider_provision/src/Event/LtiToolProviderProvisionRedirectEvent.php b/modules/lti_tool_provider_provision/src/Event/LtiToolProviderProvisionRedirectEvent.php
+index 0949887..fb33abf 100644
+--- a/modules/lti_tool_provider_provision/src/Event/LtiToolProviderProvisionRedirectEvent.php
++++ b/modules/lti_tool_provider_provision/src/Event/LtiToolProviderProvisionRedirectEvent.php
+@@ -4,7 +4,7 @@ namespace Drupal\lti_tool_provider_provision\Event;
+ 
+ use Drupal\Core\Entity\EntityInterface;
+ use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
+-use Symfony\Component\EventDispatcher\Event;
++use Drupal\Component\EventDispatcher\Event;
+ 
+ /**
+  * Implementation LtiToolProviderProvisionRedirectEvent class.
+diff --git a/modules/lti_tool_provider_provision/src/Event/LtiToolProviderProvisionSyncProvisionedEntityEvent.php b/modules/lti_tool_provider_provision/src/Event/LtiToolProviderProvisionSyncProvisionedEntityEvent.php
+index 6f74092..64847e2 100644
+--- a/modules/lti_tool_provider_provision/src/Event/LtiToolProviderProvisionSyncProvisionedEntityEvent.php
++++ b/modules/lti_tool_provider_provision/src/Event/LtiToolProviderProvisionSyncProvisionedEntityEvent.php
+@@ -4,7 +4,7 @@ namespace Drupal\lti_tool_provider_provision\Event;
+ 
+ use Drupal\Core\Entity\EntityInterface;
+ use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
+-use Symfony\Component\EventDispatcher\Event;
++use Drupal\Component\EventDispatcher\Event;
+ 
+ /**
+  * Implementation LtiToolProviderProvisionSyncProvisionedEntityEvent class.
+diff --git a/modules/lti_tool_provider_provision/src/EventSubscriber/LtiToolProviderProvisionEventSubscriber.php b/modules/lti_tool_provider_provision/src/EventSubscriber/LtiToolProviderProvisionEventSubscriber.php
+index fd77907..65bfd58 100644
+--- a/modules/lti_tool_provider_provision/src/EventSubscriber/LtiToolProviderProvisionEventSubscriber.php
++++ b/modules/lti_tool_provider_provision/src/EventSubscriber/LtiToolProviderProvisionEventSubscriber.php
+@@ -96,7 +96,7 @@ class LtiToolProviderProvisionEventSubscriber implements EventSubscriberInterfac
+           $entity = $this->provisionService->setEntityDefaults($context, $entity);
+ 
+           $syncProvisionedEntityEvent = new LtiToolProviderProvisionSyncProvisionedEntityEvent($context, $entity);
+-          $this->eventDispatcher->dispatch(LtiToolProviderProvisionEvents::SYNC_ENTITY, $syncProvisionedEntityEvent);
++          $this->eventDispatcher->dispatch($syncProvisionedEntityEvent, LtiToolProviderProvisionEvents::SYNC_ENTITY);
+ 
+           $entity = $syncProvisionedEntityEvent->getEntity();
+           $entity->save();
+@@ -104,7 +104,7 @@ class LtiToolProviderProvisionEventSubscriber implements EventSubscriberInterfac
+ 
+         $url = $entity->toUrl()->toString();
+         $redirectEvent = new LtiToolProviderProvisionRedirectEvent($context, $entity, $url);
+-        $this->eventDispatcher->dispatch(LtiToolProviderProvisionEvents::REDIRECT, $redirectEvent);
++        $this->eventDispatcher->dispatch($redirectEvent, LtiToolProviderProvisionEvents::REDIRECT);
+ 
+         if ($is_entity_redirect) {
+           $event->setDestination($redirectEvent->getDestination());
+@@ -163,7 +163,6 @@ class LtiToolProviderProvisionEventSubscriber implements EventSubscriberInterfac
+     }
+ 
+     if (!$access) {
+-      $event->stopPropagation();
+       throw new Exception('Unable to provision entity.');
+     }
+   }
+diff --git a/modules/lti_tool_provider_provision/src/Services/ProvisionService.php b/modules/lti_tool_provider_provision/src/Services/ProvisionService.php
+index 6bc7722..7fe570e 100644
+--- a/modules/lti_tool_provider_provision/src/Services/ProvisionService.php
++++ b/modules/lti_tool_provider_provision/src/Services/ProvisionService.php
+@@ -114,7 +114,7 @@ class ProvisionService {
+         }
+ 
+         $createProvisionEvent = new LtiToolProviderProvisionCreateProvisionEvent($context, $provision);
+-        $this->eventDispatcher->dispatch(LtiToolProviderProvisionEvents::CREATE_PROVISION, $createProvisionEvent);
++        $this->eventDispatcher->dispatch($createProvisionEvent, LtiToolProviderProvisionEvents::CREATE_PROVISION);
+ 
+         $provision = $createProvisionEvent->getEntity();
+         $provision->save();
+@@ -220,7 +220,7 @@ class ProvisionService {
+       ->create([$bundleType => $entityBundle]);
+ 
+     $event = new LtiToolProviderProvisionCreateProvisionedEntityEvent($context, $entity);
+-    $this->eventDispatcher->dispatch(LtiToolProviderProvisionEvents::CREATE_ENTITY, $event);
++    $this->eventDispatcher->dispatch($event, LtiToolProviderProvisionEvents::CREATE_ENTITY);
+ 
+     return $event->getEntity();
+   }
+diff --git a/modules/lti_tool_provider_roles/lti_tool_provider_roles.info.yml b/modules/lti_tool_provider_roles/lti_tool_provider_roles.info.yml
+index 99d87f0..519caca 100644
+--- a/modules/lti_tool_provider_roles/lti_tool_provider_roles.info.yml
++++ b/modules/lti_tool_provider_roles/lti_tool_provider_roles.info.yml
+@@ -2,8 +2,7 @@ type: module
+ name: LTI Tool Provider Role Mapping
+ description: Keeps LTI roles and Drupal user roles in sync.
+ package: LTI Tool Provider
+-core: 8.x
+-core_version_requirement: ^8 || ^9
++core_version_requirement: ^8 || ^9 || ^10
+ configure: lti_tool_provider.admin.roles
+ dependencies:
+   - lti_tool_provider
+diff --git a/modules/lti_tool_provider_roles/src/Event/LtiToolProviderRolesProvisionEvent.php b/modules/lti_tool_provider_roles/src/Event/LtiToolProviderRolesProvisionEvent.php
+index e5d35be..21168b2 100644
+--- a/modules/lti_tool_provider_roles/src/Event/LtiToolProviderRolesProvisionEvent.php
++++ b/modules/lti_tool_provider_roles/src/Event/LtiToolProviderRolesProvisionEvent.php
+@@ -4,7 +4,7 @@ namespace Drupal\lti_tool_provider_roles\Event;
+ 
+ use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
+ use Drupal\user\UserInterface;
+-use Symfony\Component\EventDispatcher\Event;
++use Drupal\Component\EventDispatcher\Event;
+ 
+ /**
+  * Implementation LtiToolProviderRolesProvisionEvent class.
+diff --git a/modules/lti_tool_provider_roles/src/EventSubscriber/LtiToolProviderRolesEventSubscriber.php b/modules/lti_tool_provider_roles/src/EventSubscriber/LtiToolProviderRolesEventSubscriber.php
+index 210c7a3..90833bd 100644
+--- a/modules/lti_tool_provider_roles/src/EventSubscriber/LtiToolProviderRolesEventSubscriber.php
++++ b/modules/lti_tool_provider_roles/src/EventSubscriber/LtiToolProviderRolesEventSubscriber.php
+@@ -99,7 +99,7 @@ class LtiToolProviderRolesEventSubscriber implements EventSubscriberInterface {
+ 
+     try {
+       $rolesEvent = new LtiToolProviderRolesProvisionEvent($context, $user);
+-      $this->eventDispatcher->dispatch(LtiToolProviderRolesEvents::PROVISION, $rolesEvent);
++      $this->eventDispatcher->dispatch($rolesEvent, LtiToolProviderRolesEvents::PROVISION);
+       $rolesEvent->getUser()->save();
+     }
+     catch (Exception $e) {
+diff --git a/src/Authentication/Provider/LTIToolProviderBase.php b/src/Authentication/Provider/LTIToolProviderBase.php
+index b6ea9c3..281050e 100644
+--- a/src/Authentication/Provider/LTIToolProviderBase.php
++++ b/src/Authentication/Provider/LTIToolProviderBase.php
+@@ -77,10 +77,10 @@ abstract class LTIToolProviderBase implements AuthenticationProviderInterface {
+       $user = $this->provisionUser($context);
+ 
+       $provisionUserEvent = new LtiToolProviderProvisionUserEvent($context, $user);
+-      $this->eventDispatcher->dispatch(LtiToolProviderEvents::PROVISION_USER, $provisionUserEvent);
++      $this->eventDispatcher->dispatch($provisionUserEvent, LtiToolProviderEvents::PROVISION_USER);
+ 
+       $authenticatedEvent = new LtiToolProviderAuthenticatedEvent($provisionUserEvent->getContext(), $provisionUserEvent->getUser());
+-      $this->eventDispatcher->dispatch(LtiToolProviderEvents::AUTHENTICATED, $authenticatedEvent);
++      $this->eventDispatcher->dispatch($authenticatedEvent, LtiToolProviderEvents::AUTHENTICATED);
+ 
+       $this->userLoginFinalize($authenticatedEvent->getUser());
+ 
+@@ -158,12 +158,12 @@ abstract class LTIToolProviderBase implements AuthenticationProviderInterface {
+     $user = User::create();
+     $user->setUsername($name);
+     $user->setEmail($mail);
+-    $user->setPassword(user_password());
++    $user->setPassword(\Drupal::service('password_generator')->generate());
+     $user->enforceIsNew();
+     $user->activate();
+ 
+     $createUserEvent = new LtiToolProviderCreateUserEvent($context, $user);
+-    $this->eventDispatcher->dispatch(LtiToolProviderEvents::CREATE_USER, $createUserEvent);
++    $this->eventDispatcher->dispatch($createUserEvent, LtiToolProviderEvents::CREATE_USER);
+ 
+     $user = $createUserEvent->getUser();
+     $user->save();
+diff --git a/src/Controller/LTIToolProviderV1P0Launch.php b/src/Controller/LTIToolProviderV1P0Launch.php
+index f4dd29d..a1b3319 100644
+--- a/src/Controller/LTIToolProviderV1P0Launch.php
++++ b/src/Controller/LTIToolProviderV1P0Launch.php
+@@ -47,7 +47,7 @@ class LTIToolProviderV1P0Launch extends ControllerBase {
+       $context_data = $context->getContext();
+ 
+       $event = new LtiToolProviderLaunchEvent($context, $context_data['custom_destination'] ?? '/');
+-      $eventDispatcher->dispatch(LtiToolProviderEvents::LAUNCH, $event);
++      $eventDispatcher->dispatch($event, LtiToolProviderEvents::LAUNCH);
+ 
+       return new RedirectResponse($event->getDestination());
+     }
+diff --git a/src/Controller/LTIToolProviderV1P0Return.php b/src/Controller/LTIToolProviderV1P0Return.php
+index 860ffdb..eb7dec7 100644
+--- a/src/Controller/LTIToolProviderV1P0Return.php
++++ b/src/Controller/LTIToolProviderV1P0Return.php
+@@ -57,7 +57,7 @@ class LTIToolProviderV1P0Return extends ControllerBase {
+       }
+ 
+       $event = new LtiToolProviderReturnEvent($context, $destination);
+-      $eventDispatcher->dispatch(LtiToolProviderEvents::RETURN, $event);
++      $eventDispatcher->dispatch($event, LtiToolProviderEvents::RETURN);
+ 
+       $this->userLogout();
+ 
+diff --git a/src/Controller/LTIToolProviderV1P3Launch.php b/src/Controller/LTIToolProviderV1P3Launch.php
+index 2bec79f..4db97ad 100644
+--- a/src/Controller/LTIToolProviderV1P3Launch.php
++++ b/src/Controller/LTIToolProviderV1P3Launch.php
+@@ -38,7 +38,7 @@ class LTIToolProviderV1P3Launch extends ControllerBase {
+       $custom = $payload->getCustom();
+ 
+       $event = new LtiToolProviderLaunchEvent($context, $custom['destination'] ?? '/');
+-      $eventDispatcher->dispatch(LtiToolProviderEvents::LAUNCH, $event);
++      $eventDispatcher->dispatch($event, LtiToolProviderEvents::LAUNCH);
+ 
+       return new RedirectResponse($event->getDestination());
+     }
+diff --git a/src/Controller/LTIToolProviderV1P3Return.php b/src/Controller/LTIToolProviderV1P3Return.php
+index 5a2d959..2bcf724 100644
+--- a/src/Controller/LTIToolProviderV1P3Return.php
++++ b/src/Controller/LTIToolProviderV1P3Return.php
+@@ -49,7 +49,7 @@ class LTIToolProviderV1P3Return extends ControllerBase {
+       }
+ 
+       $event = new LtiToolProviderReturnEvent($context, $destination);
+-      $eventDispatcher->dispatch(LtiToolProviderEvents::RETURN, $event);
++      $eventDispatcher->dispatch($event, LtiToolProviderEvents::RETURN);
+ 
+       $this->userLogout();
+ 
+diff --git a/src/Event/LtiToolProviderAuthenticatedEvent.php b/src/Event/LtiToolProviderAuthenticatedEvent.php
+index 768391d..28d6a86 100644
+--- a/src/Event/LtiToolProviderAuthenticatedEvent.php
++++ b/src/Event/LtiToolProviderAuthenticatedEvent.php
+@@ -4,7 +4,7 @@ namespace Drupal\lti_tool_provider\Event;
+ 
+ use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
+ use Drupal\user\UserInterface;
+-use Symfony\Component\EventDispatcher\Event;
++use Drupal\Component\EventDispatcher\Event;
+ 
+ class LtiToolProviderAuthenticatedEvent extends Event {
+ 
+diff --git a/src/Event/LtiToolProviderCreateUserEvent.php b/src/Event/LtiToolProviderCreateUserEvent.php
+index 2ee0da1..0e71d37 100644
+--- a/src/Event/LtiToolProviderCreateUserEvent.php
++++ b/src/Event/LtiToolProviderCreateUserEvent.php
+@@ -4,7 +4,7 @@ namespace Drupal\lti_tool_provider\Event;
+ 
+ use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
+ use Drupal\user\UserInterface;
+-use Symfony\Component\EventDispatcher\Event;
++use Drupal\Component\EventDispatcher\Event;
+ 
+ class LtiToolProviderCreateUserEvent extends Event {
+ 
+diff --git a/src/Event/LtiToolProviderLaunchEvent.php b/src/Event/LtiToolProviderLaunchEvent.php
+index 2f76d4a..5eedff4 100644
+--- a/src/Event/LtiToolProviderLaunchEvent.php
++++ b/src/Event/LtiToolProviderLaunchEvent.php
+@@ -3,7 +3,7 @@
+ namespace Drupal\lti_tool_provider\Event;
+ 
+ use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
+-use Symfony\Component\EventDispatcher\Event;
++use Drupal\Component\EventDispatcher\Event;
+ 
+ class LtiToolProviderLaunchEvent extends Event {
+ 
+diff --git a/src/Event/LtiToolProviderProvisionUserEvent.php b/src/Event/LtiToolProviderProvisionUserEvent.php
+index acb9241..0957db4 100644
+--- a/src/Event/LtiToolProviderProvisionUserEvent.php
++++ b/src/Event/LtiToolProviderProvisionUserEvent.php
+@@ -4,7 +4,7 @@ namespace Drupal\lti_tool_provider\Event;
+ 
+ use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
+ use Drupal\user\UserInterface;
+-use Symfony\Component\EventDispatcher\Event;
++use Drupal\Component\EventDispatcher\Event;
+ 
+ class LtiToolProviderProvisionUserEvent extends Event {
+ 
+diff --git a/src/Event/LtiToolProviderReturnEvent.php b/src/Event/LtiToolProviderReturnEvent.php
+index 1290dbe..8fa8685 100644
+--- a/src/Event/LtiToolProviderReturnEvent.php
++++ b/src/Event/LtiToolProviderReturnEvent.php
+@@ -3,7 +3,7 @@
+ namespace Drupal\lti_tool_provider\Event;
+ 
+ use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
+-use Symfony\Component\EventDispatcher\Event;
++use Drupal\Component\EventDispatcher\Event;
+ 
+ class LtiToolProviderReturnEvent extends Event {
+ 
+diff --git a/src/EventSubscriber/RemoveXFrameOptionsSubscriber.php b/src/EventSubscriber/RemoveXFrameOptionsSubscriber.php
+index 4f695a5..57374dd 100644
+--- a/src/EventSubscriber/RemoveXFrameOptionsSubscriber.php
++++ b/src/EventSubscriber/RemoveXFrameOptionsSubscriber.php
+@@ -5,7 +5,7 @@ namespace Drupal\lti_tool_provider\EventSubscriber;
+ use Drupal;
+ use Drupal\lti_tool_provider\LTIToolProviderContextInterface;
+ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
++use Symfony\Component\HttpKernel\Event\ResponseEvent;
+ use Symfony\Component\HttpKernel\KernelEvents;
+ 
+ /**
+@@ -23,12 +23,12 @@ class RemoveXFrameOptionsSubscriber implements EventSubscriberInterface {
+   }
+ 
+   /**
+-   * @param FilterResponseEvent $event
++   * @param ResponseEvent $event
+    *
+    * @todo Only add ResponseEvent typing to $event once D8 is no longer
+    *   supported.
+    */
+-  public function RemoveXFrameOptions(FilterResponseEvent $event) {
++  public function RemoveXFrameOptions(ResponseEvent $event) {
+     if (Drupal::config('lti_tool_provider.settings')->get('iframe')) {
+       $session = $event->getRequest()->getSession();
+       $context = $session->get('lti_tool_provider_context');
+diff --git a/src/Services/LTIToolProviderNonceRepository.php b/src/Services/LTIToolProviderNonceRepository.php
+index d995560..a06c85f 100644
+--- a/src/Services/LTIToolProviderNonceRepository.php
++++ b/src/Services/LTIToolProviderNonceRepository.php
+@@ -41,6 +41,7 @@ class LTIToolProviderNonceRepository implements NonceRepositoryInterface {
+   public function find(string $value): ?NonceInterface {
+     $nonce = $this->entityTypeManager->getStorage('lti_tool_provider_nonce')
+       ->getQuery()
++      ->accessCheck(FALSE)
+       ->condition('nonce', $value, '=')
+       ->execute();
+ 
+diff --git a/tests/src/Functional/LTIAuthTest.php b/tests/src/Functional/LTIAuthTest.php
+index 81559e4..9c5053f 100644
+--- a/tests/src/Functional/LTIAuthTest.php
++++ b/tests/src/Functional/LTIAuthTest.php
+@@ -88,6 +88,7 @@ class LTIAuthTest extends BrowserTestBase {
+     $response = $this->request('POST', $url, ['form_params' => $params]);
+ 
+     $ids = $this->userStorage->getQuery()
++      ->accessCheck(FALSE)
+       ->condition('name', 'ltiuser', '=')
+       ->condition('mail', 'ltiuser@invalid', '=')
+       ->execute();
+@@ -209,6 +210,7 @@ class LTIAuthTest extends BrowserTestBase {
+ 
+     //        $userStorage = $this->container->get('entity_type.manager')->getStorage('user');
+     $ids = $this->userStorage->getQuery()
++      ->accessCheck(FALSE)
+       ->condition('name', 'ltiuser', '=')
+       ->condition('mail', 'ltiuser@invalid', '=')
+       ->execute();
+@@ -268,6 +270,7 @@ class LTIAuthTest extends BrowserTestBase {
+ 
+     //        $userStorage = $this->container->get('entity_type.manager')->getStorage('user');
+     $ids = $this->userStorage->getQuery()
++      ->accessCheck(FALSE)
+       ->condition('name', 'ltiuser', '=')
+       ->condition('mail', 'ltiuser@invalid', '=')
+       ->execute();
+@@ -318,6 +321,7 @@ class LTIAuthTest extends BrowserTestBase {
+ 
+     //        $userStorage = $this->container->get('entity_type.manager')->getStorage('user');
+     $ids = $this->userStorage->getQuery()
++      ->accessCheck(FALSE)
+       ->condition('name', 'ltiuser', '=')
+       ->condition('mail', 'ltiuser@invalid', '=')
+       ->execute();
+@@ -368,6 +372,7 @@ class LTIAuthTest extends BrowserTestBase {
+ 
+     //        $userStorage = $this->container->get('entity_type.manager')->getStorage('user');
+     $ids = $this->userStorage->getQuery()
++      ->accessCheck(FALSE)
+       ->condition('name', 'user@lms.edu', '=')
+       ->condition('mail', 'user@lms.edu', '=')
+       ->execute();
+@@ -402,7 +407,7 @@ class LTIAuthTest extends BrowserTestBase {
+     if ($user instanceof User) {
+       $user->setUsername($mail);
+       $user->setEmail($mail);
+-      $user->setPassword(user_password());
++      $user->setPassword(\Drupal::service('password_generator')->generate());
+       $user->enforceIsNew();
+       $user->activate();
+     }
+@@ -432,6 +437,7 @@ class LTIAuthTest extends BrowserTestBase {
+     $response = $this->request('POST', $url, ['form_params' => $params]);
+ 
+     $ids = $this->userStorage->getQuery()
++      ->accessCheck(FALSE)
+       ->condition('name', $mail, '=')
+       ->condition('mail', $mail, '=')
+       ->execute();

@@ -1,0 +1,177 @@
+a {
+    color: inherit;
+    cursor: pointer !important;
+    text-decoration: underline !important;
+}
+a:hover {
+    text-decoration: underline 2px !important;
+  color: #23aeff;
+}
+.main-content h2 {
+margin: 1em 0;
+}
+h2 a label {
+display: inherit;
+}
+#block-contentfield {
+padding: 10px 35px;
+}
+#block-contentfield .content{
+margin:0;
+}
+.beautytips:after {
+content: url(../info_outline.svg);
+width: 200px;
+height: 200px;
+cursor: pointer;
+}
+.beautytips {
+display:inline-block;
+cursor: pointer;
+}
+html {
+line-height:24px;
+font-size:16px;
+}
+p {
+/*line-height: 8px; within paragraph */
+margin-bottom: 8px; /* between paragraphs */
+max-width: 650px;
+}
+.field--name-field-announcements p{
+max-width:100%;
+}
+.paragraph .field__label {
+font-size: 20px;
+line-height: 30px;
+font-weight:bold;
+}
+#main-wrapper {
+background-color: #f7f8f9;
+}
+h1{
+font-size:24px;
+line-height:30px;
+}
+.paragraph {
+background-color: #fff;
+border-radius: 4px;
+border: 1px solid #E5E9ED;
+padding-top: 12px;
+padding-left: 16px;
+padding-right: 16px;
+padding-bottom: 24px;
+margin:16px;
+}
+a {
+color: #40658F;
+}
+.announcements {
+background: no-repeat 10px 17px;
+background-image: url(../themes/canvas_lti/icons/info-24px.svg);
+background-size: 24px;
+padding: 5px 50px 10px;
+margin: 10px 25px 0 35px;
+background-color: #fff;
+border-radius: 4px;
+color: #000;
+border: 1px solid #E5E9ED;
+box-shadow: -8px 0 0 #ebbf28;
+}
+.field__label {
+background-size: 16px;
+background-position: top right;
+background-repeat: no-repeat;
+display: inline-block;
+padding-right: 20px;
+}
+.paragraph--type--recommended-resources .field__label, .paragraph--type--recommeded-databases .field__label, .paragraph--type--research-guides .field__label {
+padding-bottom: 15px;
+}
+em {
+font-style:italic !important;
+}
+.field--name-field-course-reserves .field__label {
+/*background-image: url(https://fonts.gstatic.com/s/i/materialicons/info/v14/24px.svg);*/
+}
+.field--name-field-library-hours .field__label {
+/*background-image: url(https://fonts.gstatic.com/s/i/materialiconsoutlined/access_time/v9/24px.svg);*/
+}
+.field--type-entity-reference {
+font-family: inherit !important;
+margin:0;
+}
+#library-search {
+display: inline-block;
+vertical-align:top;
+height:40px;
+line-height:24px;
+margin:8px 0;
+border:#8A96A1 solid 1px;
+width: 85%;
+}
+.library-search-text {
+color:#666;
+margin:8px 0;
+}
+.library-search-form {
+white-space: nowrap;
+}
+.media-oembed-content {
+width:100%;
+height:auto;
+}
+strong {
+font-weight:bold;
+}
+big {
+font-size:130%;
+}
+m-chat {
+/* note this does not work z-index:10000;*/
+}
+@media only screen and (min-width: 770px) {
+.js .paragraph-type {
+overflow:inherit;
+font-weight:bold;
+}
+.js .paragraph-top{
+grid-template-columns: 250px auto 1fr auto;
+}
+}
+#block-editinginstructions-2 p {
+max-width: 100%;
+}
+.paragraph--type--instructional-videos .field__item {
+margin: 25px 5px;
+}
+.library-search-button {
+display: inline-block;
+vertical-align:top;
+height:40px;
+width:40px;
+padding:5px 0;
+margin:8px 0 0 -5px;
+}
+.library-search-button svg {
+margin-left: 5px;
+}
+.field-show-all .field__item {
+padding: 4px 0;
+}
+.announcements li{
+padding: 4px 0;
+}
+@media only screen and (max-width: 770px) {
+.announcements{
+margin:10px 15px 0 25px;
+}
+.column {
+width: 100%;
+padding:0 !important;
+}
+.field__items_columns {
+display: block !important;
+}
+}
+

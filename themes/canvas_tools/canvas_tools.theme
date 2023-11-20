@@ -1,0 +1,26 @@
+<?php
+
+/**
+ * @file
+ * Functions to support theming in the canvas_tools theme.
+ */
+
+use Drupal\Core\Template\Attribute;
+
+
+/**
+ * Implements hook_preprocess_HOOK() for field.html.twig.
+ */
+function canvas_tools_preprocess_field(&$variables) {
+  switch ($variables['element']['#bundle']) {
+    case 'class_page':
+      $node = $variables['element']['#object'];
+      foreach ($node->get('field_blocks') as $weight => $paragraph) {
+        $variables['items'][$weight]['field_column'] = $paragraph->entity->get('field_column')->value;
+      }
+  }
+}
+
+function canvas_tools_preprocess_menu_local_task(&$variables) {
+  $variables['link']['#url']->setOption('attributes', ['target' => '_self']);
+}

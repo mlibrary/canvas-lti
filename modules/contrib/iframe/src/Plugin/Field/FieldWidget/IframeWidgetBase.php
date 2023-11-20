@@ -375,7 +375,7 @@ class IframeWidgetBase extends WidgetBase {
       '#type' => 'textfield',
       '#title' => $this->t('Iframe URL'),
       '#placeholder' => 'https://',
-      '#default_value' => $settings['url'] ? static::getUriAsDisplayableString($settings['url']) : '',
+      '#default_value' => !empty($settings['url']) ? static::getUriAsDisplayableString($settings['url']) : '',
       '#size' => 80,
       '#maxlength' => 2048,
       '#weight' => 1,
@@ -561,6 +561,7 @@ class IframeWidgetBase extends WidgetBase {
    *   The URI to get the displayable string for.
    *
    * @return string
+   *   The scheme, if a non-empty $uri was passed.
    *
    * @see LinkWidget::getUriAsDisplayableString()
    * @see LinkWidget::getUserEnteredStringAsUri()
@@ -618,7 +619,7 @@ class IframeWidgetBase extends WidgetBase {
    *
    * @return string
    *   The URI, if a non-empty $uri was passed.
-
+   *
    * @see LinkWidget::getUserEnteredStringAsUri()
    * @see LinkWidget::getUriAsDisplayableString()
    */

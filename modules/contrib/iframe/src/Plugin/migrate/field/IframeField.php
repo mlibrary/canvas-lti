@@ -8,7 +8,7 @@ use Drupal\migrate_drupal\Plugin\migrate\field\FieldPluginBase;
 /**
  * The Class IframeField. Field migration plugin from D7 to D8.
  *
- * @MigrateCckField(
+ * @MigrateField(
  *   id = "iframe",
  *   core = {7},
  *   type_map = {
@@ -37,7 +37,7 @@ class IframeField extends FieldPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function processCckFieldValues(MigrationInterface $migration, $field_name, $data) {
+  public function defineValueProcessPipeline(MigrationInterface $migration, $field_name, $data) {
     $process = [
       'plugin' => 'd7_cck_iframe',
       'source' => $field_name,

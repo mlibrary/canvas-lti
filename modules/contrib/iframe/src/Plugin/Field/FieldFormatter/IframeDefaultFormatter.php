@@ -2,6 +2,7 @@
 
 namespace Drupal\iframe\Plugin\Field\FieldFormatter;
 
+use Drupal\node\NodeInterface;
 use Drupal\Component\Render\HtmlEscapedText;
 use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Field\FieldItemListInterface;
@@ -12,13 +13,15 @@ use Drupal\Core\Template\Attribute;
  * The Class IframeDefaultFormatter.
  *
  * @FieldFormatter(
- *  id = "iframe_default",
+ *  id = \Drupal\iframe\Plugin\Field\FieldFormatter\IframeDefaultFormatter::PLUGIN_ID,
  *  module = "iframe",
  *  label = @Translation("Title, over iframe (default)"),
  *  field_types = {"iframe"}
  * )
  */
 class IframeDefaultFormatter extends FormatterBase {
+
+  public const PLUGIN_ID = 'iframe_default';
 
   /**
    * {@inheritdoc}
@@ -51,7 +54,7 @@ class IframeDefaultFormatter extends FormatterBase {
     // \iframe_debug(3, __METHOD__, $settings);
     // \iframe_debug(3, __METHOD__, $field_settings);
     // \iframe_debug(3, __METHOD__, $items->getValue());
-    $allow_attributes = ['url', 'width', 'height', 'title'];
+    $allow_attributes = ['url', 'width', 'height', 'title', 'class'];
     foreach ($items as $delta => $item) {
       if (empty($item->url)) {
         continue;
@@ -65,7 +68,7 @@ class IframeDefaultFormatter extends FormatterBase {
         }
         $item->{$field_key} = $field_val;
       }
-      $elements[$delta] = self::iframeIframe($item->title, $item->url, $item);
+      $elements[$delta] = static::iframeIframe($item->title, $item->url, $item);
       // Tokens can be dynamic, so its not cacheable.
       if (isset($settings['tokensupport']) && $settings['tokensupport']) {
         $elements[$delta]['cache'] = ['max-age' => 0];
@@ -155,7 +158,7 @@ class IframeDefaultFormatter extends FormatterBase {
       $tokensupport = $item->getTokenSupport();
       $tokencontext = ['user' => \Drupal::currentUser()];
       $node = \Drupal::routeMatch()->getParameter('node');
-      if ($node instanceof \Drupal\node\NodeInterface) {
+      if ($node instanceof NodeInterface) {
         $tokencontext['node'] = $node;
       }
       if ($tokensupport > 0) {

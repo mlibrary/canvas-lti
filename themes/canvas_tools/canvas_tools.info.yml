@@ -1,0 +1,8 @@
+name: canvas_tools
+type: theme
+base theme: umlib_admin
+description: 'A theme for the canvas library tools site based on umlib_base.'
+core_version_requirement: ^8 || ^9 || ^10
+project: 'drupal'
+libraries:
+  - canvas_tools/global-styling

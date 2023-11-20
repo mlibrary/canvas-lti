@@ -9,6 +9,32 @@
         "chat": "https://www.drupal.org/node/314178"
     },
     "repositories": {
+        "umlib_base-theme": {
+            "type": "package",
+            "package": {
+                "name": "mlibrary/umlib_base",
+                "version": "1.0",
+                "type": "drupal-theme",
+                "dist": {
+                    "type": "zip",
+                    "url": "https://github.com/mlibrary/umlib_base/archive/refs/heads/main.zip",
+                    "reference": "main"
+                }
+            }
+        },
+        "umlib_admin-theme": {
+            "type": "package",
+            "package": {
+                "name": "mlibrary/umlib_admin",
+                "version": "1.0",
+                "type": "drupal-theme",
+                "dist": {
+                    "type": "zip",
+                    "url": "https://github.com/mlibrary/umlib_admin/archive/refs/heads/main.zip",
+                    "reference": "main"
+                }
+            }
+        },
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8",
@@ -82,7 +108,9 @@
         "drupal/upgrade_status": "^4.0",
         "drush/drush": "^11.5",
         "oat-sa/lib-lti1p3-core": "^6.9",
-        "oat-sa/lib-lti1p3-deep-linking": "^4.0"
+        "oat-sa/lib-lti1p3-deep-linking": "^4.0",
+        "mlibrary/umlib_admin": "^1.0",
+        "mlibrary/umlib_base": "^1.0"
     },
     "conflict": {
         "drupal/drupal": "*"

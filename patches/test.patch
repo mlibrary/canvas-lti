@@ -1,0 +1,163 @@
+diff --git a/modules/contrib/lti_tool_provider/js/allow-storage.js b/modules/contrib/lti_tool_provider/js/allow-storage.js
+new file mode 100644
+index 00000000..c5f83621
+--- /dev/null
++++ b/modules/contrib/lti_tool_provider/js/allow-storage.js
+@@ -0,0 +1,24 @@
++if (typeof document.hasStorageAccess === 'function' && typeof document.requestStorageAccess === 'function') {
++  document.hasStorageAccess().then((hasAccess) => {
++    if (!hasAccess) {
++      btn = document.createElement('button');
++      btn.innerHTML = 'Please accept to continue'
++      btn.addEventListener('click', function() {
++        document.requestStorageAccess()
++          .then(requestwindow('false'))
++          .catch(requestwindow('true'));
++      });
++      document.body.innerHTML = "<p>Library Tools at canvas.lib.umich.edu requires cookie storage to be enabled on this browser. You will be redirected there to confirm.</p>";
++      document.body.appendChild(btn);
++    }
++  });
++  function requestwindow(needsStorage){
++    window.parent.postMessage(
++      {
++        messageType: "requestFullWindowLaunch",
++        data: 'https://staging.canvas.lib.umich.edu/library-tools/lti/v1p3/launch?needs_storage='+needsStorage,
++      },
++      "*"
++    );
++  }
++}
+diff --git a/modules/contrib/lti_tool_provider/lti_tool_provider.libraries.yml b/modules/contrib/lti_tool_provider/lti_tool_provider.libraries.yml
+new file mode 100644
+index 00000000..b11c226d
+--- /dev/null
++++ b/modules/contrib/lti_tool_provider/lti_tool_provider.libraries.yml
+@@ -0,0 +1,4 @@
++allow_storage:
++  header: true
++  js:
++    js/allow-storage.js: {}
+diff --git a/modules/contrib/lti_tool_provider/lti_tool_provider.module b/modules/contrib/lti_tool_provider/lti_tool_provider.module
+index 866801c7..fb347f94 100644
+--- a/modules/contrib/lti_tool_provider/lti_tool_provider.module
++++ b/modules/contrib/lti_tool_provider/lti_tool_provider.module
+@@ -78,3 +78,10 @@ function parse_roles($roles): array {
+ 
+   return $parsedRoles;
+ }
++
++/**
++ * Implements hook_page_attachments().
++ */
++function lti_tool_provider_page_attachments(array &$page) {
++  $page['#attached']['library'][] = 'lti_tool_provider/allow_storage';
++}
+diff --git a/modules/contrib/lti_tool_provider/lti_tool_provider.routing.yml b/modules/contrib/lti_tool_provider/lti_tool_provider.routing.yml
+index ff07f7a8..38479b5f 100644
+--- a/modules/contrib/lti_tool_provider/lti_tool_provider.routing.yml
++++ b/modules/contrib/lti_tool_provider/lti_tool_provider.routing.yml
+@@ -91,3 +91,10 @@ lti_tool_provider.settings:
+     _title: 'LTI Settings'
+   requirements:
+     _permission: 'administer site configuration'
++lti_tool_provider.allow_storage:
++  path: '/allow-storage'
++  defaults:
++    _controller: 'Drupal\lti_tool_provider\Controller\AllowStorage::content'
++    _title: 'Allow Storage'
++  requirements:
++    _access: 'TRUE'
+diff --git a/modules/contrib/lti_tool_provider/src/Controller/AllowStorage.php b/modules/contrib/lti_tool_provider/src/Controller/AllowStorage.php
+new file mode 100644
+index 00000000..c79bd959
+--- /dev/null
++++ b/modules/contrib/lti_tool_provider/src/Controller/AllowStorage.php
+@@ -0,0 +1,40 @@
++<?php
++
++namespace Drupal\lti_tool_provider\Controller;
++
++use Drupal\Core\Controller\ControllerBase;
++use Drupal\Component\Render\FormattableMarkup;
++
++/**
++ * Allow storage from an LTI.
++ */
++class AllowStorage extends ControllerBase {
++
++  /**
++   * Returns a form to allow site interaction on launch if needed.
++  */
++  public function content() {
++    $markup = new FormattableMarkup(
++      '<p>Library Tools at canvas.lib.umich.edu requires cookie storage to be enabled on this browser. You will be redirected there to confirm.</p>
++      <button onclick="requeststorage()">Please accept to continue</button>',
++      []
++    );
++    if (!empty(\Drupal::request()->query->get('platform_redirect_url'))) {
++      $markup = new FormattableMarkup(
++        ' <p>By clicking the button below, you will return to @redirect and allow session storage for @site</p>
++          <a href="@redirect" target="_self">
++            Return to @redirect
++          </a>',
++        [
++          '@redirect' => \Drupal::request()->query->get('platform_redirect_url'),
++          '@site' => \Drupal::request()->getSchemeAndHttpHost().\Drupal::request()->getBaseUrl(),
++        ]
++      );
++    }
++    $build['#markup'] = $markup;
++
++    return $build;
++  }
++
++}
++
+diff --git a/modules/contrib/lti_tool_provider/src/Controller/LTIToolProviderV1P3Launch.php b/modules/contrib/lti_tool_provider/src/Controller/LTIToolProviderV1P3Launch.php
+index 2bec79f4..731f4690 100644
+--- a/modules/contrib/lti_tool_provider/src/Controller/LTIToolProviderV1P3Launch.php
++++ b/modules/contrib/lti_tool_provider/src/Controller/LTIToolProviderV1P3Launch.php
+@@ -12,6 +12,8 @@ use Exception;
+ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+ use Symfony\Component\HttpFoundation\RedirectResponse;
+ use Symfony\Component\HttpFoundation\Request;
++use Drupal\Core\Routing\TrustedRedirectResponse;
++use Drupal\lti_tool_provider\Entity\LtiToolProviderConsumer;
+ 
+ class LTIToolProviderV1P3Launch extends ControllerBase {
+ 
+@@ -23,6 +25,14 @@ class LTIToolProviderV1P3Launch extends ControllerBase {
+    * @throws \Exception
+    */
+   public function route(Request $request): RedirectResponse {
++    if ($request->query->has('platform_redirect_url')) {
++      if ($request->query->has('needs_storage') && $request->query->get('needs_storage') == 'true') {
++        return new RedirectResponse(\Drupal::request()->getBaseUrl().'/allow-storage?platform_redirect_url='.$request->query->get('platform_redirect_url'));
++      }
++      else {
++        return new TrustedRedirectResponse($request->query->get('platform_redirect_url'));
++      }
++    }
+     try {
+       $context = $request->getSession()->get('lti_tool_provider_context');
+       if (!($context instanceof LTIToolProviderContextInterface)) {
+@@ -37,6 +47,18 @@ class LTIToolProviderV1P3Launch extends ControllerBase {
+       $payload = $context->getPayload();
+       $custom = $payload->getCustom();
+ 
++/*
++This would verify url but never works atm.
++      if ($request->query->has('platform_redirect_url') && strpos($payload->getToken()->getClaims()->all()['iss'], parse_url($request->query->get('platform_redirect_url'))["host"]) !== FALSE) {
++        if ($request->query->has('needs_storage') && $request->query->get('needs_storage') == 'true') {
++          return new RedirectResponse(\Drupal::request()->getBaseUrl().'/allow-storage?platform_redirect_url='.$request->query->get('platform_redirect_url'));
++        }
++        else {
++          return new TrustedRedirectResponse($request->query->get('platform_redirect_url'));
++        }
++      }
++*/
++
+       $event = new LtiToolProviderLaunchEvent($context, $custom['destination'] ?? '/');
+       $eventDispatcher->dispatch(LtiToolProviderEvents::LAUNCH, $event);
+ 

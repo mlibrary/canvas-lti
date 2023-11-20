@@ -1,0 +1,68 @@
+diff --git a/modules/contrib/lti_tool_provider/lti_tool_provider.routing.yml b/modules/contrib/lti_tool_provider/lti_tool_provider.routing.yml
+index ff07f7a8..cfd72fb1 100644
+--- a/modules/contrib/lti_tool_provider/lti_tool_provider.routing.yml
++++ b/modules/contrib/lti_tool_provider/lti_tool_provider.routing.yml
+@@ -91,3 +91,10 @@ lti_tool_provider.settings:
+     _title: 'LTI Settings'
+   requirements:
+     _permission: 'administer site configuration'
++lti_tool_provider.allow_storage:
++  path: '/allow-storage'
++  defaults:
++    _controller: 'Drupal\lti_tool_provider\Controller\AllowStorage::content'
++    _title: 'Allow Storage'
++  requirements:
++    _permission: 'access content'
+diff --git a/modules/contrib/lti_tool_provider/src/Controller/AllowStorage.php b/modules/contrib/lti_tool_provider/src/Controller/AllowStorage.php
+new file mode 100644
+index 00000000..bc9fbdd5
+--- /dev/null
++++ b/modules/contrib/lti_tool_provider/src/Controller/AllowStorage.php
+@@ -0,0 +1,33 @@
++<?php
++
++namespace Drupal\lti_tool_provider\Controller;
++
++use Drupal\Core\Controller\ControllerBase;
++use Drupal\Component\Render\FormattableMarkup;
++
++/**
++ * Allow storage from an LTI.
++ */
++class AllowStorage extends ControllerBase {
++
++  /**
++   * Returns a form to allow site interaction on launch if needed.
++  */
++  public function content() {
++    $markup = new FormattableMarkup(
++      ' <p>By clicking the button below, you will return to @redirect and allow session storage for @site</p>
++        <a href="@redirect" target="_self">
++          Return to @redirect
++        </a>',
++      [
++        '@redirect' => \Drupal::request()->query->get('platform_redirect_url'),
++        '@site' => \Drupal::request()->getSchemeAndHttpHost().\Drupal::request()->getBaseUrl(),
++      ]
++    );
++    $build['#markup'] = $markup;
++
++    return $build;
++  }
++
++}
++
+diff --git a/modules/contrib/lti_tool_provider/src/Controller/LTIToolProviderV1P3Launch.php b/modules/contrib/lti_tool_provider/src/Controller/LTIToolProviderV1P3Launch.php
+index 2bec79f4..d38cc966 100644
+--- a/modules/contrib/lti_tool_provider/src/Controller/LTIToolProviderV1P3Launch.php
++++ b/modules/contrib/lti_tool_provider/src/Controller/LTIToolProviderV1P3Launch.php
+@@ -23,6 +23,9 @@ class LTIToolProviderV1P3Launch extends ControllerBase {
+    * @throws \Exception
+    */
+   public function route(Request $request): RedirectResponse {
++    if ($request->query->has('platform_redirect_url')) {
++      return new RedirectResponse(\Drupal::request()->getBaseUrl().'/allow-storage?platform_redirect_url='.$request->query->get('platform_redirect_url'));
++    }
+     try {
+       $context = $request->getSession()->get('lti_tool_provider_context');
+       if (!($context instanceof LTIToolProviderContextInterface)) {

@@ -1,0 +1,66 @@
+diff --git a/modules/custom/custom_extras/custom_extras.libraries.yml b/modules/custom/custom_extras/custom_extras.libraries.yml
+index 26b0b801..307d0f50 100644
+--- a/modules/custom/custom_extras/custom_extras.libraries.yml
++++ b/modules/custom/custom_extras/custom_extras.libraries.yml
+@@ -9,3 +9,8 @@ custom_extras:
+     - core/jquery #Just to be safe
+     - core/drupal.dialog.ajax #Required for dialogs
+     - core/jquery.form #If you also want to use Ajax for form operations
++custom_extras_safari:
++  version: 1.x
++  header: true
++  js:
++    js/custom_extras-safari.js: {}
+diff --git a/modules/custom/custom_extras/custom_extras.module b/modules/custom/custom_extras/custom_extras.module
+index 6290c9eb..d7bc5567 100644
+--- a/modules/custom/custom_extras/custom_extras.module
++++ b/modules/custom/custom_extras/custom_extras.module
+@@ -13,6 +13,13 @@ use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+ use Drupal\Core\Entity\EntityInterface;
+ use Drush\Drush;
+ 
++/**
++ * Implements hook_page_attachments().
++ */
++function custom_extras_page_attachments(array &$page) {
++  $page['#attached']['library'][] = 'custom_extras/custom_extras_safari';
++}
++
+ /**
+  * Implements hook_node_view().
+  */
+diff --git a/modules/custom/custom_extras/js/custom_extras-safari.js b/modules/custom/custom_extras/js/custom_extras-safari.js
+new file mode 100644
+index 00000000..1d2d0b60
+--- /dev/null
++++ b/modules/custom/custom_extras/js/custom_extras-safari.js
+@@ -0,0 +1,29 @@
++//only works with firefox and safari
++if (typeof document.hasStorageAccess === 'function' && typeof document.requestStorageAccess === 'function') {
++  document.hasStorageAccess().then((hasAccess) => {
++    if (hasAccess) {
++      console.log('access already');
++    } else {
++      if(confirm('canvas.lib.umich.edu requires cookie storage to be enabled on this browser. Please accept to continue.'))
++        document.requestStorageAccess().then(
++          () => { console.log('access granted') },
++          () =>
++          {
++            console.log('access denied');
++            window.parent.postMessage(
++              {
++                messageType: "requestFullWindowLaunch",
++                data: 'https://staging.canvas.lib.umich.edu/library-tools/lti/v1p3/launch',
++              },
++              "*"
++            );
++            window.addEventListener("message", (event) => {
++              if (event.origin !== "https://umich.beta.instructure.com")
++                console.log('not right origin');
++                return;
++            }, false);
++          }
++        );
++    }
++  });
++}
