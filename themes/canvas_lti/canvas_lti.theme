@@ -22,5 +22,7 @@ function canvas_lti_preprocess_field(&$variables) {
 }
 
 function canvas_lti_preprocess_menu_local_task(&$variables) {
-  $variables['link']['#url']->setOption('attributes', ['target' => '_self']);
+  if ($variables['link']['#title'] != 'Clone') {
+    $variables['link']['#url']->setOption('attributes', ['target' => '_self']);
+  }
 }

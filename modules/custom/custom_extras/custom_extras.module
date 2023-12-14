@@ -14,6 +14,33 @@ use Drupal\Core\Entity\EntityInterface;
 use Drush\Drush;
 
 /**
+ * Implements hook_cloned_node_alter().
+ */
+function custom_extras_cloned_node_alter(&$node){
+  $node->get('field_cloned')->setValue([TRUE]);
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_insert().
+ */
+function custom_extras_node_insert(Node $node) {
+  if ($node->get('field_cloned')->value) {
+    $lti_provision = \Drupal::entityTypeManager()->getStorage('lti_tool_provider_provision')->create([
+      'consumer_id' => $node->get('field_consumer_id')->value,
+      'context_id' => $node->get('field_context_id')->value,
+      'context_label' => $node->get('field_context_label')->value,
+      'context_title' => $node->get('field_context_title')->value,
+      'resource_link_id' => $node->get('field_resource_link_id')->value,
+      'resource_link_title' => $node->get('field_context_title')->value,
+      'provision_type' => 'node',
+      'provision_bundle' => 'class_page',
+      'provision_id' => $node->id(),
+    ]);
+    $lti_provision->save();
+  }
+}
+
+/**
  * Implements hook_editor_js_settings_alter().
  */
 function custom_extras_editor_js_settings_alter(array &$settings) {

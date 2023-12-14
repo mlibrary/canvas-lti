@@ -3,7 +3,7 @@
         'name' => 'drupal/recommended-project',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '0b209e901ae4ee7dfec6fadbe0b2f8e0b15cfbb6',
+        'reference' => 'd81ba392bfcce1cfba0370648534f109d4805be7',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -623,6 +623,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'drupal/quick_node_clone' => array(
+            'pretty_version' => '1.16.0',
+            'version' => '1.16.0.0',
+            'reference' => '8.x-1.16',
+            'type' => 'drupal-module',
+            'install_path' => __DIR__ . '/../../modules/contrib/quick_node_clone',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'drupal/rabbit_hole' => array(
             'pretty_version' => '2.0.0-alpha5',
             'version' => '2.0.0.0-alpha5',
@@ -635,7 +644,7 @@
         'drupal/recommended-project' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '0b209e901ae4ee7dfec6fadbe0b2f8e0b15cfbb6',
+            'reference' => 'd81ba392bfcce1cfba0370648534f109d4805be7',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

@@ -84,6 +84,7 @@
         "drupal/core": "^10.1",
         "drupal/devel": "^5.0",
         "drupal/disable_messages": "^2.0",
+        "drupal/entity_reference_revisions": "^1.10",
         "drupal/extra_field_description": "dev-custom",
         "drupal/field_group": "^3.1",
         "drupal/field_permissions": "^1.0",
@@ -98,8 +99,8 @@
         "drupal/node_view_permissions": "^1.6",
         "drupal/oembed_providers": "^2.1",
         "drupal/paragraphs": "^1.16",
-        "drupal/entity_reference_revisions": "^1.10",
         "drupal/paragraphs_type_help": "^3.2",
+        "drupal/quick_node_clone": "^1.16",
         "drupal/rabbit_hole": "^2.0@alpha",
         "drupal/smtp": "^1.2",
         "drupal/swiftmailer": "^2.4",
@@ -107,10 +108,10 @@
         "drupal/token": "^1.13",
         "drupal/upgrade_status": "^4.0",
         "drush/drush": "^11.5",
-        "oat-sa/lib-lti1p3-core": "^6.9",
-        "oat-sa/lib-lti1p3-deep-linking": "^4.0",
         "mlibrary/umlib_admin": "^1.0",
-        "mlibrary/umlib_base": "^1.0"
+        "mlibrary/umlib_base": "^1.0",
+        "oat-sa/lib-lti1p3-core": "^6.9",
+        "oat-sa/lib-lti1p3-deep-linking": "^4.0"
     },
     "conflict": {
         "drupal/drupal": "*"
