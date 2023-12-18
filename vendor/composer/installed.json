@@ -1855,31 +1855,34 @@
         },
         {
             "name": "drupal/autocomplete_field_match",
-            "version": "dev-1.x",
-            "version_normalized": "dev-1.x",
+            "version": "1.0.0-alpha5",
+            "version_normalized": "1.0.0.0-alpha5",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/autocomplete_field_match.git",
-                "reference": "d4cf6039cb98caee509a857534e359faed493d89"
+                "reference": "8.x-1.0-alpha5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/autocomplete_field_match-8.x-1.0-alpha5.zip",
+                "reference": "8.x-1.0-alpha5",
+                "shasum": "9f7f8926565f679aa94b32f3a402c0f8e6c82901"
             },
             "require": {
                 "drupal/core": "^8 || ^9 || ^10"
             },
             "type": "drupal-module",
             "extra": {
-                "branch-alias": {
-                    "dev-1.x": "1.x-dev"
-                },
                 "drupal": {
-                    "version": "8.x-1.0-alpha4+1-dev",
-                    "datestamp": "1695810486",
+                    "version": "8.x-1.0-alpha5",
+                    "datestamp": "1702913795",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Project has not opted into security advisory coverage!"
                     }
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "notification-url": "https://packages.drupal.org/8/downloads",
             "license": [
                 "GPL-2.0-or-later"
@@ -2780,31 +2783,34 @@
         },
         {
             "name": "drupal/field_show_all",
-            "version": "dev-1.0.x",
-            "version_normalized": "dev-1.0.x",
+            "version": "1.0.0-alpha1",
+            "version_normalized": "1.0.0.0-alpha1",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/field_show_all.git",
-                "reference": "ac2e3684bd68f65763ee219cd202d7347c6344f0"
+                "reference": "1.0.0-alpha1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/field_show_all-1.0.0-alpha1.zip",
+                "reference": "1.0.0-alpha1",
+                "shasum": "9d3164fa7532d6691b1254ea4f3c801bf3b48b60"
             },
             "require": {
                 "drupal/core": "^8 || ^9 || ^10"
             },
             "type": "drupal-module",
             "extra": {
-                "branch-alias": {
-                    "dev-1.0.x": "1.0.x-dev"
-                },
                 "drupal": {
-                    "version": "1.0.x-dev",
-                    "datestamp": "1674602989",
+                    "version": "1.0.0-alpha1",
+                    "datestamp": "1702914886",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Project has not opted into security advisory coverage!"
                     }
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "notification-url": "https://packages.drupal.org/8/downloads",
             "license": [
                 "GPL-2.0-or-later"
@@ -3144,7 +3150,7 @@
                 },
                 "patches_applied": {
                     "add a test student user and fix 1.3": "patches/test-student-1.1and1.3-B.patch",
-                    "safari itp": "https://www.drupal.org/files/issues/2022-12-21/lti_safari_itp-3316822-3.patch",
+                    "safari itp": "patches/lti_safari_itp-3316822-4.patch",
                     "dont use consumer id for entity lookup": "patches/dont-use-consumer_id-for-lookup.patch"
                 }
             },

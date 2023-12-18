@@ -1,0 +1,9 @@
+.element-invisible {
+    display: none;
+}
+.field-show-all-link {
+  text-decoration: underline;
+  cursor: pointer;
+  text-align: right;
+  margin: 5px;
+}

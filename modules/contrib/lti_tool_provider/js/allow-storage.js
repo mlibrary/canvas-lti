@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
           }).catch(() => {
             //we need to check if this is from a user disallow or not.
-            if (document.cookie) {
+            if (document.cookie && document.cookie.split(';').some((item) => item.trim().startsWith('allowstorage='))) {
               alert('You already allowed a session cookie to log in to this tool. This tool will now reload')
               window.location.reload()
             } else {

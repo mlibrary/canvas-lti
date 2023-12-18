@@ -1,0 +1,8 @@
+field-show-all:
+  js:
+    js/field-show-all.js: {}
+  css:
+    theme:
+      css/field-show-all.css: {}
+  dependencies:
+    - core/jquery

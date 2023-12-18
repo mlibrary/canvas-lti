@@ -1,0 +1,14 @@
+name: 'Autocomplete Field Match'
+type: module
+description: 'Match fields other than title with autocomplete'
+
+core_version_requirement: ^8 || ^9 || ^10
+
+dependencies:
+  - drupal:field
+  - drupal:field_ui
+
+# Information added by Drupal.org packaging script on 2023-12-18
+version: '8.x-1.0-alpha5'
+project: 'autocomplete_field_match'
+datestamp: 1702913797

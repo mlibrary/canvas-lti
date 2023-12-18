@@ -3,7 +3,7 @@
         'name' => 'drupal/recommended-project',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'b54a68ea459619c90f3641b573206ee34a9baec8',
+        'reference' => '176001470e74303db9c329fa31eace943b7d39e6',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -251,14 +251,12 @@
             'dev_requirement' => false,
         ),
         'drupal/autocomplete_field_match' => array(
-            'pretty_version' => 'dev-1.x',
-            'version' => 'dev-1.x',
-            'reference' => 'd4cf6039cb98caee509a857534e359faed493d89',
+            'pretty_version' => '1.0.0-alpha5',
+            'version' => '1.0.0.0-alpha5',
+            'reference' => '8.x-1.0-alpha5',
             'type' => 'drupal-module',
             'install_path' => __DIR__ . '/../../modules/contrib/autocomplete_field_match',
-            'aliases' => array(
-                0 => '1.x-dev',
-            ),
+            'aliases' => array(),
             'dev_requirement' => false,
         ),
         'drupal/bartik' => array(
@@ -514,14 +512,12 @@
             'dev_requirement' => false,
         ),
         'drupal/field_show_all' => array(
-            'pretty_version' => 'dev-1.0.x',
-            'version' => 'dev-1.0.x',
-            'reference' => 'ac2e3684bd68f65763ee219cd202d7347c6344f0',
+            'pretty_version' => '1.0.0-alpha1',
+            'version' => '1.0.0.0-alpha1',
+            'reference' => '1.0.0-alpha1',
             'type' => 'drupal-module',
             'install_path' => __DIR__ . '/../../modules/contrib/field_show_all',
-            'aliases' => array(
-                0 => '1.0.x-dev',
-            ),
+            'aliases' => array(),
             'dev_requirement' => false,
         ),
         'drupal/fieldblock' => array(
@@ -644,7 +640,7 @@
         'drupal/recommended-project' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'b54a68ea459619c90f3641b573206ee34a9baec8',
+            'reference' => '176001470e74303db9c329fa31eace943b7d39e6',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

@@ -1,0 +1,215 @@
+diff --git a/js/allow-storage-full.js b/js/allow-storage-full.js
+new file mode 100644
+index 00000000..fe9ceddd
+--- /dev/null
++++ b/js/allow-storage-full.js
+@@ -0,0 +1,9 @@
++redirect = window.drupalSettings.ltiToolProvider.allowStorageFull.redirect;
++btn = document.createElement('button');
++btn.classList.add('button');
++btn.innerHTML = '<strong>Please accept cookies to redirect to '+redirect+'</strong>';
++btn.addEventListener('click', function() {
++  document.cookie = "allowstorage=true; SameSite=None; Secure";
++  window.location.replace(redirect);
++});
++document.getElementById('allow-storage-js-button').appendChild(btn);
+diff --git a/js/allow-storage.js b/js/allow-storage.js
+new file mode 100644
+index 00000000..8998fd2a
+--- /dev/null
++++ b/js/allow-storage.js
+@@ -0,0 +1,71 @@
++document.addEventListener('DOMContentLoaded', function () {
++  // Note: Only Firefox and Safari support hasStorageAccess currently.
++  // TODO: Figure out why Firefox says hasStorageAccess is false but still allows LTI tool to load. This covers Safari for now.
++  if (typeof document.hasStorageAccess === 'function' && typeof document.requestStorageAccess === 'function' && navigator.userAgent.indexOf("Safari") > -1) {
++    document.hasStorageAccess().then((hasAccess) => {
++      if (hasAccess) {
++        console.log('access allowed');
++      }
++      else {
++        console.log('access denied');
++        site = window.drupalSettings.ltiToolProvider.allowStorage.site;
++        btn = document.createElement('button');
++        btn.innerHTML = '<strong>Please accept to continue</strong>';
++        btn.classList.add('button');
++        text = document.createElement('div');
++        text.classList.add('messages');
++        text.classList.add('messages--error');
++        //Put it in the center of the page to make sure its noticed.
++        text.style.position = 'absolute';
++        text.style.top = '50%';
++        text.style.width = '100%';
++        text.style.textAlign = 'center';
++        text.style.zIndex = '1000';
++        text.innerHTML = '<p style="margin:0; max-width:100%;"><strong>This tool requires session cookies.</strong><br/>You will be asked to redirect to the tool at ' + site + '<br/><em>and then asked again to to allow them on this site</em>.</p>';
++        btn.addEventListener('click', function() {
++          document.requestStorageAccess().then((e) => {
++            if (document.cookie && document.cookie.split(';').some((item) => item.trim().startsWith('allowstorage='))) {
++              alert('This tool will now reload')
++              document.body.innerHTML = '<h1>Reloading..</h1>';
++              document.body.style.backgroundColor = '#fff';
++              window.location.reload()
++            } else {
++              if (window.confirm('You will now be redirected to ' + site + ' to allow cookies')) {
++                requestwindow()
++              }
++              else {
++                alert('You must allow a session cookie to log in to this tool')
++              }
++            }
++          }).catch(() => {
++            //we need to check if this is from a user disallow or not.
++            if (document.cookie && document.cookie.split(';').some((item) => item.trim().startsWith('allowstorage='))) {
++              alert('You already allowed a session cookie to log in to this tool. This tool will now reload')
++              window.location.reload()
++            } else {
++              //This may happen with Safari after the button click, or may happen after user hits button 'Don't allow'. Be sure they want to be redirected.
++              if (window.confirm('You must allow a session cookie to log in to this tool.\nWould you like redirect to ' + site + ' to allow cookies?')) {
++                requestwindow()
++              }
++              else {
++                alert('You must allow a session cookie to log in to this tool')
++                window.location.reload()
++              }
++            }
++          });
++        });
++        document.body.insertBefore(text, document.body.firstChild);
++        text.appendChild(btn);
++      }
++    });
++    function requestwindow(){
++      window.parent.postMessage(
++        {
++          messageType: 'requestFullWindowLaunch',
++          data: site + '/lti/v1p3/launch',
++        },
++        '*'
++      );
++    }
++  }
++}, false);
+diff --git a/lti_tool_provider.libraries.yml b/lti_tool_provider.libraries.yml
+new file mode 100644
+index 00000000..27204280
+--- /dev/null
++++ b/lti_tool_provider.libraries.yml
+@@ -0,0 +1,8 @@
++allow_storage:
++  header: true
++  js:
++    js/allow-storage.js: {}
++allow_storage_full:
++  header: false
++  js:
++    js/allow-storage-full.js: {}
+diff --git a/lti_tool_provider.module b/lti_tool_provider.module
+index 866801c7..8236162b 100644
+--- a/lti_tool_provider.module
++++ b/lti_tool_provider.module
+@@ -78,3 +78,14 @@ function parse_roles($roles): array {
+ 
+   return $parsedRoles;
+ }
++
++/**
++ * Implements hook_page_attachments().
++ */
++function lti_tool_provider_page_attachments(array &$page) {
++  $page['#attached']['library'][] = 'lti_tool_provider/allow_storage';
++  $settings = [
++    'site' => \Drupal::request()->getSchemeAndHttpHost().\Drupal::request()->getBaseUrl(),
++  ];
++  $page['#attached']['drupalSettings']['ltiToolProvider']['allowStorage'] = $settings;
++}
+diff --git a/lti_tool_provider.routing.yml b/lti_tool_provider.routing.yml
+index ff07f7a8..38479b5f 100644
+--- a/lti_tool_provider.routing.yml
++++ b/lti_tool_provider.routing.yml
+@@ -91,3 +91,10 @@ lti_tool_provider.settings:
+     _title: 'LTI Settings'
+   requirements:
+     _permission: 'administer site configuration'
++lti_tool_provider.allow_storage:
++  path: '/allow-storage'
++  defaults:
++    _controller: 'Drupal\lti_tool_provider\Controller\AllowStorage::content'
++    _title: 'Allow Storage'
++  requirements:
++    _access: 'TRUE'
+diff --git a/src/Controller/AllowStorage.php b/src/Controller/AllowStorage.php
+new file mode 100644
+index 00000000..6e7d19fc
+--- /dev/null
++++ b/src/Controller/AllowStorage.php
+@@ -0,0 +1,54 @@
++<?php
++
++namespace Drupal\lti_tool_provider\Controller;
++
++use Drupal\Core\Controller\ControllerBase;
++use Drupal\Component\Render\FormattableMarkup;
++use Symfony\Component\HttpFoundation\Request;
++use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
++
++/**
++ * Allow storage from an LTI.
++ */
++class AllowStorage extends ControllerBase {
++
++  /**
++   * Returns a form to allow site interaction on launch if needed.
++  */
++  public function content(Request $request) {
++    $lti_context = $request->getSession()->get('lti_tool_provider_context');
++    if ($lti_context) {
++      //TODO: Finding the return_url below and comparing to platform_redirect_url (is that canvas only?) may be unecessary
++      $payload = $lti_context->getPayload();
++      $token = $payload->getToken();
++      $claims = $token->getClaims();
++      //TODO: launch_presentation appears to be optional in lti specs, but we may want to verify the return_url is the lti provider. Use something else?
++      $launch_presentation = $claims->get('https://purl.imsglobal.org/spec/lti/claim/launch_presentation');
++      $return_url = $launch_presentation['return_url'];
++
++      if ($return_url) {
++        $platform_redirect_url = $request->query->get('platform_redirect_url');
++        if (!empty($platform_redirect_url) && strpos($platform_redirect_url, $return_url) !== FALSE) {
++          $markup = new FormattableMarkup('<p>By clicking the button below, you will return to<br/>@redirect<br/>and allow session storage for<br/>@site</p><div id="allow-storage-js-button"></div>',
++            [
++              '@redirect' => $platform_redirect_url,
++              '@site' => $request->getHost(),
++            ]
++          );
++          $settings = [
++            'redirect' => $platform_redirect_url,
++          ];
++          $build['#attached']['library'][] = 'lti_tool_provider/allow_storage_full';
++          $build['#attached']['drupalSettings']['ltiToolProvider']['allowStorageFull'] = $settings;
++          $build['#markup'] = $markup;
++
++          return $build;
++        }
++      }
++    }
++
++    throw new \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException();
++  }
++
++}
++
+diff --git a/src/Controller/LTIToolProviderV1P3Launch.php b/src/Controller/LTIToolProviderV1P3Launch.php
+index 2bec79f4..adb391ee 100644
+--- a/src/Controller/LTIToolProviderV1P3Launch.php
++++ b/src/Controller/LTIToolProviderV1P3Launch.php
+@@ -37,6 +37,10 @@ class LTIToolProviderV1P3Launch extends ControllerBase {
+       $payload = $context->getPayload();
+       $custom = $payload->getCustom();
+ 
++      if ($request->query->has('platform_redirect_url')) {
++        return new RedirectResponse(\Drupal::request()->getBaseUrl().'/allow-storage?platform_redirect_url='.$request->query->get('platform_redirect_url'));
++      }
++
+       $event = new LtiToolProviderLaunchEvent($context, $custom['destination'] ?? '/');
+       $eventDispatcher->dispatch(LtiToolProviderEvents::LAUNCH, $event);
+ 

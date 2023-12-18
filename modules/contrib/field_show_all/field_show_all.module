@@ -1,0 +1,150 @@
+<?php
+
+/**
+ * @file
+ * Contains implementation of hooks for field_show_all module.
+ */
+
+use Drupal\Core\Entity\Entity\EntityViewDisplay;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Template\Attribute;
+use Drupal\field\Entity\FieldConfig;
+
+/**
+ * Implements hook_help().
+ */
+function field_show_all_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the field_show_all module.
+    case 'help.page.field_show_all':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Provides configuration to load n items of a multi-valued field with a show all and show less link.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary_alter().
+ */
+function field_show_all_field_formatter_settings_summary_alter(&$summary, $context) {
+  $field_show_all_enabled = $context['formatter']->getThirdPartySetting('field_show_all', 'field_show_all_enabled');
+  if ($field_show_all_enabled) {
+    $summary[] = t('Field show all enabled:Yes');
+  }
+}
+
+/**
+ * Implements hook_field_formatter_third_party_settings_form().
+ */
+function field_show_all_field_formatter_third_party_settings_form(\Drupal\Core\Field\FormatterInterface $plugin, \Drupal\Core\Field\FieldDefinitionInterface $field_definition, $view_mode, $form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  $element = [];
+  $cardinality = $field_definition->getFieldStorageDefinition()->getCardinality();
+  if ($cardinality == -1) {
+    $element['field_show_all_enabled'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Enable Show All widget for the field'),
+      '#default_value' => $plugin->getThirdPartySetting('field_show_all', 'field_show_all_enabled'),
+    ];
+
+    $field_name = $field_definition->getName();
+
+    $element['items_show'] = [
+      '#type' => 'textfield',
+      '#title' => t('Number of items to display by default'),
+      '#description' => t('if the number of items in this field exceeds this value, they will be displayed with a show all link.'),
+      '#default_value' => $plugin->getThirdPartySetting('field_show_all', 'items_show'),
+      '#states' => [
+        'visible' => [
+          ':input[name="fields[' . $field_name . '][settings_edit_form][third_party_settings][field_show_all][field_show_all_enabled]"]' => array('checked' => TRUE),
+        ],
+      ],
+    ];
+
+    $element['link_text'] = [
+      '#type' => 'textfield',
+      '#title' => t('Link Text'),
+      '#description' => t('The text of the link to be displayed.'),
+      '#default_value' => $plugin->getThirdPartySetting('field_show_all', 'link_text'),
+      '#states' => [
+        'visible' => [
+          ':input[name="fields[' . $field_name . '][settings_edit_form][third_party_settings][field_show_all][field_show_all_enabled]"]' => array('checked' => TRUE),
+        ],
+      ],
+    ];
+
+    $element['link_text_close'] = [
+      '#type' => 'textfield',
+      '#title' => t('Link Text Close'),
+      '#description' => t('The text of the link to be displayed once items are shown.'),
+      '#default_value' => $plugin->getThirdPartySetting('field_show_all', 'link_text_close'),
+      '#states' => [
+        'visible' => [
+          ':input[name="fields[' . $field_name . '][settings_edit_form][third_party_settings][field_show_all][field_show_all_enabled]"]' => array('checked' => TRUE),
+        ],
+      ],
+    ];
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_preprocess_field().
+ */
+function field_show_all_preprocess_field(&$variables) {
+  $element = $variables['element'];
+
+  // Field formatter configuration.
+  $entity_display = EntityViewDisplay::collectRenderDisplay($element['#object'], $element['#view_mode']);
+  $field_display = $entity_display->getComponent($element['#field_name']);
+
+  // Check if the field being rendered is enabled with show all config.
+  if (!empty($field_display['third_party_settings']['field_show_all']) && ($field_display['third_party_settings']['field_show_all']['field_show_all_enabled'])) {
+    $variables['attributes']['class'] = 'field-show-all';
+    $variables['#attached']['library'][] = 'field_show_all/field-show-all';
+    $items_show_limit = $field_display['third_party_settings']['field_show_all']['items_show'];
+    $link_text = $field_display['third_party_settings']['field_show_all']['link_text'];
+    $link_text_close = $field_display['third_party_settings']['field_show_all']['link_text_close'];
+    $field_wrapper_class = 'field--name-' . str_replace('_', '-',$element['#field_name']);
+    $variables['#attached']['drupalSettings']['field_show_all'][$field_wrapper_class] = [
+      'limit' => $items_show_limit,
+      'link_text' => $link_text,
+      'link_text_close' => $link_text_close,
+    ];
+
+    foreach ($variables['items'] as $key => $item) {
+      if ($key > $items_show_limit - 1) {
+        $attributes = [
+          'class' => ['element-invisible']
+        ];
+
+        $variables['items'][$key]['attributes'] = new Attribute($attributes);;
+      }
+    }
+
+    if (count($variables['items']) > $items_show_limit) {
+      $variables['items'][]['content'] = [
+        '#type' => 'html_tag',
+        '#tag' => 'div',
+        '#attributes' => [
+          'class' => [
+            'field-show-all-link'
+          ],
+          'id' => [
+            'field-show-all-link-'.$field_wrapper_class
+          ],
+          'data-field-class' => $field_wrapper_class
+        ],
+        '#value' => t($link_text),
+        '#cache' => [
+          'tags' => [
+            $items_show_limit . '-' . $element['#field_name'],
+          ]
+        ]
+      ];
+    }
+  }
+}
