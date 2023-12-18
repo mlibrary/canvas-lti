@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3423f4a839865c7a5df5e38abd31a66f",
+    "content-hash": "1ed2a3c46a53d29be9c1fb31bc8bc01f",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2973,13 +2973,57 @@
         },
         {
             "name": "drupal/lti_tool_provider",
-            "version": "dev-custom",
+            "version": "2.0.5",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mlibrary/lti_tool_provider.git",
-                "reference": "main"
+                "url": "https://git.drupalcode.org/project/lti_tool_provider.git",
+                "reference": "2.0.5"
             },
-            "type": "drupal-module"
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/lti_tool_provider-2.0.5.zip",
+                "reference": "2.0.5",
+                "shasum": "e2aeb4f208c80b13329807df74feff7090122d78"
+            },
+            "require": {
+                "drupal/core": "^8 || ^9 || ^10",
+                "drupal/key": "^1.0.0",
+                "ext-oauth": "*",
+                "oat-sa/lib-lti1p3-core": "^6.0.0",
+                "oat-sa/lib-lti1p3-deep-linking": "^4.0.0",
+                "php": "^7.3 || ^8.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "2.0.5",
+                    "datestamp": "1702329956",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "jzornig",
+                    "homepage": "https://www.drupal.org/user/446626"
+                },
+                {
+                    "name": "kenianbei",
+                    "homepage": "https://www.drupal.org/user/778980"
+                }
+            ],
+            "description": "The LTI tool provider module provides an LTI authentication provider for Drupal.",
+            "homepage": "https://drupal.org/project/lti_tool_provider",
+            "support": {
+                "source": "https://git.drupalcode.org/project/lti_tool_provider",
+                "issues": "https://drupal.org/project/issues/lti_tool_provider"
+            }
         },
         {
             "name": "drupal/mailsystem",
@@ -10442,7 +10486,6 @@
         "drupal/conditional_fields": 15,
         "drupal/extra_field_description": 20,
         "drupal/field_show_all": 20,
-        "drupal/lti_tool_provider": 20,
         "drupal/rabbit_hole": 15
     },
     "prefer-stable": true,
