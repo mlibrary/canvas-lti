@@ -496,6 +496,7 @@ function _custom_extras_encoding($data) {
 function _custom_reserves() {
   Drush::output()->writeln('Updating reserves...');
   $query = \Drupal::entityQuery('paragraph')
+    ->accessCheck(FALSE)
     ->condition('type', 'course_reserves');
   $reserves = $query->execute();
   $updated = [];
