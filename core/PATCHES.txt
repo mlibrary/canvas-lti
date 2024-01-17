@@ -5,7 +5,3 @@ https://www.drupal.org/node/2916876
 Source: https://www.drupal.org/files/issues/2020-06-23/2916876-92.patch
 
 
-https://www.drupal.org/node/3048327
-Source: https://www.drupal.org/files/issues/2020-11-24/3048327-21.patch
-
-

@@ -866,7 +866,6 @@
         if (self.changed === false) {
           self.rowObject.addChangedWarning();
           self.changed = true;
-          $(self.table).closest('.quickedit-form-container').trigger('formUpdated.quickedit');
         }
       }
 
