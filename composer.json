@@ -90,6 +90,7 @@
         "drupal/rabbit_hole": "^2.0@alpha",
         "drupal/smtp": "^1.2",
         "drupal/swiftmailer": "^2.4",
+        "drupal/symfony_mailer_lite": "^1.0",
         "drupal/term_csv_export_import": "^4.0",
         "drupal/token": "^1.13",
         "drupal/upgrade_status": "^4.0",
