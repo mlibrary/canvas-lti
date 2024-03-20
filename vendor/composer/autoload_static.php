@@ -148,11 +148,11 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
             'GuzzleHttp\\Psr7\\' => 16,
             'GuzzleHttp\\Promise\\' => 19,
             'GuzzleHttp\\' => 11,
+            'Grasmash\\YamlCli\\' => 17,
             'Grasmash\\Expander\\' => 18,
         ),
         'E' => 
         array (
-            'Enlightn\\SecurityChecker\\' => 25,
             'Egulias\\EmailValidator\\' => 23,
         ),
         'D' => 
@@ -510,13 +510,13 @@ class ComposerStaticInit243c0f8eb445e797e727f14305cf6395
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
         ),
+        'Grasmash\\YamlCli\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/grasmash/yaml-cli/src',
+        ),
         'Grasmash\\Expander\\' => 
         array (
             0 => __DIR__ . '/..' . '/grasmash/expander/src',
-        ),
-        'Enlightn\\SecurityChecker\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/enlightn/security-checker/src',
         ),
         'Egulias\\EmailValidator\\' => 
         array (
