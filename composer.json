@@ -67,7 +67,7 @@
         "drupal/ckeditor": "^1.0",
         "drupal/conditional_fields": "^4.0@alpha",
         "drupal/cookie_samesite_support": "^1.0",
-        "drupal/core": "^10.1",
+        "drupal/core": "^10.2",
         "drupal/devel": "^5.0",
         "drupal/disable_messages": "^2.0",
         "drupal/entity_reference_revisions": "^1.10",
@@ -126,7 +126,7 @@
         },
         "patches": {
           "drupal/core": {
-            "https://www.drupal.org/node/2916876": "https://www.drupal.org/files/issues/2020-06-23/2916876-92.patch"
+            "https://www.drupal.org/node/2916876": "https://www.drupal.org/files/issues/2023-12-19/drupal-n2916876-207.patch"
           },
           "drupal/token": {
             "https://www.drupal.org/node/919760": "https://www.drupal.org/files/issues/2020-02-10/token--current_page_object_token--919760--81.patch"

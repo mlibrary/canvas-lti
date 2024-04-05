@@ -179,7 +179,7 @@ class ConfigureVisibilityForm extends FormBase {
     $this->configuration = $configuration;
     $this->condition = $this->prepareCondition($plugin_id, $configuration);
 
-    $form_state->setTemporaryValue('gathered_contexts', $this->getAvailableContexts($section_storage));
+    $form_state->setTemporaryValue('gathered_contexts', $this->getPopulatedContexts($section_storage));
 
     $form['#tree'] = TRUE;
     $form['settings'] = [];

@@ -122,7 +122,7 @@ class BlockVisibilityForm extends FormBase {
 
     // Visibility condition types that can be added to a block.
     $conditions_available_to_block = [];
-    foreach ($this->conditionManager->getFilteredDefinitions('layout_builder', $this->getAvailableContexts($section_storage)) as $plugin_id => $definition) {
+    foreach ($this->conditionManager->getFilteredDefinitions('layout_builder', $this->getPopulatedContexts($section_storage)) as $plugin_id => $definition) {
       $conditions_available_to_block[$plugin_id] = $definition['label'];
     }
 
