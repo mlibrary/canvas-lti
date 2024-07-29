@@ -38,18 +38,8 @@
     <title>{{ head_title|safe_join(' | ') }}</title>
     <css-placeholder token="{{ placeholder_token|raw }}">
     <js-placeholder token="{{ placeholder_token|raw }}">
-<link
-  href="https://unpkg.com/@umich-lib/css@v1/dist/umich-lib.css"
-  rel="stylesheet"
-/>
-<script
-  type="module"
-  src="https://unpkg.com/@umich-lib/components/dist/umich-lib/umich-lib.esm.js"
-></script>
-<script
-  nomodule
-  src="https://unpkg.com/@umich-lib/components/dist/umich-lib/umich-lib.js"
-></script>
+<link href="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/umich-lib.css" rel="stylesheet"/>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/dist/umich-lib/umich-lib.esm.js"></script>
 <base target="_blank"/>
   </head>
   <body{{ attributes.addClass(body_classes) }}>
