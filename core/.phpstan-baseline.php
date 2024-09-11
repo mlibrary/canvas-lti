@@ -705,24 +705,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/lib/Drupal/Core/Field/Plugin/Field/FieldType/NumericItemBase.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Access to an undefined property Drupal\\\\Core\\\\FileTransfer\\\\FTPExtension\\:\\:\\$connection\\.$#',
-	'count' => 19,
-	'path' => __DIR__ . '/lib/Drupal/Core/FileTransfer/FTPExtension.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property Drupal\\\\Core\\\\FileTransfer\\\\FileTransfer\\:\\:\\$chroot\\.$#',
-	'count' => 3,
-	'path' => __DIR__ . '/lib/Drupal/Core/FileTransfer/FileTransfer.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Drupal\\\\Core\\\\FileTransfer\\\\FileTransfer\\:\\:__get\\(\\) should return bool\\|string but return statement is missing\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/lib/Drupal/Core/FileTransfer/FileTransfer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property Drupal\\\\Core\\\\FileTransfer\\\\SSH\\:\\:\\$connection\\.$#',
-	'count' => 9,
-	'path' => __DIR__ . '/lib/Drupal/Core/FileTransfer/SSH.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to deprecated constant REQUEST_TIME\\: Deprecated in drupal\\:8\\.3\\.0 and is removed from drupal\\:11\\.0\\.0\\. Use \\\\Drupal\\:\\:time\\(\\)\\-\\>getRequestTime\\(\\); $#',
@@ -927,6 +912,18 @@ $ignoreErrors[] = [
 	'message' => '#^Constructor of class Drupal\\\\Core\\\\Template\\\\TwigEnvironment has an unused parameter \\$root\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/lib/Drupal/Core/Template/TwigEnvironment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Class Drupal\\\\Core\\\\Template\\\\TwigNodeVisitor extends deprecated class Twig\\\\NodeVisitor\\\\AbstractNodeVisitor\\:
+since 3\\.9 \\(to be removed in 4\\.0\\)$#',
+	'count' => 1,
+	'path' => __DIR__ . '/lib/Drupal/Core/Template/TwigNodeVisitor.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Class Drupal\\\\Core\\\\Template\\\\TwigNodeVisitorCheckDeprecations extends deprecated class Twig\\\\NodeVisitor\\\\AbstractNodeVisitor\\:
+since 3\\.9 \\(to be removed in 4\\.0\\)$#',
+	'count' => 1,
+	'path' => __DIR__ . '/lib/Drupal/Core/Template/TwigNodeVisitorCheckDeprecations.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to deprecated constant REQUEST_TIME\\: Deprecated in drupal\\:8\\.3\\.0 and is removed from drupal\\:11\\.0\\.0\\. Use \\\\Drupal\\:\\:time\\(\\)\\-\\>getRequestTime\\(\\); $#',
@@ -1448,6 +1445,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/modules/forum/src/ForumUninstallValidator.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Class Drupal\\\\help_topics_twig_tester\\\\HelpTestTwigNodeVisitor extends deprecated class Twig\\\\NodeVisitor\\\\AbstractNodeVisitor\\:
+since 3\\.9 \\(to be removed in 4\\.0\\)$#',
+	'count' => 1,
+	'path' => __DIR__ . '/modules/help/tests/modules/help_topics_twig_tester/src/HelpTestTwigNodeVisitor.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Drupal\\\\history\\\\Plugin\\\\views\\\\field\\\\HistoryUserTimestamp\\:\\:render\\(\\) should return Drupal\\\\Component\\\\Render\\\\MarkupInterface\\|string but return statement is missing\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/modules/history/src/Plugin/views/field/HistoryUserTimestamp.php',
@@ -1754,6 +1757,16 @@ $ignoreErrors[] = [
 	'message' => '#^Method Drupal\\\\migrate\\\\Plugin\\\\migrate\\\\destination\\\\NullDestination\\:\\:import\\(\\) should return array\\|bool but return statement is missing\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/modules/migrate/src/Plugin/migrate/destination/NullDestination.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^@dataProvider providerSource related method not found\\.$#',
+	'count' => 1,
+	'path' => __DIR__ . '/modules/migrate/tests/src/Kernel/MigrateSourceTestBase.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^@dataProvider providerSource related method not found\\.$#',
+	'count' => 1,
+	'path' => __DIR__ . '/modules/migrate/tests/src/Kernel/MigrateSqlSourceTestBase.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined static method static\\(Drupal\\\\Tests\\\\migrate\\\\Kernel\\\\MigrateTestBase\\)\\:\\:migrateDumpAlter\\(\\)\\.$#',
@@ -2266,11 +2279,6 @@ since Symfony 6\\.4, use dependency injection instead$#',
 	'path' => __DIR__ . '/modules/system/tests/modules/service_provider_test/src/TestClass.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Access to an undefined property Drupal\\\\Tests\\\\system\\\\Functional\\\\FileTransfer\\\\TestFileTransfer\\:\\:\\$connection\\.$#',
-	'count' => 5,
-	'path' => __DIR__ . '/modules/system/tests/src/Functional/FileTransfer/TestFileTransfer.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Variable \\$form_output in empty\\(\\) always exists and is not falsy\\.$#',
 	'count' => 2,
 	'path' => __DIR__ . '/modules/system/tests/src/Functional/Form/FormTest.php',
@@ -2359,6 +2367,11 @@ $ignoreErrors[] = [
 	'message' => '#^Call to deprecated constant REQUEST_TIME\\: Deprecated in drupal\\:8\\.3\\.0 and is removed from drupal\\:11\\.0\\.0\\. Use \\\\Drupal\\:\\:time\\(\\)\\-\\>getRequestTime\\(\\); $#',
 	'count' => 4,
 	'path' => __DIR__ . '/modules/update/src/UpdateProcessor.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Class Drupal\\\\update\\\\ProjectCoreCompatibility constructor invoked with 3 parameters, 2 required\\.$#',
+	'count' => 1,
+	'path' => __DIR__ . '/modules/update/tests/src/Unit/ProjectCoreCompatibilityTest.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Variable \\$users might not be defined\\.$#',
