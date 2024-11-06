@@ -292,6 +292,15 @@ function paragraphs_type_help_field_widget_single_element_entity_reference_parag
 }
 
 /**
+ * Implements hook_field_widget_single_element_WIDGET_TYPE_form_alter().
+ *
+ * Paragraphs Previewer Widget.
+ */
+function paragraphs_type_help_field_widget_single_element_paragraphs_previewer_form_alter(&$element, FormStateInterface $form_state, $context) {
+  _paragraphs_type_help_field_widget_paragraphs_form_alter($element, $form_state, $context);
+}
+
+/**
  * Returns all paragraph form mode options.
  *
  * This is used as the allowed_values_function for the paragraphs_type_help

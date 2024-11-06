@@ -1,0 +1,18 @@
+--- src/Session/CookieSameSiteSupportSessionConfiguration.php
++++ src/Session/CookieSameSiteSupportSessionConfiguration.php
+@@ -21,12 +21,12 @@ class CookieSameSiteSupportSessionConfiguration extends SessionConfiguration {
+   /**
+    * CookieSameSiteSupportSessionConfiguration constructor.
+    *
+-   * @param array $options
+-   *   Options from parameters.
+    * @param \Drupal\Component\Datetime\TimeInterface $time
+    *   DateTime service.
++   * @param array $options
++   *   Options from parameters.
+    */
+-  public function __construct($options = [], TimeInterface $time) {
++  public function __construct(TimeInterface $time, array $options = []) {
+     parent::__construct($options);
+     $this->time = $time;
+   }

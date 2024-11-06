@@ -6,6 +6,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Routing\RedirectDestinationTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -107,15 +108,17 @@ class ParagraphsTypeHelpListBuilder extends EntityListBuilder {
   /**
    * {@inheritdoc}
    */
-  protected function getEntityIds() {
+  protected function getEntityListQuery(): QueryInterface {
     $query = $this->getStorage()->getQuery()
-      ->sort($this->entityType->getKey('label'), 'ASC');
+      ->accessCheck(TRUE)
+      // Sort by label instead of ID.
+      ->sort($this->entityType->getKey('label'));
 
     // Only add the pager if a limit is specified.
     if ($this->limit) {
       $query->pager($this->limit);
     }
-    return $query->execute();
+    return $query;
   }
 
   /**

@@ -173,6 +173,7 @@ function paragraphs_type_help_update_8101() {
 function paragraphs_type_help_update_8102() {
   $storage = \Drupal::entityTypeManager()->getStorage('paragraphs_type_help');
   $results = $storage->getQuery('paragraphs_type_help')
+    ->accessCheck(FALSE)
     ->notExists('label')
     ->execute();
   if ($results) {

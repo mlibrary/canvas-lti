@@ -220,6 +220,7 @@ class ParagraphsTypeHelp extends ContentEntityBase implements ParagraphsTypeHelp
       $options = paragraphs_type_help_paragraph_form_mode_options();
       return isset($options[$mode]) ? $options[$mode] : NULL;
     }
+    return NULL;
   }
 
   /**
@@ -237,6 +238,7 @@ class ParagraphsTypeHelp extends ContentEntityBase implements ParagraphsTypeHelp
       $options = paragraphs_type_help_paragraph_view_mode_options();
       return isset($options[$mode]) ? $options[$mode] : NULL;
     }
+    return NULL;
   }
 
   /**

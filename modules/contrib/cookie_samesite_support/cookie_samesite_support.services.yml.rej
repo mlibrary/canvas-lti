@@ -1,0 +1,12 @@
+--- cookie_samesite_support.services.yml
++++ cookie_samesite_support.services.yml
+@@ -4,8 +4,8 @@ services:
+     decorates: session_configuration
+     public: false
+     arguments:
+-      - '%session.storage.options%'
+       - '@datetime.time'
++      - '%session.storage.options%'
+   cookie_samesite_support.session_manager:
+     class: Drupal\cookie_samesite_support\Session\CookieSameSiteSupportSessionManager
+     decorates: session_manager

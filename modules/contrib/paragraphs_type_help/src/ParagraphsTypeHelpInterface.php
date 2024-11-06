@@ -75,7 +75,7 @@ interface ParagraphsTypeHelpInterface extends ContentEntityInterface, EntityChan
   /**
    * Gets the human-readable label of the host view mode.
    *
-   * @return string
+   * @return string|null
    *   The host view mode label.
    */
   public function getHostViewModeLabel();
@@ -91,7 +91,7 @@ interface ParagraphsTypeHelpInterface extends ContentEntityInterface, EntityChan
   /**
    * Gets the human-readable label of the host form mode.
    *
-   * @return string
+   * @return string|null
    *   The host form mode label.
    */
   public function getHostFormModeLabel();

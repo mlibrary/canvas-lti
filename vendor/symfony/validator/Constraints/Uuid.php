@@ -45,7 +45,7 @@ class Uuid extends Constraint
      */
     protected static $errorNames = self::ERROR_NAMES;
 
-    // Possible versions defined by RFC 4122
+    // Possible versions defined by RFC 9562/4122
     public const V1_MAC = 1;
     public const V2_DCE = 2;
     public const V3_MD5 = 3;
@@ -80,7 +80,7 @@ class Uuid extends Constraint
     public $message = 'This is not a valid UUID.';
 
     /**
-     * Strict mode only allows UUIDs that meet the formal definition and formatting per RFC 4122.
+     * Strict mode only allows UUIDs that meet the formal definition and formatting per RFC 9562/4122.
      *
      * Set this to `false` to allow legacy formats with different dash positioning or wrapping characters
      *
@@ -104,12 +104,12 @@ class Uuid extends Constraint
      * @param int[]|int|null $versions
      */
     public function __construct(
-        array $options = null,
-        string $message = null,
-        array|int $versions = null,
-        bool $strict = null,
-        callable $normalizer = null,
-        array $groups = null,
+        ?array $options = null,
+        ?string $message = null,
+        array|int|null $versions = null,
+        ?bool $strict = null,
+        ?callable $normalizer = null,
+        ?array $groups = null,
         mixed $payload = null
     ) {
         parent::__construct($options, $groups, $payload);
