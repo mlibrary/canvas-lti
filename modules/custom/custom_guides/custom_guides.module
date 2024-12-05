@@ -283,6 +283,28 @@ function _custom_databases($args) {
       ->condition('field_url.uri', $url)
       ->condition('name', $title);
     $database_term = $query->execute();
+
+    //Check for updated lib.umich host using like paths.
+    if (empty($database_term_uri) && !empty($database_term_name)) {
+      $parsed_url = parse_url($url);
+      if (isset($parsed_url['path']) && isset($parsed_url['host']) && stripos($parsed_url['host'], 'lib.umich.edu') !== FALSE) {
+        $query = \Drupal::entityQuery('taxonomy_term')
+          ->accessCheck(FALSE)
+          ->condition('vid', 'recommended_databases')
+          ->condition('field_url.uri', $parsed_url['path'], 'CONTAINS');
+        $database_term_path = $query->execute();
+        if (!empty($database_term_path)) {
+          $database_term_uri = $database_term_path;
+          if ($database_term_uri == $database_term_name) {
+            $database_term = $database_term_uri;
+            $error = 'The term with the path '.$parsed_url['path'].' was updated with the url '.$url;
+            $errors[] = $error;
+            Drush::output()->writeln($error);
+          }
+        }
+      }
+    }
+
     if ($database_term_name !== $database_term_uri || count($database_term_uri) > 1 || count($database_term_name) > 1 || count($database_term) > 1) {
       $errors[] = 'An error occurred.';
       $errors[] = 'There are '.count($database_term_uri).' terms with the url '.$url;
