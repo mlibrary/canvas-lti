@@ -88,7 +88,7 @@ function custom_extras_node_view(array &$build, NodeInterface $node, EntityViewD
       $user = \Drupal::currentUser();
       $build['#cache']['max-age'] = 0;
       if ($user->hasPermission('edit any '.$bundle.' content')) {
-        \Drupal::messenger()->addStatus(t('Welcome! Select the Edit tab to add appropriate library tools in order to share course-specific information (specialists, guides, resource links, course reserves, videos) with your students. Need help? Contact <a href="mailto:Scholarspace@umich.edu">Scholarspace@umich.edu</a> or your U-M Library <a href="https://www.lib.umich.edu/research-and-scholarship/help-research/find-specialist" target="_blank">Subject Specialist</a>.'), TRUE);
+        \Drupal::messenger()->addStatus(t('<p><strong><big>Welcome!</big></strong></p><p><strong>Want to clone a Library Tools page from another Canvas course?</strong><br/>Contact <a href="mailto:Scholarspace@umich.edu">Scholarspace@umich.edu</a>.</p><p><strong>Want to build a new Library Tools page for this course?</strong><br/>Select the Edit tab to add appropriate library tools in order to share course-specific information (specialists, guides, resource links, course reserves, videos) with your students.<p><strong>Need help?</strong><br/>Contact <a href="mailto:Scholarspace@umich.edu">Scholarspace@umich.edu</a> or your U-M Library <a href="https://www.lib.umich.edu/research-and-scholarship/help-research/find-specialist" target="_blank">Subject Specialist</a>.'), TRUE);
       }
       else if ($user->hasPermission('view any '.$bundle.' content')) {
         \Drupal::messenger()->addError(t('Your instructor hasn’t added any course-specific library information yet. You can use Ask a Librarian to contact a library specialist.'), TRUE);
