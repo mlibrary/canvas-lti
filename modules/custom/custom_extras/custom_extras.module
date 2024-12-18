@@ -116,6 +116,15 @@ function custom_extras_form_alter(&$form, FormStateInterface $form_state, $form_
     $form['field_cloned_from']['widget'][0]['target_id']['#default_value'] = $cloned_from_node;
     $form['field_cloned_from']['widget'][0]['target_id']['#attributes']['readonly'] = 'readonly';
     $form['field_cloned_from']['#disabled'] = true;
+    $can_edit = _custom_extras_is_admin();
+    if (empty($can_edit)) {
+      $form['field_consumer_id']['#access'] = FALSE;
+      $form['field_context_id']['#access'] = FALSE;
+      $form['field_context_title']['#access'] = FALSE;
+      $form['field_context_label']['#access'] = FALSE;
+      $form['field_context_labels_titles']['#access'] = FALSE;
+      $form['field_resource_link_id']['#access'] = FALSE;
+    }
   }
   else {
     unset($form['field_cloned_from']);
