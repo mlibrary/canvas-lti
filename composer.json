@@ -39,21 +39,7 @@
             "type": "composer",
             "url": "https://packages.drupal.org/8",
             "exclude": [
-                "drupal/extra_field_description"
             ]
-        },
-        "drupal/extra_field_description": {
-          "type": "package",
-          "package": {
-            "name": "drupal/extra_field_description",
-            "version": "dev-custom",
-            "type": "drupal-module",
-            "source": {
-              "type": "git",
-              "url": "https://github.com/mlibrary/extra_field_description.git",
-              "reference": "main"
-            }
-          }
         }
     },
     "require": {
@@ -71,7 +57,7 @@
         "drupal/devel": "^5.0",
         "drupal/disable_messages": "^2.0",
         "drupal/entity_reference_revisions": "^1.10",
-        "drupal/extra_field_description": "dev-custom",
+        "drupal/extra_field_description": "^2.0",
         "drupal/field_group": "^3.1",
         "drupal/field_permissions": "^1.0",
         "drupal/field_show_all": "^1.0@alpha",

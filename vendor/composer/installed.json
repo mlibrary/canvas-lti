@@ -2759,18 +2759,56 @@
         },
         {
             "name": "drupal/extra_field_description",
-            "version": "dev-custom",
-            "version_normalized": "dev-custom",
+            "version": "2.0.0",
+            "version_normalized": "2.0.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mlibrary/extra_field_description.git",
-                "reference": "main"
+                "url": "https://git.drupalcode.org/project/extra_field_description.git",
+                "reference": "2.0.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/extra_field_description-2.0.0.zip",
+                "reference": "2.0.0",
+                "shasum": "2a286a176b9f03b413082dd65007b02bf733f544"
+            },
+            "require": {
+                "drupal/core": "^9.2 || ^10"
             },
             "type": "drupal-module",
             "extra": {
-                "patches_applied": []
+                "drupal": {
+                    "version": "2.0.0",
+                    "datestamp": "1706295764",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
             },
             "installation-source": "source",
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Samvel Akopyan (Samvel)",
+                    "homepage": "https://www.drupal.org/u/samvel",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Yogesh Pawar (yogeshmpawar)",
+                    "homepage": "https://www.drupal.org/u/yogeshmpawar",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "This module give us opportunity to append extra description to the field.",
+            "homepage": "https://www.drupal.org/project/extra_field_description",
+            "support": {
+                "source": "https://git.drupalcode.org/project/extra_field_description",
+                "issues": "https://www.drupal.org/project/issues/extra_field_description"
+            },
             "install-path": "../../modules/contrib/extra_field_description"
         },
         {
