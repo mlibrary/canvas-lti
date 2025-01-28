@@ -6,11 +6,11 @@ quick_node_clone.node.quick_clone:
   requirements:
     _custom_access: '\Drupal\quick_node_clone\Controller\QuickNodeCloneNodeAccess::cloneNode'
   options:
-    _admin_route: TRUE
+    _node_operation_route: TRUE
     parameters:
       node:
         type: entity:node
-quick_node_clone.settingsform:
+quick_node_clone.settings:
   path: '/admin/config/quick-node-clone'
   defaults:
     _form: '\Drupal\quick_node_clone\Form\QuickNodeCloneNodeSettingsForm'

@@ -35,7 +35,7 @@ function rabbit_hole_form_alter(&$form, FormStateInterface $form_state, $form_id
 
   // Get affected bundle types from enabled entity types.
   // @todo Remove this code in 3.0.0 - we should keep only custom redirect here.
-  $entity_types = \Drupal::config('rabbit_hole.settings')->get('enabled_entity_types');
+  $entity_types = \Drupal::config('rabbit_hole.settings')->get('enabled_entity_types') ?? [];
   $affected_bundle_types = array_map(function($entity_type_id) use ($entity_type_manager) {
     return $entity_type_manager->getStorage($entity_type_id)->getEntityType()->getBundleEntityType();
   }, $entity_types);

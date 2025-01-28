@@ -25,7 +25,7 @@ class RabbitHoleSettingsFormTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['rabbit_hole'];
+  protected static $modules = ['rabbit_hole'];
 
   /**
    * Tests basic interactions with Rabbit Hole settings page.

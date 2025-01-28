@@ -98,12 +98,12 @@ class BehaviorInvokerTest extends KernelTestBase {
 
     // Supported, not enabled.
     User::create(['name' => 'borisjohnsonuk'])->save();
-    $event = new RequestEvent($kernel, $this->createRequest('/user/1'), HttpKernelInterface::MASTER_REQUEST);
+    $event = new RequestEvent($kernel, $this->createRequest('/user/1'), HttpKernelInterface::MAIN_REQUEST);
     $this->assertEquals(FALSE, $behavior_invoker->getEntity($event));
 
     // Enabled.
     Node::create(['title' => 'God Save the King', 'type' => 'some'])->save();
-    $event = new RequestEvent($kernel, $this->createRequest('/node/1'), HttpKernelInterface::MASTER_REQUEST);
+    $event = new RequestEvent($kernel, $this->createRequest('/node/1'), HttpKernelInterface::MAIN_REQUEST);
     $this->assertInstanceOf(NodeInterface::class, $behavior_invoker->getEntity($event));
   }
 

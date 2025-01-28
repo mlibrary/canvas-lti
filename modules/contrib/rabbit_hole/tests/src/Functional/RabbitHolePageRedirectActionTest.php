@@ -32,7 +32,7 @@ class RabbitHolePageRedirectActionTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['rabbit_hole', 'media', 'token'];
+  protected static $modules = ['rabbit_hole', 'media', 'token'];
 
   /**
    * The behavior settings manager.
@@ -80,7 +80,7 @@ class RabbitHolePageRedirectActionTest extends BrowserTestBase {
    */
   public function testRedirectCodes() {
     $target_entity = $this->createTestNode('display_page');
-    $destination_path = $target_entity->toUrl()->toString();
+    $destination_path = $target_entity->toUrl()->setAbsolute()->toString();
 
     $this->assertPageRedirect($destination_path, $destination_path, 301);
     $this->assertPageRedirect($destination_path, $destination_path, 302);

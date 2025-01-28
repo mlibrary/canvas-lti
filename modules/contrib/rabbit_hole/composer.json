@@ -5,7 +5,8 @@
     "homepage": "https://www.drupal.org/project/rabbit_hole",
     "license": "GPL-2.0+",
     "require-dev": {
-        "drupal/token": "*"
+        "drupal/token": "*",
+        "drupal/tour": "*"
     },
     "minimum-stability": "dev"
 }

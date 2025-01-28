@@ -8,10 +8,9 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\fieldblock\Controller\FieldBlockController;
 use Drupal\fieldblock\BlockEntityStorage;
+use Drupal\fieldblock\Controller\FieldBlockController;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Configuration for select Entity types and delete blocks of unused types.
@@ -56,8 +55,6 @@ class FieldBlockConfigForm extends ConfigFormBase {
   /**
    * Constructs a \Drupal\fieldblock\Form\FieldBlockConfigForm object.
    *
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   The factory for configuration objects.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   The entity type manager.
    * @param \Drupal\fieldblock\BlockEntityStorage $storage
@@ -67,8 +64,7 @@ class FieldBlockConfigForm extends ConfigFormBase {
    * @param \Drupal\Core\Block\BlockManager $blockManager
    *   The block manager.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entityTypeManager, BlockEntityStorage $storage, ModuleHandlerInterface $moduleHandler, BlockManager $blockManager) {
-    parent::__construct($config_factory);
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, BlockEntityStorage $storage, ModuleHandlerInterface $moduleHandler, BlockManager $blockManager) {
     $this->entityTypeManager = $entityTypeManager;
     $this->storage = $storage;
     $this->fieldblockController = new FieldBlockController();
@@ -81,7 +77,6 @@ class FieldBlockConfigForm extends ConfigFormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('config.factory'),
       $container->get('entity_type.manager'),
       $container->get('fieldblock.block_storage'),
       $container->get('module_handler'),

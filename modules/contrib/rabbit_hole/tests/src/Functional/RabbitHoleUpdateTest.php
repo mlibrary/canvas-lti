@@ -24,10 +24,17 @@ class RabbitHoleUpdateTest extends UpdatePathTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setDatabaseDumpFiles() {
-    $this->databaseDumpFiles = [
-      __DIR__ . '/../../fixtures/drupal-9.5.standard.rabbit_hole.php',
-    ];
+  protected function setDatabaseDumpFiles(): void {
+    if (version_compare(\Drupal::VERSION, '11', '>=')) {
+      $this->databaseDumpFiles = [
+        __DIR__ . '/../../fixtures/drupal-10.3.standard.rabbit_hole.php',
+      ];
+    }
+    else {
+      $this->databaseDumpFiles = [
+        __DIR__ . '/../../fixtures/drupal-9.5.standard.rabbit_hole.php',
+      ];
+    }
   }
 
   /**

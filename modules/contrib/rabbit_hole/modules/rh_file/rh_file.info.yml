@@ -1,14 +1,14 @@
 name: Rabbit Hole files
 type: module
 description: Adds Rabbit Hole functionality for files.
-core_version_requirement: ^8 || ^9 || ^10
+core_version_requirement: ^9.5 || ^10 || ^11
 dependencies:
   - rabbit_hole:rabbit_hole
   - file_entity:file_entity
 lifecycle: deprecated
 lifecycle_link: 'https://www.drupal.org/node/3359194'
 
-# Information added by Drupal.org packaging script on 2023-08-05
-version: '2.0.0-alpha5'
+# Information added by Drupal.org packaging script on 2025-01-14
+version: '2.0.0-beta1'
 project: 'rabbit_hole'
-datestamp: 1691228236
+datestamp: 1736896337

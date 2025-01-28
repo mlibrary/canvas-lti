@@ -7,6 +7,7 @@ use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Session\AccountProxyInterface;
+use Drupal\Core\Utility\Error;
 use Drupal\rabbit_hole\Plugin\RabbitHoleBehaviorPluginInterface;
 use Drupal\rabbit_hole\Plugin\RabbitHoleBehaviorPluginManager;
 use Symfony\Component\HttpFoundation\Response;
@@ -169,7 +170,8 @@ class BehaviorInvoker implements BehaviorInvokerInterface {
       $instance = $this->rhBehaviorPluginManager->createInstance($values['action'], $values);
     }
     catch (PluginException $e) {
-      watchdog_exception('rabbit_hole', $e);
+      \Drupal::logger('rabbit_hole')
+        ->error(Error::DEFAULT_ERROR_MESSAGE, Error::decodeException($e));
       return NULL;
     }
 

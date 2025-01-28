@@ -21,7 +21,7 @@ class RabbitHoleEntityTypeSettingsFormTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['rabbit_hole', 'node'];
+  protected static $modules = ['rabbit_hole', 'node'];
 
   /**
    * {@inheritdoc}

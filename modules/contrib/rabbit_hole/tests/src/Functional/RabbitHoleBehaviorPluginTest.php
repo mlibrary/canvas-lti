@@ -32,7 +32,7 @@ class RabbitHoleBehaviorPluginTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['rabbit_hole', 'node'];
+  protected static $modules = ['rabbit_hole', 'node'];
 
   /**
    * The plugin manager.

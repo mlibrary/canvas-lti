@@ -2,13 +2,9 @@
 
 namespace Drupal\rabbit_hole\Form;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Url;
-use Drupal\rabbit_hole\BehaviorSettingsManagerInterface;
 use Drupal\rabbit_hole\Entity\BehaviorSettings;
-use Drupal\rabbit_hole\EntityHelper;
-use Drupal\rabbit_hole\Plugin\RabbitHoleBehaviorPluginManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormStateInterface;
 
@@ -17,30 +13,37 @@ use Drupal\Core\Form\FormStateInterface;
  */
 class RabbitHoleSettingsForm extends ConfigFormBase {
 
-  protected BehaviorSettingsManagerInterface $settingsManager;
-  protected RabbitHoleBehaviorPluginManager $behaviorManager;
-  protected EntityHelper $entityHelper;
+  /**
+   * The Behaviour Settings Manager.
+   *
+   * @var \Drupal\rabbit_hole\BehaviorSettingsManagerInterface
+   */
+  protected $settingsManager;
 
   /**
-   * Constructs a new RabbitHoleSettingsForm instance.
+   * The Behaviour Plugin Manager.
+   *
+   * @var \Drupal\rabbit_hole\Plugin\RabbitHoleBehaviorPluginManager
    */
-  public function __construct(ConfigFactoryInterface $config_factory, BehaviorSettingsManagerInterface $settings_manager, EntityHelper $entity_helper, RabbitHoleBehaviorPluginManager $behavior_manager) {
-    parent::__construct($config_factory);
-    $this->settingsManager = $settings_manager;
-    $this->entityHelper = $entity_helper;
-    $this->behaviorManager = $behavior_manager;
-  }
+  protected $behaviorManager;
+
+  /**
+   * The Entity Helper Service.
+   *
+   * @var \Drupal\rabbit_hole\EntityHelper
+   */
+  protected $entityHelper;
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('config.factory'),
-      $container->get('rabbit_hole.behavior_settings_manager'),
-      $container->get('rabbit_hole.entity_helper'),
-      $container->get('plugin.manager.rabbit_hole_behavior_plugin')
-    );
+    $instance = parent::create($container);
+    $instance->settingsManager = $container->get('rabbit_hole.behavior_settings_manager');
+    $instance->entityHelper = $container->get('rabbit_hole.entity_helper');
+    $instance->behaviorManager = $container->get('plugin.manager.rabbit_hole_behavior_plugin');
+
+    return $instance;
   }
 
   /**

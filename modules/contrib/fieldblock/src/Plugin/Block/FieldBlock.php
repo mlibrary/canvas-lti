@@ -15,8 +15,8 @@ use Drupal\Core\Field\FormatterInterface;
 use Drupal\Core\Field\FormatterPluginManager;
 use Drupal\Core\Form\FormHelper;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Form\SubformStateInterface;
+use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
@@ -158,7 +158,7 @@ class FieldBlock extends BlockBase implements ContainerFactoryPluginInterface {
     $options = $this->formatterPluginManager->getOptions($field_definition->getType());
     foreach ($options as $id => $label) {
       $definition = $this->formatterPluginManager->getDefinition($id, FALSE);
-      $formatter_plugin_class = isset($definition['class']) ? $definition['class'] : NULL;
+      $formatter_plugin_class = $definition['class'] ?? NULL;
       $applicable = $formatter_plugin_class instanceof FormatterInterface && $formatter_plugin_class::isApplicable($field_definition);
       if ($applicable) {
         unset($options[$id]);
@@ -338,8 +338,12 @@ class FieldBlock extends BlockBase implements ContainerFactoryPluginInterface {
   public function blockSubmit($form, FormStateInterface $form_state) {
     $this->configuration['label_from_field'] = $form_state->getValue('label_from_field');
     $this->configuration['field_name'] = $form_state->getValue('field_name');
-    $this->configuration['formatter_id'] = $form_state->getValue(['formatter', 'id'], '');
-    $this->configuration['formatter_settings'] = $form_state->getValue(['formatter', 'settings'], []);
+    $this->configuration['formatter_id'] = $form_state->getValue(['formatter',
+      'id',
+    ], '');
+    $this->configuration['formatter_settings'] = $form_state->getValue(['formatter',
+      'settings',
+    ], []);
   }
 
   /**

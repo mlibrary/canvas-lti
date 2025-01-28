@@ -3,16 +3,9 @@
 namespace Drupal\rabbit_hole\Form;
 
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
-use Drupal\rabbit_hole\BehaviorSettingsManager;
-use Drupal\rabbit_hole\BehaviorSettingsManagerInterface;
-use Drupal\rabbit_hole\EntityHelper;
-use Drupal\rabbit_hole\FormManglerService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Drupal\Core\Form\FormStateInterface;
@@ -22,46 +15,66 @@ use Drupal\Core\Form\FormStateInterface;
  */
 class RabbitHoleEntityTypeSettingsForm extends ConfigFormBase {
 
-  protected EntityHelper $entityHelper;
-  protected EntityTypeManagerInterface $entityTypeManager;
-  protected EntityTypeInterface $entityType;
-  protected BehaviorSettingsManagerInterface $rhSettingsManager;
-  protected FormManglerService $formMangler;
-
-  protected bool $submitted = FALSE;
-  protected array $bundlesToDisable = [];
+  /**
+   * The Entity Helper Service.
+   *
+   * @var \Drupal\rabbit_hole\EntityHelper
+   */
+  protected $entityHelper;
 
   /**
-   * RabbitHoleEntityTypeSettingsForm constructor.
+   * Entity Type Manager.
    *
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   The config factory.
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
-   *   The entity type manager.
-   * @param \Drupal\rabbit_hole\BehaviorSettingsManager $rh_settings_manager
-   *   The behavior settings manager.
-   * @param \Drupal\rabbit_hole\FormManglerService $form_mangler
-   *   The form mangler.
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  public function __construct(ConfigFactoryInterface $config_factory, EntityHelper $entity_helper, EntityTypeManagerInterface $entity_type_manager, BehaviorSettingsManager $rh_settings_manager, FormManglerService $form_mangler) {
-    parent::__construct($config_factory);
-    $this->entityHelper = $entity_helper;
-    $this->entityTypeManager = $entity_type_manager;
-    $this->rhSettingsManager = $rh_settings_manager;
-    $this->formMangler = $form_mangler;
-  }
+  protected $entityTypeManager;
+
+  /**
+   * The Entity Type.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeInterface
+   */
+  protected $entityType;
+
+  /**
+   * The Behaviour Settings Manager.
+   *
+   * @var \Drupal\rabbit_hole\BehaviorSettingsManagerInterface
+   */
+  protected $rhSettingsManager;
+
+  /**
+   * The Rabbit Hole form mangler.
+   *
+   * @var \Drupal\rabbit_hole\FormManglerService
+   */
+  protected $formMangler;
+
+  /**
+   * Check that the form has been submitted yet.
+   *
+   * @var bool
+   */
+  protected bool $submitted = FALSE;
+
+  /**
+   * List of bundles to disable.
+   *
+   * @var array
+   */
+  protected array $bundlesToDisable = [];
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('config.factory'),
-      $container->get('rabbit_hole.entity_helper'),
-      $container->get('entity_type.manager'),
-      $container->get('rabbit_hole.behavior_settings_manager'),
-      $container->get('rabbit_hole.form_mangler')
-    );
+    $instance = parent::create($container);
+    $instance->entityHelper = $container->get('rabbit_hole.entity_helper');
+    $instance->entityTypeManager = $container->get('entity_type.manager');
+    $instance->rhSettingsManager = $container->get('rabbit_hole.behavior_settings_manager');
+    $instance->formMangler = $container->get('rabbit_hole.form_mangler');
+
+    return $instance;
   }
 
   /**
