@@ -127,8 +127,11 @@ function custom_extras_form_alter(&$form, FormStateInterface $form_state, $form_
     }
   }
   else {
-    unset($form['field_cloned_from']);
-    unset($form['field_clone_into']);
+    $can_edit = _custom_extras_is_admin();
+    if (empty($can_edit)) {
+      $form['field_clone_into']['#access'] = FALSE;
+      $form['field_cloned_from']['#access'] = FALSE;
+    }
   }
   if (in_array($form_id, ['user_register_form', 'user_pass'])) {
     foreach ($form as $key => $value) {
