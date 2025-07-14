@@ -427,7 +427,7 @@ function _custom_extras_get_reserves($context_label_title_history, $has_value = 
   $api_key = \Drupal::config('custom_extras.settings')->get('custom_reserves_key');
   $context_label_title_history =array_filter($context_label_title_history);
   $q = implode(',OR;', array_map(function($str) {
-    return "course_code,contains," . rawurlencode($str);
+    return "any,contains," . rawurlencode($str);
   }, $context_label_title_history));
   $search_url = "https://api-na.hosted.exlibrisgroup.com/primo/v1/search?vid=01UMICH_INST:UMICH&tab=CourseReserves&scope=CourseReserves&limit=250&sort=title&apikey={$api_key}&q={$q}";
   $response = json_decode(file_get_contents($search_url));
@@ -465,6 +465,7 @@ function _custom_extras_get_reserves($context_label_title_history, $has_value = 
         $alma_response = json_decode(file_get_contents($alma_check_url));
         if ($alma_response->total_record_count > 0 && $alma_response->course[0]->status != 'INACTIVE') {
           custom_uml_mail_send_mail('eliotwsc@umich.edu', 'eliotwsc@umich.edu', 'No response from primo on node id '.$nid.' after 4 tries to query '.$q, $context_label_title_history, 'primo error');
+          \Drupal::logger('custom_extras')->info('Primo course reserves error on node '.$nid);
         }
       }
     }
