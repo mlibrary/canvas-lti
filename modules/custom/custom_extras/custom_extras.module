@@ -42,7 +42,8 @@ function custom_extras_node_insert(Node $node) {
     }
     $clone_into_node->save();
 
-    $lti_provision = \Drupal::entityTypeManager()->getStorage('lti_tool_provider_provision')->create([
+    $lti_storage = \Drupal::entityTypeManager()->getStorage('lti_tool_provider_provision');
+    $lti_provision = $lti_storage->create([
       'consumer_id' => $node->get('field_consumer_id')->value,
       'context_id' => $node->get('field_context_id')->value,
       'context_label' => $node->get('field_context_label')->value,
@@ -54,6 +55,14 @@ function custom_extras_node_insert(Node $node) {
       'provision_id' => $node->id(),
     ]);
     $lti_provision->save();
+
+    // Delete the old lti_provision.
+    $lti_remove_provision_id = \Drupal::entityQuery('lti_tool_provider_provision')
+      ->accessCheck(FALSE)
+      ->condition('provision_id', $clone_into_node->id())
+      ->execute();
+    $lti_remove_provision = $lti_storage->loadMultiple($lti_remove_provision_id);
+    $lti_storage->delete($lti_remove_provision);
   }
 }
 
