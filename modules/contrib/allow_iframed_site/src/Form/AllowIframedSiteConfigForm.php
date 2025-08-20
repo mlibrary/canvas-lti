@@ -6,6 +6,7 @@ use Drupal\Component\Plugin\Factory\FactoryInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Config\TypedConfigManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class AllowIframedSiteConfigForm extends ConfigFormBase {
@@ -20,8 +21,8 @@ class AllowIframedSiteConfigForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function __construct(ConfigFactoryInterface $config_factory, FactoryInterface $plugin_factory) {
-    parent::__construct($config_factory);
+  public function __construct(ConfigFactoryInterface $config_factory, FactoryInterface $plugin_factory, ?TypedConfigManagerInterface $typed_config_manager = null) {
+    parent::__construct($config_factory, $typed_config_manager);
     $this->conditions['request_path'] = $plugin_factory->createInstance('request_path');
   }
 
@@ -31,7 +32,8 @@ class AllowIframedSiteConfigForm extends ConfigFormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
-      $container->get('plugin.manager.condition')
+      $container->get('plugin.manager.condition'),
+      $container->has('config.typed') ? $container->get('config.typed') : NULL
     );
   }
 

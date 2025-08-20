@@ -4,7 +4,7 @@ description: Adds support for SameSite=None for all the browsers.
 package: "Cookies Management"
 core_version_requirement: ^9 || ^10 || ^11
 
-# Information added by Drupal.org packaging script on 2024-08-10
-version: '1.1.0'
+# Information added by Drupal.org packaging script on 2025-03-28
+version: '1.1.1'
 project: 'cookie_samesite_support'
-datestamp: 1723274948
+datestamp: 1743154579

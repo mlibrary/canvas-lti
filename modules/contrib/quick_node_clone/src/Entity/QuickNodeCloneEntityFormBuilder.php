@@ -131,7 +131,6 @@ class QuickNodeCloneEntityFormBuilder extends EntityFormBuilder {
       /** @var \Drupal\node\Entity\Node $translated_node */
       $translated_node = $new_node->getTranslation($langcode);
       $translated_node = $this->cloneParagraphs($translated_node);
-      $this->moduleHandler->alter('cloned_node', $translated_node, $original_entity);
 
       // Unset excluded fields.
       $config_name = 'exclude.node.' . $translated_node->getType();
@@ -146,10 +145,26 @@ class QuickNodeCloneEntityFormBuilder extends EntityFormBuilder {
       if (!empty($title_prepend_config)) {
         $prepend_text = $title_prepend_config . " ";
       }
+
       $clone_status_config = $this->getConfigSettings('clone_status');
-      if (!$clone_status_config) {
-        $key = $translated_node->getEntityType()->getKey('published');
-        $translated_node->set($key, $default_bundle_status);
+      switch ($clone_status_config) {
+        case 'original':
+          break;
+
+        case 'published':
+          $translated_node->setPublished();
+          break;
+
+        case 'unpublished':
+          $translated_node->setUnpublished();
+          break;
+
+        case 'default':
+        default:
+          $key = $translated_node->getEntityType()->getKey('published');
+          $translated_node->set($key, $default_bundle_status);
+          break;
+
       }
 
       $translated_node->setTitle($this->t('@prepend_text@title',
@@ -162,6 +177,8 @@ class QuickNodeCloneEntityFormBuilder extends EntityFormBuilder {
         ]
       )
       );
+
+      $this->moduleHandler->alter('cloned_node', $translated_node, $original_entity);
     }
 
     // Get the form object for the entity defined in entity definition.

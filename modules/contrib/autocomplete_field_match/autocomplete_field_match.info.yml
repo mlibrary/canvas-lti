@@ -2,13 +2,13 @@ name: 'Autocomplete Field Match'
 type: module
 description: 'Match fields other than title with autocomplete'
 
-core_version_requirement: ^8 || ^9 || ^10
+core_version_requirement: ^8 || ^9 || ^10 || ^11
 
 dependencies:
   - drupal:field
   - drupal:field_ui
 
-# Information added by Drupal.org packaging script on 2023-12-18
-version: '8.x-1.0-alpha5'
+# Information added by Drupal.org packaging script on 2025-05-28
+version: '8.x-1.0-alpha6'
 project: 'autocomplete_field_match'
-datestamp: 1702913797
+datestamp: 1748453455

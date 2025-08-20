@@ -15,6 +15,7 @@ services:
       - '@database'
       - '@session_manager.metadata_bag'
       - '@session_configuration'
+      - '@datetime.time'
       - '@session_handler'
     tags:
       - { name: backend_overridable }

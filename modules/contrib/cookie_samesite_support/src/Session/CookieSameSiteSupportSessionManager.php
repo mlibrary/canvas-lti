@@ -26,7 +26,7 @@ class CookieSameSiteSupportSessionManager extends SessionManager {
   /**
    * {@inheritdoc}
    */
-  public function save() {
+  public function save(): void {
     parent::save();
 
     $name = $this->getName();

@@ -19,7 +19,7 @@ use Drupal\paragraphs\Entity\Paragraph;
  * @param \Drupal\node\NodeInterface $node
  *   The node being cloned.
  */
-function hook_cloned_node_alter(NodeInterface &$node) {
+function hook_cloned_node_alter(NodeInterface &$node, NodeInterface $original_node) {
   $node->setTitle('Old node cloned');
   $node->save();
 }
