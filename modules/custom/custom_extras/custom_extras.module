@@ -24,7 +24,7 @@ function custom_extras_cloned_node_alter(&$node){
  * Implements hook_ENTITY_TYPE_insert().
  */
 function custom_extras_node_insert(Node $node) {
-  if ($node->get('field_cloned')->value) {
+  if ($node->hasField('field_cloned') && $node->get('field_cloned')->value) {
     $clone_into_node = Node::load($node->get('field_clone_into')->target_id);
     $cloned_from_node = Node::load($node->get('field_cloned_from')->target_id);
     $lti_clone_into_fields = [
@@ -188,7 +188,7 @@ function _modal_form_ajax_submit(array $form, FormStateInterface &$form_state) {
  * Implements hook_node_presave().
  */
 function custom_extras_node_presave(NodeInterface $node) {
-  if ($node->get('field_cloned')->value && $node->isNew()) {
+  if ($node->hasField('field_cloned') &&$node->get('field_cloned')->value && $node->isNew()) {
     $clone_into_node = Node::load($node->get('field_clone_into')->target_id);
     $lti_clone_into_fields = [
       'field_consumer_id',
