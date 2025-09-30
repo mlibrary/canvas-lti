@@ -142,7 +142,7 @@ function custom_extras_form_alter(&$form, FormStateInterface $form_state, $form_
       $form['field_cloned_from']['#access'] = FALSE;
     }
   }
-  if (in_array($form_id, ['user_register_form', 'user_pass'])) {
+  if (in_array($form_id, ['user_register_form', 'user_pass']) && empty(_custom_extras_is_admin())) {
     foreach ($form as $key => $value) {
       if (in_array($key, ['#attributes', '#cache', 'name', 'actions', 'administer_users', 'account', 'language', 'timezone', 'user_picture', 'contact'])) {
         unset($form[$key]);
