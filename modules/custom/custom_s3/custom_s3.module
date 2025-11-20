@@ -1,0 +1,90 @@
+<?php
+
+use Aws\S3\S3Client;
+use Drupal\Core\Site\Settings;
+
+/*
+must set up settings.php
+*/
+
+function _custom_s3_get_credentials() {
+  $access_key = Settings::get('s3fs.access_key', '');
+  $secret_key = Settings::get('s3fs.secret_key', '');
+  $access_key_e2 = Settings::get('s3fs.access_key_e2', '');
+  $secret_key_e2 = Settings::get('s3fs.secret_key_e2', '');
+  $version = \Drupal::config('s3fs.settings')->get('version');
+
+  $credentials['us-east-1'] = [
+      'credentials' => [
+        'key' => $access_key,
+        'secret' => $secret_key,
+      ],
+      'region'  => 'us-east-1',
+      'version' => $version
+  ];
+  $credentials['us-east-2'] = [
+      'credentials' => [
+        'key' => $access_key_e2,
+        'secret' => $secret_key_e2,
+      ],
+      'region'  => 'us-east-2',
+      'version' => $version
+  ];
+
+  return $credentials;
+}
+
+//get data from s3
+function _custom_s3_get_data($file) {
+  if (strpos($file, 's3://') !== FALSE) {
+    $region = 'us-east-1';
+    $bucket = parse_url($file, PHP_URL_HOST);
+    if ($bucket == 'www-lib-dropbox-ohio') {
+      $region = 'us-east-2';
+    }
+    $credentials = _custom_s3_get_credentials();
+    $s3 = new S3Client($credentials[$region]);
+    $s3->registerStreamWrapper();
+  }
+  $data = file_get_contents($file);
+  if (!$data) {
+    $message[] = \Drupal\Core\Render\Markup::create('<p>s3 DATA IS EMPTY - '.$file.'</p>');
+    custom_uml_mail_send_mail('eliotwsc@umich.edu', 'eliotwsc@umich.edu', 'WE DONT HAVE AN s3 FILE!', $message, 'custom_s3_error');
+    exit;
+  }
+
+  return $data;
+}
+
+//write data to s3
+function _custom_s3_write_data($file, $data = '') {
+  $filename = $file;
+  if (strpos($filename, '/') !== FALSE) {
+    $filename = array_pop(explode('/', $filename));
+    if (empty($data)) {
+      $data = file_get_contents($file);
+    }
+  }
+  if (empty($data)) {
+    $message[] = \Drupal\Core\Render\Markup::create('<p>s3 DATA IS EMPTY - '.$file.'</p>');
+    custom_uml_mail_send_mail('eliotwsc@umich.edu', 'eliotwsc@umich.edu', 'WE DONT HAVE AN s3 FILE!', $message, 'custom_s3_error');
+    exit;
+  }
+  $credentials = _custom_s3_get_credentials();
+  $s3 = new S3Client($credentials['us-east-1']);
+  // Upload an object to Amazon S3
+  $result = $s3->putObject([
+    'Bucket' => 'lit-umich-data-feeds',
+    'Key'    => $filename,
+    'Body'   => $data
+  ]);
+  $s3_e2 = new S3Client($credentials['us-east-2']);
+  // Upload an object to Amazon S3
+  $result = $s3_e2->putObject(array(
+    'Bucket' => 'www-lib-dropbox-ohio',
+    'Key'    => $filename,
+    'Body'   => $data
+  ));
+
+  return $result;
+}

@@ -359,4 +359,16 @@ class CustomDrushCommands extends DrushCommands {
     _custom_locations();
   }
 
+  /**
+   * Run UM Staff User Feed
+   *
+   * @validate-module-enabled custom_user_feed,custom_uml_mail
+   *
+   * @command custom_drush:update_user_feed
+   * @aliases update-user-feed,custom_drush-update_user_feed
+   */
+  public function updateUserFeed() {
+    _custom_user_feed();
+  }
+
 }

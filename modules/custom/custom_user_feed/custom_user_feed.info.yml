@@ -1,0 +1,9 @@
+name: Custom User Feed
+type: module
+description: get users from main site
+version: '8.x-1.x-dev'
+core_version_requirement: ^10 || ^11
+
+dependencies:
+  - drupal:custom_s3
+  - drupal:custom_drush

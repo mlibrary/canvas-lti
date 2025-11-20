@@ -284,6 +284,7 @@ function custom_extras_node_presave(NodeInterface $node) {
             $spec_to_show = $paragraph->get('field_specialists_to_show')->getValue();
             $s_url = '';
             $s_url_count = '';
+            $ns_url = '';
             if (!empty($spec_to_show)) {
               $s_url = 'https://cms.lib.umich.edu/widgets/specialists';
               $s_url_count = $s_url . '/count';
@@ -306,8 +307,10 @@ function custom_extras_node_presave(NodeInterface $node) {
                 foreach ($vocab as $term) {
                   $s_url = $s_url . $term . '+';
                   $s_url_count = $s_url_count . $term . '+';
+                  $ns_url = $term .'+'.$ns_url;
                 }
                 $s_url = trim($s_url,'+');
+                $ns_url = trim($ns_url,'+');
                 $s_url_count = trim($s_url_count,'+');
               }
               else {
@@ -325,6 +328,9 @@ function custom_extras_node_presave(NodeInterface $node) {
               // No specialists found.
               $specialists[0]['height'] = 105;
             }
+            $view_values = $paragraph->get('field_subject_specialists_view')->getValue();
+            $view_values[0]['arguments'] = $ns_url;
+            $paragraph->get('field_subject_specialists_view')->setValue($view_values);
             $paragraph->get('field_library_specialists')->setValue($specialists);
             $paragraph->save();
             break;

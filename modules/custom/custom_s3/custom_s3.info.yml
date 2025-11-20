@@ -1,0 +1,6 @@
+name: Custom s3
+type: module
+description: get data from s3
+package: UM Staff Custom
+version: '8.x-1.x-dev'
+core_version_requirement: ^10 || ^11
