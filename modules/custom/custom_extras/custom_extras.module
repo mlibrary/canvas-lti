@@ -329,6 +329,8 @@ function custom_extras_node_presave(NodeInterface $node) {
               $specialists[0]['height'] = 105;
             }
             $view_values = $paragraph->get('field_subject_specialists_view')->getValue();
+            $view_values[0]['target_id'] ='library_specialists';
+            $view_values[0]['display_id'] ='block_1';
             $view_values[0]['arguments'] = $ns_url;
             $paragraph->get('field_subject_specialists_view')->setValue($view_values);
             $paragraph->get('field_library_specialists')->setValue($specialists);

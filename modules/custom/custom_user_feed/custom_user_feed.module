@@ -1,29 +1,12 @@
 <?php
-use Drupal\Component\Utility\Html;
-use Drupal\Component\Utility\Xss;
 use Drush\Drush;
 use Drupal\Core\Site\Settings;
 use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\file\Entity\File;
 use Drupal\media\Entity\Media;
 use Drupal\field\Entity\FieldStorageConfig;
-use Drupal\views\ViewExecutable;
 use Drupal\Core\Render\Markup;
-
-/**
- * Implements hook_views_pre_view().
- */
-function custom_user_feed_views_pre_view(ViewExecutable $view, $display_id, array &$args) {
-/*
-  if ($view->id() == 'library_specialist' && $display_id == 'block_1') {
-dpm('hmm');
-    $contextual_filter_value = 'heidisb'; 
-
-    $args[0] = $contextual_filter_value; 
-
-  }
-*/
-}
+use Drupal\node\Entity\Node;
 
 /*
 This module imports library staff users as paragraph entities
@@ -67,9 +50,29 @@ Ann Arbor, MI 48109-1190</p>
     [field_user_library_expertise] => 10421
 */
 
+function _custom_user_feed_save_class_nodes() {
+//This is here because we fill the taxonomy id arguments for 
+//the subject specialists viewfield on a node save since tokens dont work.
+  $query = \Drupal::entityQuery('node')
+    ->accessCheck(FALSE)
+    ->condition('type', 'class_page');
+
+  $query->condition('field_blocks.entity:paragraph.type', 'library_specialists');
+//if more are needed ever
+//  $or_condition_group = $query->orConditionGroup();
+//  $or_condition_group->condition('field_blocks.entity:paragraph.type', 'course_specialist');
+//  $or_condition_group->condition('field_blocks.entity:paragraph.type', 'library_specialists');
+//  $query->condition($or_condition_group);
+
+  $nodes = $query->execute();
+  foreach ($nodes as $nid) {
+    $node = Node::load($nid);
+    $node->save();
+  }
+}
+
 //do users for sub sites
 function _custom_user_feed() {
-
   $user_file = Settings::get('s3fs.file_e2', '');
   $recipient = 'eliotwsc@umich.edu';
   $reply_to = \Drupal::config('system.site')->get('mail');
@@ -187,6 +190,9 @@ function _custom_user_feed() {
       $paragraph->setPublished()->save();
     }
   }
+
+//remove this after first run as we dont need it after first run to get args in old nodes.
+_custom_user_feed_save_class_nodes();
 
   custom_uml_mail_send_mail($recipient, $reply_to, 'Subsite User Report', $users_report, 'custom_subsites_users_report');
 }
