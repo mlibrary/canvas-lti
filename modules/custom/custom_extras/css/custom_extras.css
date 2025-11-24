@@ -30,8 +30,8 @@
   color:black;
 }
 .available {
-  color:green;
+  color:#006100;
 }
 .unavailable {
-  color:red;
+  color:#A80000;
 }
