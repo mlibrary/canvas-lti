@@ -70,6 +70,29 @@ function _custom_user_feed_save_search_paragraphs() {
   }
 }
 
+use Drupal\taxonomy\Entity\Term;
+function _custom_user_feed_save_research_guide_paragraphs() {
+  $paragraph_type = 'embedded_research_guide';
+  $paragraph_field = 'field_embedded_research_guide';
+  $paragraph_term_field = 'field_research_guide';
+  $query = \Drupal::entityQuery('paragraph')
+    ->accessCheck(FALSE)
+    ->condition('type', $paragraph_type);
+  $pids = $query->execute();
+  $paragraphs = Paragraph::loadMultiple($pids);
+  foreach ($paragraphs as $paragraph) {
+    if (!empty($paragraph->get($paragraph_field)->getValue())) {
+      $term = Term::load($paragraph->get($paragraph_term_field)->target_id);
+      $paragraph_field_value = $paragraph->get($paragraph_field)->getValue();
+      if (empty($paragraph_field_value[0]['title']) && !empty($paragraph_field_value[0]['url'])) {
+        $paragraph_field_value[0]['title'] = $term->getName();
+        $paragraph->set($paragraph_field, $paragraph_field_value);
+        Drush::output()->writeln('Saving paragraph title '.$term->getName());
+        $paragraph->save();
+      }
+    }
+  }
+}
 
 function _custom_user_feed_save_class_nodes() {
 //This is here because we fill the taxonomy id arguments for 
@@ -158,7 +181,10 @@ function _custom_user_feed() {
     $dom = new DOMDocument();
     $dom->loadHTML($data->field_user_photo_display);
     foreach ($dom->getElementsByTagName('img') as $i => $img) {
-      $staff_photo[] = $img->getAttribute('src');
+      $staff_photo[] = [
+        'src' => $img->getAttribute('src'),
+        'alt' => $img->getAttribute('alt'),
+      ];
     }
     if (count($staff_photo) > 1) {
       $users_error[] = Markup::create('<p>More than one photo for '.$data->uniqname.'</p>');
@@ -215,6 +241,7 @@ function _custom_user_feed() {
 //remove this after first run as we dont need it after first run to get args in old nodes.
 //_custom_user_feed_save_class_nodes();
 //_custom_user_feed_save_search_paragraphs();
+_custom_user_feed_save_research_guide_paragraphs();
 
   custom_uml_mail_send_mail($recipient, $reply_to, 'Subsite User Report', $users_report, 'custom_subsites_users_report');
 }
@@ -241,8 +268,8 @@ function _custom_user_feed_check_references($target_type, $id) {
   return $results;
 }
 
-function _custom_user_feed_do_file_to_media($url) {
-  $url = 'https://staff.lib.umich.edu'.$url;
+function _custom_user_feed_do_file_to_media($photo) {
+  $url = 'https://staff.lib.umich.edu'.$photo['src'];
   $file_scheme = \Drupal::config('system.file')->get('default_scheme') . "://";
   $files_dir = \Drupal::service('file_system')->realpath($file_scheme);
   $file_path = 'staff_photos/';
@@ -292,7 +319,7 @@ function _custom_user_feed_do_file_to_media($url) {
       'status' => 1,
       'field_media_image' => [
         'target_id' => $file->id(),
-        'alt' => $file->alt,
+        'alt' => $photo['alt'],
       ],
     ]);
     $media_entity->save();
@@ -300,6 +327,12 @@ function _custom_user_feed_do_file_to_media($url) {
   }
   else {
     $id = array_values($check_media)[0];
+    //Update any alt text.
+    $media_entity = Media::load($id);
+    $media_value = $media_entity->get('field_media_image')->getValue();
+    $media_value[0]['alt'] = $photo['alt'];
+    $media_entity->get('field_media_image')->setValue($media_value);
+    $media_entity->save();
   }
 
   return $id;

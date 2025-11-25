@@ -237,7 +237,7 @@ function custom_extras_node_presave(NodeInterface $node) {
             $guide = $term->get('field_url')->getValue();
             $url = $guide[0]['uri'];
             $e_guide[0]['url'] = $url;
-            // might need the title - $e_guide[0]['title'] = $term->getName();
+            $e_guide[0]['title'] = $term->getName();
             $e_guide[0]['height'] = '750';
             $paragraph->get('field_embedded_research_guide')->setValue($e_guide);
             $paragraph->save();
