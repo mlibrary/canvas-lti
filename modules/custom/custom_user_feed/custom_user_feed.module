@@ -192,7 +192,7 @@ function _custom_user_feed() {
   }
 
 //remove this after first run as we dont need it after first run to get args in old nodes.
-_custom_user_feed_save_class_nodes();
+//_custom_user_feed_save_class_nodes();
 
   custom_uml_mail_send_mail($recipient, $reply_to, 'Subsite User Report', $users_report, 'custom_subsites_users_report');
 }
