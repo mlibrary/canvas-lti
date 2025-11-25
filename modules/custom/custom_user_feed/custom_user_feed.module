@@ -50,6 +50,27 @@ Ann Arbor, MI 48109-1190</p>
     [field_user_library_expertise] => 10421
 */
 
+use Drupal\field\Entity\FieldConfig;
+
+function _custom_user_feed_save_search_paragraphs() {
+  $paragraph_type = 'library_search';
+  $paragraph_field = 'field_search_text';
+  $field_definition = FieldConfig::loadByName('paragraph', $paragraph_type, $paragraph_field);
+  if ($field_definition) {
+    $default_value = $field_definition->getDefaultValueLiteral();
+  }
+  $query = \Drupal::entityQuery('paragraph')
+    ->accessCheck(FALSE)
+    ->condition('type', $paragraph_type);
+  $pids = $query->execute();
+  $paragraphs = Paragraph::loadMultiple($pids);
+  foreach ($paragraphs as $paragraph) {
+    $paragraph->set($paragraph_field, $default_value);
+    $paragraph->save();
+  }
+}
+
+
 function _custom_user_feed_save_class_nodes() {
 //This is here because we fill the taxonomy id arguments for 
 //the subject specialists viewfield on a node save since tokens dont work.
@@ -193,6 +214,7 @@ function _custom_user_feed() {
 
 //remove this after first run as we dont need it after first run to get args in old nodes.
 //_custom_user_feed_save_class_nodes();
+_custom_user_feed_save_search_paragraphs();
 
   custom_uml_mail_send_mail($recipient, $reply_to, 'Subsite User Report', $users_report, 'custom_subsites_users_report');
 }
