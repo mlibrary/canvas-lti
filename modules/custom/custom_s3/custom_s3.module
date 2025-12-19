@@ -71,13 +71,6 @@ function _custom_s3_write_data($file, $data = '') {
     exit;
   }
   $credentials = _custom_s3_get_credentials();
-  $s3 = new S3Client($credentials['us-east-1']);
-  // Upload an object to Amazon S3
-  $result = $s3->putObject([
-    'Bucket' => 'lit-umich-data-feeds',
-    'Key'    => $filename,
-    'Body'   => $data
-  ]);
   $s3_e2 = new S3Client($credentials['us-east-2']);
   // Upload an object to Amazon S3
   $result = $s3_e2->putObject(array(

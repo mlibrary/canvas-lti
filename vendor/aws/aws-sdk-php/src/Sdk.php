@@ -202,6 +202,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionComprehendMedical(array $args = [])
  * @method \Aws\ComputeOptimizer\ComputeOptimizerClient createComputeOptimizer(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionComputeOptimizer(array $args = [])
+ * @method \Aws\ComputeOptimizerAutomation\ComputeOptimizerAutomationClient createComputeOptimizerAutomation(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionComputeOptimizerAutomation(array $args = [])
  * @method \Aws\ConfigService\ConfigServiceClient createConfigService(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionConfigService(array $args = [])
  * @method \Aws\Connect\ConnectClient createConnect(array $args = [])
@@ -468,6 +470,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionMTurk(array $args = [])
  * @method \Aws\MWAA\MWAAClient createMWAA(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionMWAA(array $args = [])
+ * @method \Aws\MWAAServerless\MWAAServerlessClient createMWAAServerless(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionMWAAServerless(array $args = [])
  * @method \Aws\MachineLearning\MachineLearningClient createMachineLearning(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionMachineLearning(array $args = [])
  * @method \Aws\Macie2\Macie2Client createMacie2(array $args = [])
@@ -546,6 +550,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionNotifications(array $args = [])
  * @method \Aws\NotificationsContacts\NotificationsContactsClient createNotificationsContacts(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionNotificationsContacts(array $args = [])
+ * @method \Aws\NovaAct\NovaActClient createNovaAct(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionNovaAct(array $args = [])
  * @method \Aws\OAM\OAMClient createOAM(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionOAM(array $args = [])
  * @method \Aws\OSIS\OSISClient createOSIS(array $args = [])
@@ -570,6 +576,12 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionPI(array $args = [])
  * @method \Aws\Panorama\PanoramaClient createPanorama(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionPanorama(array $args = [])
+ * @method \Aws\PartnerCentralAccount\PartnerCentralAccountClient createPartnerCentralAccount(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionPartnerCentralAccount(array $args = [])
+ * @method \Aws\PartnerCentralBenefits\PartnerCentralBenefitsClient createPartnerCentralBenefits(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionPartnerCentralBenefits(array $args = [])
+ * @method \Aws\PartnerCentralChannel\PartnerCentralChannelClient createPartnerCentralChannel(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionPartnerCentralChannel(array $args = [])
  * @method \Aws\PartnerCentralSelling\PartnerCentralSellingClient createPartnerCentralSelling(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionPartnerCentralSelling(array $args = [])
  * @method \Aws\PaymentCryptography\PaymentCryptographyClient createPaymentCryptography(array $args = [])
@@ -646,6 +658,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionRoute53(array $args = [])
  * @method \Aws\Route53Domains\Route53DomainsClient createRoute53Domains(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionRoute53Domains(array $args = [])
+ * @method \Aws\Route53GlobalResolver\Route53GlobalResolverClient createRoute53GlobalResolver(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionRoute53GlobalResolver(array $args = [])
  * @method \Aws\Route53Profiles\Route53ProfilesClient createRoute53Profiles(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionRoute53Profiles(array $args = [])
  * @method \Aws\Route53RecoveryCluster\Route53RecoveryClusterClient createRoute53RecoveryCluster(array $args = [])
@@ -722,6 +736,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionSfn(array $args = [])
  * @method \Aws\Shield\ShieldClient createShield(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionShield(array $args = [])
+ * @method \Aws\Signin\SigninClient createSignin(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionSignin(array $args = [])
  * @method \Aws\SimSpaceWeaver\SimSpaceWeaverClient createSimSpaceWeaver(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionSimSpaceWeaver(array $args = [])
  * @method \Aws\SnowBall\SnowBallClient createSnowBall(array $args = [])
@@ -819,7 +835,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.359.11';
+    const VERSION = '3.368.2';
 
     /** @var array Arguments for creating clients */
     private $args;
