@@ -55,7 +55,7 @@ variables:
 composer:
   extends: .composer-local
   variables:
-    DRUPAL_CORE: "~11.2.3"
+    DRUPAL_CORE: "~11.3.0"
 
 
 ################

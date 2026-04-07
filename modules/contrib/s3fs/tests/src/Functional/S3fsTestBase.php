@@ -7,6 +7,7 @@ use Aws\S3\Exception\S3Exception;
 use Drupal\Core\Config\Config;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\File\FileUrlGeneratorInterface;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\file\FileInterface;
 use Drupal\file\FileRepositoryInterface;
 use Drupal\Tests\BrowserTestBase;
@@ -337,6 +338,90 @@ abstract class S3fsTestBase extends BrowserTestBase {
       // @phpstan-ignore-next-line
       return file_create_url($uri);
     }
+  }
+
+  /**
+   * Populate bucket with objects.
+   *
+   * @param array<array{'path': string, 'dir': int<0,1>}> $objects_to_populate
+   *   Array of objects to populate.
+   */
+  protected function populateBucket(array $objects_to_populate): void {
+
+    foreach ($objects_to_populate as $object) {
+      if ($object['dir']) {
+        mkdir($object['path']);
+        continue;
+      }
+      file_put_contents($object['path'], "{$object['path']}\n");
+    }
+
+    assert($this->validateObjects($objects_to_populate) == TRUE);
+  }
+
+  /**
+   * Validate objects are in database and bucket.
+   *
+   * @param array<array{'path': string, 'dir': int<0,1>}> $objects_to_validate
+   *   Array of objects to populate.
+   */
+  protected function validateObjects(array $objects_to_validate): bool {
+    // Validate records count expected.
+    $all_records = $this->connection->select('s3fs_file', 's')->fields('s', ['uri', 'dir'])->execute();
+    $this->assertNotNull($all_records);
+    $this->assertCount(count($objects_to_validate), $all_records->fetchAll());
+
+    foreach ($objects_to_validate as $object) {
+
+      $data = $this->connection
+        ->select('s3fs_file', 's')
+        ->condition('s.uri', rtrim($object['path'], '/'), '=')
+        ->condition('s.dir', $object['dir'])
+        ->fields('s', ['uri', 'dir'])
+        ->execute();
+      $this->assertNotNull($data);
+      $this->assertCount(1, $data->fetchAll(), $object['path']);
+
+      // Directories are not backed by real objects in bucket.
+      if ($object['dir'] == 1) {
+        continue;
+      }
+
+      // Throws an exception if object does not exist in bucket resulting in
+      // a test failure.
+      $this->s3->headObject(
+        [
+          'Bucket' => $this->s3Config['bucket'],
+          'Key' => $this->s3Config['root_folder'] . '/' . StreamWrapperManager::getTarget($object['path']),
+        ]
+      );
+    }
+
+    return TRUE;
+  }
+
+  /**
+   * Return an array of objects for use in test operations.
+   *
+   * @return array<array{'path': string, 'dir': int<0,1>}>
+   *   Array of objects.
+   */
+  protected static function getListOfObjects(string $scheme = 's3'): array {
+
+    return [
+      ['path' => "$scheme://a/", 'dir' => 1],
+      ['path' => "$scheme://a/file_a1.txt", 'dir' => 0],
+      ['path' => "$scheme://a/file_a2.txt", 'dir' => 0],
+      ['path' => "$scheme://a/b/", 'dir' => 1],
+      ['path' => "$scheme://a/b/file_ab1.txt", 'dir' => 0],
+      ['path' => "$scheme://a/b/file_ab2.txt", 'dir' => 0],
+      ['path' => "$scheme://a/c/", 'dir' => 1],
+      ['path' => "$scheme://a/c/file_ac1.txt", 'dir' => 0],
+      ['path' => "$scheme://a/c/file_ac2.txt", 'dir' => 0],
+      ['path' => "$scheme://a/äö/", 'dir' => 1],
+      ['path' => "$scheme://a/äö/file_äö1.txt", 'dir' => 0],
+      ['path' => "$scheme://a/äö/file_äö2.txt", 'dir' => 0],
+    ];
   }
 
 }

@@ -51,7 +51,7 @@ class S3fsTest extends S3fsTestBase {
 
     // Exercising file copy functionality.
     $s3_file2 = $this->copyFile($s3_file1, $test_uri2);
-    $this->assertNotFalse($s3_file2, "Copied the the first test file to $test_uri2.");
+    $this->assertNotFalse($s3_file2, "Copied the first test file to $test_uri2.");
 
     // Exercising the dir_*() functions.
     $files = \Drupal::service('file_system')->scanDirectory($this->remoteTestsFolderUri, '#.*#');
@@ -217,7 +217,7 @@ class S3fsTest extends S3fsTestBase {
     $this->assertTrue(\Drupal::service('file_system')->mkdir($this->remoteTestsFolderUri), 'Created the testing directory in the DB.');
     $img_data = file_get_contents($img_localpath);
     $img_file = $this->saveData($img_data, $img_uri1);
-    $this->assertNotFalse($img_file, "Copied the the test image to $img_uri1.");
+    $this->assertNotFalse($img_file, "Copied the test image to $img_uri1.");
 
     // Request a derivative.
     // Parse query parameters to ensure they get passed.

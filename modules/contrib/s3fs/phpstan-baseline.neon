@@ -51,7 +51,7 @@ parameters:
 			path: s3fs.install
 
 		-
-			message: "#^Parameter \\#1 \\$object_or_class of function is_subclass_of expects object\\|string, bool\\|string given\\.$#"
+			message: "#^Parameter \\#1 \\$object_or_class of function is_subclass_of expects object\\|string, string\\|false given\\.$#"
 			count: 2
 			path: s3fs.install
 
@@ -281,7 +281,7 @@ parameters:
 			path: src/Batch/S3fsRefreshCacheBatchInterface.php
 
 		-
-			message: "#^Cannot call method waitUntilFileExists\\(\\) on bool\\|Drupal\\\\Core\\\\StreamWrapper\\\\StreamWrapperInterface\\.$#"
+			message: "#^Cannot call method waitUntilFileExists\\(\\) on Drupal\\\\Core\\\\StreamWrapper\\\\StreamWrapperInterface\\|false\\.$#"
 			count: 1
 			path: src/Controller/S3fsImageStyleDownloadController.php
 
@@ -296,23 +296,18 @@ parameters:
 			path: src/Controller/S3fsImageStyleDownloadController.php
 
 		-
-			message: "#^Parameter \\#1 \\$path of function pathinfo expects string, bool\\|string given\\.$#"
+			message: "#^Parameter \\#1 \\$path of function pathinfo expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Controller/S3fsImageStyleDownloadController.php
 
 		-
-			message: "#^Parameter \\#1 \\$string of function ltrim expects string, bool\\|float\\|int\\|string\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$string of function ltrim expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Controller/S3fsImageStyleDownloadController.php
 
 		-
 			message: "#^Parameter \\#2 \\$haystack of function in_array expects array, mixed given\\.$#"
 			count: 1
-			path: src/Controller/S3fsImageStyleDownloadController.php
-
-		-
-			message: "#^Parameter \\#2 \\$user_string of function hash_equals expects string, bool\\|float\\|int\\|string\\|null given\\.$#"
-			count: 2
 			path: src/Controller/S3fsImageStyleDownloadController.php
 
 		-
@@ -551,7 +546,7 @@ parameters:
 			path: src/S3fsFileService.php
 
 		-
-			message: "#^Cannot call method writeUriToCache\\(\\) on bool\\|Drupal\\\\Core\\\\StreamWrapper\\\\StreamWrapperInterface\\.$#"
+			message: "#^Cannot call method writeUriToCache\\(\\) on Drupal\\\\Core\\\\StreamWrapper\\\\StreamWrapperInterface\\|false\\.$#"
 			count: 2
 			path: src/S3fsFileService.php
 
@@ -616,17 +611,17 @@ parameters:
 			path: src/S3fsFileService.php
 
 		-
-			message: "#^Parameter \\#1 \\$filename of function file_put_contents expects string, bool\\|string given\\.$#"
+			message: "#^Parameter \\#1 \\$filename of function file_put_contents expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/S3fsFileService.php
 
 		-
-			message: "#^Parameter \\#1 \\$object_or_class of function is_a expects object, bool\\|Drupal\\\\Core\\\\StreamWrapper\\\\StreamWrapperInterface given\\.$#"
+			message: "#^Parameter \\#1 \\$object_or_class of function is_a expects object, Drupal\\\\Core\\\\StreamWrapper\\\\StreamWrapperInterface\\|false given\\.$#"
 			count: 3
 			path: src/S3fsFileService.php
 
 		-
-			message: "#^Parameter \\#1 \\$source of method Drupal\\\\s3fs\\\\S3fsFileService\\:\\:move\\(\\) expects string, bool\\|string given\\.$#"
+			message: "#^Parameter \\#1 \\$source of method Drupal\\\\s3fs\\\\S3fsFileService\\:\\:move\\(\\) expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/S3fsFileService.php
 
@@ -641,12 +636,7 @@ parameters:
 			path: src/S3fsFileService.php
 
 		-
-			message: "#^Parameter \\#1 \\$uri of method Drupal\\\\s3fs\\\\S3fsFileService\\:\\:realpath\\(\\) expects string, string\\|true given\\.$#"
-			count: 1
-			path: src/S3fsFileService.php
-
-		-
-			message: "#^Parameter \\#2 \\$string of function explode expects string, bool\\|string given\\.$#"
+			message: "#^Parameter \\#2 \\$string of function explode expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/S3fsFileService.php
 
@@ -716,7 +706,7 @@ parameters:
 			path: src/S3fsFileSystemD103.php
 
 		-
-			message: "#^Parameter \\#2 \\$string of function explode expects string, bool\\|string given\\.$#"
+			message: "#^Parameter \\#2 \\$string of function explode expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/S3fsFileSystemD103.php
 
@@ -846,7 +836,7 @@ parameters:
 			path: src/S3fsServiceProvider.php
 
 		-
-			message: "#^Parameter \\#3 \\$subject of function str_replace expects array\\|string, bool\\|string given\\.$#"
+			message: "#^Parameter \\#3 \\$subject of function str_replace expects array\\|string, string\\|false given\\.$#"
 			count: 1
 			path: src/StreamWrapper/PrivateS3fsStream.php
 
@@ -1016,7 +1006,7 @@ parameters:
 			path: src/StreamWrapper/S3fsStream.php
 
 		-
-			message: "#^Parameter \\#1 \\$path of function dirname expects string, bool\\|string given\\.$#"
+			message: "#^Parameter \\#1 \\$path of function dirname expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/StreamWrapper/S3fsStream.php
 
@@ -1041,12 +1031,12 @@ parameters:
 			path: src/StreamWrapper/S3fsStream.php
 
 		-
-			message: "#^Parameter \\#2 \\$string of function explode expects string, bool\\|string given\\.$#"
+			message: "#^Parameter \\#2 \\$string of function explode expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/StreamWrapper/S3fsStream.php
 
 		-
-			message: "#^Parameter \\#3 \\$subject of function str_replace expects array\\|string, bool\\|string given\\.$#"
+			message: "#^Parameter \\#3 \\$subject of function str_replace expects array\\|string, string\\|false given\\.$#"
 			count: 1
 			path: src/StreamWrapper/S3fsStream.php
 
@@ -1499,7 +1489,7 @@ parameters:
 			path: tests/src/Kernel/S3fsPathsTraitTest.php
 
 		-
-			message: "#^Parameter \\#2 \\$string of function explode expects string, bool\\|string given\\.$#"
+			message: "#^Parameter \\#2 \\$string of function explode expects string, string\\|false given\\.$#"
 			count: 1
 			path: tests/src/Kernel/S3fsPathsTraitTest.php
 
@@ -1554,6 +1544,6 @@ parameters:
 			path: tests/src/Unit/S3fsPathsTraitsTest.php
 
 		-
-			message: "#^Parameter \\#2 \\$string of function explode expects string, bool\\|string given\\.$#"
+			message: "#^Parameter \\#2 \\$string of function explode expects string, string\\|false given\\.$#"
 			count: 1
 			path: tests/src/Unit/S3fsPathsTraitsTest.php

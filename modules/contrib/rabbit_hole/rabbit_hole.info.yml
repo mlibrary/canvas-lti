@@ -3,14 +3,12 @@ type: module
 description: Basic functionality that is shared among the different Rabbit Hole modules.
 core_version_requirement: ^9.5 || ^10 || ^11
 package: Other
-
 configure: rabbit_hole.settings
-
 test_dependencies:
   - token:token
   - tour:tour
 
-# Information added by Drupal.org packaging script on 2025-01-14
-version: '2.0.0-beta1'
+# Information added by Drupal.org packaging script on 2026-03-16
+version: '2.0.0-beta2'
 project: 'rabbit_hole'
-datestamp: 1736896337
+datestamp: 1773704583

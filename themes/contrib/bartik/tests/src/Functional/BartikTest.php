@@ -25,8 +25,8 @@ class BartikTest extends BrowserTestBase {
   public function testRegressionMissingMessagesCss() {
     $this->drupalGet('');
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->responseContains('bartik/css/components/messages.css');
-    $this->assertSession()->responseContains('bartik/css/classy/components/messages.css');
+    $this->assertSession()->elementExists('xpath', '//link[@rel = "stylesheet"][contains(@href, "/web/themes/custom/bartik")][contains(@href, "/css/components/messages.css")]');
+    $this->assertSession()->elementExists('xpath', '//link[@rel = "stylesheet"][contains(@href, "/web/themes/custom/bartik")][contains(@href, "/css/classy/components/messages.css")]');
   }
 
 }

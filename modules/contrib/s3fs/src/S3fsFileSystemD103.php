@@ -193,7 +193,32 @@ final class S3fsFileSystemD103 implements FileSystemInterface {
    * {@inheritdoc}
    */
   public function deleteRecursive($path, ?callable $callback = NULL) {
-    return $this->decorated->deleteRecursive($path, $callback);
+
+    if (!$this->isS3fsPath($path)) {
+      return $this->decorated->deleteRecursive($path, $callback);
+    }
+
+    if ($callback) {
+      call_user_func($callback, $path);
+    }
+
+    if (!file_exists($path)) {
+      return TRUE;
+    }
+
+    if (is_dir($path)) {
+      $directory_iterator = new \DirectoryIterator($path);
+      foreach ($directory_iterator as $file_info) {
+        if ($file_info->isDot()) {
+          continue;
+        }
+        $this->deleteRecursive($file_info->getPathname(), $callback);
+      }
+      return $this->rmdir($path);
+    }
+
+    return $this->delete($path);
+
   }
 
   /**
@@ -300,7 +325,7 @@ final class S3fsFileSystemD103 implements FileSystemInterface {
     // Prepare the destination directory.
     if ($this->prepareDirectory($destination)) {
       // The destination is already a directory, so append the source basename.
-      $destination = $this->streamWrapperManager->normalizeUri($destination . '/' . $this->basename($source));
+      $destination = $this->streamWrapperManager->normalizeUri($destination . '/' . basename($source));
     }
     else {
       // Perhaps $destination is a dir/file?
@@ -508,7 +533,7 @@ final class S3fsFileSystemD103 implements FileSystemInterface {
   }
 
   /**
-   * Copy a file that is already in the the bucket.
+   * Copy a file that is already in the bucket.
    *
    * @param string $source
    *   Source file to be copied.
@@ -654,6 +679,14 @@ final class S3fsFileSystemD103 implements FileSystemInterface {
       $fileExists = FileExists::fromLegacyInt($fileExists, __METHOD__);
     }
     return $fileExists;
+  }
+
+  /**
+   * Is the path managed by S3FS.
+   */
+  private function isS3fsPath(string $path): bool {
+    $wrapper = $this->streamWrapperManager->getViaUri($path);
+    return (!is_bool($wrapper) && is_a($wrapper, 'Drupal\s3fs\StreamWrapper\S3fsStream'));
   }
 
 }

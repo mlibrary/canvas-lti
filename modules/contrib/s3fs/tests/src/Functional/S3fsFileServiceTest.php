@@ -74,4 +74,41 @@ class S3fsFileServiceTest extends S3fsTestBase {
     $this->assertSession()->responseHeaderEquals('cache-control', 'public, max-age=301');
   }
 
+  /**
+   * Test FileSystemInterface::deleteRecursive().
+   */
+  public function testDeleteRecursive(): void {
+
+    $file_system = \Drupal::service('file_system');
+
+    // Remove all objects.
+    $called_paths = [];
+    $callback = function (string $path) use (&$called_paths) {
+      $called_paths[] = $path;
+    };
+    $this->populateBucket(self::getListOfObjects('s3'));
+    $this->assertTrue($file_system->deleteRecursive('s3://a', $callback));
+    $this->assertTrue($this->validateObjects([]));
+    $provisioned_paths = array_column(self::getListOfObjects('s3'), 'path');
+    $this->assertSame(sort($provisioned_paths), sort($called_paths));
+
+    // Remove a nonexistent path.
+    $this->populateBucket(self::getListOfObjects('s3'));
+    $this->assertTrue($file_system->deleteRecursive('s3://a/d/'));
+    $this->assertTrue($file_system->deleteRecursive('s3://a/c/nonexistent_file.txt'));
+    $this->validateObjects(self::getListOfObjects('s3'));
+
+    // Remove a path with non ASCII characters.
+    $objects = self::getListOfObjects('s3');
+    $this->populateBucket($objects);
+    $this->assertTrue($file_system->deleteRecursive('s3://a/äö/file_äö1.txt'));
+    unset($objects[array_search(['path' => 's3://a/äö/file_äö1.txt', 'dir' => 0], $objects)]);
+    $this->validateObjects($objects);
+    $this->assertTrue($file_system->deleteRecursive('s3://a/äö/'));
+    unset($objects[array_search(['path' => 's3://a/äö/file_äö2.txt', 'dir' => 0], $objects)]);
+    unset($objects[array_search(['path' => 's3://a/äö/', 'dir' => 1], $objects)]);
+    $this->validateObjects($objects);
+
+  }
+
 }

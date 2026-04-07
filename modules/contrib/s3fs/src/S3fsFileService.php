@@ -590,7 +590,7 @@ class S3fsFileService implements FileSystemInterface {
   }
 
   /**
-   * Copy a file that is already in the the bucket.
+   * Copy a file that is already in the bucket.
    *
    * @param string $source
    *   Source file to be copied.

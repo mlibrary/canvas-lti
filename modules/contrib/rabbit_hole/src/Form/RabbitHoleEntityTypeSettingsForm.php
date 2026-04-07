@@ -94,7 +94,7 @@ class RabbitHoleEntityTypeSettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $entity_type_id = NULL): array {
+  public function buildForm(array $form, FormStateInterface $form_state, ?string $entity_type_id = NULL): array {
     try {
       $this->entityType = $this->entityTypeManager->getDefinition($entity_type_id);
     }

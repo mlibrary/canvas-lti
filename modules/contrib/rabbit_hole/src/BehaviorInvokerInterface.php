@@ -49,6 +49,6 @@ interface BehaviorInvokerInterface {
    * @return \Symfony\Component\HttpFoundation\Response|null
    *   A response or NULL if the response is unchanged.
    */
-  public function processEntity(ContentEntityInterface $entity, Response $current_response = NULL);
+  public function processEntity(ContentEntityInterface $entity, ?Response $current_response = NULL);
 
 }

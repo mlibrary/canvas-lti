@@ -168,8 +168,16 @@ input.form-submit:focus {
   margin-right: 2px;
   margin-left: 0;
 }
-.form-actions {
+.comment-form .form-actions {
   padding-top: 10px;
+}
+.form-item .description,
+.form-wrapper .description {
+  margin-left: 120px;
+}
+.form-actions {
+  display: inline-block;
+  width: 100%;
 }
 
 /* Node Form */
@@ -257,8 +265,7 @@ input.form-submit:focus {
   margin-left: 120px; /* LTR */
 }
 [dir="rtl"] .comment-form .form-type-checkbox,
-[dir="rtl"] .comment-form .form-radios,
-[dir="rtl"] .comment-form .form-item .description {
+[dir="rtl"] .comment-form .form-radios {
   margin-right: 120px;
   margin-left: 0;
 }
@@ -280,9 +287,8 @@ input.form-submit:focus {
   width: 320px;
 }
 .comment-form .form-item .description {
-  margin-left: 120px; /* LTR */
   font-size: 0.786em;
-  line-height: 1.2;
+  line-height: 1.7;
 }
 .comment-form .form-textarea {
   border-top-left-radius: 4px;

@@ -98,7 +98,7 @@ class BehaviorInvoker implements BehaviorInvokerInterface {
   /**
    * {@inheritdoc}
    */
-  public function processEntity(ContentEntityInterface $entity, Response $current_response = NULL) {
+  public function processEntity(ContentEntityInterface $entity, ?Response $current_response = NULL) {
     $plugin = $this->getBehaviorPlugin($entity);
 
     if ($plugin === NULL) {

@@ -20,7 +20,7 @@ class PageNotFound extends RabbitHoleBehaviorPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function performAction(EntityInterface $entity, Response $current_response = NULL) {
+  public function performAction(EntityInterface $entity, ?Response $current_response = NULL) {
     throw new NotFoundHttpException();
   }
 

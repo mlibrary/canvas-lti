@@ -82,7 +82,7 @@ class BehaviorSettingsManager implements BehaviorSettingsManagerInterface {
   /**
    * {@inheritdoc}
    */
-  public function saveBehaviorSettings(array $settings, $entity_type_id, $bundle = NULL): void {
+  public function saveBehaviorSettings(array $settings, $entity_type_id, ?string $bundle = NULL): void {
     $config = BehaviorSettings::loadByEntityTypeBundle($entity_type_id, $bundle);
     foreach ($settings as $key => $setting) {
       $config->set($key, $setting);

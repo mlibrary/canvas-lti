@@ -56,7 +56,7 @@
 .menu-toggle-target {
   display: none;
 }
-/* Unhide it for the primary menu. */
+/* Un-hide it for the primary menu. */
 .region-primary-menu .menu-toggle-target {
   position: fixed;
   top: 0;

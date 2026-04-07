@@ -4,7 +4,7 @@ type: module
 package: Testing
 
 
-# Information added by Drupal.org packaging script on 2025-08-08
-version: '8.x-3.9'
+# Information added by Drupal.org packaging script on 2026-01-11
+version: '8.x-3.10'
 project: 's3fs'
-datestamp: 1754612170
+datestamp: 1768115552

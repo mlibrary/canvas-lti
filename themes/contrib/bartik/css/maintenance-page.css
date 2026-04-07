@@ -64,7 +64,8 @@ body.maintenance-page {
   }
 }
 
-@media all and (min-width: 600px) { /* @TODO find the proper breakpoint */
+/* @todo find the proper breakpoint */
+@media all and (min-width: 600px) {
   .maintenance-page #page {
     margin: 20px 40px 40px;
   }

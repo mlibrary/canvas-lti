@@ -53,7 +53,7 @@ class S3fsImageStyleControllerLockdownTest extends S3fsTestBase {
     $this->assertTrue(\Drupal::service('file_system')->mkdir($this->remoteTestsFolderUri), 'Created the testing directory in the DB.');
     $img_data = file_get_contents($img_localpath);
     $img_file = $this->saveData($img_data, $img_uri1);
-    $this->assertNotFalse($img_file, "Copied the the test image to $img_uri1.");
+    $this->assertNotFalse($img_file, "Copied the test image to $img_uri1.");
 
     $private_image_name = $this->getRandomGenerator()->word(15) . '.jpg';
     $this->getRandomGenerator()->image('private://' . $private_image_name, '400x300', '800x600');
