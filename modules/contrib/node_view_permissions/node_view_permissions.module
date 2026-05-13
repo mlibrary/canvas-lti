@@ -125,7 +125,7 @@ function node_view_permissions_node_grants(AccountInterface $account, $op) {
           // Also set grants for the current language.
           $grants["view_any_{$type_id}_{$langcode}_content"] = [1];
         }
-        if ($account->hasPermission("view own $type_id content")) {
+        if ($account->hasPermission("view own $type_id content") && ($account->id() != 0)) {
           $grants["view_own_{$type_id}_content"] = [$account->id()];
           // Also set grants for the current language.
           $grants["view_own_{$type_id}_{$langcode}_content"] = [$account->id()];
@@ -138,7 +138,8 @@ function node_view_permissions_node_grants(AccountInterface $account, $op) {
           $grants["view_any_unpublished_{$type_id}_{$langcode}_content"] = [1];
         }
         if (($account->hasPermission("view own unpublished content")) &&
-          ($account->hasPermission("view own $type_id content"))) {
+          ($account->hasPermission("view own $type_id content")) &&
+          ($account->id() != 0)) {
           $grants["view_own_unpublished_{$type_id}_content"] = [$account->id()];
           // Also set grants for the current language.
           $grants["view_own_unpublished_{$type_id}_{$langcode}_content"] = [$account->id()];

@@ -6,7 +6,7 @@ core_version_requirement: ^8 || ^9 || ^10
 dependencies:
 - drupal:node
 
-# Information added by Drupal.org packaging script on 2023-06-09
-version: '8.x-1.6'
+# Information added by Drupal.org packaging script on 2026-05-12
+version: '8.x-1.7'
 project: 'node_view_permissions'
-datestamp: 1686297672
+datestamp: 1778621619
