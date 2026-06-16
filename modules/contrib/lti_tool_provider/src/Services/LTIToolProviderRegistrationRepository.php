@@ -161,7 +161,7 @@ class LTIToolProviderRegistrationRepository implements RegistrationRepositoryInt
    *
    * @return \OAT\Library\Lti1p3Core\Registration\RegistrationInterface|null
    */
-  public function findByPlatformIssuer(string $issuer, string $clientId = NULL): ?RegistrationInterface {
+  public function findByPlatformIssuer(string $issuer, ?string $clientId = NULL): ?RegistrationInterface {
     try {
       if (!isset($issuer)) {
         throw new Exception("No issuer provided.");
@@ -195,7 +195,7 @@ class LTIToolProviderRegistrationRepository implements RegistrationRepositoryInt
    *
    * @return \OAT\Library\Lti1p3Core\Registration\RegistrationInterface|null
    */
-  public function findByToolIssuer(string $issuer, string $clientId = NULL): ?RegistrationInterface {
+  public function findByToolIssuer(string $issuer, ?string $clientId = NULL): ?RegistrationInterface {
     return NULL;
   }
 

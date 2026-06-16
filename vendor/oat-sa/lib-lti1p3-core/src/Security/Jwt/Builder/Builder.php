@@ -61,12 +61,12 @@ class Builder implements BuilderInterface
     public function build(array $headers, array $claims, KeyInterface $key): TokenInterface
     {
         try {
-            $now = Carbon::now();
+            $now = Carbon::now()->setMicrosecond(0);
             $config = $this->factory->create($key);
             $builder = $config->builder();
 
             foreach ($headers as $headerName => $headerValue) {
-                $builder->withHeader($headerName, $headerValue);
+                $builder = $builder->withHeader($headerName, $headerValue);
             }
 
             $claims = array_merge(
@@ -78,38 +78,37 @@ class Builder implements BuilderInterface
                     MessagePayloadInterface::CLAIM_EXP => $now->addSeconds($this->messageTtl)->toDateTimeImmutable(),
                 ]
             );
-
             foreach ($claims as $claimName => $claimValue) {
                 switch ($claimName) {
                     case MessagePayloadInterface::CLAIM_JTI:
-                        $builder->identifiedBy($claimValue);
+                        $builder = $builder->identifiedBy($claimValue);
                         break;
                     case MessagePayloadInterface::CLAIM_EXP:
-                        $builder->expiresAt($claimValue);
+                        $builder = $builder->expiresAt($claimValue);
                         break;
                     case MessagePayloadInterface::CLAIM_NBF:
-                        $builder->canOnlyBeUsedAfter($claimValue);
+                        $builder = $builder->canOnlyBeUsedAfter($claimValue);
                         break;
                     case MessagePayloadInterface::CLAIM_IAT:
-                        $builder->issuedAt($claimValue);
+                        $builder = $builder->issuedAt($claimValue);
                         break;
                     case MessagePayloadInterface::CLAIM_SUB:
-                        $builder->relatedTo($claimValue);
+                        $builder = $builder->relatedTo($claimValue);
                         break;
                     case MessagePayloadInterface::CLAIM_ISS:
-                        $builder->issuedBy($claimValue);
+                        $builder = $builder->issuedBy($claimValue);
                         break;
                     case MessagePayloadInterface::CLAIM_AUD:
                         if (is_array($claimValue)) {
                             foreach ($claimValue as $audience) {
-                                $builder->permittedFor($audience);
+                                $builder = $builder->permittedFor($audience);
                             }
                         } else {
-                            $builder->permittedFor($claimValue);
+                            $builder = $builder->permittedFor($claimValue);
                         }
                         break;
                     default:
-                        $builder->withClaim($claimName, $claimValue);
+                        $builder = $builder->withClaim($claimName, $claimValue);
                 }
             }
 

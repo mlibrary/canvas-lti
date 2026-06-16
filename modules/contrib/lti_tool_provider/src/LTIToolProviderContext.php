@@ -42,7 +42,7 @@ class LTIToolProviderContext implements LTIToolProviderContextInterface {
    * @param mixed $payload
    * @param \OAT\Library\Lti1p3Core\Registration\RegistrationInterface|null $registration
    */
-  public function __construct(UserIdentity $userIdentity, $payload, RegistrationInterface $registration = NULL) {
+  public function __construct(UserIdentity $userIdentity, $payload, ?RegistrationInterface $registration = NULL) {
     if ($payload instanceof LtiMessagePayloadInterface && $registration instanceof RegistrationInterface) {
       $this->setRegistration($registration);
       $this->setPayload($payload);

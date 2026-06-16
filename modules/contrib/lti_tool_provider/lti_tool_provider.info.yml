@@ -2,13 +2,8 @@ type: module
 name: LTI Tool Provider
 description: An LTI Tool Provider module for LMS/Drupal integration.
 package: LTI Tool Provider
-core_version_requirement: ^8 || ^9 || ^10
+core_version_requirement: ^8 || ^9 || ^10 || ^11
 configure: lti_tool_provider.admin
 dependencies:
   - drupal:options
   - key:key
-
-# Information added by Drupal.org packaging script on 2023-12-11
-version: '2.0.5'
-project: 'lti_tool_provider'
-datestamp: 1702329959

@@ -35,27 +35,17 @@ class SignerFactory
      */
     public function create(string $algorithm): Signer
     {
-        switch ($algorithm) {
-            case KeyInterface::ALG_ES256;
-                return new Signer\Ecdsa\Sha256(new MultibyteStringConverter());
-            case KeyInterface::ALG_ES384;
-                return new Signer\Ecdsa\Sha384(new MultibyteStringConverter());
-            case KeyInterface::ALG_ES512;
-                return new Signer\Ecdsa\Sha512(new MultibyteStringConverter());
-            case KeyInterface::ALG_HS256;
-                return new Signer\Hmac\Sha256();
-            case KeyInterface::ALG_HS384;
-                return new Signer\Hmac\Sha384();
-            case KeyInterface::ALG_HS512;
-                return new Signer\Hmac\Sha512();
-            case KeyInterface::ALG_RS256;
-                return new Signer\Rsa\Sha256();
-            case KeyInterface::ALG_RS384;
-                return new Signer\Rsa\Sha384();
-            case KeyInterface::ALG_RS512;
-                return new Signer\Rsa\Sha512();
-            default:
-                throw new LtiException(sprintf('Unhandled algorithm %s', $algorithm));
-        }
+        return match ($algorithm) {
+            KeyInterface::ALG_ES256 => new Signer\Ecdsa\Sha256(new MultibyteStringConverter()),
+            KeyInterface::ALG_ES384 => new Signer\Ecdsa\Sha384(new MultibyteStringConverter()),
+            KeyInterface::ALG_ES512 => new Signer\Ecdsa\Sha512(new MultibyteStringConverter()),
+            KeyInterface::ALG_HS256 => new Signer\Hmac\Sha256(),
+            KeyInterface::ALG_HS384 => new Signer\Hmac\Sha384(),
+            KeyInterface::ALG_HS512 => new Signer\Hmac\Sha512(),
+            KeyInterface::ALG_RS256 => new Signer\Rsa\Sha256(),
+            KeyInterface::ALG_RS384 => new Signer\Rsa\Sha384(),
+            KeyInterface::ALG_RS512 => new Signer\Rsa\Sha512(),
+            default => throw new LtiException(sprintf('Unhandled algorithm %s', $algorithm)),
+        };
     }
 }

@@ -15,39 +15,48 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2025 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
 
-namespace OAT\Library\Lti1p3Core\Security\Jwt;
+namespace OAT\Library\Lti1p3Core\Role\Type;
 
-use Lcobucci\JWT\UnencryptedToken;
-use OAT\Library\Lti1p3Core\Util\Collection\Collection;
-use OAT\Library\Lti1p3Core\Util\Collection\CollectionInterface;
+use OAT\Library\Lti1p3Core\Role\AbstractRole;
 
-class Token implements TokenInterface
+/**
+ * @see https://www.imsglobal.org/node/162741#roles-claim
+ */
+class CustomRole extends AbstractRole
 {
-    public function __construct(private UnencryptedToken $token)
+    public static function getType(): string
     {
+        return static::TYPE_CUSTOM_TAO;
     }
 
-    public function getHeaders(): CollectionInterface
+    public static function getNameSpace(): string
     {
-        $headers = new Collection();
-
-        return $headers->add($this->token->headers()->all());
+        return '';
     }
 
-    public function getClaims(): CollectionInterface
+    public function getSubName(): ?string
     {
-        $headers = new Collection();
-
-        return $headers->add($this->token->claims()->all());
+        $exp = explode('#', $this->name);
+        return end($exp);
     }
 
-    public function toString(): string
+    public function isCore(): bool
     {
-        return $this->token->toString();
+        return false;
+    }
+
+    protected function isValid(): bool
+    {
+        return count(explode('#', $this->name)) === 2;
+    }
+
+    protected function getMap(): array
+    {
+        return [];
     }
 }

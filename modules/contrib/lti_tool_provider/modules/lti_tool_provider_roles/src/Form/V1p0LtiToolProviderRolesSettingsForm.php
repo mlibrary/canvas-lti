@@ -4,6 +4,8 @@ namespace Drupal\lti_tool_provider_roles\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\user\Entity\Role;
+use Drupal\user\RoleInterface;
 
 /**
  * Implementation V1p0LtiToolProviderRolesSettingsForm class.
@@ -36,7 +38,9 @@ class V1p0LtiToolProviderRolesSettingsForm extends ConfigFormBase {
       '#header' => [t('User Role'), t('LTI Role')],
     ];
 
-    foreach (user_roles(TRUE) as $key => $user_role) {
+    $user_roles = Role::loadMultiple();
+    unset($user_roles[RoleInterface::ANONYMOUS_ID]);
+    foreach ($user_roles as $key => $user_role) {
       $form['mapped_roles'][$key] = [
         'user_role' => [
           '#type' => 'item',

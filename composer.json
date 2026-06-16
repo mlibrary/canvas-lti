@@ -35,6 +35,19 @@
                 }
             }
         },
+        "lti-tool-provider": {
+            "type": "package",
+            "package": {
+                "name": "drupal/lti_tool_provider",
+                "version": "3.x-dev",
+                "type": "drupal-module",
+                "dist": {
+                    "type": "zip",
+                    "url": "https://git.drupalcode.org/issue/lti_tool_provider-3519997/-/archive/main/lti_tool_provider-3519997-main.zip?ref_type=heads",
+                    "reference": "main"
+                }
+            }
+        },
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8",
@@ -66,7 +79,7 @@
         "drupal/force_users_logout": "^2.0.1",
         "drupal/iframe": "^2.23",
         "drupal/key": "^1.17",
-        "drupal/lti_tool_provider": "^2.0.5",
+        "drupal/lti_tool_provider": "^3",
         "drupal/mailsystem": "^4.4",
         "drupal/node_view_permissions": "^1.6",
         "drupal/oembed_providers": "^2.1",
@@ -84,8 +97,8 @@
         "drush/drush": "^12.0",
         "mlibrary/umlib_admin": "^1.0",
         "mlibrary/umlib_base": "^1.0",
-        "oat-sa/lib-lti1p3-core": "^6.9",
-        "oat-sa/lib-lti1p3-deep-linking": "^4.0"
+        "oat-sa/lib-lti1p3-core": "^7",
+        "oat-sa/lib-lti1p3-deep-linking": "^4"
     },
     "conflict": {
         "drupal/drupal": "*"

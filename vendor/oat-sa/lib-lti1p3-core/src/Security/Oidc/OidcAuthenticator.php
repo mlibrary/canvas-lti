@@ -23,12 +23,14 @@ declare(strict_types=1);
 namespace OAT\Library\Lti1p3Core\Security\Oidc;
 
 use OAT\Library\Lti1p3Core\Exception\LtiException;
+use OAT\Library\Lti1p3Core\Exception\LtiBadRequestException;
 use OAT\Library\Lti1p3Core\Exception\LtiExceptionInterface;
 use OAT\Library\Lti1p3Core\Message\LtiMessage;
 use OAT\Library\Lti1p3Core\Message\LtiMessageInterface;
 use OAT\Library\Lti1p3Core\Message\Payload\Builder\MessagePayloadBuilder;
 use OAT\Library\Lti1p3Core\Message\Payload\Builder\MessagePayloadBuilderInterface;
 use OAT\Library\Lti1p3Core\Message\Payload\LtiMessagePayloadInterface;
+use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
 use OAT\Library\Lti1p3Core\Security\Jwt\Parser\Parser;
 use OAT\Library\Lti1p3Core\Security\Jwt\Parser\ParserInterface;
@@ -80,19 +82,25 @@ class OidcAuthenticator
         try {
             $oidcRequest = LtiMessage::fromServerRequest($request);
 
-            $originalToken = $this->parser->parse($oidcRequest->getParameters()->get('lti_message_hint'));
+            if (!$oidcRequest->getParameters()->has('lti_message_hint')) {
+                throw new LtiBadRequestException('Missing LTI message hint in request');
+            }
+
+            $originalToken = $this->parser->parse($oidcRequest->getParameters()->getMandatory('lti_message_hint'));
 
             $registration = $this->repository->find(
                 $originalToken->getClaims()->getMandatory(LtiMessagePayloadInterface::CLAIM_REGISTRATION_ID)
             );
 
             if (null === $registration) {
-                throw new LtiException('Invalid message hint registration id claim');
+                throw new LtiBadRequestException('Invalid message hint registration id claim');
             }
 
             if (!$this->validator->validate($originalToken, $registration->getPlatformKeyChain()->getPublicKey())) {
-                throw new LtiException('Invalid message hint');
+                throw new LtiBadRequestException('Invalid message hint');
             }
+
+            $redirectUri = $this->createToolRedirectUrl($registration, $oidcRequest);
 
             $authenticationResult = $this->authenticator->authenticate(
                 $registration,
@@ -108,6 +116,12 @@ class OidcAuthenticator
                 ->withClaim(LtiMessagePayloadInterface::CLAIM_ISS, $registration->getPlatform()->getAudience())
                 ->withClaim(LtiMessagePayloadInterface::CLAIM_AUD, $registration->getClientId());
 
+            // If the original request contained a nonce, add it to the payload (fixes #154)
+            $nonce = $oidcRequest->getParameters()->get('nonce');
+            if ($nonce) {
+                $this->builder->withClaim(LtiMessagePayloadInterface::CLAIM_NONCE, $nonce);
+            }
+
             if (!$authenticationResult->isAnonymous()) {
                 foreach ($authenticationResult->getUserIdentity()->normalize() as $claimName => $claimValue) {
                     $this->builder->withClaim($claimName, $claimValue);
@@ -117,13 +131,12 @@ class OidcAuthenticator
             $payload = $this->builder->buildMessagePayload($registration->getPlatformKeyChain());
 
             return new LtiMessage(
-                $originalToken->getClaims()->getMandatory(LtiMessagePayloadInterface::CLAIM_LTI_TARGET_LINK_URI),
+                $redirectUri,
                 [
                     'id_token' => $payload->getToken()->toString(),
                     'state' => $oidcRequest->getParameters()->getMandatory('state')
                 ]
             );
-
         } catch (LtiExceptionInterface $exception) {
             throw $exception;
         } catch (Throwable $exception) {
@@ -142,5 +155,26 @@ class OidcAuthenticator
         }
 
         return $claims;
+    }
+
+    private function createToolRedirectUrl(
+        RegistrationInterface $registration,
+        LtiMessageInterface $oidcRequest
+    ): string {
+        $uri = $oidcRequest->getParameters()->getMandatory('redirect_uri');
+        $host = parse_url($uri, PHP_URL_HOST);
+        /**
+         * redirect_uri must match one of the values associated with the tool's registration
+         * however, the library does not support multiple redirect_uris per registration,
+         * and relies on the launch URL to represent the tool's redirect_uri
+         *
+         * in order to support multiple redirect_uris, while still keeping the authentication
+         * relatively safe, the redirect_uri's host is compared against the pre-registered launch URL's host
+         */
+        if (!$host || $host !== parse_url($registration->getTool()->getLaunchUrl() ?? '', PHP_URL_HOST)) {
+            throw new LtiBadRequestException('Invalid redirect_uri');
+        }
+
+        return $uri;
     }
 }

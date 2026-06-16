@@ -2,12 +2,7 @@ type: module
 name: LTI Tool Provider Content Selection
 description: Provides a basic workflow for LTI 1.3 content selection.
 package: LTI Tool Provider
-core_version_requirement: ^8 || ^9 || ^10
+core_version_requirement: ^8 || ^9 || ^10 || ^11
 configure: lti_tool_provider.admin.content
 dependencies:
   - lti_tool_provider
-
-# Information added by Drupal.org packaging script on 2023-12-11
-version: '2.0.5'
-project: 'lti_tool_provider'
-datestamp: 1702329959

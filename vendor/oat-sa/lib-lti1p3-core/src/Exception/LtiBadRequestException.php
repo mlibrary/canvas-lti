@@ -15,23 +15,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2024 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
 
-namespace OAT\Library\Lti1p3Core\Registration;
+namespace OAT\Library\Lti1p3Core\Exception;
 
-interface RegistrationRepositoryInterface
+class LtiBadRequestException extends LtiException implements LtiExceptionInterface
 {
-    public function find(string $identifier): ?RegistrationInterface;
-
-    /** @return RegistrationInterface[] */
-    public function findAll(): array;
-
-    public function findByClientId(string $clientId): ?RegistrationInterface;
-
-    public function findByPlatformIssuer(string $issuer, ?string $clientId = null): ?RegistrationInterface;
-
-    public function findByToolIssuer(string $issuer, ?string $clientId = null): ?RegistrationInterface;
 }

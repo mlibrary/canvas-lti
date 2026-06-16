@@ -13,6 +13,8 @@ use Drupal\lti_tool_provider_roles\Event\LtiToolProviderRolesProvisionEvent;
 use Exception;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Drupal\user\Entity\Role;
+use Drupal\user\RoleInterface;
 
 /**
  * Implementation LtiToolProviderRolesEventSubscriber class.
@@ -76,7 +78,8 @@ class LtiToolProviderRolesEventSubscriber implements EventSubscriberInterface {
     }
 
     $user = $event->getUser();
-    $user_roles = user_roles(TRUE);
+    $user_roles = Role::loadMultiple();
+    unset($user_roles[RoleInterface::ANONYMOUS_ID]);
 
     if ($user->getDisplayName() === 'ltiuser') {
       return;

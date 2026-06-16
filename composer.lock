@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bc2d36d0a6855c4b8f90941a3970d6b0",
+    "content-hash": "ebcbfba03358fb8204c2182aabaae4fa",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -3251,57 +3251,13 @@
         },
         {
             "name": "drupal/lti_tool_provider",
-            "version": "2.0.5",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/lti_tool_provider.git",
-                "reference": "2.0.5"
-            },
+            "version": "3.x-dev",
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/lti_tool_provider-2.0.5.zip",
-                "reference": "2.0.5",
-                "shasum": "e2aeb4f208c80b13329807df74feff7090122d78"
+                "url": "https://git.drupalcode.org/issue/lti_tool_provider-3519997/-/archive/main/lti_tool_provider-3519997-main.zip?ref_type=heads",
+                "reference": "main"
             },
-            "require": {
-                "drupal/core": "^8 || ^9 || ^10",
-                "drupal/key": "^1.0.0",
-                "ext-oauth": "*",
-                "oat-sa/lib-lti1p3-core": "^6.0.0",
-                "oat-sa/lib-lti1p3-deep-linking": "^4.0.0",
-                "php": "^7.3 || ^8.0"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "2.0.5",
-                    "datestamp": "1702329956",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "jzornig",
-                    "homepage": "https://www.drupal.org/user/446626"
-                },
-                {
-                    "name": "kenianbei",
-                    "homepage": "https://www.drupal.org/user/778980"
-                }
-            ],
-            "description": "The LTI tool provider module provides an LTI authentication provider for Drupal.",
-            "homepage": "https://drupal.org/project/lti_tool_provider",
-            "support": {
-                "source": "https://git.drupalcode.org/project/lti_tool_provider",
-                "issues": "https://drupal.org/project/issues/lti_tool_provider"
-            }
+            "type": "drupal-module"
         },
         {
             "name": "drupal/mailsystem",
@@ -5964,42 +5920,41 @@
         },
         {
             "name": "oat-sa/lib-lti1p3-core",
-            "version": "6.9.1",
+            "version": "7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/oat-sa/lib-lti1p3-core.git",
-                "reference": "fea7f312e517cb0368fbf634addcd986798f8fa7"
+                "reference": "3703cd33821ac65ca18b0acdd86e1ba163774b95"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/oat-sa/lib-lti1p3-core/zipball/fea7f312e517cb0368fbf634addcd986798f8fa7",
-                "reference": "fea7f312e517cb0368fbf634addcd986798f8fa7",
+                "url": "https://api.github.com/repos/oat-sa/lib-lti1p3-core/zipball/3703cd33821ac65ca18b0acdd86e1ba163774b95",
+                "reference": "3703cd33821ac65ca18b0acdd86e1ba163774b95",
                 "shasum": ""
             },
             "require": {
-                "codercat/jwk-to-pem": "^1.0",
+                "codercat/jwk-to-pem": "^1.1",
                 "ext-json": "*",
                 "ext-openssl": "*",
-                "guzzlehttp/guzzle": "^6.5 || ^7.0",
-                "lcobucci/jwt": "^3.4 || ^4.1.5",
-                "league/oauth2-server": "^8.2",
-                "nesbot/carbon": "^2.43",
-                "nyholm/psr7": "^1.3",
-                "php": ">=7.2.0",
-                "php-http/message-factory": "^1.1",
-                "phpseclib/phpseclib": "^3.0.34",
-                "psr/cache": "^1.0 || ^2.0 || ^3.0",
-                "psr/http-message": "^1.0",
+                "guzzlehttp/guzzle": "^7.8",
+                "lcobucci/jwt": "^4.3 || ^5.0",
+                "league/oauth2-server": "^8.5 || ^9.3",
+                "nesbot/carbon": "^2.72 || ^3.0",
+                "nyholm/psr7": "^1.8",
+                "php": ">=8.0.0",
+                "phpseclib/phpseclib": "^3.0.37",
+                "psr/cache": "^2.0 || ^3.0",
+                "psr/http-message": "^1.1 || ^2.0",
                 "psr/http-server-handler": "^1.0",
                 "psr/log": "^1.0 || ^2.0 || ^3.0",
-                "ramsey/uuid": "^3.9 || ^4"
+                "ramsey/uuid": "^3.9 || ^4.7"
             },
             "require-dev": {
-                "cache/array-adapter": "^1.1",
-                "php-coveralls/php-coveralls": "^2.4",
-                "phpunit/phpunit": "8.5.14",
-                "psalm/plugin-phpunit": "^0.15.1",
-                "vimeo/psalm": "^4.6"
+                "cache/array-adapter": "^1.2",
+                "php-coveralls/php-coveralls": "^2.7",
+                "phpunit/phpunit": "^9.6",
+                "psalm/plugin-phpunit": "^0.19",
+                "vimeo/psalm": "^5.25 || ^6.8"
             },
             "type": "library",
             "autoload": {
@@ -6014,34 +5969,33 @@
             "description": "OAT LTI 1.3 Core Library",
             "support": {
                 "issues": "https://github.com/oat-sa/lib-lti1p3-core/issues",
-                "source": "https://github.com/oat-sa/lib-lti1p3-core/tree/6.9.1"
+                "source": "https://github.com/oat-sa/lib-lti1p3-core/tree/7.3.0"
             },
-            "time": "2023-12-04T12:18:36+00:00"
+            "time": "2026-01-26T15:57:18+00:00"
         },
         {
             "name": "oat-sa/lib-lti1p3-deep-linking",
-            "version": "4.0.0",
+            "version": "4.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/oat-sa/lib-lti1p3-deep-linking.git",
-                "reference": "44c07a56bf565f6ea6acb1c78c515589adf5b0e3"
+                "reference": "71df6274c20868341517327d5fdfcf08f68aea22"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/oat-sa/lib-lti1p3-deep-linking/zipball/44c07a56bf565f6ea6acb1c78c515589adf5b0e3",
-                "reference": "44c07a56bf565f6ea6acb1c78c515589adf5b0e3",
+                "url": "https://api.github.com/repos/oat-sa/lib-lti1p3-deep-linking/zipball/71df6274c20868341517327d5fdfcf08f68aea22",
+                "reference": "71df6274c20868341517327d5fdfcf08f68aea22",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "oat-sa/lib-lti1p3-core": "^6.0",
-                "php": ">=7.2.0"
+                "oat-sa/lib-lti1p3-core": "^7.0",
+                "php": ">=8.0.0"
             },
             "require-dev": {
-                "php-coveralls/php-coveralls": "^2.4",
-                "phpunit/phpunit": "8.5.14",
-                "psalm/plugin-phpunit": "^0.15.1",
-                "vimeo/psalm": "^4.6"
+                "phpunit/phpunit": "^9.6 || ^12",
+                "psalm/plugin-phpunit": "^0.19",
+                "vimeo/psalm": "^4.6 || ^5.25 || ^6.8"
             },
             "type": "library",
             "autoload": {
@@ -6056,9 +6010,9 @@
             "description": "OAT LTI 1.3 Deep Linking Library",
             "support": {
                 "issues": "https://github.com/oat-sa/lib-lti1p3-deep-linking/issues",
-                "source": "https://github.com/oat-sa/lib-lti1p3-deep-linking/tree/4.0.0"
+                "source": "https://github.com/oat-sa/lib-lti1p3-deep-linking/tree/4.1.2"
             },
-            "time": "2021-07-03T12:28:55+00:00"
+            "time": "2025-07-17T14:24:21+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
@@ -6511,61 +6465,6 @@
                 "source": "https://github.com/phootwork/lang/tree/v3.2.3"
             },
             "time": "2024-10-03T13:43:19+00:00"
-        },
-        {
-            "name": "php-http/message-factory",
-            "version": "1.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-http/message-factory.git",
-                "reference": "4d8778e1c7d405cbb471574821c1ff5b68cc8f57"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-http/message-factory/zipball/4d8778e1c7d405cbb471574821c1ff5b68cc8f57",
-                "reference": "4d8778e1c7d405cbb471574821c1ff5b68cc8f57",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4",
-                "psr/http-message": "^1.0 || ^2.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Http\\Message\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Márk Sági-Kazár",
-                    "email": "mark.sagikazar@gmail.com"
-                }
-            ],
-            "description": "Factory interfaces for PSR-7 HTTP Message",
-            "homepage": "http://php-http.org",
-            "keywords": [
-                "factory",
-                "http",
-                "message",
-                "stream",
-                "uri"
-            ],
-            "support": {
-                "issues": "https://github.com/php-http/message-factory/issues",
-                "source": "https://github.com/php-http/message-factory/tree/1.1.0"
-            },
-            "abandoned": "psr/http-factory",
-            "time": "2023-04-14T14:16:17+00:00"
         },
         {
             "name": "phpmailer/phpmailer",
@@ -10870,7 +10769,7 @@
     },
     "prefer-stable": true,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "platform": {},
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
 }
