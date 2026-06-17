@@ -1,6 +1,20 @@
 # CHANGELOG
 
 
+## 2.5.0 - 2026-06-02
+
+### Deprecated
+
+- Deprecated passing non-iterable inputs to promise collection helpers and `EachPromise`
+
+
+## 2.4.1 - 2026-05-20
+
+### Fixed
+
+- Fixed cancelling settled coroutines when no current promise remains
+
+
 ## 2.4.0 - 2026-05-20
 
 ### Changed
