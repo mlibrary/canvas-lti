@@ -1,15 +1,24 @@
 <?php return array(
     'root' => array(
-        'name' => 'drupal/recommended-project',
+        'name' => '__root__',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '848974eabdee2fb580c41af6800f4c8fa918cd2a',
-        'type' => 'project',
+        'reference' => '7b03d07c62885ffb2115681445ba092378678630',
+        'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
+        '__root__' => array(
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => '7b03d07c62885ffb2115681445ba092378678630',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'asm89/stack-cors' => array(
             'pretty_version' => 'v2.4.0',
             'version' => '2.4.0.0',
@@ -74,9 +83,9 @@
             'dev_requirement' => false,
         ),
         'composer/installers' => array(
-            'pretty_version' => 'v1.12.0',
-            'version' => '1.12.0.0',
-            'reference' => 'd20a64ed3c94748397ff5973488761b22f6d3f19',
+            'pretty_version' => 'v2.3.0',
+            'version' => '2.3.0.0',
+            'reference' => '12fb2dfe5e16183de69e784a7b84046c43d97e8e',
             'type' => 'composer-plugin',
             'install_path' => __DIR__ . '/./installers',
             'aliases' => array(),
@@ -655,15 +664,6 @@
             'reference' => '2.0.0-beta2',
             'type' => 'drupal-module',
             'install_path' => __DIR__ . '/../../modules/contrib/rabbit_hole',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
-        'drupal/recommended-project' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'reference' => '848974eabdee2fb580c41af6800f4c8fa918cd2a',
-            'type' => 'project',
-            'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
@@ -1271,12 +1271,6 @@
                 0 => '4.9.2',
             ),
         ),
-        'roundcube/plugin-installer' => array(
-            'dev_requirement' => false,
-            'replaced' => array(
-                0 => '*',
-            ),
-        ),
         'rsky/pear-core-min' => array(
             'dev_requirement' => false,
             'replaced' => array(
@@ -1291,12 +1285,6 @@
             'install_path' => __DIR__ . '/../sebastian/diff',
             'aliases' => array(),
             'dev_requirement' => false,
-        ),
-        'shama/baton' => array(
-            'dev_requirement' => false,
-            'replaced' => array(
-                0 => '*',
-            ),
         ),
         'symfony/console' => array(
             'pretty_version' => 'v6.4.42',

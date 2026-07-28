@@ -1,13 +1,4 @@
 {
-    "name": "drupal/recommended-project",
-    "description": "Project template for Drupal 8 projects with composer",
-    "type": "project",
-    "license": "GPL-2.0-or-later",
-    "homepage": "https://www.drupal.org/project/drupal",
-    "support": {
-        "docs": "https://www.drupal.org/docs/user_guide/en/index.html",
-        "chat": "https://www.drupal.org/node/314178"
-    },
     "repositories": {
         "umlib_base-theme": {
             "type": "package",
@@ -56,7 +47,7 @@
         }
     },
     "require": {
-        "composer/installers": "^1.2",
+        "composer/installers": "^2.2",
         "cweagans/composer-patches": "^1.6.5",
         "drupal/allow_iframed_site": "^3.0.3",
         "drupal/auto_entitylabel": "^3.0@beta",
