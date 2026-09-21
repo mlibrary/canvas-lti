@@ -1,8 +1,14 @@
 # umlib_admin
+Theme development environment:
+- Drupal version: 10.1.6
+- Claro version: 10.1.6
+
+Please contact burkebri@umich.edu if you notice any updates or changes needed based on your installed Drupal version.
 
 This is the admin drupal theme for U-M Library sites built using the Claro admin theme as a parent. The umlib_admin theme uses styles from the U-M Library Design System.
 
 ## Regions & Blocks
+Coming soon: block configuration- in the meantime, please use the below as a start.
 
 The website header relies on two blocks in the header region.
 
@@ -10,7 +16,22 @@ Region: Header
 - Site branding
 - User account menu
 
-For more information, see the Drupal umlib_admin Figma file.
+Region: Pre-content
+- Page title
+- Primary tabs
+- Secondary tabs
+
+Region: Breadcrumb
+- Breadcrumb
+
+Region: Highlighted
+- Status Messages
+
+Region: Content:
+- Primary admin actions
+- Main content
+
+For more information, see the Drupal umlib_admin Figma file. Ask Bridget for permission as needed.
 
 ## Website header
 
@@ -23,7 +44,7 @@ Ensure that the following are checked in Appearance settings:
 
 ### Setup
 
-**Please add this theme to your Drupal full stack project using composer:**
+**To add this theme to your Drupal full stack project using composer:**
 
 ```
 vi composer.json

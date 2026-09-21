@@ -2,31 +2,104 @@
 
 namespace Drupal\iframe\Plugin\Field\FieldFormatter;
 
-use Drupal\node\NodeInterface;
 use Drupal\Component\Render\HtmlEscapedText;
-use Drupal\Core\Field\FormatterBase;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Field\Attribute\FieldFormatter;
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Url;
+use Drupal\Core\Field\FormatterBase;
+use Drupal\Core\Logger\LoggerChannelTrait;
+use Drupal\Core\Logger\RfcLogLevel;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Session\AccountProxyInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Template\Attribute;
+use Drupal\Core\Url;
+use Drupal\Core\Utility\Token;
+use Drupal\node\NodeInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * The Class IframeDefaultFormatter.
- *
- * @FieldFormatter(
- *  id = \Drupal\iframe\Plugin\Field\FieldFormatter\IframeDefaultFormatter::PLUGIN_ID,
- *  module = "iframe",
- *  label = @Translation("Title, over iframe (default)"),
- *  field_types = {"iframe"}
- * )
  */
+#[FieldFormatter(
+  id: 'iframe_default',
+  label: new TranslatableMarkup('Title, over iframe (default)'),
+  field_types: [
+    'iframe',
+  ],
+)]
 class IframeDefaultFormatter extends FormatterBase {
+
+  use LoggerChannelTrait;
 
   public const PLUGIN_ID = 'iframe_default';
 
   /**
+   * Constructs a new LinkFormatter.
+   *
+   * @param string $plugin_id
+   *   The plugin_id for the formatter.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param \Drupal\Core\Field\FieldDefinitionInterface $field_definition
+   *   The definition of the field to which the formatter is associated.
+   * @param array $settings
+   *   The formatter settings.
+   * @param string $label
+   *   The formatter label display setting.
+   * @param string $view_mode
+   *   The view mode.
+   * @param array $third_party_settings
+   *   Third party settings.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
+   *   The module handler service.
+   * @param \Drupal\Core\Session\AccountProxyInterface $currentUser
+   *   The current user.
+   * @param \Drupal\Core\Utility\Token $token
+   *   Token service.
+   * @param \Drupal\Core\Routing\RouteMatchInterface $routeMatch
+   *   The currently active route match object.
+   */
+  public function __construct(
+    $plugin_id,
+    $plugin_definition,
+    FieldDefinitionInterface $field_definition,
+    array $settings,
+    $label,
+    $view_mode,
+    array $third_party_settings,
+    protected ModuleHandlerInterface $moduleHandler,
+    protected AccountProxyInterface $currentUser,
+    protected Token $token,
+    protected RouteMatchInterface $routeMatch,
+  ) {
+    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings);
+  }
+
+  /**
    * {@inheritdoc}
    */
-  public static function defaultSettings() {
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition): static {
+    return new static(
+      $plugin_id,
+      $plugin_definition,
+      $configuration['field_definition'],
+      $configuration['settings'],
+      $configuration['label'],
+      $configuration['view_mode'],
+      $configuration['third_party_settings'],
+      $container->get('module_handler'),
+      $container->get('current_user'),
+      $container->get('token'),
+      $container->get('current_route_match'),
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function defaultSettings(): array {
     return [
       'url' => '',
       'title' => '',
@@ -38,23 +111,24 @@ class IframeDefaultFormatter extends FormatterBase {
       'scrolling' => '',
       'transparency' => '0',
       'tokensupport' => '0',
-      'allowfullscreen' => '0',
+      // Match the field-level default so the formatter-level setting is not
+      // misleading. The render path reads $item->allowfullscreen (populated
+      // from field settings), not the formatter setting — but keep them in
+      // sync to avoid future confusion.
+      'allowfullscreen' => '1',
     ] + parent::defaultSettings();
   }
 
   /**
    * {@inheritdoc}
    */
-  public function viewElements(FieldItemListInterface $items, $langcode) {
+  public function viewElements(FieldItemListInterface $items, $langcode): array {
     $elements = [];
     // Settings from type.
     $settings = $this->getSettings();
     // field_settings on concrete field.
     $field_settings = $this->getFieldSettings();
-    // \iframe_debug(3, __METHOD__, $settings);
-    // \iframe_debug(3, __METHOD__, $field_settings);
-    // \iframe_debug(3, __METHOD__, $items->getValue());
-    $allow_attributes = ['url', 'width', 'height', 'title', 'class'];
+    $allow_attributes = ['url', 'width', 'height', 'title', 'class', 'headerlevel'];
     foreach ($items as $delta => $item) {
       if (empty($item->url)) {
         continue;
@@ -68,8 +142,8 @@ class IframeDefaultFormatter extends FormatterBase {
         }
         $item->{$field_key} = $field_val;
       }
-      $elements[$delta] = static::iframeIframe($item->title, $item->url, $item);
-      // Tokens can be dynamic, so its not cacheable.
+      $elements[$delta] = $this->iframeIframe($item->title, $item->url, $item);
+      // Tokens can be dynamic, so it's not cacheable.
       if (isset($settings['tokensupport']) && $settings['tokensupport']) {
         $elements[$delta]['cache'] = ['max-age' => 0];
       }
@@ -80,8 +154,7 @@ class IframeDefaultFormatter extends FormatterBase {
   /**
    * Like central function form the iframe code.
    */
-  public static function iframeIframe($text, $path, $item) {
-    // \iframe_debug(0, __METHOD__, $item->toArray());
+  protected function iframeIframe($text, $path, $item): array {
     $options = [];
     $options['width'] = empty($item->width) ? '100%' : $item->width;
     $options['height'] = empty($item->height) ? '701' : $item->height;
@@ -115,21 +188,35 @@ class IframeDefaultFormatter extends FormatterBase {
     }
 
     $htmlid = 'iframe-' . $itemName . '-' . $itemParentId;
-    if (property_exists($item, 'htmlid') && $item->htmlid !== NULL && !empty($item->htmlid)) {
+    if (property_exists($item, 'htmlid') && !empty($item->htmlid)) {
       $htmlid = $item->htmlid;
     }
-    $htmlid = preg_replace('#[^A-Za-z0-9\-\_]+#', '-', $htmlid);
+    $htmlid = preg_replace('#[^A-Za-z0-9\-_]+#', '-', $htmlid);
     $options['id'] = $options['name'] = $htmlid;
 
     // Append active class.
-    $options['class'] = empty($item->class) ? '' : $item->class;
+    $options['class'] = $item->class ?? '';
 
+    // Responsive start. Test class for iframe-responsive.
+    $style = '#' . $htmlid . ' {' . $style . '}';
+    if (str_contains($options['class'], 'iframe-responsive')) {
+      // Force numeric values for width and height.
+      $size = [
+        'width' => (int) $options['width'],
+        'height' => (int) $options['height'],
+      ];
+      $options['width'] = '100%';
+      $options['height'] = '100%';
+      $styleBefore = ' padding-bottom: calc(100% / (' . $size['width'] . ' / ' . $size['height'] . '));';
+      $style .= ' .iframe-responsive:has(#' . $htmlid . '):before {' . $styleBefore . '}';
+    }
+    // Responsive end.
     // Remove all HTML and PHP tags from a tooltip.
     // For best performance, we act only
     // if a quick strpos() pre-check gave a suspicion
     // (because strip_tags() is expensive).
     $options['title'] = empty($item->title) ? '' : $item->title;
-    if (!empty($options['title']) && strpos($options['title'], '<') !== FALSE) {
+    if (!empty($options['title']) && str_contains($options['title'], '<')) {
       $options['title'] = strip_tags($options['title']);
     }
     // Default h3.
@@ -148,24 +235,27 @@ class IframeDefaultFormatter extends FormatterBase {
     $allow[] = 'microphone';
     $allow[] = 'payment';
     $allow[] = 'picture-in-picture';
-    $options['allow'] = implode(';', $allow);
-    if (!empty($item->allowfullscreen) && $item->allowfullscreen) {
-      $options['allowfullscreen'] = 'allowfullscreen';
+    $fullscreen_setting = $item->allowfullscreen ?? '1';
+    if ((string) $fullscreen_setting !== '0') {
+      // Allowfullscreen is considered a legacy attribute and redefined
+      // as allow="fullscreen".
+      $allow[] = 'fullscreen';
     }
+    $options['allow'] = implode(';', $allow);
 
-    if (\Drupal::moduleHandler()->moduleExists('token')) {
+    if ($this->moduleHandler->moduleExists('token')) {
       // Token Support for field "url" and "title".
       $tokensupport = $item->getTokenSupport();
-      $tokencontext = ['user' => \Drupal::currentUser()];
-      $node = \Drupal::routeMatch()->getParameter('node');
+      $tokencontext = ['user' => $this->currentUser];
+      $node = $this->routeMatch->getParameter('node');
       if ($node instanceof NodeInterface) {
         $tokencontext['node'] = $node;
       }
       if ($tokensupport > 0) {
-        $text = \Drupal::token()->replace($text, $tokencontext);
+        $text = $this->token->replace($text, $tokencontext);
       }
       if ($tokensupport > 1) {
-        $path = \Drupal::token()->replace($path, $tokencontext);
+        $path = $this->token->replace($path, $tokencontext);
       }
     }
 
@@ -177,19 +267,22 @@ class IframeDefaultFormatter extends FormatterBase {
       $src = $srcuri->toString();
       $options['src'] = $src;
       $drupal_attributes = new Attribute($options);
-      $element = [
+      return [
         '#theme' => 'iframe',
         '#src' => $src,
         '#attributes' => $drupal_attributes,
         '#text' => (isset($options['html']) && $options['html'] ? $text : new HtmlEscapedText($text)),
-        '#style' => 'iframe#' . $htmlid . ' {' . $style . '}',
+        '#style' => $style,
         '#headerlevel' => $headerlevel,
+        '#attached' => [
+          'library' => [
+            'iframe/iframe',
+          ],
+        ],
       ];
-      return $element;
     }
-    catch (\Exception $excep) {
-      // \iframe_debug(0, __METHOD__, $excep);
-      watchdog_exception(__METHOD__, $excep);
+    catch (\Exception $exception) {
+      $this->getLogger('iframe')->log(RfcLogLevel::ERROR, $exception->getMessage());
       return [];
     }
   }

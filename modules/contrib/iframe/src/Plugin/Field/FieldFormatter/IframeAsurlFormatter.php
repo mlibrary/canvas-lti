@@ -2,25 +2,28 @@
 
 namespace Drupal\iframe\Plugin\Field\FieldFormatter;
 
+use Drupal\Core\Field\Attribute\FieldFormatter;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Link;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 
 /**
  * The Class IframeAsurlFormatter.
- *
- * @FieldFormatter(
- *  id = "iframe_asurl",
- *  label = @Translation("A link with the given title"),
- *  field_types = {"iframe"}
- * )
  */
+#[FieldFormatter(
+  id: 'iframe_asurl',
+  label: new TranslatableMarkup('A link with the given title'),
+  field_types: [
+    'iframe',
+  ],
+)]
 class IframeAsurlFormatter extends IframeDefaultFormatter {
 
   /**
    * {@inheritdoc}
    */
-  public function viewElements(FieldItemListInterface $items, $langcode) {
+  public function viewElements(FieldItemListInterface $items, $langcode): array {
     $elements = [];
 
     foreach ($items as $delta => $item) {

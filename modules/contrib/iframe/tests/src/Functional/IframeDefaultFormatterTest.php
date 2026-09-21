@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\Tests\iframe\Functional;
 
@@ -33,7 +33,6 @@ final class IframeDefaultFormatterTest extends BrowserTestBase {
    */
   protected static $modules = [
     'iframe',
-    'media_iframe',
     'entity_test',
   ];
 

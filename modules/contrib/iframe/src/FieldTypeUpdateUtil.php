@@ -2,6 +2,10 @@
 
 namespace Drupal\iframe;
 
+use Drupal\Component\Utility\DeprecationHelper;
+use Drupal\Core\Database\Statement\FetchAs;
+use Drupal\Core\Entity\Sql\SqlContentEntityStorageException;
+
 /**
  * The FieldTypeUpdateUtil class.
  */
@@ -17,8 +21,7 @@ class FieldTypeUpdateUtil {
    * @param array $columns_to_add
    *   Array of the column names from schema() function.
    */
-  public static function fieldTypeSchemaColumnAddHelper($field_type, array $columns_to_add = []) {
-    $processed_fields = [];
+  public static function fieldTypeSchemaColumnAddHelper(string $field_type, array $columns_to_add = []): void {
     $field_type_manager = \Drupal::service('plugin.manager.field.field_type');
     $field_definition = $field_type_manager->getDefinition($field_type);
     $field_item_class = $field_definition['class'];
@@ -68,7 +71,6 @@ class FieldTypeUpdateUtil {
         $schema_key = "$entity_type_id.field_schema_data.$field_name";
         $field_schema_data = $entity_storage_schema_sql->get($schema_key);
 
-        $processed_fields[] = [$entity_type_id, $field_name];
         // Loop over each new column and add it as a schema column change.
         foreach ($columns_to_add as $column_id) {
           $column = $table_mapping->getFieldColumnName($field_storage_definition, $column_id);
@@ -118,20 +120,12 @@ class FieldTypeUpdateUtil {
    * @param string $field_type
    *   The field type id e.g. "iframe".
    */
-  public static function fieldTypeSchemaColumnSpecChangeHelper($field_type) {
-    // $field_type_manager =
-    // \Drupal::service('plugin.manager.field.field_type');
-    // $field_definition = $field_type_manager->getDefinition($field_type);
-    // $field_item_class = $field_definition['class'];
+  public static function fieldTypeSchemaColumnSpecChangeHelper(string $field_type): void {
     $schema = \Drupal::database()->schema();
     $entity_type_manager = \Drupal::entityTypeManager();
     $entity_field_manager = \Drupal::service('entity_field.manager');
     $entity_field_map = $entity_field_manager->getFieldMapByFieldType($field_type);
     // The key-value collection for tracking installed storage schema.
-    // $entity_storage_schema_sql =
-    // \Drupal::keyValue('entity.storage_schema.sql');
-    // $entity_definitions_installed =
-    // \Drupal::keyValue('entity.definitions.installed');.
     foreach ($entity_field_map as $entity_type_id => $field_map) {
       $entity_storage = $entity_type_manager->getStorage($entity_type_id);
       $entity_type = $entity_type_manager->getDefinition($entity_type_id);
@@ -189,10 +183,13 @@ class FieldTypeUpdateUtil {
           }
 
           // Get the old data.
-          $existing_data[$table] = $database->select($table)
+          $existing_data[$table] = DeprecationHelper::backwardsCompatibleCall(\Drupal::VERSION, '11.2.0', fn() => $database->select($table)
             ->fields($table)
             ->execute()
-            ->fetchAll(\PDO::FETCH_ASSOC);
+            ->fetchAll(FetchAs::Associative), fn() => $database->select($table)
+            ->fields($table)
+            ->execute()
+            ->fetchAll(\PDO::FETCH_ASSOC));
 
           // Wipe it.
           $database->truncate($table)->execute();
@@ -211,7 +208,7 @@ class FieldTypeUpdateUtil {
             continue;
           }
           $last_row = end($existing_data[$table]);
-          if ($last_row == FALSE) {
+          if (!$last_row) {
             continue;
           }
           $fields = array_keys($last_row);
@@ -236,12 +233,7 @@ class FieldTypeUpdateUtil {
    *   Array of the column names from schema() function,
    *   e.g. ["style_textalign"].
    */
-  public static function fieldTypeSchemaColumnRemoveHelper($field_type, array $columns_to_remove = []) {
-    $processed_fields = [];
-    // $field_type_manager =
-    // \Drupal::service('plugin.manager.field.field_type');
-    // $field_definition = $field_type_manager->getDefinition($field_type);
-    // $field_item_class = $field_definition['class'];
+  public static function fieldTypeSchemaColumnRemoveHelper(string $field_type, array $columns_to_remove = []): void {
     $schema = \Drupal::database()->schema();
     $entity_type_manager = \Drupal::entityTypeManager();
     $entity_field_manager = \Drupal::service('entity_field.manager');
@@ -254,9 +246,6 @@ class FieldTypeUpdateUtil {
       $entity_storage = $entity_type_manager->getStorage($entity_type_id);
 
       // Only SQL storage based entities are supported / throw known exception.
-      // if (!($entity_storage instanceof SqlContentEntityStorage)) {
-      // continue;
-      // }.
       $entity_type = $entity_type_manager->getDefinition($entity_type_id);
       $field_storage_definitions = $entity_field_manager->getFieldStorageDefinitions($entity_type_id);
       /** @var \Drupal\Core\Entity\Sql\DefaultTableMapping $table_mapping */
@@ -287,15 +276,11 @@ class FieldTypeUpdateUtil {
         $schema_key = "$entity_type_id.field_schema_data.$field_name";
         $field_schema_data = $entity_storage_schema_sql->get($schema_key);
 
-        $processed_fields[] = [$entity_type_id, $field_name];
         // Loop over each new column and add it as a schema column change.
         foreach ($columns_to_remove as $column_id) {
           $column = $table_mapping->getFieldColumnName($field_storage_definition, $column_id);
           // Add `initial_from_field` to the new spec, as this will copy over
           // the entire data.
-          // $field_schema =
-          // $field_item_class::schema($field_storage_definition);
-          // $spec = $field_schema['columns'][$column_id];
           // Add the new column.
           $schema->dropField($table, $column);
           if ($revision_table) {

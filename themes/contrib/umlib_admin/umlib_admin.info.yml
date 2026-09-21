@@ -1,7 +1,7 @@
 name: UM Library Admin Theme
 type: theme
 description: 'An admin theme for UM Library based on Claro.'
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^9 || ^10 || ^11
 libraries:
   - umlib_admin/global-styling
   - umlib_admin/global-scripts

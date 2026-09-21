@@ -1,0 +1,11 @@
+fieldblock_test.node_subpath:
+  path: '/node/{node}/fieldblock-subpath'
+  defaults:
+    _controller: '\Drupal\fieldblock_test\Controller\FieldBlockTestController::subpath'
+    _title: 'Field block subpath'
+  requirements:
+    _entity_access: 'node.view'
+  options:
+    parameters:
+      node:
+        type: 'entity:node'

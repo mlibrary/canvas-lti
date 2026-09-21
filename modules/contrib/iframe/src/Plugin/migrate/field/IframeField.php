@@ -3,27 +3,27 @@
 namespace Drupal\iframe\Plugin\migrate\field;
 
 use Drupal\migrate\Plugin\MigrationInterface;
+use Drupal\migrate_drupal\Attribute\MigrateField;
 use Drupal\migrate_drupal\Plugin\migrate\field\FieldPluginBase;
 
 /**
  * The Class IframeField. Field migration plugin from D7 to D8.
- *
- * @MigrateField(
- *   id = "iframe",
- *   core = {7},
- *   type_map = {
- *    "iframe" = "iframe"
- *   },
- *   source_module = "iframe",
- *   destination_module = "iframe"
- * )
  */
+#[MigrateField(
+  id: 'iframe',
+  core: [7],
+  type_map: [
+    'iframe' => 'iframe',
+  ],
+  source_module: 'iframe',
+  destination_module: 'iframe',
+)]
 class IframeField extends FieldPluginBase {
 
   /**
    * {@inheritdoc}
    */
-  public function getFieldFormatterMap() {
+  public function getFieldFormatterMap(): array {
     // See d6_field_formatter_settings.yml and CckFieldPluginBase
     // processFieldFormatter().
     return [
@@ -37,7 +37,7 @@ class IframeField extends FieldPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function defineValueProcessPipeline(MigrationInterface $migration, $field_name, $data) {
+  public function defineValueProcessPipeline(MigrationInterface $migration, $field_name, $data): void {
     $process = [
       'plugin' => 'd7_cck_iframe',
       'source' => $field_name,

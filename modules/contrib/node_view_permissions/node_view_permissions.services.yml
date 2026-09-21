@@ -1,0 +1,4 @@
+services:
+  Drupal\node_view_permissions\Hook\NodeViewPermissionsHooks:
+    class: Drupal\node_view_permissions\Hook\NodeViewPermissionsHooks
+    autowire: true

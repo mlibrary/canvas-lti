@@ -4,11 +4,12 @@ namespace Drupal\fieldblock\Plugin\Block;
 
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Block\BlockBase;
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Entity\Plugin\DataType\EntityAdapter;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FormatterInterface;
@@ -16,7 +17,7 @@ use Drupal\Core\Field\FormatterPluginManager;
 use Drupal\Core\Form\FormHelper;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\SubformStateInterface;
-use Drupal\Core\Language\LanguageManagerInterface;
+use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
@@ -62,11 +63,11 @@ class FieldBlock extends BlockBase implements ContainerFactoryPluginInterface {
   protected $routeMatch;
 
   /**
-   * The language manager.
+   * The entity repository.
    *
-   * @var \Drupal\Core\Language\LanguageManagerInterface
+   * @var \Drupal\Core\Entity\EntityRepositoryInterface
    */
-  private $languageManager;
+  protected $entityRepository;
 
   /**
    * The entity to be used when displaying the block.
@@ -92,16 +93,16 @@ class FieldBlock extends BlockBase implements ContainerFactoryPluginInterface {
    *   The field formatter plugin manager.
    * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
    *   The current route match.
-   * @param \Drupal\Core\Language\LanguageManagerInterface $languageManager
-   *   The language manager.
+   * @param \Drupal\Core\Entity\EntityRepositoryInterface $entityRepository
+   *   The entity repository.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entityTypeManager, EntityFieldManagerInterface $entityFieldManager, FormatterPluginManager $formatter_plugin_manager, RouteMatchInterface $route_match, LanguageManagerInterface $languageManager) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entityTypeManager, EntityFieldManagerInterface $entityFieldManager, FormatterPluginManager $formatter_plugin_manager, RouteMatchInterface $route_match, EntityRepositoryInterface $entityRepository) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->entityTypeManager = $entityTypeManager;
     $this->entityFieldManager = $entityFieldManager;
     $this->formatterPluginManager = $formatter_plugin_manager;
     $this->routeMatch = $route_match;
-    $this->languageManager = $languageManager;
+    $this->entityRepository = $entityRepository;
   }
 
   /**
@@ -115,7 +116,7 @@ class FieldBlock extends BlockBase implements ContainerFactoryPluginInterface {
       $container->get('entity_field.manager'),
       $container->get('plugin.manager.field.formatter'),
       $container->get('current_route_match'),
-      $container->get('language_manager'));
+      $container->get('entity.repository'));
   }
 
   /**
@@ -156,11 +157,10 @@ class FieldBlock extends BlockBase implements ContainerFactoryPluginInterface {
    */
   protected function getFormatterOptions(FieldDefinitionInterface $field_definition) {
     $options = $this->formatterPluginManager->getOptions($field_definition->getType());
-    foreach ($options as $id => $label) {
+    foreach (array_keys($options) as $id) {
       $definition = $this->formatterPluginManager->getDefinition($id, FALSE);
       $formatter_plugin_class = $definition['class'] ?? NULL;
-      $applicable = $formatter_plugin_class instanceof FormatterInterface && $formatter_plugin_class::isApplicable($field_definition);
-      if ($applicable) {
+      if (is_subclass_of($formatter_plugin_class, FormatterInterface::class) && !$formatter_plugin_class::isApplicable($field_definition)) {
         unset($options[$id]);
       }
     }
@@ -403,25 +403,26 @@ class FieldBlock extends BlockBase implements ContainerFactoryPluginInterface {
   }
 
   /**
-   * Ensure that the field gets correctly translated into the current language.
+   * Ensure that the field gets correctly translated into the content language.
+   *
+   * The block renders content, so it follows the negotiated content language
+   * rather than the interface language. On sites where the two are configured
+   * separately -- an English interface with content in many languages, say --
+   * those differ. The entity repository resolves the same way core's own param
+   * converters do, language fallback candidates included, so the block renders
+   * the translation the rest of the page is already showing.
    *
    * @param \Drupal\Core\Entity\ContentEntityInterface $entity
    *   The entity that contains the field.
    *
+   * @see \Drupal\Core\Entity\EntityRepositoryInterface::getTranslationFromContext()
+   *
    * @return \Drupal\Core\Field\FieldItemListInterface
-   *   The field in the current language.
+   *   The field in the content language.
    */
   private function getTranslatedFieldFromEntity(ContentEntityInterface $entity) {
-    $language = $this->languageManager->getCurrentLanguage()->getId();
-    $field = $entity->get($this->configuration['field_name']);
-
-    if ($entity->hasTranslation($language)) {
-      $translatedEntity = $entity->getTranslation($language);
-      $adapter = EntityAdapter::createFromEntity($translatedEntity);
-      $field->setContext($this->configuration['field_name'], $adapter);
-    }
-
-    return $field;
+    $translation = $this->entityRepository->getTranslationFromContext($entity);
+    return $translation->get($this->configuration['field_name']);
   }
 
   /**
@@ -440,8 +441,16 @@ class FieldBlock extends BlockBase implements ContainerFactoryPluginInterface {
    */
   public function getCacheContexts() {
     // This block must be cached per route: every entity has its own canonical
-    // url and its own fields.
-    return ['route'];
+    // url and its own fields. It must also be cached per content language,
+    // because that is the language the field is rendered in. The route context
+    // does not cover that: a language prefix is stripped from the path before
+    // routing, so "/node/1" and "/de/node/1" are the very same route with the
+    // very same parameters, and without this the render cache hands the one
+    // language's field to the other.
+    return Cache::mergeContexts(parent::getCacheContexts(), [
+      'route',
+      'languages:' . LanguageInterface::TYPE_CONTENT,
+    ]);
   }
 
   /**
@@ -468,24 +477,56 @@ class FieldBlock extends BlockBase implements ContainerFactoryPluginInterface {
       return NULL;
     }
 
-    // Check if any of the route parameters represents an entity. Use the
-    // first one that is of the right type.
-    foreach ($parameters as $name => $options) {
-      if (isset($options['type']) && strpos($options['type'], 'entity:') === 0) {
-        $entity = $this->routeMatch->getParameter($name);
+    // Check if any of the route parameters represents an entity. Use the first
+    // one that is of the right type. What the route match hands back is
+    // checked, rather than the parameter type the route declares, because not
+    // every parameter that ends up holding an entity is declared with an
+    // "entity:" type. The node preview route, for one, declares a
+    // "node_preview" type of its own, and its param converter still returns a
+    // node.
+    foreach ($this->sortParameterNames($parameters, $entity_type) as $name) {
+      $entity = $this->routeMatch->getParameter($name);
 
-        if ($entity instanceof ContentEntityInterface
-          && $entity->hasLinkTemplate('canonical')
-          && $entity->getEntityTypeId() === $entity_type
-          && $entity->hasField($field_name)
-        ) {
-          $this->fieldBlockEntity = $entity;
-          return $this->fieldBlockEntity;
-        }
+      if ($entity instanceof ContentEntityInterface
+        && $entity->hasLinkTemplate('canonical')
+        && $entity->getEntityTypeId() === $entity_type
+        && $entity->hasField($field_name)
+      ) {
+        $this->fieldBlockEntity = $entity;
+        return $this->fieldBlockEntity;
       }
     }
 
     return NULL;
+  }
+
+  /**
+   * Orders route parameter names by the order in which they must be checked.
+   *
+   * Revision routes carry the entity twice: once as the default revision and
+   * once as the revision being viewed. Core declares the latter with an
+   * "entity_revision:" parameter type, for every revisionable entity type. The
+   * revision on display is the one the block must render, so the names of those
+   * parameters are returned before all others.
+   *
+   * Takes the "parameters" option of the route, keyed by parameter name, and
+   * the entity type id of the block.
+   */
+  protected function sortParameterNames(array $parameters, string $entity_type): array {
+    $revision_names = [];
+    $other_names = [];
+
+    foreach ($parameters as $name => $options) {
+      $type = $options['type'] ?? '';
+      if ($type === 'entity_revision:' . $entity_type) {
+        $revision_names[] = $name;
+      }
+      else {
+        $other_names[] = $name;
+      }
+    }
+
+    return array_merge($revision_names, $other_names);
   }
 
 }

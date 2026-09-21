@@ -24,16 +24,17 @@ services:
     decoration_priority: 5
     arguments: ['@s3fsfileservice.inner', '@stream_wrapper_manager', '@logger.channel.file', '@s3fs', '@config.factory', '@module_handler', '@s3fs.mime_type.guesser', '@logger.channel.s3fs']
 
+  # Drupal <11.4 definition.
+  # tagged_iterator does not exist until Symfony 4+.
+  # ServiceProvider alter modifies for latest Core release.
   s3fs.mime_type.guesser:
     class: Drupal\Core\File\MimeType\MimeTypeGuesser
     arguments: [ '@stream_wrapper_manager' ]
-    lazy: true
   s3fs.mime_type.guesser.extension:
     class: Drupal\s3fs\File\MimeType\ExtensionMimeTypeGuesser
     arguments: [ '@module_handler' ]
     tags:
       - { name: s3fs_mime_type_guesser }
-    lazy: true
 
   s3fs.route_subscriber_core_image_style:
     class: Drupal\s3fs\Routing\S3fsAlterCoreImageStyleRoutesSubscriber

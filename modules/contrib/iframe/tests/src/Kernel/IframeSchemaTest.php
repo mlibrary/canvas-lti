@@ -32,8 +32,8 @@ class IframeSchemaTest extends EntityKernelTestBase {
   /**
    * Tests Iframe schema.
    */
-  public function testIframeSchema() {
-    // Please note viewing this in iframe using web browser doesnt actually
+  public function testIframeSchema(): void {
+    // Please note viewing this in iframe using web browser doesn't actually
     // work. We're simply testing things here. If you want to test something
     // you can use "/" to load the homepage.
     $url = 'https://www.drupal.org/';

@@ -1,0 +1,21 @@
+/* Forms */
+
+.form-item__label, 
+.fieldset__legend--composite {
+  font-size: 1rem;
+}
+
+.form-item__description {
+  font-size: var(--font-size-s);
+}
+
+.form-item__label.form-required::after,
+.fieldset__label.form-required::after {
+  content: "*Required";
+  color: var(--color-pink-500);
+  vertical-align: bottom;
+  margin-left: 0.25rem;
+  padding: 0.15rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}

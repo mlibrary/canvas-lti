@@ -16,29 +16,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class CustomGuidesAdmin extends ConfigFormBase {
 
   /**
-   * Constructs a \Drupal\user\AccountSettingsForm object.
-   *
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   The factory for configuration objects.
-   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
-   *   The module handler.
-   * @param \Drupal\user\RoleStorageInterface $role_storage
-   *   The role storage.
-   */
-  public function __construct(ConfigFactoryInterface $config_factory) {
-    parent::__construct($config_factory);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('config.factory')
-    );
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function getFormId() {

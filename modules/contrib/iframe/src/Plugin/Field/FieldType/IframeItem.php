@@ -2,30 +2,31 @@
 
 namespace Drupal\iframe\Plugin\Field\FieldType;
 
-use Drupal\Core\Field\FieldItemBase;
-use Drupal\Core\Field\FieldDefinitionInterface;
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Field\FieldStorageDefinitionInterface;
-use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Component\Utility\Random;
+use Drupal\Core\Field\Attribute\FieldType;
+use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Field\FieldItemBase;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\Core\TypedData\DataDefinition;
 
 /**
  * Plugin implementation of the 'Iframe' field type.
- *
- * @FieldType(
- *   id = "iframe",
- *   label = @Translation("Iframe"),
- *   description = @Translation("The Iframe module defines an iframe field type for the Field module. Further definable are attributes for styling the iframe, like: URL, width, height, title, headerlevel, class, frameborder, scrolling and transparency."),
- *   default_widget = "iframe_urlwidthheight",
- *   default_formatter = "iframe_default"
- * )
  */
+#[FieldType(
+  id: "iframe",
+  label: new TranslatableMarkup("Iframe"),
+  description: new TranslatableMarkup("The Iframe module defines an iframe field type for the Field module. Further definable are attributes for styling the iframe, like: URL, width, height, title, headerlevel, class, frameborder, scrolling and transparency."),
+  default_widget: "iframe_urlwidthheight",
+  default_formatter: "iframe_default",
+)]
 class IframeItem extends FieldItemBase {
 
   /**
    * {@inheritdoc}
    */
-  public static function defaultFieldSettings() {
+  public static function defaultFieldSettings(): array {
     return [
       'title' => NULL,
       'headerlevel' => NULL,
@@ -36,14 +37,14 @@ class IframeItem extends FieldItemBase {
       'scrolling' => NULL,
       'transparency' => NULL,
       'tokensupport' => NULL,
-      'allowfullscreen' => NULL,
+      'allowfullscreen' => '1',
     ] + parent::defaultFieldSettings();
   }
 
   /**
    * {@inheritdoc}
    */
-  public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
+  public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition): array {
     // Url as 'string' for token support. Validation of url will occur later.
     $properties['url'] = DataDefinition::create('string')
       ->setLabel(t('URL'));
@@ -84,7 +85,7 @@ class IframeItem extends FieldItemBase {
   /**
    * Implements hook_field_schema().
    */
-  public static function schema(FieldStorageDefinitionInterface $field_definition) {
+  public static function schema(FieldStorageDefinitionInterface $field_definition): array {
     return [
       'columns' => [
         'url' => [
@@ -179,10 +180,9 @@ class IframeItem extends FieldItemBase {
    * In contenttype-field-settings "Manage fields" -> "Edit"
    * admin/structure/types/manage/CONTENTTYPE/fields/node.CONTENTTYPE.FIELDNAME.
    */
-  public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
+  public function fieldSettingsForm(array $form, FormStateInterface $form_state): array {
     $element = [];
     $settings = $this->getSettings() + self::defaultFieldSettings();
-    // \iframe_debug(4, __METHOD__ . " settings", $settings);
     $element['class'] = [
       '#type' => 'textfield',
       '#title' => $this->t('CSS Class'),
@@ -272,7 +272,7 @@ class IframeItem extends FieldItemBase {
   /**
    * {@inheritdoc}
    */
-  public static function generateSampleValue(FieldDefinitionInterface $field_definition) {
+  public static function generateSampleValue(FieldDefinitionInterface $field_definition): array {
     // Set of possible top-level domains.
     $tlds = ['com', 'net', 'gov', 'org', 'edu', 'biz', 'info'];
     // Set random length for the domain name.
@@ -300,7 +300,7 @@ class IframeItem extends FieldItemBase {
   /**
    * {@inheritdoc}
    */
-  public function isEmpty() {
+  public function isEmpty(): bool {
     $value = $this->get('url')->getValue();
     return $value === NULL || $value === '';
   }
@@ -308,17 +308,16 @@ class IframeItem extends FieldItemBase {
   /**
    * {@inheritdoc}
    */
-  public static function mainPropertyName() {
+  public static function mainPropertyName(): ?string {
     return 'url';
   }
 
   /**
    * Get token support setting.
    */
-  public function getTokenSupport() {
+  public function getTokenSupport(): int {
     $value = $this->getSetting('tokensupport');
-    $value = empty($value) ? 0 : (int) $value;
-    return $value;
+    return empty($value) ? 0 : (int) $value;
   }
 
 }

@@ -2,83 +2,47 @@
 
 namespace Drupal\fieldblock;
 
-use Drupal\Component\Uuid\UuidInterface;
-use Drupal\Core\Cache\MemoryCache\MemoryCacheInterface;
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Config\Entity\ConfigEntityStorage;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Language\LanguageManagerInterface;
 
 /**
- * The entity storage for FieldBlocks.
+ * Queries and deletes the block entities provided by this module.
+ *
+ * @internal
+ *   This class is not an API. It may change or be removed at any time without
+ *   a deprecation period.
  *
  * @package Drupal\fieldblock
  */
-class BlockEntityStorage extends ConfigEntityStorage {
+class BlockEntityStorage {
 
   /**
-   * Drupal\Core\Config\ConfigFactory definition.
-   *
-   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   * The entity type manager.
    */
-  protected $configFactory;
+  protected EntityTypeManagerInterface $entityTypeManager;
 
-  /**
-   * Drupal\Component\Uuid\Php definition.
-   *
-   * @var \Drupal\Component\Uuid\UuidInterface
-   */
-  protected $uuidService;
-
-  /**
-   * Drupal\Core\Language\LanguageManager definition.
-   *
-   * @var \Drupal\Core\Language\LanguageManagerInterface
-   */
-  protected $languageManager;
-
-  /**
-   * Drupal\Core\Entity\EntityTypeManager definition.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
-   */
-  protected $entityTypeManager;
-
-  /**
-   * Constructor.
-   *
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   The config factory service.
-   * @param \Drupal\Component\Uuid\UuidInterface $uuid_service
-   *   The UUID service.
-   * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
-   *   The language manager.
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
-   *   The entity type manager.
-   * @param \Drupal\Core\Cache\MemoryCache\MemoryCacheInterface $memory_cache
-   *   The memory cache backend.
-   */
-  public function __construct(ConfigFactoryInterface $config_factory, UuidInterface $uuid_service, LanguageManagerInterface $language_manager, EntityTypeManagerInterface $entityTypeManager, MemoryCacheInterface $memory_cache) {
-    $this->configFactory = $config_factory;
-    $this->uuidService = $uuid_service;
-    $this->languageManager = $language_manager;
+  public function __construct(EntityTypeManagerInterface $entityTypeManager) {
     $this->entityTypeManager = $entityTypeManager;
-    $entity_type = $entityTypeManager->getDefinition('block');
-    parent::__construct($entity_type, $config_factory, $uuid_service, $language_manager, $memory_cache);
+  }
+
+  /**
+   * Get the storage handler of the block entity type.
+   */
+  protected function getBlockStorage(): EntityStorageInterface {
+    return $this->entityTypeManager->getStorage('block');
   }
 
   /**
    * Load all blocks provided by this module.
-   *
-   * @return \Drupal\Core\Entity\EntityInterface[]
-   *   Block entities.
    */
-  public function loadFieldBlocks() {
+  public function loadFieldBlocks(): array {
+    $storage = $this->getBlockStorage();
     // Build a query to fetch the entity IDs.
-    $entity_query = $this->getQuery();
+    $entity_query = $storage->getQuery();
+    $entity_query->accessCheck(FALSE);
     $entity_query->condition('plugin', 'fieldblock:', 'STARTS_WITH');
     $result = $entity_query->execute();
-    return $result ? $this->loadMultiple($result) : [];
+    return $result ? $storage->loadMultiple($result) : [];
   }
 
   /**
@@ -86,14 +50,10 @@ class BlockEntityStorage extends ConfigEntityStorage {
    *
    * This will also return entity type ids for entities that are no longer
    * available.
-   *
-   * @return array
-   *   Entity type machine names.
    */
-  public function getEntityTypesUsed() {
+  public function getEntityTypesUsed(): array {
     $blocks = $this->loadFieldBlocks();
     $entity_types = [];
-    /** @var \Drupal\block\Entity\Block $block */
     foreach ($blocks as $block) {
       $plugin_parts = explode(':', $block->get('plugin'));
       $entity_types[] = $plugin_parts['1'];
@@ -104,13 +64,11 @@ class BlockEntityStorage extends ConfigEntityStorage {
 
   /**
    * Delete all blocks for an entity type.
-   *
-   * @param string $entity_type
-   *   The entity type.
    */
-  public function deleteBlocksForEntityType($entity_type) {
-    $blocks = $this->loadByProperties(['plugin' => "fieldblock:$entity_type"]);
-    $this->delete($blocks);
+  public function deleteBlocksForEntityType(string $entity_type): void {
+    $storage = $this->getBlockStorage();
+    $blocks = $storage->loadByProperties(['plugin' => "fieldblock:$entity_type"]);
+    $storage->delete($blocks);
   }
 
 }

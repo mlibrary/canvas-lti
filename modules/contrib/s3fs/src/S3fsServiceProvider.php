@@ -4,8 +4,10 @@ namespace Drupal\s3fs;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\DependencyInjection\ServiceProviderBase;
+use Drupal\Core\File\MimeType\MimeTypeGuesser;
 use Drupal\Core\Site\Settings;
 use Drupal\s3fs\Compiler\S3fsMimeTypePass;
+use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
@@ -49,7 +51,6 @@ class S3fsServiceProvider extends ServiceProviderBase {
       // Replace the private stream wrapper with S3fsStream.
       $container->getDefinition('stream_wrapper.private')
         ->setClass('Drupal\s3fs\StreamWrapper\PrivateS3fsStream');
-
     }
 
     if (version_compare(\Drupal::VERSION, '10.2.9999999', '<=')) {
@@ -58,6 +59,23 @@ class S3fsServiceProvider extends ServiceProviderBase {
         // @phpstan-ignore-next-line classConstant.deprecatedClass
         ->setClass(S3fsFileService::class);
     }
+
+    if (!static::mimeGuesserUsesSetterInjection()) {
+      $container->getDefinition('s3fs.mime_type.guesser')->setArguments([
+        new Reference('stream_wrapper_manager'),
+        new TaggedIteratorArgument('s3fs_mime_type_guesser'),
+      ]);
+    }
+  }
+
+  /**
+   * Whether the MimeTypeGuesser services uses setter injection.
+   *
+   * Core 11.4+ migrated to providing a service locator to the constructor.
+   */
+  protected static function mimeGuesserUsesSetterInjection(): bool {
+    return method_exists(MimeTypeGuesser::class, 'addMimeTypeGuesser')
+      || method_exists(MimeTypeGuesser::class, 'addGuesser');
   }
 
   /**
@@ -68,7 +86,10 @@ class S3fsServiceProvider extends ServiceProviderBase {
    */
   public function register(ContainerBuilder $container) {
 
-    $container->addCompilerPass(new S3fsMimeTypePass());
+    // D11.4+ uses a tagged iterator to constructor, no compiler pass required.
+    if (static::mimeGuesserUsesSetterInjection()) {
+      $container->addCompilerPass(new S3fsMimeTypePass());
+    }
 
     if ($container->hasDefinition('advagg.optimizer.css') && Settings::get('s3fs.use_s3_for_public')) {
       $container

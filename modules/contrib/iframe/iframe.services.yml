@@ -1,0 +1,5 @@
+
+services:
+  Drupal\iframe\Hook\IframeHooks:
+    class: Drupal\iframe\Hook\IframeHooks
+    autowire: true

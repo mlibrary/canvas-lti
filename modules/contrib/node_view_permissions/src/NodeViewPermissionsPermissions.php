@@ -2,8 +2,8 @@
 
 namespace Drupal\node_view_permissions;
 
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\node\Entity\NodeType;
+use Drupal\node\NodePermissions;
 
 /**
  * Class definition.
@@ -12,29 +12,27 @@ use Drupal\node\Entity\NodeType;
  *
  * @package Access Control
  */
-class NodeViewPermissionsPermissions {
-  use StringTranslationTrait;
+class NodeViewPermissionsPermissions extends NodePermissions {
 
   /**
-   * Permission function.
+   * Returns a list of node view permissions for a given node type.
    *
-   * Added the permissions.
+   * @param \Drupal\node\Entity\NodeType $type
+   *   The node type.
+   *
+   * @return array
+   *   An associative array of permission names and descriptions.
    */
-  public function permissions() {
-    $permissions = [];
-    $nodeTypes = NodeType::loadMultiple();
-    foreach ($nodeTypes as $nodeType) {
-      /** @var \Drupal\node\Entity\NodeType $nodeType */
-      $permission = 'view any ' . $nodeType->id() . ' content';
-      $permissions[$permission] = [
-        'title' => $this->t('<em>@type_label</em>: View any content', ['@type_label' => $nodeType->label()]),
-      ];
-      $permission = 'view own ' . $nodeType->id() . ' content';
-      $permissions[$permission] = [
-        'title' => $this->t('<em>@type_label</em>: View own content', ['@type_label' => $nodeType->label()]),
-      ];
-    }
-    return $permissions;
+  protected function buildPermissions(NodeType $type): array {
+    $type_id = $type->id();
+    return [
+      "view any $type_id content" => [
+        'title' => $this->t('<em>@type_label</em>: View any content', ['@type_label' => $type->label()]),
+      ],
+      "view own $type_id content" => [
+        'title' => $this->t('<em>@type_label</em>: View own content', ['@type_label' => $type->label()]),
+      ],
+    ];
   }
 
 }

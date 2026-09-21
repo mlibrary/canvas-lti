@@ -2,41 +2,16 @@
 
 namespace Drupal\iframe\Plugin\migrate\process\d7;
 
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\migrate\Entity\MigrationInterface;
+use Drupal\migrate\Attribute\MigrateProcess;
 use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\ProcessPluginBase;
 use Drupal\migrate\Row;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * The Class CckIframe.
- *
- * @MigrateProcessPlugin(
- *   id = "d7_cck_iframe"
- * )
  */
-class CckIframe extends ProcessPluginBase implements ContainerFactoryPluginInterface {
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->migration = $migration;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration = NULL) {
-    return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $migration
-    );
-  }
+#[MigrateProcess('d7_cck_iframe')]
+class CckIframe extends ProcessPluginBase {
 
   /**
    * {@inheritdoc}
@@ -52,7 +27,7 @@ class CckIframe extends ProcessPluginBase implements ContainerFactoryPluginInter
           'allowed_classes' => FALSE,
         ]);
       }
-      catch (Exception $e) {
+      catch (\Exception) {
         // Ignore and set default attributes were
         // Only optional and ar not necessarily required.
         $attributes = [];

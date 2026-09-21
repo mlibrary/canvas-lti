@@ -6,7 +6,7 @@ block.settings.fieldblock:*:
   mapping:
     label_from_field:
       type: boolean
-      lable: 'Use field label as block title'
+      label: 'Use field label as block title'
     field_name:
       type: string
       label: 'Field name'

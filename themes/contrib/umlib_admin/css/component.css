@@ -126,6 +126,16 @@ input[value="Search"], .button--search, input[value="Search"]:hover , .button--s
   color: var(--color-teal-400);
 }
 
+/* Field Spacing */
+
+.field--label-above {
+  padding: 0.5rem 0;
+}
+
+.field__item > p {
+  padding-top: 0;
+}
+
 /* Pagination Pager */
 
 .pager__link, .pager__item--current {
@@ -136,13 +146,17 @@ input[value="Search"], .button--search, input[value="Search"]:hover , .button--s
   background-color: var(--color-teal-400);
 }
 
+li.pager__item.pager__item--mini.pager__item--current {
+  background-color: var(--color-teal-400);
+}
+
 .pager__link:hover {
   background-color: var(--pager--hover-bg-color);
 }
 
 .pager__link.is-active:hover {
   color: #fff;
-  background-color: var(--pager--hover-bg-color);
+  background-color: var(--color-teal-400);
   box-shadow: 0 0 0 2px var(--color-maize-400),
     0 0 0 3px var(--color-neutral-400) !important;
 }
@@ -445,4 +459,16 @@ a.site-logo {
   width: 1rem;
   margin: 0;
   padding: 0;
+}
+
+/* Views bulk action bar */
+
+.views-bulk-actions__item .button--primary:not(:disabled,.is-disabled) {
+  background: #fff;
+  color: var(--color-neutral-400);
+}
+
+.views-bulk-actions__item .button--primary:not(:disabled,.is-disabled):hover {
+  box-shadow: 0 0 0 2px #fff,0 0 0 3px var(--color-neutral-400);
+  background: #fff;
 }

@@ -49,6 +49,8 @@ include:
 # variables:
 #   SKIP_ESLINT: '1'
 
+variables:
+  OPT_IN_TEST_PREVIOUS_MAJOR: 1
 
 ###################################################################################
 #

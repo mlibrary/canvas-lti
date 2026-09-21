@@ -1,0 +1,11 @@
+name: 'Field as Block test'
+type: module
+description: 'Provides routes to test field blocks with.'
+package: Testing
+dependencies:
+  - drupal:node
+
+# Information added by Drupal.org packaging script on 2026-08-11
+version: '8.x-2.4'
+project: 'fieldblock'
+datestamp: 1786424431

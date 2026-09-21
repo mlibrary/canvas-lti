@@ -5,23 +5,43 @@
  * Contains install and update functions for node_view_permissions.
  */
 
+use Drupal\node\Entity\NodeType;
+use Drupal\node_view_permissions\NodeAccessRebuildHelper;
+use Drupal\user\Entity\Role;
+use Drupal\user\RoleInterface;
+
 /**
  * Implements hook_install().
  */
 function node_view_permissions_install() {
-  node_access_needs_rebuild(TRUE);
+  NodeAccessRebuildHelper::setNeedsRebuild(TRUE);
+
+  // Add 'view any [node_type] content' permission for anonymous and
+  // authenticated users.
+  $roles = [
+    RoleInterface::ANONYMOUS_ID,
+    RoleInterface::AUTHENTICATED_ID,
+  ];
+
+  foreach (Role::loadMultiple($roles) as $role) {
+    foreach (NodeType::loadMultiple() as $type) {
+      $type_id = $type->id();
+      $role->grantPermission("view any $type_id content");
+    }
+    $role->save();
+  }
 }
 
 /**
  * Implements hook_uninstall().
  */
 function node_view_permissions_uninstall() {
-  node_access_needs_rebuild(TRUE);
+  NodeAccessRebuildHelper::setNeedsRebuild(TRUE);
 }
 
 /**
  * Implements hook_update_N().
  */
 function node_view_permissions_update_8001() {
-  node_access_needs_rebuild(TRUE);
+  NodeAccessRebuildHelper::setNeedsRebuild(TRUE);
 }

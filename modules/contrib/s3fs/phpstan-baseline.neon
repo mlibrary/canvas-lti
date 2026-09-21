@@ -51,7 +51,7 @@ parameters:
 			path: s3fs.install
 
 		-
-			message: "#^Parameter \\#1 \\$object_or_class of function is_subclass_of expects object\\|string, string\\|false given\\.$#"
+			message: "#^Parameter \\#1 \\$object_or_class of function is_subclass_of expects object\\|string, class\\-string\\<Drupal\\\\Core\\\\StreamWrapper\\\\StreamWrapperInterface\\>\\|false given\\.$#"
 			count: 2
 			path: s3fs.install
 
@@ -462,11 +462,6 @@ parameters:
 
 		-
 			message: "#^Cannot access offset 'twig' on mixed\\.$#"
-			count: 1
-			path: src/Form/SettingsForm.php
-
-		-
-			message: "#^Method Drupal\\\\s3fs\\\\Form\\\\SettingsForm\\:\\:create\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Form/SettingsForm.php
 
@@ -1107,16 +1102,6 @@ parameters:
 
 		-
 			message: "#^Method Drupal\\\\Tests\\\\s3fs\\\\Functional\\\\S3fsConfigFormTest\\:\\:testS3fsConfigurationForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/src/Functional/S3fsConfigFormTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$account of method Drupal\\\\Tests\\\\BrowserTestBase\\:\\:drupalLogin\\(\\) expects Drupal\\\\Core\\\\Session\\\\AccountInterface, Drupal\\\\user\\\\Entity\\\\User\\|false given\\.$#"
-			count: 1
-			path: tests/src/Functional/S3fsConfigFormTest.php
-
-		-
-			message: "#^Property Drupal\\\\Tests\\\\s3fs\\\\Functional\\\\S3fsConfigFormTest\\:\\:\\$adminUser \\(Drupal\\\\user\\\\UserInterface\\) does not accept Drupal\\\\user\\\\Entity\\\\User\\|false\\.$#"
 			count: 1
 			path: tests/src/Functional/S3fsConfigFormTest.php
 

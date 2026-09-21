@@ -2,23 +2,26 @@
 
 namespace Drupal\iframe\Plugin\Field\FieldFormatter;
 
+use Drupal\Core\Field\Attribute\FieldFormatter;
 use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * The Class IframeOnlyFormatter.
- *
- * @FieldFormatter(
- *  id = "iframe_only",
- *  label = @Translation("Iframe without title"),
- *  field_types = {"iframe"}
- * )
  */
+#[FieldFormatter(
+  id: 'iframe_only',
+  label: new TranslatableMarkup('Iframe without title'),
+  field_types: [
+    'iframe',
+  ],
+)]
 class IframeOnlyFormatter extends IframeDefaultFormatter {
 
   /**
    * {@inheritdoc}
    */
-  public function viewElements(FieldItemListInterface $items, $langcode) {
+  public function viewElements(FieldItemListInterface $items, $langcode): array {
     $elements = [];
     // Settings from type.
     $settings = $this->getSettings();
@@ -42,8 +45,8 @@ class IframeOnlyFormatter extends IframeDefaultFormatter {
       // KEEP title-attribute in item->title for Accessibility title-attribute
       // in iframe tag //$item->title = '';
       // no visible header, but title-attr in item as options.
-      $elements[$delta] = self::iframeIframe('', $item->url, $item);
-      // Tokens can be dynamic, so its not cacheable.
+      $elements[$delta] = $this->iframeIframe('', $item->url, $item);
+      // Tokens can be dynamic, so it's not cacheable.
       if (isset($settings['tokensupport']) && $settings['tokensupport']) {
         $elements[$delta]['cache'] = ['max-age' => 0];
       }
