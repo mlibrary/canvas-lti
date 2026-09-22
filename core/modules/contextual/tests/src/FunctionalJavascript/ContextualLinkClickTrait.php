@@ -19,7 +19,7 @@ trait ContextualLinkClickTrait {
    * @param bool $force_visible
    *   If true then the button will be forced to visible so it can be clicked.
    */
-  protected function clickContextualLink($selector, $link_locator, $force_visible = TRUE) {
+  protected function clickContextualLink($selector, $link_locator, $force_visible = TRUE): void {
     $page = $this->getSession()->getPage();
     $page->waitFor(10, function () use ($page, $selector) {
       return $page->find('css', "$selector .contextual-links");
@@ -44,7 +44,7 @@ trait ContextualLinkClickTrait {
    * @param string $selector
    *   The selector for the element that contains the contextual link.
    */
-  protected function toggleContextualTriggerVisibility($selector) {
+  protected function toggleContextualTriggerVisibility($selector): void {
     // Hovering over the element itself with should be enough, but does not
     // work. Manually remove the visually-hidden class.
     $this->getSession()->executeScript("jQuery('{$selector} .contextual .trigger').toggleClass('visually-hidden');");

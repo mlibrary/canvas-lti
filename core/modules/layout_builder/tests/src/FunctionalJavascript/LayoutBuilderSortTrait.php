@@ -16,7 +16,7 @@ trait LayoutBuilderSortTrait {
   /**
    * {@inheritdoc}
    */
-  protected function sortableUpdate($item, $from, $to = NULL) {
+  protected function sortableUpdate($item, $from, $to = NULL): void {
     // If container does not change, $from and $to are equal.
     $to = $to ?: $from;
 

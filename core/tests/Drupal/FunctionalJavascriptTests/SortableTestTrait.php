@@ -25,7 +25,7 @@ trait SortableTestTrait {
    * @param null|string $to
    *   The HTML selector for the target container.
    */
-  abstract protected function sortableUpdate($item, $from, $to = NULL);
+  abstract protected function sortableUpdate($item, $from, $to = NULL): void;
 
   /**
    * Simulates a drag on an element from one container to another.
@@ -37,7 +37,7 @@ trait SortableTestTrait {
    * @param null|string $to
    *   The HTML selector for the target container.
    */
-  protected function sortableTo($item, $from, $to) {
+  protected function sortableTo($item, $from, $to): void {
     $item = addslashes($item);
     $from = addslashes($from);
     $to   = addslashes($to);
@@ -71,7 +71,7 @@ JS;
    * @param string $from
    *   The HTML selector for the element container.
    */
-  protected function sortableAfter($item, $target, $from) {
+  protected function sortableAfter($item, $target, $from): void {
     $item   = addslashes($item);
     $target = addslashes($target);
     $from   = addslashes($from);

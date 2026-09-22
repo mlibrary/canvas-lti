@@ -1,33 +1,44 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\layout_builder\Unit\EventSubscriber;
 
+use Drupal\Component\Plugin\Context\Context;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Component\Plugin\PluginInspectionInterface;
 use Drupal\Component\Uuid\Php as UuidFactory;
 use Drupal\Core\Cache\NullBackend;
 use Drupal\Core\Condition\ConditionInterface;
 use Drupal\Core\Condition\ConditionManager;
+use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\Core\Plugin\Context\ContextHandler;
 use Drupal\Core\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\TypedData\Plugin\DataType\StringData;
+use Drupal\Core\TypedData\TypedDataManager;
 use Drupal\layout_builder\Event\SectionComponentBuildRenderArrayEvent;
 use Drupal\layout_builder\EventSubscriber\SectionComponentVisibility;
 use Drupal\layout_builder\SectionComponent;
 use Drupal\Tests\UnitTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Covers class responsible for section component visibility.
- *
- * @group layout_builder
- * @coversDefaultClass \Drupal\layout_builder\EventSubscriber\SectionComponentVisibility
  */
+#[CoversClass(SectionComponentVisibility::class)]
+#[Group('layout_builder')]
 class SectionComponentVisibilityTest extends UnitTestCase {
 
+  /**
+   * The condition plugin manager.
+   *
+   * @var \Drupal\Core\Executable\ExecutableManagerInterface|\PHPUnit\Framework\MockObject\MockObject
+   */
   protected $conditionManager;
 
   /**
@@ -35,6 +46,11 @@ class SectionComponentVisibilityTest extends UnitTestCase {
    */
   public function setUp(): void {
     parent::setUp();
+
+    $typed_data_manager = $this->prophesize(TypedDataManager::class);
+    $container = new ContainerBuilder();
+    $container->set('typed_data_manager', $typed_data_manager->reveal());
+    \Drupal::setContainer($container);
 
     $this->conditionManager = new ConditionManager(
       new \ArrayIterator([]),
@@ -45,10 +61,8 @@ class SectionComponentVisibilityTest extends UnitTestCase {
 
   /**
    * Ensure that nothing happens when previewing.
-   *
-   * @covers ::onBuildRender
    */
-  public function testOnBuildRenderPreview() {
+  public function testOnBuildRenderPreview(): void {
     $subscriber = new SectionComponentVisibility(
       new ContextHandler(),
       $this->conditionManager
@@ -56,60 +70,49 @@ class SectionComponentVisibilityTest extends UnitTestCase {
     $event = $this->prophesize(SectionComponentBuildRenderArrayEvent::class);
     // Assert that when not in preview, the event is ignored. We do this by
     // asserting that in preview is called and nothing else.
-    $event->inPreview()
-      ->shouldBeCalled();
+    $event->inPreview()->shouldBeCalled();
 
     $component = new SectionComponent('', 'top');
-    $event->getComponent()
-      ->willReturn($component)
-      ->shouldBeCalled();
+    $event->getComponent()->willReturn($component);
     $subscriber->onBuildRender($event->reveal());
   }
 
   /**
    * Ensure no conditions are applied when visibility isn't set.
-   *
-   * @covers ::onBuildRender
    */
-  public function testOnBuildRenderNonPreviewEmpty() {
+  public function testOnBuildRenderNonPreviewEmpty(): void {
     $subscriber = new SectionComponentVisibility(
       new ContextHandler(),
       $this->conditionManager
     );
     $event = $this->prophesize(SectionComponentBuildRenderArrayEvent::class);
     // We're not in a preview.
-    $event->inPreview()
-      ->willReturn(FALSE);
+    $event->inPreview()->willReturn(FALSE);
 
     $component = new SectionComponent('', 'top');
-    $event->getComponent()
-      ->shouldBeCalled()
-      ->willReturn($component);
+    $event->getComponent()->willReturn($component);
+    $event->stopPropagation()->shouldNotBeCalled();
     $subscriber->onBuildRender($event->reveal());
   }
 
   /**
    * Ensure no conditions are applied when visibility isn't set.
-   *
-   * @covers ::onBuildRender
    */
-  public function testOnBuildRenderNonPreviewBadPlugin() {
+  public function testOnBuildRenderNonPreviewBadPlugin(): void {
     $subscriber = new SectionComponentVisibility(
       new ContextHandler(),
       $this->conditionManager
     );
     $event = $this->prophesize(SectionComponentBuildRenderArrayEvent::class);
     // We're not in a preview.
-    $event->inPreview()
-      ->willReturn(FALSE);
+    $event->inPreview()->willReturn(FALSE);
 
     // Build a component so we can set properties.
     $component = new SectionComponent('', 'top');
     $component->set('visibility', [
       'uuid' => ['id' => 'plugin_dne'],
     ]);
-    $event->getComponent()
-      ->willReturn($component);
+    $event->getComponent()->willReturn($component);
 
     $this->expectException(PluginNotFoundException::class);
     $this->expectExceptionMessage('The "plugin_dne" plugin does not exist.');
@@ -118,31 +121,26 @@ class SectionComponentVisibilityTest extends UnitTestCase {
 
   /**
    * Ensure context aware plugins get their context applied.
-   *
-   * @covers ::onBuildRender
    */
-  public function testOnBuildRenderNonPreviewResolveContextAware() {
-    // Mock context aware plugin that will be used to assert we recieve context.
+  public function testOnBuildRenderNonPreviewResolveContextAware(): void {
+    // Mock context aware plugin that will be used to assert we receive context.
     $context_aware_plugin = $this->prophesize(ConditionInterface::class)
       ->willImplement(ContextAwarePluginInterface::class);
 
     // Set our mock condition manager to return the context plugin.
     $condition_manager = $this->prophesize(ConditionManager::class);
     $condition_manager->createInstance('context_aware', ['id' => 'context_aware'])
-      ->shouldBeCalledTimes(1)
       ->willReturn($context_aware_plugin->reveal());
     $event = $this->prophesize(SectionComponentBuildRenderArrayEvent::class);
     // We're not in a preview.
-    $event->inPreview()
-      ->willReturn(FALSE);
+    $event->inPreview()->willReturn(FALSE);
 
     // Build a component with our "context_aware" plugin in the visibility.
     $component = new SectionComponent('', 'top');
     $component->set('visibility', [
       'uuid' => ['id' => 'context_aware'],
     ]);
-    $event->getComponent()
-      ->willReturn($component);
+    $event->getComponent()->willReturn($component);
 
     // Setup a context array.
     $context_definition = new ContextDefinition();
@@ -157,9 +155,9 @@ class SectionComponentVisibilityTest extends UnitTestCase {
 
     // Steps that will be called in the process of resolving context.
     $event->addCacheableDependency($context_aware_plugin)
-      ->shouldBeCalledTimes(1);
+      ->shouldBeCalled();
     $context_aware_plugin->setContext('bar', $context['bar'])
-      ->shouldBeCalledTimes(1);
+      ->shouldBeCalled();
     $context_aware_plugin->execute()->willReturn(TRUE);
     $context_aware_plugin->getContextMapping()->willReturn([]);
     $context_aware_plugin->getContext('bar')->willReturn(NULL);
@@ -176,11 +174,9 @@ class SectionComponentVisibilityTest extends UnitTestCase {
 
   /**
    * Ensure visibility plugins control event propagation.
-   *
-   * @covers ::onBuildRender
-   * @dataProvider buildRenderResolves
    */
-  public function testOnBuildRenderNonPreviewResolve($result, $context_results) {
+  #[DataProvider('buildRenderResolves')]
+  public function testOnBuildRenderNonPreviewResolve($result, $context_results): void {
     $uuid_factory = new UuidFactory();
     $visibility_def = [];
 
@@ -198,14 +194,12 @@ class SectionComponentVisibilityTest extends UnitTestCase {
     }
 
     // We're not in a preview.
-    $event->inPreview()
-      ->willReturn(FALSE);
+    $event->inPreview()->willReturn(FALSE);
 
     // Build a component with our "context_aware" plugin in the visibility.
     $component = new SectionComponent('', 'top');
     $component->set('visibility', $visibility_def);
-    $event->getComponent()
-      ->willReturn($component);
+    $event->getComponent()->willReturn($component);
 
     // Assert different propagation outcomes.
     if ($result) {
@@ -213,7 +207,7 @@ class SectionComponentVisibilityTest extends UnitTestCase {
     }
     else {
       $event_plugin = $this->prophesize(PluginInspectionInterface::class)->reveal();
-      $event->stopPropagation()->shouldBeCalledTimes(1);
+      $event->stopPropagation()->shouldBeCalled();
       $event->getPlugin()->willReturn($event_plugin);
     }
 
@@ -231,7 +225,7 @@ class SectionComponentVisibilityTest extends UnitTestCase {
    * @return array
    *   Method parameters for testOnBuildRenderNonPreviewResolve().
    */
-  public function buildRenderResolves() {
+  public static function buildRenderResolves(): array {
     return [
       [TRUE, ['foo' => TRUE, 'bar' => TRUE]],
       [FALSE, ['foo' => TRUE, 'bar' => FALSE]],

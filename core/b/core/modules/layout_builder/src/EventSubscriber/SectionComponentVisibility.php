@@ -18,39 +18,17 @@ class SectionComponentVisibility implements EventSubscriberInterface {
   use ConditionAccessResolverTrait;
 
   /**
-   * The context handler.
-   *
-   * @var \Drupal\Core\Plugin\Context\ContextHandlerInterface
-   */
-  protected $contextHandler;
-
-  /**
-   * The condition plugin manager.
-   *
-   * @var \Drupal\Core\Executable\ExecutableManagerInterface
-   */
-  protected $conditionManager;
-
-  /**
    * Creates a SectionComponentVisibility object.
-   *
-   * @param \Drupal\Core\Plugin\Context\ContextHandlerInterface $context_handler
-   *   The context handler.
-   * @param \Drupal\Core\Executable\ExecutableManagerInterface $condition_manager
-   *   The condition plugin manager.
    */
-  public function __construct(ContextHandlerInterface $context_handler, ExecutableManagerInterface $condition_manager) {
-    $this->contextHandler = $context_handler;
-    $this->conditionManager = $condition_manager;
+  public function __construct(protected ContextHandlerInterface $contextHandler, protected ExecutableManagerInterface $conditionManager) {
   }
 
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     // Priority is set to 255 so this subscriber is run after the one in
     // BlockComponentRenderArray.
-    // @see \Drupal\layout_builder\EventSubscriber::getSubscribedEvents().
     $events[LayoutBuilderEvents::SECTION_COMPONENT_BUILD_RENDER_ARRAY] = ['onBuildRender', 255];
     return $events;
   }
@@ -61,18 +39,21 @@ class SectionComponentVisibility implements EventSubscriberInterface {
    * @param \Drupal\layout_builder\Event\SectionComponentBuildRenderArrayEvent $event
    *   The section component build render array event.
    */
-  public function onBuildRender(SectionComponentBuildRenderArrayEvent $event) {
+  public function onBuildRender(SectionComponentBuildRenderArrayEvent $event): void {
+    if ($event->inPreview()) {
+      return;
+    }
+
     $conditions = [];
-    if (!$event->inPreview()) {
-      $visibility = $event->getComponent()->get('visibility') ?: [];
-      foreach ($visibility as $uuid => $configuration) {
-        $condition = $this->conditionManager->createInstance($configuration['id'], $configuration);
-        if ($condition instanceof ContextAwarePluginInterface) {
-          $this->contextHandler->applyContextMapping($condition, $event->getContexts());
-        }
-        $event->addCacheableDependency($condition);
-        $conditions[$uuid] = $condition;
+
+    $visibility = $event->getComponent()->get('visibility') ?: [];
+    foreach ($visibility as $uuid => $configuration) {
+      $condition = $this->conditionManager->createInstance($configuration['id'], $configuration);
+      if ($condition instanceof ContextAwarePluginInterface) {
+        $this->contextHandler->applyContextMapping($condition, $event->getContexts());
       }
+      $event->addCacheableDependency($condition);
+      $conditions[$uuid] = $condition;
     }
 
     $visibility_operator = $event->getComponent()->get('visibility_operator') ?: 'and';

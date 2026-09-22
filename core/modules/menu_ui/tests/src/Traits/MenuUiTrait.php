@@ -14,10 +14,10 @@ trait MenuUiTrait {
    *
    * @param array $expected_item
    *   Array containing properties to check.
-   * @param int $menu_plugin_id
+   * @param string $menu_plugin_id
    *   Menu item id.
    */
-  protected function assertMenuLink(array $expected_item, $menu_plugin_id) {
+  protected function assertMenuLink(array $expected_item, $menu_plugin_id): void {
     // Retrieve the menu link.
     /** @var \Drupal\Core\Menu\MenuLinkManagerInterface $menu_link_manager */
     $menu_link_manager = \Drupal::service('plugin.manager.menu.link');

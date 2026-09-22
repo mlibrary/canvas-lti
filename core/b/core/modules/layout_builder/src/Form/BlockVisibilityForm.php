@@ -2,13 +2,14 @@
 
 namespace Drupal\layout_builder\Form;
 
+use Drupal\block\BlockInterface;
 use Drupal\Core\Ajax\AjaxFormHelperTrait;
 use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\OpenOffCanvasDialogCommand;
 use Drupal\Core\Executable\ExecutableManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Plugin\FilteredPluginManagerInterface;
 use Drupal\Core\Url;
 use Drupal\layout_builder\Context\LayoutBuilderContextTrait;
 use Drupal\layout_builder\Controller\LayoutRebuildTrait;
@@ -17,7 +18,6 @@ use Drupal\layout_builder\LayoutTempstoreRepositoryInterface;
 use Drupal\layout_builder\SectionComponentTrait;
 use Drupal\layout_builder\SectionStorageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Provides a form for applying visibility conditions to a block.
@@ -32,20 +32,6 @@ class BlockVisibilityForm extends FormBase {
   use LayoutBuilderHighlightTrait;
   use LayoutRebuildTrait;
   use SectionComponentTrait;
-
-  /**
-   * The condition manager.
-   *
-   * @var \Drupal\Core\Condition\ConditionManager
-   */
-  protected $conditionManager;
-
-  /**
-   * The form builder.
-   *
-   * @var \Drupal\Core\Form\FormBuilderInterface
-   */
-  protected $formBuilder;
 
   /**
    * The section storage.
@@ -69,32 +55,19 @@ class BlockVisibilityForm extends FormBase {
   protected $uuid;
 
   /**
-   * The layout tempstore repository.
-   *
-   * @var \Drupal\layout_builder\LayoutTempstoreRepositoryInterface
-   */
-  protected $layoutTempstoreRepository;
-
-  /**
    * Constructs a BlockVisibilityForm object.
-   *
-   * @param \Drupal\Core\Executable\ExecutableManagerInterface $condition_manager
-   *   The condition plugin manager.
-   * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
-   *   The form builder.
-   * @param \Drupal\layout_builder\LayoutTempstoreRepositoryInterface $layout_tempstore_repository
-   *   The layout tempstore repository.
    */
-  public function __construct(ExecutableManagerInterface $condition_manager, FormBuilderInterface $form_builder, LayoutTempstoreRepositoryInterface $layout_tempstore_repository) {
-    $this->conditionManager = $condition_manager;
-    $this->formBuilder = $form_builder;
-    $this->layoutTempstoreRepository = $layout_tempstore_repository;
+  public function __construct(
+    protected ExecutableManagerInterface|FilteredPluginManagerInterface $conditionManager,
+    protected FormBuilderInterface $formBuilder,
+    protected LayoutTempstoreRepositoryInterface $layoutTempstoreRepository,
+  ) {
   }
 
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container): self {
     return new static(
       $container->get('plugin.manager.condition'),
       $container->get('form_builder'),
@@ -105,14 +78,14 @@ class BlockVisibilityForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function getFormId() {
+  public function getFormId(): string {
     return 'layout_builder_block_visibility';
   }
 
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, SectionStorageInterface $section_storage = NULL, $delta = NULL, $uuid = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, ?SectionStorageInterface $section_storage = NULL, $delta = NULL, $uuid = NULL) {
     $this->sectionStorage = $section_storage;
     $this->delta = $delta;
     $this->uuid = $uuid;
@@ -139,19 +112,10 @@ class BlockVisibilityForm extends FormBase {
         ],
       ];
       $items[$visibility_id] = [
-        'label' => [
-          'data' => [
-            'condition_name' => [
-              '#type' => 'html_tag',
-              '#tag' => 'b',
-              '#value' => $condition->getPluginId(),
-            ],
-            'condition_summary' => [
-              '#type' => 'container',
-              '#markup' => $condition->summary(),
-            ],
-          ],
-        ],
+        'label' => $this->t('<strong>@condition_name:</strong> @condition_summary', [
+          '@condition_name' => $condition->getPluginDefinition()['label'],
+          '@condition_summary' => $condition->summary(),
+        ]),
         'edit' => [
           'data' => [
             '#type' => 'link',
@@ -176,17 +140,8 @@ class BlockVisibilityForm extends FormBase {
         '#theme' => 'table',
         '#rows' => $items,
         '#caption' => $this->t('Configured Conditions'),
-        '#weight' => 10,
       ];
     }
-
-    $form['condition'] = [
-      '#type' => 'select',
-      '#title' => $this->t('Add a visibility condition'),
-      '#options' => $conditions_available_to_block,
-      '#empty_value' => '',
-      '#weight' => 20,
-    ];
 
     // Determines if multiple conditions should be applied with 'and' or 'or'.
     $form['operator'] = [
@@ -198,13 +153,7 @@ class BlockVisibilityForm extends FormBase {
       ],
       '#default_value' => $this->getCurrentComponent()->get('visibility_operator') ?: 'and',
       // This field is not necessary until multiple conditions are added.
-      '#access' => count($items) > 0,
-      // If there are two or more visibility conditions, this field appears
-      // above the list of existing conditions. If there is only one visibility
-      // condition, and a second one is being added, then this field appears
-      // between the 'Add a visibility condition' dropdown and the submit
-      // button.
-      '#weight' => count($items) === 1 ? 30 : 3,
+      '#access' => count($items) > 1,
     ];
 
     // This is a submit button that only appears once two or more visibility
@@ -215,40 +164,40 @@ class BlockVisibilityForm extends FormBase {
     $form['update_operator'] = [
       '#type' => 'submit',
       '#access' => count($items) > 1,
-      '#weight' => 5,
       '#value' => $this->t('Update operator'),
       '#submit' => ['::updateOperator'],
     ];
 
-    if (count($items) === 1) {
-      // If there is only one visibility condition, hide the operator field
-      // until a second condition is selected to be added to the block.
-      $form['operator']['#states'] = [
-        'invisible' => [
-          '[name="condition"]' => ['value' => ''],
-        ],
+    $form['add'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Add a visibility condition'),
+      '#weight' => 20,
+    ];
+    $form['add']['conditions'] = [
+      '#theme' => 'item_list',
+      '#items' => [],
+    ];
+    foreach ($conditions_available_to_block as $condition_id => $condition_label) {
+      $parameters = $this->getParameters($condition_id);
+
+      $form['add']['conditions']['#items'][$condition_id] = [
+        '#type' => 'link',
+        '#title' => $condition_label,
+        '#url' => Url::fromRoute('layout_builder.add_visibility', $parameters, [
+          'attributes' => [
+            'class' => ['use-ajax'],
+            'data-dialog-type' => 'dialog',
+            'data-dialog-renderer' => 'off_canvas',
+            'data-outside-in-edit' => TRUE,
+          ],
+        ]),
       ];
     }
-
-    $form['actions']['#weight'] = 40;
-    $form['actions']['submit'] = [
-      '#type' => 'submit',
-      '#value' => $this->t('Add condition'),
-      // Submit button is only visible if a condition is selected.
-      '#states' => [
-        'invisible' => [
-          '[name="condition"]' => ['value' => ''],
-        ],
-      ],
-    ];
 
     $form['#attributes']['data-layout-builder-target-highlight-id'] = $this->blockUpdateHighlightId($this->uuid);
 
     if ($this->isAjax()) {
-      $form['actions']['submit']['#ajax']['callback'] = '::ajaxSubmit';
-      $form['actions']['submit']['#ajax']['event'] = 'click';
       $form['update_operator']['#ajax']['callback'] = '::ajaxSubmit';
-      $form['update_operator']['#ajax']['event'] = 'click';
     }
 
     return $form;
@@ -257,32 +206,10 @@ class BlockVisibilityForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  protected function successfulAjaxSubmit(array $form, FormStateInterface $form_state) {
-    $triggering_element = $form_state->getTriggeringElement();
-    // If the submit was triggered by the "update operator" button, just
+  protected function successfulAjaxSubmit(array $form, FormStateInterface $form_state): AjaxResponse {
+    // The submit was triggered by the "update operator" button, just
     // rebuild the layout UI and close the dialog.
-    if (isset($triggering_element['#submit'][0]) && ($triggering_element['#submit'][0] === '::updateOperator')) {
-      return $this->rebuildAndClose($this->sectionStorage);
-    }
-
-    // Adding a visibility condition to a block is a two step process. This
-    // submit handler is triggered after completion of step 1: choosing the
-    // condition to add. The logic below opens a configuration form for step 2:
-    // configuring the condition that was just added.
-    $condition = $form_state->getValue('condition');
-    $parameters = $this->getParameters($condition);
-
-    // Build the configuration form to be used in step 2.
-    $new_form = $this->formBuilder->getForm('\Drupal\layout_builder\Form\ConfigureVisibilityForm', $this->sectionStorage, $parameters['delta'], $parameters['uuid'], $parameters['plugin_id']);
-
-    // @todo The changes to #action/actions need to be documented or refactored
-    //   to better resemble other dual-dialog forms in Layout Builder.
-    $new_form['#action'] = (new Url('layout_builder.add_visibility', $parameters))->toString();
-    $url = new Url('layout_builder.add_visibility', $parameters, ['query' => [FormBuilderInterface::AJAX_FORM_REQUEST => TRUE, '_wrapper_format' => 'drupal_ajax']]);
-    $new_form['actions']['submit']['#attached']['drupalSettings']['ajax'][$new_form['actions']['submit']['#id']]['url'] = $url->toString();
-    $response = new AjaxResponse();
-    $response->addCommand(new OpenOffCanvasDialogCommand($this->t('Configure condition'), $new_form));
-    return $response;
+    return $this->rebuildAndClose($this->sectionStorage);
   }
 
   /**
@@ -293,7 +220,7 @@ class BlockVisibilityForm extends FormBase {
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The form state object.
    */
-  public function updateOperator(array $form, FormStateInterface $form_state) {
+  public function updateOperator(array $form, FormStateInterface $form_state): void {
     $operator_value = $form_state->getValue('operator');
     $component = $this->getCurrentComponent();
     $component->set('visibility_operator', $operator_value);
@@ -304,13 +231,12 @@ class BlockVisibilityForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
     $parameters = $this->getParameters($form_state->getValue('condition'));
     $operator = $form_state->getValue('operator');
     $parameters['operator'] = $operator === 'or' ? $operator : 'and';
     $url = new Url('layout_builder.add_visibility', $parameters);
-    $response = new RedirectResponse($url->toString());
-    $form_state->setResponse($response);
+    $form_state->setRedirectUrl($url);
   }
 
   /**
@@ -322,7 +248,7 @@ class BlockVisibilityForm extends FormBase {
    * @return array
    *   List of Url parameters.
    */
-  protected function getParameters($visibility_id) {
+  protected function getParameters(string $visibility_id): array {
     return [
       'section_storage_type' => $this->sectionStorage->getStorageType(),
       'section_storage' => $this->sectionStorage->getStorageId(),
@@ -345,14 +271,13 @@ class BlockVisibilityForm extends FormBase {
    * @return string
    *   The title for the block visibility form.
    */
-  public function title(SectionStorageInterface $section_storage, $delta, $uuid) {
-    $block_label = $section_storage
+  public function title(SectionStorageInterface $section_storage, int $delta, string $uuid): string {
+    $block = $section_storage
       ->getSection($delta)
       ->getComponent($uuid)
-      ->getPlugin()
-      ->label();
+      ->getPlugin();
 
-    return $this->t('Configure visibility rules for the @block_label block', ['@block_label' => $block_label]);
+    return $this->t('Configure visibility rules for the @block_label block', ['@block_label' => $block->label()]);
   }
 
 }

@@ -56,7 +56,7 @@
         "drupal/block_classes": "^1.0",
         "drupal/conditional_fields": "^4.0@alpha",
         "drupal/cookie_samesite_support": "^1.0",
-        "drupal/core": "^10.2",
+        "drupal/core": "^11",
         "drupal/devel": "^5.0",
         "drupal/disable_messages": "^2.0",
         "drupal/entity_reference_revisions": "^1.10",
@@ -87,6 +87,8 @@
         "drush/drush": "^13.0",
         "mlibrary/umlib_admin": "^1.0",
         "mlibrary/umlib_base": "^1.0",
+        "wikimedia/composer-merge-plugin": "^2.0",
+        "mnsami/composer-custom-directory-installer": "^2.1",
         "oat-sa/lib-lti1p3-core": "^7",
         "oat-sa/lib-lti1p3-deep-linking": "^4"
     },
@@ -95,12 +97,20 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "replace": {
+        "oomphinc/composer-installers-extender": "*"
+    },
     "config": {
         "sort-packages": true,
         "allow-plugins": {
             "composer/installers": true,
-            "drupal/console-extend-plugin": true,
-            "cweagans/composer-patches": true
+            "cweagans/composer-patches": true,
+            "mnsami/composer-custom-directory-installer": true,
+            "oomphinc/composer-installers-extender": false,
+            "wikimedia/composer-merge-plugin": true,
+            "mglaman/composer-drupal-lenient": true,
+            "symfony/runtime": true,
+            "drupal/core-composer-scaffold": true
         }
     },
     "extra": {
@@ -115,9 +125,41 @@
             "modules/custom/{$name}": ["type:drupal-custom-module"],
             "themes/custom/{$name}": ["type:drupal-custom-theme"]
         },
+        "merge-plugin": {
+          "include": [
+             "modules/*/composer.json"
+          ],
+          "recurse": false,
+          "replace": false,
+          "merge-extra": false,
+          "ignore-duplicates": true
+        },
+        "drupal-scaffold": {
+            "file-mapping": {
+                "[web-root]/.htaccess": false,
+                "[web-root]/robots.txt": false,
+                "[web-root]/profiles/README.txt": false,
+                "[web-root]/recipes/README.txt": false,
+                "[web-root]/modules/README.txt": false,
+                "[web-root]/themes/README.txt": false,
+                "[web-root]/sites/README.txt": false,
+                "[web-root]/README.md": false,
+                "[web-root]/INSTALL.txt": false,
+                "assets/drupal-core-htaccess.txt": {
+                    "mode": "replace",
+                    "path": "core/assets/scaffold/files/htaccess",
+                    "overwrite": true
+                },
+                "assets/drupal-core-robots.txt": {
+                    "mode": "replace",
+                    "path": "core/assets/scaffold/files/robots.txt",
+                    "overwrite": true
+                }
+            }
+        },
         "patches": {
           "drupal/core": {
-            "https://www.drupal.org/node/2916876": "https://www.drupal.org/files/issues/2023-12-19/drupal-n2916876-207.patch"
+            "https://www.drupal.org/node/2916876": "https://www.drupal.org/files/issues/2026-07-03/2916876-mr-7501-11.3.2-273.patch"
           },
           "drupal/token": {
             "https://www.drupal.org/node/919760": "https://www.drupal.org/files/issues/2026-01-30/919760-116_0.patch"

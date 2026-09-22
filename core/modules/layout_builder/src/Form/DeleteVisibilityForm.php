@@ -7,6 +7,7 @@ use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\OpenOffCanvasDialogCommand;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 use Drupal\layout_builder\Controller\LayoutRebuildTrait;
 use Drupal\layout_builder\LayoutBuilderHighlightTrait;
@@ -78,7 +79,7 @@ class DeleteVisibilityForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container): self {
     return new static(
       $container->get('layout_builder.tempstore_repository')
     );
@@ -87,7 +88,7 @@ class DeleteVisibilityForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, SectionStorageInterface $section_storage = NULL, $delta = NULL, $uuid = NULL, $plugin_id = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, ?SectionStorageInterface $section_storage = NULL, $delta = NULL, $uuid = NULL, $plugin_id = NULL): array {
     $this->sectionStorage = $section_storage;
     $this->delta = $delta;
     $this->uuid = $uuid;
@@ -104,14 +105,14 @@ class DeleteVisibilityForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function getQuestion() {
+  public function getQuestion(): TranslatableMarkup {
     return $this->t('Are you sure you want to delete this visibility condition?');
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getCancelUrl() {
+  public function getCancelUrl(): Url {
     $parameters = $this->getParameters();
     return new Url('layout_builder.visibility', $parameters);
   }
@@ -119,14 +120,14 @@ class DeleteVisibilityForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function getFormId() {
+  public function getFormId(): string {
     return 'layout_builder_delete_visibility';
   }
 
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
     $component = $this->getCurrentComponent();
     $visibility_conditions = $component->get('visibility');
     unset($visibility_conditions[$this->pluginId]);
@@ -138,7 +139,7 @@ class DeleteVisibilityForm extends ConfirmFormBase {
   /**
    * Build a cancel button for the confirm form.
    */
-  protected function buildCancelLink() {
+  protected function buildCancelLink(): array {
     return [
       '#type' => 'button',
       '#value' => $this->getCancelText(),
@@ -151,7 +152,7 @@ class DeleteVisibilityForm extends ConfirmFormBase {
   /**
    * Provides an ajax callback for the cancel button.
    */
-  public function ajaxCancel(array &$form, FormStateInterface $form_state) {
+  public function ajaxCancel(array &$form, FormStateInterface $form_state): AjaxResponse {
     $parameters = $this->getParameters();
     $new_form = \Drupal::formBuilder()->getForm(BlockVisibilityForm::class, $this->sectionStorage, $parameters['delta'], $parameters['uuid']);
     $new_form['#action'] = $this->getCancelUrl()->toString();
@@ -166,7 +167,7 @@ class DeleteVisibilityForm extends ConfirmFormBase {
    * @return array
    *   List of Url parameters.
    */
-  protected function getParameters() {
+  protected function getParameters(): array {
     return [
       'section_storage_type' => $this->sectionStorage->getStorageType(),
       'section_storage' => $this->sectionStorage->getStorageId(),
@@ -188,7 +189,7 @@ class DeleteVisibilityForm extends ConfirmFormBase {
    * @return string
    *   The title for the block visibility form.
    */
-  public function title(SectionStorageInterface $section_storage, $delta, $uuid) {
+  public function title(SectionStorageInterface $section_storage, $delta, $uuid): TranslatableMarkup {
     $block_label = $section_storage
       ->getSection($delta)
       ->getComponent($uuid)
@@ -198,7 +199,10 @@ class DeleteVisibilityForm extends ConfirmFormBase {
     return $this->t('Delete visibility rule for the @block_label block', ['@block_label' => $block_label]);
   }
 
-  protected function successfulAjaxSubmit(array $form, FormStateInterface $form_state) {
+  /**
+   * {@inheritdoc}
+   */
+  protected function successfulAjaxSubmit(array $form, FormStateInterface $form_state): AjaxResponse {
     return $this->rebuildAndClose($this->sectionStorage);
   }
 

@@ -1,25 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\layout_builder\FunctionalJavascript;
 
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\Tests\contextual\FunctionalJavascript\ContextualLinkClickTrait;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+
+// cspell:ignore fieldnid blocknodebundle fieldbody
 
 /**
  * Test layout block visibility functionality.
- *
- * @group layout_builder
  */
+#[Group('layout_builder')]
+#[RunTestsInSeparateProcesses]
 class BlockVisibilityTest extends WebDriverTestBase {
 
   use ContextualLinkClickTrait;
 
-  protected $defaultTheme = 'classy';
+  /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'olivero';
 
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
+    'field_ui',
     'layout_builder',
     'node',
     'contextual',
@@ -30,14 +40,14 @@ class BlockVisibilityTest extends WebDriverTestBase {
    *
    * @var string
    */
-  const FIELD_UI_PREFIX = 'admin/structure/types/manage/bundle_with_section_field';
+  protected const FIELD_UI_PREFIX = 'admin/structure/types/manage/bundle_with_section_field';
 
   /**
    * CSS selector for the body field block.
    *
    * @var string
    */
-  const BODY_FIELDBLOCK_SELECTOR = '.block-field-blocknodebundle-with-section-fieldbody';
+  protected const BODY_FIELD_BLOCK_SELECTOR = '.block-field-blocknodebundle-with-section-fieldbody';
 
   /**
    * {@inheritdoc}
@@ -56,8 +66,8 @@ class BlockVisibilityTest extends WebDriverTestBase {
     ]));
 
     // Enable layout builder.
-    $this->drupalPostForm(
-      static::FIELD_UI_PREFIX . '/display/default',
+    $this->drupalGet(static::FIELD_UI_PREFIX . '/display/default');
+    $this->submitForm(
       ['layout[enabled]' => TRUE],
       'Save'
     );
@@ -84,7 +94,7 @@ class BlockVisibilityTest extends WebDriverTestBase {
   /**
    * Tests conditional visibility.
    */
-  public function testConditionalVisibility() {
+  public function testConditionalVisibility(): void {
     $assert_session = $this->assertSession();
     $page = $this->getSession()->getPage();
 
@@ -146,11 +156,12 @@ class BlockVisibilityTest extends WebDriverTestBase {
     // Confirm "Control visibility" contextual links available on each block.
     foreach ($blocks_in_layout as $block) {
       $rendered_block_selector = $block['rendered_block_selector'];
-      $assert_session->elementExists('css', "#layout-builder $rendered_block_selector .layout-builder-block-visibility a");
+      $block_element = $page->find('css', "#layout-builder $rendered_block_selector");
+      $block_element->hasLink('Control visibility');
     }
 
     // Test Request Path visibility rule.
-    $this->beginAddCondition('request_path');
+    $this->beginAddCondition('Request Path');
     $page->checkField('settings[negate]');
     $page->findField('settings[pages]')->setValue('/node/2');
     $page->pressButton('Add condition');
@@ -163,7 +174,7 @@ class BlockVisibilityTest extends WebDriverTestBase {
 
     // Confirm that editing an existing condition works.
     $this->drupalGet(static::FIELD_UI_PREFIX . '/display/default/layout');
-    $this->clickContextualLink(static::BODY_FIELDBLOCK_SELECTOR, 'Control visibility');
+    $this->clickContextualLink(static::BODY_FIELD_BLOCK_SELECTOR, 'Control visibility');
     $assert_session->assertWaitOnAjaxRequest();
     $this->assertNotEmpty($assert_session->waitForElementVisible('css', '#drupal-off-canvas'));
     $page->clickLink('Edit');
@@ -179,18 +190,27 @@ class BlockVisibilityTest extends WebDriverTestBase {
     $assert_session->pageTextContains('The node body');
 
     // Confirm 'or' operator works ('and' is the default operator)
-    $this->beginAddCondition('request_path', 'or');
+    $this->beginAddCondition('Request Path');
     $page->checkField('settings[negate]');
     $page->findField('settings[pages]')->setValue('/node/2');
     $page->pressButton('Add condition');
     $assert_session->assertWaitOnAjaxRequest();
+    $this->clickContextualLink(static::BODY_FIELD_BLOCK_SELECTOR, 'Control visibility');
+    $assert_session->assertWaitOnAjaxRequest();
+    $page->findField('operator')->setValue('or');
+    $page->pressButton('Update operator');
+    $assert_session->assertWaitOnAjaxRequest();
     $page->pressButton('Save layout');
+    $this->drupalGet('node/1');
+    $assert_session->pageTextContains('The node body');
+    $this->drupalGet('node/2');
+    $assert_session->pageTextContains('The node body');
 
     // Test Current Theme visibility rule.
     $this->removeVisibilityConditions();
-    $this->beginAddCondition('current_theme');
+    $this->beginAddCondition('Current Theme');
     $page->checkField('settings[negate]');
-    $page->findField('settings[theme]')->setValue('classy');
+    $page->findField('settings[theme]')->setValue('olivero');
     $page->pressButton('Add condition');
     $assert_session->assertWaitOnAjaxRequest();
     $page->pressButton('Save layout');
@@ -201,7 +221,7 @@ class BlockVisibilityTest extends WebDriverTestBase {
 
     // Test User Role visibility rule.
     $this->removeVisibilityConditions();
-    $this->beginAddCondition('user_role');
+    $this->beginAddCondition('User Role');
     $page->checkField('settings[negate]');
     $page->checkField('settings[roles][anonymous]');
     $page->pressButton('Add condition');
@@ -225,35 +245,30 @@ class BlockVisibilityTest extends WebDriverTestBase {
    *
    * @param string $condition
    *   The visibility condition to add.
-   * @param string $operator
-   *   The and/or operator when multiple conditions present.
    */
-  protected function beginAddCondition($condition, $operator = '') {
+  protected function beginAddCondition(string $condition): void {
     $assert_session = $this->assertSession();
     $page = $this->getSession()->getPage();
 
     $this->drupalGet(static::FIELD_UI_PREFIX . '/display/default/layout');
-    $this->clickContextualLink(static::BODY_FIELDBLOCK_SELECTOR, 'Control visibility');
+    $this->clickContextualLink(static::BODY_FIELD_BLOCK_SELECTOR, 'Control visibility');
     $assert_session->assertWaitOnAjaxRequest();
     $this->assertNotEmpty($assert_session->waitForElementVisible('css', '#drupal-off-canvas'));
-    $page->findField('condition')->setValue($condition);
+    $page->pressButton('Add a visibility condition');
+    $page->clickLink($condition);
     $this->assertNotEmpty($assert_session->waitForElementVisible('css', '[value="Add condition"]'));
-    if (!empty($operator)) {
-      $page->findField('operator')->setValue($operator);
-    }
-    $page->pressButton('Add condition');
     $this->assertNotEmpty($assert_session->waitForElementVisible('css', '[name="settings[negate]"]'));
   }
 
   /**
    * Removes the visibility rules from the body field block.
    */
-  protected function removeVisibilityConditions() {
+  protected function removeVisibilityConditions(): void {
     $assert_session = $this->assertSession();
     $page = $this->getSession()->getPage();
 
     $this->drupalGet(static::FIELD_UI_PREFIX . '/display/default/layout');
-    $this->clickContextualLink(static::BODY_FIELDBLOCK_SELECTOR, 'Control visibility');
+    $this->clickContextualLink(static::BODY_FIELD_BLOCK_SELECTOR, 'Control visibility');
     $assert_session->assertWaitOnAjaxRequest();
     $this->assertNotEmpty($assert_session->waitForElementVisible('css', '#drupal-off-canvas'));
     $page->clickLink('Delete');
@@ -263,7 +278,7 @@ class BlockVisibilityTest extends WebDriverTestBase {
     $assert_session->assertWaitOnAjaxRequest();
 
     // If multiple conditions present, this method will need to run again.
-    $this->clickContextualLink(static::BODY_FIELDBLOCK_SELECTOR, 'Control visibility');
+    $this->clickContextualLink(static::BODY_FIELD_BLOCK_SELECTOR, 'Control visibility');
     $assert_session->assertWaitOnAjaxRequest();
     $close_button = $assert_session->waitForElementVisible('css', '[title="Close"]');
     if ($page->hasLink('Delete')) {
@@ -289,7 +304,7 @@ class BlockVisibilityTest extends WebDriverTestBase {
    * @param string $rendered_locator
    *   The CSS locator to confirm the block was rendered.
    */
-  protected function addBlock($block_link_text, $region_selector, $rendered_locator) {
+  protected function addBlock($block_link_text, $region_selector, $rendered_locator): void {
     $assert_session = $this->assertSession();
     $page = $this->getSession()->getPage();
 
