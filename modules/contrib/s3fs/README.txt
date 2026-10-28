@@ -13,6 +13,7 @@ TABLE OF CONTENTS
 -----------------
 
 * REQUIREMENTS
+* BUCKET CONFIGURATION
 * S3FS INITIAL CONFIGURATION
 * CONFIGURE DRUPAL TO STORE FILES IN S3
 * COPY LOCAL FILES TO S3
@@ -62,6 +63,67 @@ REQUIREMENTS
       s3:PutObjectAcl
 
   * Optional: doctrine/cache library for caching S3 Credentials.
+
+BUCKET POLICY
+-------------
+  * It is recommended that buckets disable ACL's and utilize bucket policies to
+    grant public access to S3 objects. This mode is commonly known as Bucket
+    Owner Enforced, more details are available from AWS
+    (https://docs.aws.amazon.com/AmazonS3/latest/userguide/about-object-ownership.html).
+    This is the default configuration for new AWS buckets.
+
+    * For use in Bucket Owner Enforced mode s3fs must be configured to upload
+      all objects as private.
+
+      $settings['s3fs.upload_as_private'] = TRUE;
+
+    * A sample bucket policy is included below. This sample assumes s3fs is
+      configured with the default values of:
+        * root_folder = ''
+        * private_folder = 's3fs-private'
+        * public_folder = 's3fs-public'
+      adjust the policy to match your s3fs configuration, bucket name and
+      AWS principal account ID.
+
+      {
+       "Version": "2012-10-17",
+       "Statement": [
+         {
+           "Sid": "Block access to the private_folder path. This resource must match the s3fs Drupal module private_folder value. Failure to configure may result in private files being available to the public. Recommend to keep this entry even if the s3fs module does not takeover the private:// scheme.",
+           "Effect": "Deny",
+           "Principal": "*",
+           "Action": "s3:*",
+           "Resource": "arn:aws:s3:::${BucketName}/*s3fs-private/*",
+           "Condition": {
+             "StringNotEquals": {
+               "aws:PrincipalAccount": "${YourPrincipalAcccountId}"
+             }
+           }
+         },
+         {
+           "Sid": "Allow public access to public:// objects. Must match public_folder path.  May be removed if s3fs does not takeover the public:// scheme.",
+           "Effect": "Allow",
+           "Principal": "*",
+           "Action": [
+             "s3:GetObject",
+             "s3:GetObjectVersion"
+           ],
+           "Resource": "arn:aws:s3:::${BucketName}/s3fs-public/*"
+         },
+         {
+           "Sid": "Allow public access to all objects not otherwise denied. This resource serves the s3:// scheme.",
+           "Effect": "Allow",
+           "Principal": "*",
+           "Action": [
+             "s3:GetObject",
+             "s3:GetObjectVersion"
+           ],
+           "Resource": "arn:aws:s3:::${BucketName}/*"
+         }
+       ]
+      }
+
+    * Review the policy and merge with any existing bucket policies.
 
 S3FS INITIAL CONFIGURATION
 --------------------------

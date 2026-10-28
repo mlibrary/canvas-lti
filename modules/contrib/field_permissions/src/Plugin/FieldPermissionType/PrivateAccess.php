@@ -40,7 +40,11 @@ class PrivateAccess extends Base {
       return $entity->getOwnerId() === $account->id();
     }
 
-    return TRUE;
+    // The entity type has no concept of ownership (for example taxonomy terms,
+    // custom blocks or menu links), so nobody can be its author. Only users
+    // with the 'access private fields' permission, handled above, may access
+    // the field. Default to deny, matching the custom permissions plugin.
+    return FALSE;
   }
 
   /**

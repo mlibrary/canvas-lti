@@ -709,7 +709,9 @@ class S3fsStream extends StreamWrapper implements StreamWrapperInterface {
     }
     $this->setStreamContextOptions($this->context, $s3options);
 
-    return parent::stream_open($converted, $mode, $options, $opened_path);
+    $result = parent::stream_open($converted, $mode, $options, $opened_path);
+    $this->resetContextOptions();
+    return $result;
   }
 
   /**
@@ -782,7 +784,10 @@ class S3fsStream extends StreamWrapper implements StreamWrapperInterface {
     }
     $this->setStreamContextOptions($this->context, $options);
 
-    if (parent::stream_flush()) {
+    $result = parent::stream_flush();
+    $this->resetContextOptions();
+
+    if ($result) {
       $this->writeUriToCache($this->uri);
       return TRUE;
     }
@@ -930,8 +935,11 @@ class S3fsStream extends StreamWrapper implements StreamWrapperInterface {
     }
     $this->setStreamContextOptions($this->context, $options);
 
+    $result = parent::rename($from_key, $to_key);
+    $this->resetContextOptions();
+
     // If parent succeeds in renaming, updated local metadata and cache.
-    if (parent::rename($from_key, $to_key)) {
+    if ($result) {
       $metadata = $this->readCache($from_uri);
       if (!$metadata) {
         // Metadata isn't in our cache. Obtain direct form S3.
@@ -1771,6 +1779,25 @@ class S3fsStream extends StreamWrapper implements StreamWrapperInterface {
       stream_context_set_option($context, $options);
     }
 
+  }
+
+  /**
+   * Reset context options to contain only basic settings.
+   */
+  private function resetContextOptions(): void {
+    if ($this->context !== NULL) {
+      $options = stream_context_get_options($this->context);
+      array_walk(
+        $options[$this->protocol],
+        function (&$value, $key) {
+          if (!in_array($key, ['client', 'seekable', 'cache'])) {
+            $value = NULL;
+          }
+        }
+      );
+
+      $this->setStreamContextOptions($this->context, $options);
+    }
   }
 
 }

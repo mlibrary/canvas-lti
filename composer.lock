@@ -2781,17 +2781,17 @@
         },
         {
             "name": "drupal/field_permissions",
-            "version": "1.5.0",
+            "version": "1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/field_permissions.git",
-                "reference": "8.x-1.5"
+                "reference": "8.x-1.6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/field_permissions-8.x-1.5.zip",
-                "reference": "8.x-1.5",
-                "shasum": "f8bf0c89dc795e1c4eee44a1c692a142dbeeaca8"
+                "url": "https://ftp.drupal.org/files/projects/field_permissions-8.x-1.6.zip",
+                "reference": "8.x-1.6",
+                "shasum": "7ae3733593b4ffaee5430a528d2ee8a4256abfe5"
             },
             "require": {
                 "drupal/core": "^9.5 || ^10 || ^11"
@@ -2799,8 +2799,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.5",
-                    "datestamp": "1768131948",
+                    "version": "8.x-1.6",
+                    "datestamp": "1793211725",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -3639,17 +3639,17 @@
         },
         {
             "name": "drupal/s3fs",
-            "version": "3.11.0",
+            "version": "3.12.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/s3fs.git",
-                "reference": "8.x-3.11"
+                "reference": "8.x-3.12"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/s3fs-8.x-3.11.zip",
-                "reference": "8.x-3.11",
-                "shasum": "4dbc77c8d396006a2bab2a77124ddd6fcef038a4"
+                "url": "https://ftp.drupal.org/files/projects/s3fs-8.x-3.12.zip",
+                "reference": "8.x-3.12",
+                "shasum": "16a9436a318be8c8fd004da7f647cf788625b0f5"
             },
             "require": {
                 "aws/aws-sdk-php": "^3.18",
@@ -3671,8 +3671,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-3.11",
-                    "datestamp": "1784613899",
+                    "version": "8.x-3.12",
+                    "datestamp": "1793208769",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"

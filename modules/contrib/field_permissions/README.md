@@ -71,7 +71,9 @@ permissions. For example, users who are allowed to view a particular node that
 the field is attached to will also be able to view the field.
 
 "Private" provides quick and easy access to a commonly used form of field
-access control.
+access control. On entity types that have no author (for example taxonomy
+terms, custom blocks or menu links) nobody owns the entity, so only users with
+the "Access private fields" permission can view or edit the field.
 
 Finally, if "Custom permissions" is chosen, a standard permissions matrix will
 be revealed allowing you full flexibility to assign the following permissions

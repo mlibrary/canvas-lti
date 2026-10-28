@@ -164,7 +164,7 @@ class FieldPermissionsService implements FieldPermissionsServiceInterface, Conta
    */
   public function getFieldAccess($operation, FieldItemListInterface $items, AccountInterface $account, FieldDefinitionInterface $field_definition) {
     $permission_type = $this->fieldGetPermissionType($field_definition->getFieldStorageDefinition());
-    if (in_array('administrator', $account->getRoles()) || $permission_type == FieldPermissionTypeInterface::ACCESS_PUBLIC) {
+    if ($this->isAdministrator($account) || $permission_type == FieldPermissionTypeInterface::ACCESS_PUBLIC) {
       return TRUE;
     }
     // Field add to comment entity.
@@ -175,6 +175,26 @@ class FieldPermissionsService implements FieldPermissionsServiceInterface, Conta
     // Pass access control to the plugin.
     $plugin = $this->permissionTypeManager->createInstance($permission_type, [], $field_definition->getFieldStorageDefinition());
     return $plugin->appliesToField($field_definition) && $plugin->hasFieldAccess($operation, $items->getEntity(), $account);
+  }
+
+  /**
+   * Determines whether the account has an administrator role.
+   *
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   The account to check.
+   *
+   * @return bool
+   *   TRUE if the account has a role with the is_admin flag set.
+   */
+  protected function isAdministrator(AccountInterface $account) {
+    /** @var \Drupal\user\RoleInterface[] $roles */
+    $roles = $this->entityTypeManager->getStorage('user_role')->loadMultiple($account->getRoles());
+    foreach ($roles as $role) {
+      if ($role->isAdmin()) {
+        return TRUE;
+      }
+    }
+    return FALSE;
   }
 
   /**
@@ -199,7 +219,7 @@ class FieldPermissionsService implements FieldPermissionsServiceInterface, Conta
    */
   public function hasFieldViewAccessForEveryEntity(AccountInterface $account, FieldDefinitionInterface $field_definition) {
     $permission_type = $this->fieldGetPermissionType($field_definition->getFieldStorageDefinition());
-    if (in_array('administrator', $account->getRoles()) || $permission_type == FieldPermissionTypeInterface::ACCESS_PUBLIC) {
+    if ($this->isAdministrator($account) || $permission_type == FieldPermissionTypeInterface::ACCESS_PUBLIC) {
       return TRUE;
     }
     // Field add to comment entity.
