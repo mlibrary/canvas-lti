@@ -5,9 +5,13 @@
  * Contains rabbit_hole.module.
  */
 
-use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\EntityFormInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\rabbit_hole\BehaviorSettingsManager;
 
 /**
@@ -80,4 +84,22 @@ function rabbit_hole_form_entity_view_display_edit_form_alter(&$form, FormStateI
   if ($key !== FALSE) {
     unset($form['#fields'][$key]);
   }
+}
+
+/**
+ * Implements hook_entity_field_access().
+ *
+ * The Rabbit Hole field decides whether an entity is displayed, hidden or
+ * redirected, so its widget is only shown to users holding the "rabbit hole
+ * administer <entity type>" permission. Writers that honour field access but
+ * not the form - JSON:API, REST, bulk operations - would otherwise let anyone
+ * with edit access to the entity change it.
+ */
+function rabbit_hole_entity_field_access($operation, FieldDefinitionInterface $field_definition, AccountInterface $account, ?FieldItemListInterface $items = NULL) {
+  if ($operation !== 'edit' || $field_definition->getType() !== 'rabbit_hole') {
+    return AccessResult::neutral();
+  }
+
+  return AccessResult::forbiddenIf(!$account->hasPermission('rabbit hole administer ' . $field_definition->getTargetEntityTypeId()))
+    ->cachePerPermissions();
 }

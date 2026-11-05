@@ -105,6 +105,22 @@ class BehaviorInvokerTest extends KernelTestBase {
     Node::create(['title' => 'God Save the King', 'type' => 'some'])->save();
     $event = new RequestEvent($kernel, $this->createRequest('/node/1'), HttpKernelInterface::MAIN_REQUEST);
     $this->assertInstanceOf(NodeInterface::class, $behavior_invoker->getEntity($event));
+
+    // Requests for error pages carry the exception as a request attribute and
+    // are left alone.
+    $request = $this->createRequest('/node/1');
+    $request->attributes->set('exception', new \RuntimeException());
+    $event = new RequestEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST);
+    $this->assertEquals(FALSE, $behavior_invoker->getEntity($event));
+
+    // A visitor must not be able to fake that attribute through the query
+    // string or the request body.
+    $event = new RequestEvent($kernel, $this->createRequest('/node/1?exception=1'), HttpKernelInterface::MAIN_REQUEST);
+    $this->assertInstanceOf(NodeInterface::class, $behavior_invoker->getEntity($event));
+    $request = $this->createRequest('/node/1');
+    $request->request->set('exception', 1);
+    $event = new RequestEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST);
+    $this->assertInstanceOf(NodeInterface::class, $behavior_invoker->getEntity($event));
   }
 
   /**
